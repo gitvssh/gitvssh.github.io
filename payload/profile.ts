@@ -11,13 +11,13 @@ const profile: IProfile.Payload = {
   // image: 'https://resume.yowu.dev/static/image/profile_2019.png',
   image,
   name: {
-    title: 'Tux Linux Penguin',
-    small: '(Tux)',
+    title: '이 승현(Lee Seung-Hyun)',
+    small: '(36)',
   },
   contact: [
     {
-      title: 'tux@linux.org',
-      link: 'mailto:tux@linux.org',
+      title: 'gmavsks@gmail.com',
+      link: 'mailto:gmavsks@gmail.com',
       icon: faEnvelope,
     },
     {
@@ -26,17 +26,16 @@ const profile: IProfile.Payload = {
       badge: true,
     },
     {
-      link: 'https://github.com/uyu423/resume-nextjs',
+      link: 'https://github.com/gitvssh',
       icon: faGithub,
     },
     {
-      link: 'https://www.facebook.com/groups/ubuntu.ko',
+      link: 'https://damecasol.tistory.com/',
       icon: faFacebook,
     },
   ],
   notice: {
-    title:
-      "The content below is all fictitious and is just a sample from 'https://github.com/uyu423/resume-nextjs'.",
+    title: '백엔드 개발자 이승현의 온라인 이력서입니다.',
     icon: faBell,
   },
 };
