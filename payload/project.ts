@@ -43,7 +43,7 @@ const project: IProject.Payload = {
     {
       title: '쩜쩜',
       startedAt: '2023-03',
-      endedAt: '2025-01',
+      endedAt: '2025-03',
       where: 'Lowall',
       descriptions: [
         {
