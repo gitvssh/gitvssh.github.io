@@ -64,7 +64,13 @@ export default function ExperienceRow({
         </Col>
         <Col sm={12} md={9}>
           <h4 style={{ display: 'inline-flex', alignItems: 'center' }}>
-            {item.title}{' '}
+            {item.url ? (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                {item.title}
+              </a>
+            ) : (
+              item.title
+            )}{' '}
             <span style={{ fontSize: '65%', display: 'inline-flex', alignItems: 'center' }}>
               {isCurrentlyEmployed && (
                 <Badge color="primary" className="ml-1">

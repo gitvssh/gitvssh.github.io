@@ -17,7 +17,6 @@ const programmingLanguages: ISkill.Skill = {
 const backendDevelopment: ISkill.Skill = {
   category: 'Backend Development',
   items: [
-    { title: 'Spring Framework' },
     { title: 'Spring Boot' },
     { title: 'Spring Security' },
     { title: 'Spring Batch' },
@@ -48,7 +47,6 @@ const devOps: ISkill.Skill = {
 const skill: ISkill.Payload = {
   disable: false,
   skills: [programmingLanguages, backendDevelopment, database, devOps],
-  tooltip: '1: 기초 수준\n2: 취미 개발 수준\n3: Production 개발 가능 수준',
 };
 
 export default skill;
