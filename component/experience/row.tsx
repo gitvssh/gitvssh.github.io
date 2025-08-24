@@ -64,6 +64,7 @@ export default function ExperienceRow({
         </Col>
         <Col sm={12} md={9}>
           <h4 style={{ display: 'inline-flex', alignItems: 'center' }}>
+<<<<<<< HEAD
             {item.title}{' '}
             {item.url && (
               <small style={{ fontSize: '60%', marginLeft: '0.5rem' }}>
@@ -71,6 +72,19 @@ export default function ExperienceRow({
                   [link]
                 </a>
               </small>
+=======
+            {item.url ? (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'none' }}
+              >
+                {item.title}
+              </a>
+            ) : (
+              item.title
+>>>>>>> 00dcaded222c391d5f01536c1368fc477122ca74
             )}{' '}
             <span style={{ fontSize: '65%', display: 'inline-flex', alignItems: 'center' }}>
               {isCurrentlyEmployed && (

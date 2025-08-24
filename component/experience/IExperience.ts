@@ -18,7 +18,7 @@ export declare namespace IExperience {
   export interface Item {
     /** ### (직장)경험 명 */
     title: string;
-    
+
     /** ### (직장) 회사 웹사이트 URL */
     url?: string;
 
