@@ -64,12 +64,13 @@ export default function ExperienceRow({
         </Col>
         <Col sm={12} md={9}>
           <h4 style={{ display: 'inline-flex', alignItems: 'center' }}>
-            {item.url ? (
-              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                {item.title}
-              </a>
-            ) : (
-              item.title
+            {item.title}{' '}
+            {item.url && (
+              <small style={{ fontSize: '60%', marginLeft: '0.5rem' }}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff' }}>
+                  [link]
+                </a>
+              </small>
             )}{' '}
             <span style={{ fontSize: '65%', display: 'inline-flex', alignItems: 'center' }}>
               {isCurrentlyEmployed && (
