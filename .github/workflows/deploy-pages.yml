@@ -32,8 +32,11 @@ jobs:
       - name: Check public repository boundary
         run: node scripts/check-public-repo.mjs
 
-      - name: Enable pnpm
-        run: corepack enable
+      - name: Use pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "11.7.0"
+          run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
