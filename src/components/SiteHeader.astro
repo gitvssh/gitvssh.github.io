@@ -1,0 +1,38 @@
+---
+import { TRACKS } from '../lib/content';
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (path: string) =>
+  path === '/' ? currentPath === path : currentPath.startsWith(path);
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="/" aria-label="다메카솔의 기술 노트 홈">
+      <span class="wordmark__mark" aria-hidden="true">C</span>
+      <span>다메카솔의 기술 노트</span>
+    </a>
+
+    <nav aria-label="주요 메뉴">
+      <ul class="site-nav">
+        {
+          Object.entries(TRACKS).map(([key, track]) => (
+            <li>
+              <a
+                href={`/tracks/${key}/`}
+                aria-current={isCurrent(`/tracks/${key}/`) ? 'page' : undefined}
+              >
+                {track.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/about/" aria-current={isCurrent('/about/') ? 'page' : undefined}>
+            소개
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

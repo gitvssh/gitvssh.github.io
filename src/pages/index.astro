@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../components/PostCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortPosts, TRACKS } from '../lib/content';
+
+const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+const [featured, ...rest] = posts;
+---
+
+<BaseLayout>
+  <section class="masthead">
+    <div class="shell masthead__inner">
+      <p class="eyebrow">AI · SOFTWARE · RESEARCH</p>
+      <h1>다메카솔의 기술 노트</h1>
+      <p>복잡한 기술을 만화로 먼저 이해하고, 정확한 글과 출처로 더 깊게 읽습니다.</p>
+    </div>
+  </section>
+
+  <div class="shell home-content">
+    {
+      featured ? (
+        <section class="featured" aria-labelledby="featured-heading">
+          <div class="section-heading">
+            <h2 id="featured-heading">최근 글</h2>
+            <span>{posts.length}개의 글</span>
+          </div>
+          <PostCard post={featured} prominent />
+        </section>
+      ) : (
+        <section class="empty-state">
+          <h2>첫 글을 준비하고 있습니다</h2>
+          <p>발행 가능한 에피소드가 추가되면 이곳에 표시됩니다.</p>
+        </section>
+      )
+    }
+
+    {
+      rest.length > 0 && (
+        <section class="latest" aria-labelledby="latest-heading">
+          <div class="section-heading">
+            <h2 id="latest-heading">모든 글</h2>
+          </div>
+          <div class="post-list">{rest.map((post) => <PostCard post={post} />)}</div>
+        </section>
+      )
+    }
+
+    <section class="track-index" aria-labelledby="tracks-heading">
+      <div class="section-heading">
+        <h2 id="tracks-heading">주제별로 읽기</h2>
+      </div>
+      <div class="track-index__grid">
+        {
+          Object.entries(TRACKS).map(([key, track]) => (
+            <a class={`track-index__item track-index__item--${key}`} href={`/tracks/${key}/`}>
+              <span>{track.label}</span>
+              <p>{track.description}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>

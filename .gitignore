@@ -1,0 +1,21 @@
+node_modules/
+.astro/
+dist/
+
+.env
+.env.*
+!.env.example
+
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Drafts and private production data are never public-repository inputs.
+src/content/drafts/
+src/content/_drafts/
+private/
+studio/
+inputs/
+outputs/
+_vault/

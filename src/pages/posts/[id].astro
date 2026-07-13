@@ -1,0 +1,84 @@
+---
+import { getImage, Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, TRACKS } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const track = TRACKS[post.data.track];
+const canonical = new URL(`/posts/${post.id}/`, Astro.site);
+const socialImage = await getImage({
+  src: post.data.cover,
+  width: 800,
+  format: 'webp',
+});
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  inLanguage: 'ko-KR',
+  mainEntityOfPage: canonical.href,
+  author: {
+    '@type': 'Person',
+    name: '다메카솔',
+  },
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={socialImage.src}
+  type="article"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <article class="article">
+    <header class="article-header shell shell--article">
+      <nav class="breadcrumb" aria-label="현재 위치">
+        <a href="/">홈</a><span aria-hidden="true">/</span><a href={`/tracks/${post.data.track}/`}>{track.label}</a>
+      </nav>
+      <div class="post-meta">
+        <span class={`track-label track-label--${post.data.track}`}>{track.label}</span>
+        <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="article-deck">{post.data.description}</p>
+    </header>
+
+    <figure class="article-cover shell shell--wide">
+      <Image
+        src={post.data.cover}
+        alt={post.data.coverAlt}
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 920px) 760px, 92vw"
+        format="webp"
+        loading="eager"
+      />
+    </figure>
+
+    <div class="prose shell shell--article">
+      <Content />
+    </div>
+
+    <footer class="article-footer shell shell--article">
+      <a class="back-link" href={`/tracks/${post.data.track}/`}>← {track.label} 글 더 보기</a>
+    </footer>
+  </article>
+</BaseLayout>

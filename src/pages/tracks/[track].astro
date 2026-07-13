@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts, TRACKS, type Track } from '../../lib/content';
+
+export function getStaticPaths() {
+  return Object.keys(TRACKS).map((track) => ({ params: { track } }));
+}
+
+const trackKey = Astro.params.track as Track;
+const track = TRACKS[trackKey];
+const posts = sortPosts(
+  await getCollection('posts', ({ data }) => !data.draft && data.track === trackKey),
+);
+---
+
+<BaseLayout title={track.label} description={track.description}>
+  <div class="shell listing-page">
+    <header class="listing-header">
+      <p class="eyebrow">CONTENT TRACK</p>
+      <h1>{track.label}</h1>
+      <p>{track.description}</p>
+    </header>
+
+    {
+      posts.length > 0 ? (
+        <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+      ) : (
+        <section class="empty-state">
+          <h2>아직 발행된 글이 없습니다</h2>
+          <p>완성된 에피소드가 발행 게이트를 통과하면 이 목록에 추가됩니다.</p>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>
