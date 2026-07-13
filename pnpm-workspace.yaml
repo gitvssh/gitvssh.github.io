@@ -1,5 +1,5 @@
 engineStrict: true
-nodeVersion: 22.12.0
+nodeVersion: 22.13.0
 
 allowBuilds:
   esbuild: true
