@@ -3,7 +3,7 @@ title: "SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 
 description: "SQL이 선언형 언어인 이유를 개발자가 지정하는 결과와 DBMS가 선택하는 실행 계획의 경계, 인덱스와 EXPLAIN 예제로 설명합니다."
 slug: "sql-declarative-language"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-14
+updatedAt: 2026-07-15
 track: tech_column
 subtype: concept
 tags:
@@ -22,7 +22,7 @@ draft: false
 
 SQL이 선언형 언어라는 말은 **개발자가 원하는 결과의 조건과 형태를 지정하고, 그 결과를 만드는 세부 실행 절차는 DBMS가 선택한다**는 뜻입니다. `WHERE`, `ORDER BY`, `LIMIT`으로 무엇을 얻을지는 표현하지만, 테이블을 어떤 순서로 읽고 어떤 인덱스를 사용할지까지 절차형 코드처럼 나열하지는 않습니다.
 
-이 글은 PR Comic의 기술 큐레이터 카솔과 함께 개발자가 결정하는 것과 옵티마이저가 결정하는 것을 나누고, 인덱스가 무시되는 순간, 잘 맞는 복합 인덱스의 효과, `EXPLAIN`으로 실제 계획을 확인하는 방법까지 다룹니다.
+이 글은 카솔과 함께 개발자가 결정하는 것과 옵티마이저가 결정하는 것을 나누고, 인덱스가 무시되는 순간, 잘 맞는 복합 인덱스의 효과, `EXPLAIN`으로 실제 계획을 확인하는 방법까지 다룹니다.
 
 ## 핵심 내용
 
@@ -259,6 +259,6 @@ CREATE TABLE order_items (
 - PostgreSQL, [Indexes and ORDER BY](https://www.postgresql.org/docs/current/indexes-ordering.html)
 - PostgreSQL, [Multicolumn Indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html)
 
-작성: 다메카솔 · PR Comic
+글·해설: 다메카솔
 
 이 글의 만화 이미지는 AI로 생성했습니다.

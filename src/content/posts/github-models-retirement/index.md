@@ -3,7 +3,7 @@ title: "GitHub Models 종료: 2026년 7월 30일 완전 종료됩니다"
 description: "GitHub Models의 완전 종료일, 종료 대상, 사전 brownout 일정과 공식 공지가 안내한 대안을 한 장의 만화와 함께 정리합니다."
 slug: "github-models-retirement"
 publishedAt: 2026-07-11
-updatedAt: 2026-07-11
+updatedAt: 2026-07-15
 track: news
 subtype: fact_brief
 tags:
@@ -19,7 +19,7 @@ draft: false
 
 GitHub Models는 **2026년 7월 30일 완전히 종료**됩니다. GitHub의 7월 1일 공식 공지에 따르면 playground뿐 아니라 model catalog, inference API, BYOK endpoint와 관련 UI도 종료 대상이며, 활성 사용자를 포함한 모든 고객에게 적용됩니다.
 
-PR Comic의 기술 큐레이터 카솔과 함께 종료 범위와 준비 일정을 짧게 정리했습니다.
+카솔과 함께 종료 범위와 준비 일정을 짧게 정리했습니다.
 
 ## 핵심 내용
 

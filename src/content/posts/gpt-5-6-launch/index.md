@@ -3,7 +3,7 @@ title: "GPT-5.6 출시: Sol·Terra·Luna 차이와 가격, 개발자가 확인�
 description: "2026년 7월 9일 출시된 GPT-5.6 Sol·Terra·Luna의 역할, API 가격, ultra, 시스템 카드와 도입 체크리스트를 정리합니다."
 slug: "gpt-5-6-launch"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-14
+updatedAt: 2026-07-15
 track: news
 subtype: announcement_analysis
 tags:
@@ -20,7 +20,7 @@ draft: false
 
 새 AI 모델이 나올 때마다 “지금 쓰는 모델을 바로 바꿔야 할까?”부터 고민하게 됩니다. **OpenAI는 2026년 7월 9일 GPT-5.6을 정식 출시했고, 이번에는 플래그십 `Sol`, 균형형 `Terra`, 비용 중심 `Luna`의 세 모델로 나눴습니다.** 출시 공지 시점 기준 ChatGPT·Codex·OpenAI API에서 배포가 시작됐습니다.
 
-글: 다메카솔 · PR Comic — 복잡한 AI·개발 뉴스를 카솔과 함께 쉽게 정리합니다.
+글·해설: 다메카솔
 
 ## 핵심 내용
 
