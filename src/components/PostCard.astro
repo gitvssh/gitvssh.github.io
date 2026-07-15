@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { formatDate, TRACKS } from '../lib/content';
+import { formatDate, getPostDisplayTitle, TECH_CATEGORIES, TRACKS } from '../lib/content';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -10,6 +10,8 @@ interface Props {
 
 const { post, prominent = false } = Astro.props;
 const track = TRACKS[post.data.track];
+const category = post.data.category ? TECH_CATEGORIES[post.data.category] : undefined;
+const displayTitle = getPostDisplayTitle(post.data);
 ---
 
 <article class:list={['post-card', { 'post-card--prominent': prominent }]}>
@@ -28,9 +30,17 @@ const track = TRACKS[post.data.track];
       <a class={`track-label track-label--${post.data.track}`} href={`/tracks/${post.data.track}/`}>
         {track.label}
       </a>
+      {category && (
+        <a class="category-label" href={`/categories/${post.data.category}/`}>{category.label}</a>
+      )}
+      {post.data.series && (
+        <a class="series-label" href={`/series/${post.data.series.slug}/`}>
+          {post.data.series.title} {post.data.series.order}편
+        </a>
+      )}
       <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
     </div>
-    <h2><a href={`/posts/${post.id}/`}>{post.data.title}</a></h2>
+    <h2><a href={`/posts/${post.id}/`}>{displayTitle}</a></h2>
     <p>{post.data.description}</p>
     <a class="text-link" href={`/posts/${post.id}/`}>글 읽기 <span aria-hidden="true">→</span></a>
   </div>

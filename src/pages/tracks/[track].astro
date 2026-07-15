@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PostCard from '../../components/PostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { sortPosts, TRACKS, type Track } from '../../lib/content';
+import { sortPosts, TECH_CATEGORIES, TRACKS, type Track } from '../../lib/content';
 
 export function getStaticPaths() {
   return Object.keys(TRACKS).map((track) => ({ params: { track } }));
@@ -22,6 +22,28 @@ const posts = sortPosts(
       <h1>{track.label}</h1>
       <p>{track.description}</p>
     </header>
+
+    {
+      trackKey === 'tech_column' && (
+        <section class="category-directory" aria-labelledby="category-directory-heading">
+          <div class="section-heading">
+            <h2 id="category-directory-heading">핵심 카테고리</h2>
+          </div>
+          <div class="category-index__grid">
+            {Object.entries(TECH_CATEGORIES).map(([key, category]) => (
+              <a
+                class="category-index__item"
+                style={`--category-accent: var(--${category.tone})`}
+                href={`/categories/${key}/`}
+              >
+                <span>{category.label}</span>
+                <p>{category.description}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
 
     {
       posts.length > 0 ? (

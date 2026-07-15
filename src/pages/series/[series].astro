@@ -1,0 +1,60 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortSeriesPosts, TECH_CATEGORIES } from '../../lib/content';
+
+type SeriesInfo = NonNullable<CollectionEntry<'posts'>['data']['series']>;
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    'posts',
+    ({ data }) => !data.draft && data.track === 'tech_column' && Boolean(data.series),
+  );
+  const uniqueSeries = new Map<
+    string,
+    { series: SeriesInfo; category: NonNullable<CollectionEntry<'posts'>['data']['category']> }
+  >();
+
+  for (const post of posts) {
+    if (post.data.series && post.data.category) {
+      uniqueSeries.set(post.data.series.slug, {
+        series: post.data.series,
+        category: post.data.category,
+      });
+    }
+  }
+
+  return [...uniqueSeries.entries()].map(([slug, props]) => ({
+    params: { series: slug },
+    props,
+  }));
+}
+
+interface Props {
+  series: SeriesInfo;
+  category: NonNullable<CollectionEntry<'posts'>['data']['category']>;
+}
+
+const { series, category: categoryKey } = Astro.props;
+const category = TECH_CATEGORIES[categoryKey];
+const posts = sortSeriesPosts(
+  await getCollection(
+    'posts',
+    ({ data }) => !data.draft && data.series?.slug === series.slug,
+  ),
+);
+---
+
+<BaseLayout title={series.title} description={`${category.label} 카테고리의 ${series.title} 연재입니다.`}>
+  <div class="shell listing-page">
+    <header class="listing-header">
+      <p class="eyebrow">LONG-FORM SERIES · {category.label}</p>
+      <h1>{series.title}</h1>
+      <p>{category.description}</p>
+      <p class="listing-summary">총 {posts.length}편 · 순서대로 읽기</p>
+    </header>
+
+    <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  sortPosts,
+  TECH_CATEGORIES,
+  type TechCategory,
+} from '../../lib/content';
+
+export function getStaticPaths() {
+  return Object.keys(TECH_CATEGORIES).map((category) => ({ params: { category } }));
+}
+
+const categoryKey = Astro.params.category as TechCategory;
+const category = TECH_CATEGORIES[categoryKey];
+const posts = sortPosts(
+  await getCollection(
+    'posts',
+    ({ data }) =>
+      !data.draft && data.track === 'tech_column' && data.category === categoryKey,
+  ),
+);
+const seriesCount = new Set(posts.flatMap((post) => post.data.series?.slug ?? [])).size;
+---
+
+<BaseLayout title={category.label} description={category.description}>
+  <div class="shell listing-page">
+    <header class="listing-header">
+      <p class="eyebrow">IT CORE CATEGORY</p>
+      <h1>{category.label}</h1>
+      <p>{category.description}</p>
+      <p class="listing-summary">{posts.length}개의 글 · {seriesCount}개의 연재</p>
+    </header>
+
+    {
+      posts.length > 0 ? (
+        <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+      ) : (
+        <section class="empty-state">
+          <h2>연재를 준비하고 있습니다</h2>
+          <p>첫 글이 발행되면 이 카테고리에서 순서대로 읽을 수 있습니다.</p>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>

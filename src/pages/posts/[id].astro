@@ -2,7 +2,7 @@
 import { getImage, Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, TRACKS } from '../../lib/content';
+import { formatDate, getPostDisplayTitle, TECH_CATEGORIES, TRACKS } from '../../lib/content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -20,6 +20,8 @@ interface Props {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const track = TRACKS[post.data.track];
+const category = post.data.category ? TECH_CATEGORIES[post.data.category] : undefined;
+const displayTitle = getPostDisplayTitle(post.data);
 const canonical = new URL(`/posts/${post.id}/`, Astro.site);
 const socialImage = await getImage({
   src: post.data.cover,
@@ -29,7 +31,7 @@ const socialImage = await getImage({
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
-  headline: post.data.title,
+  headline: displayTitle,
   description: post.data.description,
   datePublished: post.data.publishedAt.toISOString(),
   dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
@@ -39,14 +41,25 @@ const articleSchema = {
     '@type': 'Person',
     name: '다메카솔',
   },
+  articleSection: category?.label ?? track.label,
+  ...(post.data.series && {
+    isPartOf: {
+      '@type': 'CreativeWorkSeries',
+      name: post.data.series.title,
+      position: post.data.series.order,
+    },
+  }),
 };
+const archiveHref = category ? `/categories/${post.data.category}/` : `/tracks/${post.data.track}/`;
+const archiveLabel = category ? `${category.label} 글 더 보기` : `${track.label} 글 더 보기`;
 ---
 
 <BaseLayout
-  title={post.data.title}
+  title={displayTitle}
   description={post.data.description}
   image={socialImage.src}
   type="article"
+  completeTitle
 >
   <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article
@@ -54,16 +67,21 @@ const articleSchema = {
     data-analytics-article
     data-content-id={post.id}
     data-content-track={post.data.track}
+    data-content-category={post.data.category}
   >
     <header class="article-header shell shell--article">
       <nav class="breadcrumb" aria-label="현재 위치">
         <a href="/">홈</a><span aria-hidden="true">/</span><a href={`/tracks/${post.data.track}/`}>{track.label}</a>
+        {category && <><span aria-hidden="true">/</span><a href={`/categories/${post.data.category}/`}>{category.label}</a></>}
+        {post.data.series && <><span aria-hidden="true">/</span><a href={`/series/${post.data.series.slug}/`}>{post.data.series.title}</a></>}
       </nav>
       <div class="post-meta">
         <span class={`track-label track-label--${post.data.track}`}>{track.label}</span>
+        {category && <a class="category-label" href={`/categories/${post.data.category}/`}>{category.label}</a>}
+        {post.data.series && <a class="series-label" href={`/series/${post.data.series.slug}/`}>{post.data.series.title} {post.data.series.order}편</a>}
         <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
       </div>
-      <h1>{post.data.title}</h1>
+      <h1>{displayTitle}</h1>
       <p class="article-deck">{post.data.description}</p>
     </header>
 
@@ -85,10 +103,10 @@ const articleSchema = {
     <footer class="article-footer shell shell--article" data-analytics-complete>
       <a
         class="back-link"
-        href={`/tracks/${post.data.track}/`}
+        href={archiveHref}
         data-analytics-event="related_post_click"
         data-analytics-target="track_archive"
-      >← {track.label} 글 더 보기</a>
+      >← {archiveLabel}</a>
     </footer>
   </article>
 </BaseLayout>

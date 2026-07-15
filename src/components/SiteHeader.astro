@@ -1,5 +1,5 @@
 ---
-import { TRACKS } from '../lib/content';
+import { SITE_NAME, TRACKS } from '../lib/content';
 
 const currentPath = Astro.url.pathname;
 const isCurrent = (path: string) =>
@@ -8,9 +8,9 @@ const isCurrent = (path: string) =>
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="wordmark" href="/" aria-label="다메카솔의 기술 노트 홈">
-      <span class="wordmark__mark" aria-hidden="true">C</span>
-      <span>다메카솔의 기술 노트</span>
+    <a class="wordmark" href="/" aria-label={`${SITE_NAME} 홈`}>
+      <span class="wordmark__mark" aria-hidden="true">3</span>
+      <span>{SITE_NAME}</span>
     </a>
 
     <nav aria-label="주요 메뉴">

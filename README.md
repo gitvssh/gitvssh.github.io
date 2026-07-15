@@ -12,7 +12,7 @@ public blog:
 
 Research packets, drafts, claims, storyboards, prompts, QA records, manifests,
 intermediate images, credentials, and the PARA vault belong to the separate
-local PR Comic studio and must not be added here.
+private production studio and must not be added here.
 
 ## Requirements
 

@@ -6,6 +6,11 @@ publishedAt: 2026-07-14
 updatedAt: 2026-07-15
 track: tech_column
 subtype: concept
+category: database
+series:
+  slug: database-core
+  title: "데이터베이스 핵심 원리"
+  order: 1
 tags:
   - SQL
   - 데이터베이스

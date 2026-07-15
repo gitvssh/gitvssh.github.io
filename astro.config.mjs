@@ -6,5 +6,10 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   devToolbar: { enabled: false },
+  markdown: {
+    shikiConfig: {
+      theme: 'github-light',
+    },
+  },
   integrations: [sitemap()],
 });

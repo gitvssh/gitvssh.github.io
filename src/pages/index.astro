@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PostCard from '../components/PostCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { sortPosts, TRACKS } from '../lib/content';
+import { SITE_NAME, sortPosts, TECH_CATEGORIES, TRACKS } from '../lib/content';
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 const [featured, ...rest] = posts;
@@ -11,9 +11,9 @@ const [featured, ...rest] = posts;
 <BaseLayout>
   <section class="masthead">
     <div class="shell masthead__inner">
-      <p class="eyebrow">AI · SOFTWARE · RESEARCH</p>
-      <h1>다메카솔의 기술 노트</h1>
-      <p>복잡한 기술을 만화로 먼저 이해하고, 정확한 글과 출처로 더 깊게 읽습니다.</p>
+      <p class="eyebrow">3 MINUTES · IT COMICS</p>
+      <h1>{SITE_NAME}</h1>
+      <p>AI논문과 최신뉴스, 운영체제부터 데이터베이스까지 핵심 IT를 만화로 먼저 이해합니다.</p>
     </div>
   </section>
 
@@ -35,6 +35,26 @@ const [featured, ...rest] = posts;
       )
     }
 
+    <section class="category-index" aria-labelledby="categories-heading">
+      <div class="section-heading">
+        <h2 id="categories-heading">IT 핵심 카테고리</h2>
+      </div>
+      <div class="category-index__grid">
+        {
+          Object.entries(TECH_CATEGORIES).map(([key, category]) => (
+            <a
+              class="category-index__item"
+              style={`--category-accent: var(--${category.tone})`}
+              href={`/categories/${key}/`}
+            >
+              <span>{category.label}</span>
+              <p>{category.description}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
     {
       rest.length > 0 && (
         <section class="latest" aria-labelledby="latest-heading">
@@ -48,7 +68,7 @@ const [featured, ...rest] = posts;
 
     <section class="track-index" aria-labelledby="tracks-heading">
       <div class="section-heading">
-        <h2 id="tracks-heading">주제별로 읽기</h2>
+        <h2 id="tracks-heading">콘텐츠 유형</h2>
       </div>
       <div class="track-index__grid">
         {
@@ -61,5 +81,6 @@ const [featured, ...rest] = posts;
         }
       </div>
     </section>
+
   </div>
 </BaseLayout>
