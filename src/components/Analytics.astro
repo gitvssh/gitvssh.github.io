@@ -1,0 +1,203 @@
+---
+const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim() ?? '';
+
+if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
+  throw new Error('PUBLIC_GA_MEASUREMENT_ID must use the GA4 G-XXXXXXXX format.');
+}
+---
+
+{
+  measurementId && (
+    <>
+      <section
+        class="analytics-consent"
+        data-analytics-consent-banner
+        aria-label="방문 분석 설정"
+        hidden
+      >
+        <div class="analytics-consent__inner">
+          <p>
+            유입 경로와 글 읽기 흐름을 개선하기 위해 방문 통계를 수집합니다.
+            분석을 허용하기 전에는 Google Analytics를 불러오지 않습니다.
+          </p>
+          <div class="analytics-consent__actions">
+            <button type="button" data-analytics-consent="denied">필수 항목만</button>
+            <button type="button" class="analytics-consent__accept" data-analytics-consent="granted">
+              분석 허용
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <script is:inline define:vars={{ measurementId }}>
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v1';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function () {
+              window.dataLayer.push(arguments);
+            };
+            window.gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+            window.gtag('consent', 'update', { analytics_storage: 'granted' });
+            window.gtag('js', new Date());
+            window.gtag('config', measurementId);
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+            document.head.append(script);
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (!trigger) return;
+            sendEvent(trigger.dataset.analyticsEvent, {
+              target: trigger.dataset.analyticsTarget || 'unknown',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      </script>
+    </>
+  )
+}

@@ -596,6 +596,88 @@ p {
   font-size: 14px;
 }
 
+.analytics-settings-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.analytics-settings-button:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.analytics-consent {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  border-top: 1px solid #355342;
+  background: #163224;
+  color: #edf3ee;
+  box-shadow: 0 -8px 24px rgba(29, 36, 33, 0.16);
+}
+
+.analytics-consent__inner {
+  display: flex;
+  width: min(calc(100% - 40px), var(--content));
+  min-height: 92px;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding-block: 18px;
+}
+
+.analytics-consent p {
+  max-width: 720px;
+  margin: 0;
+  color: #edf3ee;
+  font-size: 14px;
+}
+
+.analytics-consent__actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+}
+
+.analytics-consent__actions button {
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid #95a89b;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.analytics-consent__actions button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.analytics-consent__actions .analytics-consent__accept {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: #17221b;
+}
+
+.analytics-consent__actions button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 @media (max-width: 800px) {
   .site-header__inner {
     display: block;
@@ -658,6 +740,14 @@ p {
 
   .article-header h1 {
     font-size: 36px;
+  }
+
+  .analytics-consent__inner {
+    display: block;
+  }
+
+  .analytics-consent__actions {
+    margin-top: 14px;
   }
 }
 
@@ -741,6 +831,19 @@ p {
 
   .site-footer p + p {
     margin-top: 14px;
+  }
+
+  .site-footer p:last-child {
+    flex-wrap: wrap;
+  }
+
+  .analytics-consent__inner {
+    width: calc(100% - 28px);
+  }
+
+  .analytics-consent__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }
 

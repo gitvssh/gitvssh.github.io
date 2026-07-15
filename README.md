@@ -40,6 +40,26 @@ pnpm build
 gate, then Astro's type checks. The production build is written to `dist/`.
 GitHub Actions deploys only from `gitvssh/gitvssh.github.io` on `main`.
 
+## Analytics
+
+GA4 is disabled unless `PUBLIC_GA_MEASUREMENT_ID` is available at build time.
+For a local verification, set it only in the current shell:
+
+```powershell
+$env:PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
+pnpm dev
+```
+
+```bash
+PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX pnpm dev
+```
+
+For GitHub Pages, create the repository variable `GA_MEASUREMENT_ID`. The
+workflow maps it to the Astro public build variable. The measurement ID is not
+a credential; OAuth tokens and service-account material must never enter this
+repository. When no ID is configured, no GA script or consent banner is
+rendered.
+
 ## Content
 
 Published posts live in `src/content/posts/<slug>/`. Each folder contains one

@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import Analytics from '../components/Analytics.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -54,5 +55,6 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
       <slot />
     </main>
     <SiteFooter />
+    <Analytics />
   </body>
 </html>
