@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, getPostDisplayTitle, TRACKS } from '../lib/content';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="related-card">
+  <a class="related-card__image" href={`/posts/${post.id}/`} tabindex="-1" aria-hidden="true">
+    <Image
+      src={post.data.cover}
+      alt=""
+      widths={[240, 360, 480]}
+      sizes="(min-width: 900px) 350px, 92vw"
+      format="webp"
+      loading="lazy"
+    />
+  </a>
+  <div class="related-card__body">
+    <div class="post-meta">
+      <span class={`track-label track-label--${post.data.track}`}>{TRACKS[post.data.track].label}</span>
+      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+    </div>
+    <h3><a href={`/posts/${post.id}/`} data-analytics-event="related_post_click" data-analytics-target={post.id}>{getPostDisplayTitle(post.data)}</a></h3>
+    <p>{post.data.description}</p>
+  </div>
+</article>

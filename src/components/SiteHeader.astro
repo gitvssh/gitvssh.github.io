@@ -28,6 +28,11 @@ const isCurrent = (path: string) =>
           ))
         }
         <li>
+          <a href="/archives/" aria-current={isCurrent('/archives/') ? 'page' : undefined}>
+            아카이브
+          </a>
+        </li>
+        <li>
           <a href="/about/" aria-current={isCurrent('/about/') ? 'page' : undefined}>
             소개
           </a>

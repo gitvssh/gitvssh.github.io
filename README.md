@@ -66,6 +66,13 @@ Published posts live in `src/content/posts/<slug>/`. Each folder contains one
 Markdown entry and only the final public images for that post. Frontmatter is
 validated by `src/content.config.ts`.
 
+The public reader routes include the four track indexes, approved technical
+categories, long-form series, and `/archives/`. Long posts receive a generated
+table of contents when they contain at least five level-two sections. Related
+posts, previous/next series controls, and recently updated lists are derived at
+build time from validated content metadata; they do not add a database or an
+admin runtime.
+
 Promotion from the private studio is explicit. Run `pnpm check` before every
 commit so accidental source packets or production artifacts cannot enter the
 public history.

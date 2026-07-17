@@ -1,11 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
+import CompactPostList from '../components/CompactPostList.astro';
 import PostCard from '../components/PostCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_NAME, sortPosts, TECH_CATEGORIES, TRACKS } from '../lib/content';
+import { SITE_NAME, sortPosts, sortUpdatedPosts, TECH_CATEGORIES, TRACKS } from '../lib/content';
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 const [featured, ...rest] = posts;
+const recentlyUpdated = sortUpdatedPosts(posts).slice(0, 3);
 ---
 
 <BaseLayout>
@@ -31,6 +33,18 @@ const [featured, ...rest] = posts;
         <section class="empty-state">
           <h2>첫 글을 준비하고 있습니다</h2>
           <p>발행 가능한 에피소드가 추가되면 이곳에 표시됩니다.</p>
+        </section>
+      )
+    }
+
+    {
+      recentlyUpdated.length > 0 && (
+        <section class="recent-updates" aria-labelledby="recent-updates-heading">
+          <div class="section-heading">
+            <h2 id="recent-updates-heading">최근 수정한 글</h2>
+            <a class="section-heading__link" href="/archives/">아카이브 보기 →</a>
+          </div>
+          <CompactPostList posts={recentlyUpdated} dateMode="updated" />
         </section>
       )
     }

@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, getPostDisplayTitle, TRACKS } from '../lib/content';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+  dateMode?: 'published' | 'updated';
+}
+
+const { posts, dateMode = 'published' } = Astro.props;
+---
+
+<ol class="compact-post-list">
+  {
+    posts.map((post) => {
+      const date = dateMode === 'updated' ? (post.data.updatedAt ?? post.data.publishedAt) : post.data.publishedAt;
+      return (
+        <li>
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          <div>
+            <span class={`track-label track-label--${post.data.track}`}>{TRACKS[post.data.track].label}</span>
+            <a href={`/posts/${post.id}/`}>{getPostDisplayTitle(post.data)}</a>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>

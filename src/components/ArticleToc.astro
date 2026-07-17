@@ -1,0 +1,25 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+
+<aside class="article-toc">
+  <nav aria-labelledby="article-toc-title">
+    <h2 id="article-toc-title">이 글의 목차</h2>
+    <ol>
+      {
+        items.map((heading) => (
+          <li class:list={[`article-toc__depth-${heading.depth}`]}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+</aside>

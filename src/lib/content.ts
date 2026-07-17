@@ -21,6 +21,60 @@ export function sortSeriesPosts(posts: CollectionEntry<'posts'>[]) {
   });
 }
 
+export function sortUpdatedPosts(posts: CollectionEntry<'posts'>[]) {
+  return [...posts]
+    .filter(
+      (post) =>
+        post.data.updatedAt &&
+        post.data.updatedAt.valueOf() > post.data.publishedAt.valueOf(),
+    )
+    .sort(
+      (a, b) =>
+        (b.data.updatedAt ?? b.data.publishedAt).valueOf() -
+        (a.data.updatedAt ?? a.data.publishedAt).valueOf(),
+    );
+}
+
+export function getRelatedPosts(
+  current: CollectionEntry<'posts'>,
+  posts: CollectionEntry<'posts'>[],
+  limit = 3,
+) {
+  const currentTags = new Set(current.data.tags.map((tag) => tag.toLocaleLowerCase('ko-KR')));
+
+  return posts
+    .filter((candidate) => candidate.id !== current.id)
+    .map((candidate) => {
+      const sharedTags = candidate.data.tags.filter((tag) =>
+        currentTags.has(tag.toLocaleLowerCase('ko-KR')),
+      ).length;
+      let score = Math.min(sharedTags, 3);
+
+      if (
+        current.data.series?.slug &&
+        candidate.data.series?.slug === current.data.series.slug
+      ) {
+        score += 8;
+      }
+      if (current.data.category && candidate.data.category === current.data.category) {
+        score += 4;
+      }
+      if (candidate.data.track === current.data.track) {
+        score += 2;
+      }
+
+      return { candidate, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.candidate.data.publishedAt.valueOf() - a.candidate.data.publishedAt.valueOf(),
+    )
+    .slice(0, limit)
+    .map(({ candidate }) => candidate);
+}
+
 export function formatDate(date: Date) {
   return new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',

@@ -1,11 +1,28 @@
 ---
+import { getCollection } from 'astro:content';
+import RelatedPostCard from '../components/RelatedPostCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortPosts } from '../lib/content';
+
+const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+const representativePosts = ['tech_column', 'paper', 'news']
+  .map((track) => posts.find((post) => post.data.track === track))
+  .filter((post) => post !== undefined);
 ---
 
 <BaseLayout title="소개" description="다메카솔의 논문 읽기, 기술 해설, 개발 뉴스와 AI 활용·실습을 소개합니다.">
   <div class="shell shell--article standalone-page">
     <p class="eyebrow">ABOUT</p>
     <h1>어려운 기술을 더 쉽게 전달합니다</h1>
+    <section class="creator-profile" aria-labelledby="creator-profile-title">
+      <div class="creator-profile__mark" aria-hidden="true">다</div>
+      <div>
+        <p class="eyebrow">CREATOR</p>
+        <h2 id="creator-profile-title">다메카솔</h2>
+        <p>다메카솔은 복잡한 AI·개발 이슈를 읽기 쉬운 글과 그림으로 정리합니다.</p>
+        <p class="creator-profile__principles">정확성 · 이해도 · 몰입도 · 개인 브랜딩 · 검색 가능성</p>
+      </div>
+    </section>
     <div class="prose">
       <p class="lead">
         <strong>3분만에 만화로 보는 IT</strong>는 AI와 소프트웨어 기술을 만화와 한국어 글로 설명하는 다메카솔의 개인 기술 블로그입니다.
@@ -24,6 +41,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p>
         모든 글은 출처와 사실 확인을 우선하며, 만화 이미지가 AI로 생성된 경우 글에 이를 표시합니다.
       </p>
+      <h2>카솔과 함께 설명합니다</h2>
+      <p>
+        카솔은 다메카솔의 반복 등장 캐릭터입니다. 표지와 본문에서 독자의 질문을 대신하고, 복잡한 구조나 상태 변화를 따라갈 수 있도록 안내합니다.
+      </p>
     </div>
+
+    {
+      representativePosts.length > 0 && (
+        <section class="representative-posts" aria-labelledby="representative-posts-title">
+          <div class="section-heading">
+            <h2 id="representative-posts-title">트랙별 최근 글</h2>
+          </div>
+          <div class="related-posts__grid">
+            {representativePosts.map((post) => <RelatedPostCard post={post} />)}
+          </div>
+        </section>
+      )
+    }
   </div>
 </BaseLayout>

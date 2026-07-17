@@ -1,24 +1,48 @@
 ---
 import { getImage, Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ArticleToc from '../../components/ArticleToc.astro';
+import RelatedPostCard from '../../components/RelatedPostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, getPostDisplayTitle, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { formatDate, getPostDisplayTitle, getRelatedPosts, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+  return posts.map((post) => {
+    const seriesPosts = post.data.series
+      ? sortSeriesPosts(
+          posts.filter((candidate) => candidate.data.series?.slug === post.data.series?.slug),
+        )
+      : [];
+    const seriesIndex = seriesPosts.findIndex((candidate) => candidate.id === post.id);
+
+    return {
+      params: { id: post.id },
+      props: {
+        post,
+        relatedPosts: getRelatedPosts(post, posts),
+        previousSeriesPost: seriesIndex > 0 ? seriesPosts[seriesIndex - 1] : undefined,
+        nextSeriesPost:
+          seriesIndex >= 0 && seriesIndex < seriesPosts.length - 1
+            ? seriesPosts[seriesIndex + 1]
+            : undefined,
+      },
+    };
+  });
 }
 
 interface Props {
   post: CollectionEntry<'posts'>;
+  relatedPosts: CollectionEntry<'posts'>[];
+  previousSeriesPost?: CollectionEntry<'posts'>;
+  nextSeriesPost?: CollectionEntry<'posts'>;
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, relatedPosts, previousSeriesPost, nextSeriesPost } = Astro.props;
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const showToc = tocHeadings.filter(({ depth }) => depth === 2).length >= 5;
 const track = TRACKS[post.data.track];
 const category = post.data.category ? TECH_CATEGORIES[post.data.category] : undefined;
 const displayTitle = getPostDisplayTitle(post.data);
@@ -52,6 +76,8 @@ const articleSchema = {
 };
 const archiveHref = category ? `/categories/${post.data.category}/` : `/tracks/${post.data.track}/`;
 const archiveLabel = category ? `${category.label} 글 더 보기` : `${track.label} 글 더 보기`;
+const hasUpdatedDate =
+  post.data.updatedAt && post.data.updatedAt.valueOf() > post.data.publishedAt.valueOf();
 ---
 
 <BaseLayout
@@ -79,7 +105,9 @@ const archiveLabel = category ? `${category.label} 글 더 보기` : `${track.la
         <span class={`track-label track-label--${post.data.track}`}>{track.label}</span>
         {category && <a class="category-label" href={`/categories/${post.data.category}/`}>{category.label}</a>}
         {post.data.series && <a class="series-label" href={`/series/${post.data.series.slug}/`}>{post.data.series.title} {post.data.series.order}편</a>}
-        <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+        <a class="author-link" href="/about/">글·해설: 다메카솔</a>
+        <span>발행 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
+        {hasUpdatedDate && <span>수정 <time datetime={post.data.updatedAt?.toISOString()}>{formatDate(post.data.updatedAt!)}</time></span>}
       </div>
       <h1>{displayTitle}</h1>
       <p class="article-deck">{post.data.description}</p>
@@ -96,17 +124,66 @@ const archiveLabel = category ? `${category.label} 글 더 보기` : `${track.la
       />
     </figure>
 
-    <div class="prose shell shell--article">
-      <Content />
+    <div class:list={['article-body', { 'article-body--with-toc': showToc }]}>
+      {showToc && <ArticleToc headings={tocHeadings} />}
+      <div class="prose">
+        <Content />
+      </div>
     </div>
 
-    <footer class="article-footer shell shell--article" data-analytics-complete>
-      <a
-        class="back-link"
-        href={archiveHref}
-        data-analytics-event="related_post_click"
-        data-analytics-target="track_archive"
-      >← {archiveLabel}</a>
+    <footer class="article-footer shell" data-analytics-complete>
+      {
+        post.data.series && (
+          <nav class="series-navigation" aria-label="연재 글 이동">
+            <div>
+              {previousSeriesPost ? (
+                <a href={`/posts/${previousSeriesPost.id}/`}>
+                  <span>이전 편</span>
+                  {previousSeriesPost.data.title}
+                </a>
+              ) : (
+                <span class="series-navigation__empty">첫 편입니다</span>
+              )}
+            </div>
+            <a class="series-navigation__index" href={`/series/${post.data.series.slug}/`}>
+              전체 연재 보기
+            </a>
+            <div class="series-navigation__next">
+              {nextSeriesPost ? (
+                <a href={`/posts/${nextSeriesPost.id}/`}>
+                  <span>다음 편</span>
+                  {nextSeriesPost.data.title}
+                </a>
+              ) : (
+                <span class="series-navigation__empty">현재 마지막 편입니다</span>
+              )}
+            </div>
+          </nav>
+        )
+      }
+
+      {
+        relatedPosts.length > 0 && (
+          <section class="related-posts" aria-labelledby="related-posts-title">
+            <div class="section-heading">
+              <h2 id="related-posts-title">이어서 읽기</h2>
+            </div>
+            <div class="related-posts__grid">
+              {relatedPosts.map((relatedPost) => <RelatedPostCard post={relatedPost} />)}
+            </div>
+          </section>
+        )
+      }
+
+      <div class="article-footer__actions">
+        <a
+          class="back-link"
+          href={archiveHref}
+          data-analytics-event="related_post_click"
+          data-analytics-target="track_archive"
+        >← {archiveLabel}</a>
+        <a class="back-link" href="/archives/">전체 아카이브 보기 →</a>
+      </div>
     </footer>
   </article>
 </BaseLayout>
