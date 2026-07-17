@@ -2,23 +2,23 @@ export const SITE_NAME = '3분만에 만화로 보는 IT';
 
 export const TRACKS = {
   news: {
-    label: '최신뉴스',
-    titlePrefix: `${SITE_NAME} - 최신뉴스`,
+    label: '개발 뉴스',
+    titlePrefix: `${SITE_NAME} - 개발 뉴스`,
     description: '공식 발표와 현재 확인 가능한 사실을 빠르게 정리합니다.',
   },
   paper: {
-    label: 'AI논문',
-    titlePrefix: `${SITE_NAME} - AI논문`,
+    label: '논문 읽기',
+    titlePrefix: `${SITE_NAME} - 논문 읽기`,
     description: '논문의 근거와 해석을 구분해 핵심 주장을 읽습니다.',
   },
   tech_column: {
-    label: 'IT 연재',
-    titlePrefix: `${SITE_NAME} - IT 연재`,
-    description: '핵심 CS·백엔드 주제를 카테고리별 장편 연재로 설명합니다.',
+    label: '기술 해설',
+    titlePrefix: `${SITE_NAME} - 기술 해설`,
+    description: '핵심 CS·백엔드 주제의 개념, 조건, 오해와 예외를 설명합니다.',
   },
   practice: {
-    label: 'AI 활용',
-    titlePrefix: `${SITE_NAME} - AI 활용`,
+    label: 'AI 활용·실습',
+    titlePrefix: `${SITE_NAME} - AI 활용·실습`,
     description: 'AI 도구를 실제로 설정하고 검증한 재현 가능한 활용법을 다룹니다.',
   },
 } as const;
@@ -85,10 +85,5 @@ interface TitleData {
 }
 
 export function getPostDisplayTitle(data: TitleData) {
-  const prefix =
-    data.track === 'tech_column' && data.category
-      ? `${SITE_NAME} - ${TECH_CATEGORIES[data.category].label}`
-      : TRACKS[data.track].titlePrefix;
-
-  return `${prefix} | ${data.title}`;
+  return `${TRACKS[data.track].titlePrefix} | ${data.title}`;
 }

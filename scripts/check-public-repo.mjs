@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { lstatSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -161,6 +161,9 @@ const files = listPublishCandidates();
 const errors = [];
 
 for (const file of files) {
+  // `git ls-files --cached` includes tracked paths staged for deletion. They
+  // are absent from the next public tree and must not be lstat'd as candidates.
+  if (!existsSync(file)) continue;
   validateFile(file, errors);
 }
 
