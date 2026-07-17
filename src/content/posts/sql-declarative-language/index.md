@@ -55,7 +55,7 @@ ORDER BY created_at DESC
 LIMIT 10;
 ```
 
-개발자가 SQL로 표현한 내용은 다음과 같습니다.
+개발자가 SQL로 표현한 내용은 네 절로 나뉩니다.
 
 | SQL 절 | 개발자가 선언한 내용 |
 |---|---|
@@ -152,7 +152,7 @@ CREATE INDEX idx_orders_member_created
 ON orders (member_id, created_at DESC);
 ```
 
-가능한 이점은 다음과 같습니다.
+가능한 이점은 네 가지입니다.
 
 1. 선두 컬럼인 `member_id = 10`으로 탐색 범위를 좁힙니다.
 2. 같은 회원 범위 안에서 `created_at` 순서를 활용할 수 있습니다.
