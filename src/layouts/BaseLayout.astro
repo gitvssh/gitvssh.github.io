@@ -2,6 +2,7 @@
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import Analytics from '../components/Analytics.astro';
+import MermaidDiagrams from '../components/MermaidDiagrams.astro';
 import { SITE_NAME } from '../lib/content';
 import '../styles/global.css';
 
@@ -34,6 +35,7 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -58,5 +60,6 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     </main>
     <SiteFooter />
     <Analytics />
+    <MermaidDiagrams />
   </body>
 </html>

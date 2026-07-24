@@ -1,0 +1,70 @@
+<script>
+  const renderMermaidDiagrams = async () => {
+    const diagramBlocks = Array.from(
+      document.querySelectorAll<HTMLElement>('pre[data-language="mermaid"], pre.mermaid'),
+    );
+
+    if (diagramBlocks.length === 0) return;
+
+    try {
+      const { default: mermaid } = await import('mermaid');
+
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: 'strict',
+        suppressErrorRendering: true,
+        theme: 'neutral',
+        fontFamily: 'Pretendard, "Noto Sans KR", sans-serif',
+      });
+
+      for (const [index, block] of diagramBlocks.entries()) {
+        const source = block.textContent?.trim();
+        if (!source) continue;
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-diagram';
+        container.dataset.diagramIndex = String(index + 1);
+        container.textContent = source;
+
+        block.replaceWith(container);
+
+        try {
+          await mermaid.run({ nodes: [container] });
+        } catch (error) {
+          container.replaceWith(block);
+          console.error(`Mermaid diagram ${index + 1} could not be rendered.`, error);
+        }
+      }
+    } catch (error) {
+      console.error('Mermaid could not be loaded.', error);
+    }
+  };
+
+  if (document.readyState === 'complete') {
+    void renderMermaidDiagrams();
+  } else {
+    window.addEventListener('load', () => void renderMermaidDiagrams(), { once: true });
+  }
+</script>
+
+<style is:global>
+  .mermaid-diagram {
+    margin: 1.75rem 0;
+    overflow-x: auto;
+    padding: 1rem;
+    border: 1px solid var(--border-color, #d7dde5);
+    border-radius: 0.75rem;
+    background: #fff;
+  }
+
+  .mermaid-diagram svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+</style>
