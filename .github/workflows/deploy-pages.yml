@@ -21,6 +21,7 @@ jobs:
     env:
       ASTRO_TELEMETRY_DISABLED: "1"
       PUBLIC_GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+      PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ vars.CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6

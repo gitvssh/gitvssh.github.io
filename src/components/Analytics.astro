@@ -1,13 +1,19 @@
 ---
 const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim() ?? '';
+const cloudflareToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim() ?? '';
+const analyticsEnabled = Boolean(measurementId || cloudflareToken);
 
 if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
   throw new Error('PUBLIC_GA_MEASUREMENT_ID must use the GA4 G-XXXXXXXX format.');
 }
+
+if (cloudflareToken && !/^[A-F0-9]{32}$/i.test(cloudflareToken)) {
+  throw new Error('PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN must be a 32-character token.');
+}
 ---
 
 {
-  measurementId && (
+  analyticsEnabled && (
     <>
       <section
         class="analytics-consent"
@@ -18,7 +24,7 @@ if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
         <div class="analytics-consent__inner">
           <p>
             유입 경로와 글 읽기 흐름을 개선하기 위해 방문 통계를 수집합니다.
-            분석을 허용하기 전에는 Google Analytics를 불러오지 않습니다.
+            분석을 허용하기 전에는 Cloudflare Web Analytics와 Google Analytics를 불러오지 않습니다.
           </p>
           <div class="analytics-consent__actions">
             <button type="button" data-analytics-consent="denied">필수 항목만</button>
@@ -29,9 +35,9 @@ if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
         </div>
       </section>
 
-      <script is:inline define:vars={{ measurementId }}>
+      <script is:inline define:vars={{ measurementId, cloudflareToken }}>
         (() => {
-          const storageKey = 'gitvssh.analytics-consent.v1';
+          const storageKey = 'gitvssh.analytics-consent.v2';
           const banner = document.querySelector('[data-analytics-consent-banner]');
           const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
           let analyticsLoaded = false;
@@ -64,24 +70,35 @@ if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
           function loadAnalytics() {
             if (analyticsLoaded) return;
             analyticsLoaded = true;
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = window.gtag || function () {
-              window.dataLayer.push(arguments);
-            };
-            window.gtag('consent', 'default', {
-              analytics_storage: 'denied',
-              ad_storage: 'denied',
-              ad_user_data: 'denied',
-              ad_personalization: 'denied',
-            });
-            window.gtag('consent', 'update', { analytics_storage: 'granted' });
-            window.gtag('js', new Date());
-            window.gtag('config', measurementId);
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
 
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-            document.head.append(script);
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
             document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
           }
 
