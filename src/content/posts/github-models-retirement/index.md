@@ -3,7 +3,7 @@ title: "GitHub Models 종료: 2026년 7월 30일 완전 종료됩니다"
 description: "GitHub Models의 완전 종료일, 종료 대상, 사전 brownout 일정과 공식 공지가 안내한 대안을 한 장의 만화와 함께 정리합니다."
 slug: "github-models-retirement"
 publishedAt: 2026-07-11
-updatedAt: 2026-07-15
+updatedAt: 2026-07-23
 track: news
 subtype: fact_brief
 tags:
@@ -13,6 +13,21 @@ tags:
 cover: "./cover.webp"
 coverAlt: "카솔이 GitHub Models의 2026년 7월 30일 종료 일정을 가리키는 표지"
 sourceUrl: "https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/"
+officialResources:
+  - kind: official_announcement
+    title: "GitHub Models is being fully retired on July 30, 2026"
+    siteName: "GitHub Changelog"
+    summary: "종료 대상, 전체 고객 적용 범위, 두 차례 brownout 일정을 확인하는 공식 1차 출처입니다."
+    url: "https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/"
+    publishedAt: 2026-07-01
+    image: "./github-lockup-black-clearspace.png"
+    imageAlt: "GitHub 공식 로고"
+    imageRights:
+      owner: "GitHub, Inc."
+      basis: brand_policy
+      evidenceUrl: "https://brand.github.com/foundations/logo"
+      attribution: "GitHub and the GitHub logo are trademarks of GitHub, Inc."
+      modifications: resize_only
 featured: true
 draft: false
 ---

@@ -1,7 +1,8 @@
 ---
-import { getImage, Image } from 'astro:assets';
+import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import ArticleToc from '../../components/ArticleToc.astro';
+import OfficialResourceCards from '../../components/OfficialResourceCards.astro';
 import RelatedPostCard from '../../components/RelatedPostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate, getPostDisplayTitle, getRelatedPosts, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
@@ -46,12 +47,9 @@ const showToc = tocHeadings.filter(({ depth }) => depth === 2).length >= 5;
 const track = TRACKS[post.data.track];
 const category = post.data.category ? TECH_CATEGORIES[post.data.category] : undefined;
 const displayTitle = getPostDisplayTitle(post.data);
+const searchTitle = `${post.data.searchTitle ?? post.data.title} | 다메카솔`;
 const canonical = new URL(`/posts/${post.id}/`, Astro.site);
-const socialImage = await getImage({
-  src: post.data.cover,
-  width: 800,
-  format: 'webp',
-});
+const socialImage = `/social/${post.id}.webp`;
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -81,9 +79,13 @@ const hasUpdatedDate =
 ---
 
 <BaseLayout
-  title={displayTitle}
+  title={searchTitle}
+  socialTitle={displayTitle}
   description={post.data.description}
-  image={socialImage.src}
+  image={socialImage}
+  imageAlt={post.data.coverAlt}
+  imageWidth={1200}
+  imageHeight={630}
   type="article"
   completeTitle
 >
@@ -123,6 +125,8 @@ const hasUpdatedDate =
         loading="eager"
       />
     </figure>
+
+    {post.data.officialResources?.length && <OfficialResourceCards resources={post.data.officialResources} />}
 
     <div class:list={['article-body', { 'article-body--with-toc': showToc }]}>
       {showToc && <ArticleToc headings={tocHeadings} />}

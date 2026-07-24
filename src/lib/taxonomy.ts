@@ -33,6 +33,7 @@ export const TECH_CATEGORY_KEYS = [
   'data_structures',
   'kafka',
   'interview_core',
+  'infrastructure',
 ] as const;
 
 export type TechCategory = (typeof TECH_CATEGORY_KEYS)[number];
@@ -75,6 +76,11 @@ export const TECH_CATEGORIES: Record<
     label: '면접 핵심 질문',
     description: '자주 묻는 개념을 암기가 아닌 설명과 판단의 구조로 준비합니다.',
     tone: 'green',
+  },
+  infrastructure: {
+    label: '인프라·운영',
+    description: '서버, 컨테이너, 스토리지, 네트워크와 운영 장애를 실제 제약과 복구 과정으로 설명합니다.',
+    tone: 'rust',
   },
 };
 

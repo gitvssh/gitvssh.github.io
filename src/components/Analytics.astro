@@ -148,9 +148,18 @@ if (cloudflareToken && !/^[A-F0-9]{32}$/i.test(cloudflareToken)) {
 
           document.addEventListener('click', (event) => {
             const trigger = event.target.closest('[data-analytics-event]');
-            if (!trigger) return;
-            sendEvent(trigger.dataset.analyticsEvent, {
-              target: trigger.dataset.analyticsTarget || 'unknown',
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
             });
           });
 

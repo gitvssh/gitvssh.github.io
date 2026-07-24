@@ -8,11 +8,17 @@ Only add files needed to build, validate, deploy, or display the public blog.
 Published content belongs under `src/content/posts/<slug>/` and may contain:
 
 - exactly one `index.md`
-- only final web images referenced by that post
+- only final comic/detail images and approved official external assets
+  referenced by that post
 
 Do not add research packets, drafts, claims, storyboards, prompts, QA records,
 manifests, intermediate images, credentials, local logs, or vault material.
 Those belong to the separate PR Comic studio repository.
+
+`officialResources` cards are text-first. A local third-party image requires
+validated owner, rights basis, evidence URL, attribution, and modification
+metadata in frontmatter. Never copy a remote `og:image` merely because it is
+published by an official site.
 
 ## Editorial Tracks
 

@@ -1,5 +1,6 @@
 ---
 title: "SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이"
+searchTitle: "SQL은 왜 선언형 언어인가? 실행 계획과 인덱스까지"
 description: "SQL이 선언형 언어인 이유를 개발자가 지정하는 결과와 DBMS가 선택하는 실행 계획의 경계, 인덱스와 EXPLAIN 예제로 설명합니다."
 slug: "sql-declarative-language"
 publishedAt: 2026-07-14
@@ -218,6 +219,8 @@ Limit  (cost=0.43..12.10 rows=10 width=64)
 ## 제약조건도 선언형으로 이해할 수 있다
 
 선언형 관점은 조회문에서 끝나지 않습니다. `NOT NULL`, `UNIQUE`, `CHECK`, `FOREIGN KEY` 같은 제약조건은 애플리케이션의 검사 절차를 나열하는 대신 데이터가 반드시 만족해야 할 규칙을 DB에 선언합니다.
+
+제약조건을 선언하기 전에 테이블이 어떤 사실과 키를 맡을지 나눠야 합니다. 이 설계 기준은 [데이터베이스 정규화와 삽입·갱신·삭제 이상](/posts/database-normalization-anomalies/)에서 주문 테이블 예제로 이어집니다.
 
 ```sql
 CREATE TABLE order_items (

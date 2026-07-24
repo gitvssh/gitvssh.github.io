@@ -8,6 +8,8 @@ public blog:
 - Astro application source
 - published Markdown posts
 - final web images used by published posts
+- rights-reviewed official logos or other external assets used by structured
+  official-resource cards
 - public deployment and validation scripts
 
 Research packets, drafts, claims, storyboards, prompts, QA records, manifests,
@@ -65,6 +67,13 @@ rendered.
 Published posts live in `src/content/posts/<slug>/`. Each folder contains one
 Markdown entry and only the final public images for that post. Frontmatter is
 validated by `src/content.config.ts`.
+
+Optional `officialResources` frontmatter renders static link-preview cards for
+official announcements, documentation, product pages, and press material. The
+card summary is written by the editor. Local preview images are accepted only
+with owner, rights basis, evidence URL, attribution, and modification metadata;
+arbitrary remote Open Graph images are not fetched by readers or copied at
+build time.
 
 The public reader routes include the four track indexes, approved technical
 categories, long-form series, and `/archives/`. Long posts receive a generated

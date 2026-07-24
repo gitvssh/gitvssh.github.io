@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+type OfficialResource = NonNullable<
+  CollectionEntry<'posts'>['data']['officialResources']
+>[number];
+
+interface Props {
+  resources: OfficialResource[];
+}
+
+const { resources } = Astro.props;
+const kindLabels: Record<OfficialResource['kind'], string> = {
+  official_announcement: '공식 발표',
+  documentation: '공식 문서',
+  product_page: '제품 페이지',
+  press_material: '공식 보도자료',
+};
+---
+
+<section class="official-resources shell shell--article" aria-labelledby="official-resources-title">
+  <div class="official-resources__heading">
+    <p class="eyebrow">OFFICIAL RESOURCES</p>
+    <h2 id="official-resources-title">공식 자료 바로가기</h2>
+  </div>
+  <div class="official-resources__list">
+    {
+      resources.map((resource) => (
+        <article class:list={['official-resource-card', { 'official-resource-card--with-image': resource.image }]}>
+          {resource.image && (
+            <a class="official-resource-card__image" href={resource.url} rel="external">
+              <Image
+                src={resource.image}
+                alt={resource.imageAlt!}
+                widths={[240, 480]}
+                sizes="(max-width: 520px) 70vw, 180px"
+                format="webp"
+                loading="lazy"
+              />
+            </a>
+          )}
+          <div class="official-resource-card__body">
+            <div class="official-resource-card__meta">
+              <span>{kindLabels[resource.kind]}</span>
+              <span>{resource.siteName}</span>
+              {resource.publishedAt && (
+                <time datetime={resource.publishedAt.toISOString()}>
+                  {resource.publishedAt.toLocaleDateString('ko-KR')}
+                </time>
+              )}
+            </div>
+            <h3><a href={resource.url} rel="external">{resource.title}</a></h3>
+            <p>{resource.summary}</p>
+            <a class="official-resource-card__link" href={resource.url} rel="external">
+              공식 페이지에서 확인하기 <span aria-hidden="true">↗</span>
+            </a>
+            {resource.imageRights && (
+              <p class="official-resource-card__rights">
+                이미지: {resource.imageRights.attribution} ·{' '}
+                <a href={resource.imageRights.evidenceUrl} rel="external">사용 기준</a>
+              </p>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
