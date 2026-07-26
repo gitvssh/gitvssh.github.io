@@ -5,10 +5,12 @@ import ArticleToc from '../../components/ArticleToc.astro';
 import OfficialResourceCards from '../../components/OfficialResourceCards.astro';
 import RelatedPostCard from '../../components/RelatedPostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, getPostDisplayTitle, getRelatedPosts, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { formatDate, getPostDisplayTitle, getRelatedPosts, SITE_NAME, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { getPublishedTopics, getTopicsForPost, type PublishedTopic } from '../../lib/topics';
 
 export async function getStaticPaths() {
   const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+  const publishedTopics = getPublishedTopics(posts);
 
   return posts.map((post) => {
     const seriesPosts = post.data.series
@@ -23,6 +25,7 @@ export async function getStaticPaths() {
       props: {
         post,
         relatedPosts: getRelatedPosts(post, posts),
+        topics: getTopicsForPost(post, publishedTopics),
         previousSeriesPost: seriesIndex > 0 ? seriesPosts[seriesIndex - 1] : undefined,
         nextSeriesPost:
           seriesIndex >= 0 && seriesIndex < seriesPosts.length - 1
@@ -36,11 +39,12 @@ export async function getStaticPaths() {
 interface Props {
   post: CollectionEntry<'posts'>;
   relatedPosts: CollectionEntry<'posts'>[];
+  topics: PublishedTopic[];
   previousSeriesPost?: CollectionEntry<'posts'>;
   nextSeriesPost?: CollectionEntry<'posts'>;
 }
 
-const { post, relatedPosts, previousSeriesPost, nextSeriesPost } = Astro.props;
+const { post, relatedPosts, topics, previousSeriesPost, nextSeriesPost } = Astro.props;
 const { Content, headings } = await render(post);
 const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
 const showToc = tocHeadings.filter(({ depth }) => depth === 2).length >= 5;
@@ -50,20 +54,30 @@ const displayTitle = getPostDisplayTitle(post.data);
 const searchTitle = `${post.data.searchTitle ?? post.data.title} | 다메카솔`;
 const canonical = new URL(`/posts/${post.id}/`, Astro.site);
 const socialImage = `/social/${post.id}.webp`;
+const socialImageUrl = new URL(socialImage, Astro.site);
 const articleSchema = {
   '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
+  '@type': post.data.track === 'news' ? 'NewsArticle' : 'BlogPosting',
   headline: displayTitle,
   description: post.data.description,
   datePublished: post.data.publishedAt.toISOString(),
   dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
   inLanguage: 'ko-KR',
   mainEntityOfPage: canonical.href,
+  image: [socialImageUrl.href],
   author: {
     '@type': 'Person',
     name: '다메카솔',
+    url: new URL('/about/', Astro.site).href,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: new URL('/', Astro.site).href,
   },
   articleSection: category?.label ?? track.label,
+  keywords: post.data.tags,
+  isAccessibleForFree: true,
   ...(post.data.series && {
     isPartOf: {
       '@type': 'CreativeWorkSeries',
@@ -84,8 +98,8 @@ const hasUpdatedDate =
   description={post.data.description}
   image={socialImage}
   imageAlt={post.data.coverAlt}
-  imageWidth={1200}
-  imageHeight={630}
+  imageWidth={1280}
+  imageHeight={720}
   type="article"
   completeTitle
 >
@@ -111,6 +125,16 @@ const hasUpdatedDate =
         <span>발행 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
         {hasUpdatedDate && <span>수정 <time datetime={post.data.updatedAt?.toISOString()}>{formatDate(post.data.updatedAt!)}</time></span>}
       </div>
+      {
+        topics.length > 0 && (
+          <nav class="article-topics" aria-label="관련 주제">
+            <span>관련 주제</span>
+            {topics.map((topic) => (
+              <a href={`/topics/${topic.slug}/`}>#{topic.label}</a>
+            ))}
+          </nav>
+        )
+      }
       <h1>{displayTitle}</h1>
       <p class="article-deck">{post.data.description}</p>
     </header>

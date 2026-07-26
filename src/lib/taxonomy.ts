@@ -34,6 +34,7 @@ export const TECH_CATEGORY_KEYS = [
   'kafka',
   'interview_core',
   'infrastructure',
+  'ai_tools',
 ] as const;
 
 export type TechCategory = (typeof TECH_CATEGORY_KEYS)[number];
@@ -81,6 +82,11 @@ export const TECH_CATEGORIES: Record<
     label: '인프라·운영',
     description: '서버, 컨테이너, 스토리지, 네트워크와 운영 장애를 실제 제약과 복구 과정으로 설명합니다.',
     tone: 'rust',
+  },
+  ai_tools: {
+    label: 'AI 도구',
+    description: 'AI 코딩 에이전트와 활용 도구의 역할, 작업 방식, 검토와 안전 경계를 설명합니다.',
+    tone: 'blue',
   },
 };
 

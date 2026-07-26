@@ -1,0 +1,35 @@
+---
+import type { PublishedTopic, TopicSlug } from '../lib/topics';
+
+interface Props {
+  topics: PublishedTopic[];
+  activeSlug?: TopicSlug;
+}
+
+const { topics, activeSlug } = Astro.props;
+---
+
+<aside class="topic-sidebar" aria-labelledby="topic-navigation-heading">
+  <div class="topic-sidebar__card">
+    <p class="eyebrow">TOPICS</p>
+    <h2 id="topic-navigation-heading">주제별로 보기</h2>
+    <p>여러 글에서 반복해서 다룬 핵심 주제를 모았습니다.</p>
+    <nav aria-label="주제 목록">
+      <ul class="topic-navigation">
+        {
+          topics.map((topic) => (
+            <li>
+              <a
+                href={`/topics/${topic.slug}/`}
+                aria-current={topic.slug === activeSlug ? 'page' : undefined}
+              >
+                <span>{topic.label}</span>
+                <span class="topic-navigation__count">{topic.count}편</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</aside>

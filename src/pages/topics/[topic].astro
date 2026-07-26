@@ -1,0 +1,51 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import TopicNavigation from '../../components/TopicNavigation.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts } from '../../lib/content';
+import {
+  getPublishedTopics,
+  getTopicPosts,
+  type PublishedTopic,
+} from '../../lib/topics';
+
+export async function getStaticPaths() {
+  const allPosts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
+  const topics = getPublishedTopics(allPosts);
+
+  return topics.map((topic) => ({
+    params: { topic: topic.slug },
+    props: {
+      topic,
+      topics,
+      posts: getTopicPosts(allPosts, topic.slug),
+    },
+  }));
+}
+
+interface Props {
+  topic: PublishedTopic;
+  topics: PublishedTopic[];
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { topic, topics, posts } = Astro.props;
+---
+
+<BaseLayout title={`${topic.label} 글 모음`} description={topic.description}>
+  <div class="shell discovery-layout discovery-layout--listing">
+    <section class="listing-page discovery-layout__main">
+      <header class="listing-header">
+        <p class="eyebrow">TOPIC COLLECTION</p>
+        <h1>{topic.label}</h1>
+        <p>{topic.description}</p>
+        <p class="listing-summary">관련 글 {posts.length}편</p>
+      </header>
+
+      <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+    </section>
+
+    <TopicNavigation topics={topics} activeSlug={topic.slug} />
+  </div>
+</BaseLayout>

@@ -202,6 +202,112 @@ p {
   padding-block: 42px 72px;
 }
 
+.discovery-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 34px;
+  align-items: start;
+}
+
+.discovery-layout__main {
+  min-width: 0;
+}
+
+.topic-sidebar {
+  position: sticky;
+  top: 24px;
+  margin-top: 42px;
+}
+
+.discovery-layout--listing .topic-sidebar {
+  margin-top: 56px;
+}
+
+.topic-sidebar__card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--amber);
+  border-radius: 0 0 6px 6px;
+  background: var(--surface);
+}
+
+.topic-sidebar__card .eyebrow {
+  margin-bottom: 7px;
+}
+
+.topic-sidebar__card h2 {
+  margin-bottom: 8px;
+  color: var(--green);
+  font-size: 20px;
+}
+
+.topic-sidebar__card > p:not(.eyebrow) {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.topic-navigation {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+
+.topic-navigation a {
+  display: flex;
+  padding: 10px 11px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.topic-navigation a:hover,
+.topic-navigation a[aria-current="page"] {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.topic-navigation__count {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.article-topics {
+  display: flex;
+  margin: -4px 0 18px;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.article-topics a {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--green);
+  text-decoration: none;
+}
+
+.article-topics a:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
 .featured,
 .latest,
 .recent-updates,
@@ -1215,6 +1321,46 @@ p {
 }
 
 @media (max-width: 800px) {
+  .discovery-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .discovery-layout__main {
+    grid-row: 2;
+  }
+
+  .topic-sidebar,
+  .discovery-layout--listing .topic-sidebar {
+    position: static;
+    grid-row: 1;
+    margin-top: 30px;
+  }
+
+  .topic-sidebar__card {
+    padding: 18px;
+  }
+
+  .topic-sidebar__card > p:not(.eyebrow) {
+    margin-bottom: 14px;
+  }
+
+  .topic-navigation {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    gap: 8px;
+    scrollbar-width: thin;
+  }
+
+  .topic-navigation li {
+    flex: 0 0 auto;
+  }
+
+  .topic-navigation a {
+    min-width: 150px;
+  }
+
   .site-header__inner {
     display: block;
     width: 100%;

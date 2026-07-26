@@ -2,8 +2,8 @@ import { mkdir, readFile, readdir } from 'node:fs/promises';
 import { extname, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
 
-const WIDTH = 1200;
-const HEIGHT = 630;
+const WIDTH = 1280;
+const HEIGHT = 720;
 const postsRoot = resolve('src/content/posts');
 const outputRoot = resolve('dist/social');
 const supportedExtensions = new Set(['.avif', '.jpeg', '.jpg', '.png', '.webp']);
@@ -41,22 +41,12 @@ for (const directory of postDirectories) {
     throw new Error(`${directory.name}: unsupported cover extension.`);
   }
 
-  const background = await sharp(coverPath)
-    .resize({ width: WIDTH, height: HEIGHT, fit: 'cover' })
-    .blur(28)
-    .modulate({ brightness: 0.72, saturation: 0.7 })
-    .webp({ quality: 82, smartSubsample: false })
-    .toBuffer();
-
-  const foreground = await sharp(coverPath)
-    .resize({ height: HEIGHT, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 88, smartSubsample: false })
-    .toBuffer();
-
   const outputPath = join(outputRoot, `${directory.name}.webp`);
-  await sharp(background)
-    .composite([{ input: foreground, gravity: 'center' }])
-    .webp({ quality: 84, smartSubsample: false })
+  await sharp(coverPath)
+    // Published covers reserve their upper region for the verified title and opening visual.
+    // A fixed crop is predictable; saliency crops can jump to a lower caption and cut faces.
+    .resize({ width: WIDTH, height: HEIGHT, fit: 'cover', position: 'north' })
+    .webp({ quality: 86, smartSubsample: false })
     .toFile(outputPath);
 
   const metadata = await sharp(outputPath).metadata();

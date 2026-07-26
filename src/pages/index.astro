@@ -2,12 +2,15 @@
 import { getCollection } from 'astro:content';
 import CompactPostList from '../components/CompactPostList.astro';
 import PostCard from '../components/PostCard.astro';
+import TopicNavigation from '../components/TopicNavigation.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_NAME, sortPosts, sortUpdatedPosts, TECH_CATEGORIES, TRACKS } from '../lib/content';
+import { getPublishedTopics } from '../lib/topics';
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 const [featured, ...rest] = posts;
 const recentlyUpdated = sortUpdatedPosts(posts).slice(0, 3);
+const topics = getPublishedTopics(posts);
 ---
 
 <BaseLayout>
@@ -19,7 +22,8 @@ const recentlyUpdated = sortUpdatedPosts(posts).slice(0, 3);
     </div>
   </section>
 
-  <div class="shell home-content">
+  <div class="shell discovery-layout discovery-layout--home">
+    <div class="home-content discovery-layout__main">
     {
       featured ? (
         <section class="featured" aria-labelledby="featured-heading">
@@ -96,5 +100,8 @@ const recentlyUpdated = sortUpdatedPosts(posts).slice(0, 3);
       </div>
     </section>
 
+    </div>
+
+    <TopicNavigation topics={topics} />
   </div>
 </BaseLayout>
