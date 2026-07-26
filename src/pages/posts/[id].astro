@@ -136,7 +136,10 @@ const hasUpdatedDate =
         )
       }
       <h1>{displayTitle}</h1>
-      <p class="article-deck">{post.data.description}</p>
+      <div class="article-deck">
+        <span>이 글에서 얻는 것</span>
+        <p>{post.data.description}</p>
+      </div>
     </header>
 
     <figure class="article-cover shell shell--wide">

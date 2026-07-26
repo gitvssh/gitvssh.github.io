@@ -41,8 +41,6 @@ draft: false
 
 글·해설: 다메카솔
 
-![남성 카솔이 하나의 kubectl 조작대가 로컬과 홈랩 두 클러스터로 갈라진 사실을 발견하는 표지](./cover.webp)
-
 ## context는 클러스터가 아니라 세 참조의 묶음입니다
 
 ![하나의 context 카드가 cluster, user, namespace 세 요소를 묶어 API 요청 경로를 만드는 도식](./page-01.webp)

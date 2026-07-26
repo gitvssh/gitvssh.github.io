@@ -8,6 +8,7 @@ track: news
 subtype: release_announcement
 tags:
   - GitHub Copilot
+  - AI 활용
   - Claude Opus 5
   - AI 모델
   - 사용량 기반 과금

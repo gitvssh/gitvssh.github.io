@@ -16,16 +16,17 @@ const isCurrent = (path: string) =>
     <nav aria-label="주요 메뉴">
       <ul class="site-nav">
         {
-          Object.entries(TRACKS).map(([key, track]) => (
-            <li>
-              <a
-                href={`/tracks/${key}/`}
-                aria-current={isCurrent(`/tracks/${key}/`) ? 'page' : undefined}
-              >
-                {track.label}
-              </a>
-            </li>
-          ))
+          Object.entries(TRACKS).map(([key, track]) => {
+            const href = key === 'practice' ? '/topics/ai-use/' : `/tracks/${key}/`;
+
+            return (
+              <li>
+                <a href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+                  {track.label}
+                </a>
+              </li>
+            );
+          })
         }
         <li>
           <a href="/archives/" aria-current={isCurrent('/archives/') ? 'page' : undefined}>

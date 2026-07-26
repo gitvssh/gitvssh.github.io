@@ -9,17 +9,96 @@ const { headings } = Astro.props;
 const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
 ---
 
-<aside class="article-toc">
+<aside class="article-toc" data-article-toc>
   <nav aria-labelledby="article-toc-title">
-    <h2 id="article-toc-title">이 글의 목차</h2>
+    <div class="article-toc__heading">
+      <h2 id="article-toc-title">이 글의 목차</h2>
+      <span data-reading-progress-value>0%</span>
+    </div>
+    <div class="article-toc__progress" aria-hidden="true">
+      <span data-reading-progress-bar></span>
+    </div>
     <ol>
       {
         items.map((heading) => (
           <li class:list={[`article-toc__depth-${heading.depth}`]}>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
+            <a
+              href={`#${heading.slug}`}
+              data-toc-link={heading.slug}
+              data-analytics-event="toc_click"
+              data-analytics-target={heading.slug}
+            >{heading.text}</a>
           </li>
         ))
       }
     </ol>
   </nav>
 </aside>
+
+<script>
+  const toc = document.querySelector<HTMLElement>('[data-article-toc]');
+
+  if (toc) {
+    const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+    const headings = links
+      .map((link) => document.getElementById(link.dataset.tocLink ?? ''))
+      .filter((heading): heading is HTMLElement => heading !== null);
+    const progressValue = toc.querySelector<HTMLElement>('[data-reading-progress-value]');
+    const progressBar = toc.querySelector<HTMLElement>('[data-reading-progress-bar]');
+    let frameRequested = false;
+
+    const updateReadingState = () => {
+      frameRequested = false;
+
+      if (headings.length === 0) return;
+
+      const activationLine = Math.min(180, window.innerHeight * 0.28);
+      let currentHeading = headings[0]!;
+
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top <= activationLine) {
+          currentHeading = heading;
+        } else {
+          break;
+        }
+      }
+
+      const currentId = currentHeading.id;
+      for (const link of links) {
+        if (link.dataset.tocLink === currentId) {
+          link.setAttribute('aria-current', 'location');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      }
+
+      const article = document.querySelector<HTMLElement>('[data-analytics-article]');
+      if (!article) return;
+
+      const articleTop = article.offsetTop;
+      const readableDistance = Math.max(1, article.offsetHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, (window.scrollY - articleTop) / readableDistance));
+      const percentage = `${Math.round(progress * 100)}%`;
+
+      if (progressValue) progressValue.textContent = percentage;
+      if (progressBar) progressBar.style.transform = `scaleX(${progress})`;
+    };
+
+    const scheduleUpdate = () => {
+      if (frameRequested) return;
+      frameRequested = true;
+      window.requestAnimationFrame(updateReadingState);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(scheduleUpdate, {
+        rootMargin: '-18% 0px -68% 0px',
+      });
+      headings.forEach((heading) => observer.observe(heading));
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    updateReadingState();
+  }
+</script>

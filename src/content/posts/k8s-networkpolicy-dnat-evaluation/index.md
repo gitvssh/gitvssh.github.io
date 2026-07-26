@@ -40,8 +40,6 @@ draft: false
 - Kubernetes는 주소 재작성과 NetworkPolicy 처리의 선후를 규정하지 않습니다. 실제 순서는 네트워크 플러그인과 Service 구현 조합에서 확인해야 합니다.
 - Pod를 허용할 때는 바뀌는 Pod IP를 직접 나열하기보다 `namespaceSelector`와 `podSelector`를 우선 검토합니다. 실제 목적지가 노드나 클러스터 외부 주소라면 필요한 CIDR만 좁게 허용합니다.
 
-![카솔이 12회 연결 결과판과 Service VIP가 Endpoint로 갈라지는 경로를 비교하는 표지](./cover.webp)
-
 ## 두 사고가 남긴 같은 지문
 
 첫 사고에서는 API 서버의 Service 주소가 허용돼 있었지만 CI 러너가 기동 직후 `connection refused`를 남기고 재시작했습니다. 내부 기록에 남은 DNAT 뒤 목적지는 노드의 API 엔드포인트와 6443 포트였습니다.

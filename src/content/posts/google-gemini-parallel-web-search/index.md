@@ -8,6 +8,7 @@ track: news
 subtype: release_announcement
 tags:
   - Gemini
+  - AI 활용
   - Parallel Web Search
   - 웹 그라운딩
   - AI 에이전트

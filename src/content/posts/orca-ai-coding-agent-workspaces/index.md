@@ -9,6 +9,7 @@ subtype: architecture
 category: ai_tools
 tags:
   - "orca"
+  - "AI 활용"
   - "AI 에이전트"
   - "git worktree"
   - "codex"
@@ -38,8 +39,6 @@ draft: false
 ## 핵심 요약
 
 Orca는 작업마다 별도의 worktree, 에이전트 터미널, 브라우저를 두고 여러 AI 코딩 에이전트를 관리하는 도구입니다. 기존의 Codex, Claude Code 같은 CLI 에이전트와 구독을 가져와 쓰는 방식이라, 모델의 능력보다 **작업 분리와 변경 검토**를 다룹니다. [Orca 공식 소개](https://www.onorca.dev/docs)
-
-![여러 AI 코딩 에이전트의 작업 공간을 분리하는 Orca를 상징적으로 표현한 표지](./cover.webp)
 
 ## 왜 지금 Orca를 봐야 하나
 

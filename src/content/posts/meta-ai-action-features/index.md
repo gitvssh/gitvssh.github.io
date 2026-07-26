@@ -8,6 +8,7 @@ track: news
 subtype: release_announcement
 tags:
   - "meta ai"
+  - "AI 활용"
   - "AI 에이전트"
   - "email calendar connectors"
   - "recurring tasks"
@@ -29,8 +30,6 @@ draft: false
 매주 같은 브리핑을 다시 요청하거나 약속을 확인하는 일을 AI에게 한 번만 설명하고 맡길 수 있을까요? Meta는 2026년 7월 24일 **Meta AI가 이메일·캘린더 앱에 연결해 계획을 세우고 반복 작업을 처리하는 기능**을 발표했습니다. 새 기능은 Meta AI 앱과 meta.ai의 선택 지역부터 배포되며, 모든 국가와 WhatsApp에 이미 제공된 것은 아닙니다.
 
 글·해설: 다메카솔
-
-![카솔이 답변형 AI 구슬에서 이메일·캘린더와 반복 실행 레일로 이어지는 변화를 점검하는 표지](./cover.webp)
 
 ## 답변에서 연결·계획·반복 실행으로 넓어집니다
 

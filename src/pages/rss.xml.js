@@ -8,7 +8,7 @@ export async function GET(context) {
 
   return rss({
     title: SITE_NAME,
-    description: '논문 읽기, 기술 해설, 개발 뉴스와 AI 활용·실습을 만화와 정확한 글로 설명합니다.',
+    description: 'AI 논문 읽기, AI 뉴스, 기술 해설과 AI 활용을 만화와 정확한 글로 설명합니다.',
     site: context.site,
     items: posts.map((post) => ({
       title: getPostDisplayTitle(post.data),

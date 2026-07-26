@@ -8,6 +8,7 @@ track: news
 subtype: release_announcement
 tags:
   - ChatGPT
+  - AI 활용
   - 통합 검색
   - 프로젝트
   - 파일 검색

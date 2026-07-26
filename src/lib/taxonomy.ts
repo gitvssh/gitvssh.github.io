@@ -2,14 +2,14 @@ export const SITE_NAME = '3분만에 만화로 보는 IT';
 
 export const TRACKS = {
   news: {
-    label: '개발 뉴스',
-    titlePrefix: `${SITE_NAME} - 개발 뉴스`,
-    description: '공식 발표와 현재 확인 가능한 사실을 빠르게 정리합니다.',
+    label: 'AI 뉴스',
+    titlePrefix: `${SITE_NAME} - AI 뉴스`,
+    description: 'AI 분야의 공식 발표와 현재 확인 가능한 사실을 빠르게 정리합니다.',
   },
   paper: {
-    label: '논문 읽기',
-    titlePrefix: `${SITE_NAME} - 논문 읽기`,
-    description: '논문의 근거와 해석을 구분해 핵심 주장을 읽습니다.',
+    label: 'AI 논문 읽기',
+    titlePrefix: `${SITE_NAME} - AI 논문 읽기`,
+    description: 'AI 논문의 근거와 해석을 구분해 핵심 주장을 읽습니다.',
   },
   tech_column: {
     label: '기술 해설',
@@ -17,9 +17,9 @@ export const TRACKS = {
     description: '핵심 CS·백엔드 주제의 개념, 조건, 오해와 예외를 설명합니다.',
   },
   practice: {
-    label: 'AI 활용·실습',
-    titlePrefix: `${SITE_NAME} - AI 활용·실습`,
-    description: 'AI 도구를 실제로 설정하고 검증한 재현 가능한 활용법을 다룹니다.',
+    label: 'AI 활용',
+    titlePrefix: `${SITE_NAME} - AI 활용`,
+    description: 'AI 도구를 실제 문제에 적용하고 검증한 활용법을 다룹니다.',
   },
 } as const;
 
