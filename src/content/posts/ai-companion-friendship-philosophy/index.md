@@ -7,7 +7,7 @@ publishedAt: 2026-07-26
 updatedAt: 2026-07-26
 track: tech_column
 subtype: opinion
-category: ai_tools
+category: ai_philosophy
 tags:
   - "AI 친구"
   - "AI 윤리"

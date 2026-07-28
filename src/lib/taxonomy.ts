@@ -14,7 +14,7 @@ export const TRACKS = {
   tech_column: {
     label: '기술 해설',
     titlePrefix: `${SITE_NAME} - 기술 해설`,
-    description: '핵심 CS·백엔드 주제의 개념, 조건, 오해와 예외를 설명합니다.',
+    description: 'AI와 개발을 둘러싼 개념, 조건, 오해와 예외를 설명합니다.',
   },
   practice: {
     label: 'AI 활용',
@@ -35,6 +35,7 @@ export const TECH_CATEGORY_KEYS = [
   'interview_core',
   'infrastructure',
   'ai_tools',
+  'ai_philosophy',
 ] as const;
 
 export type TechCategory = (typeof TECH_CATEGORY_KEYS)[number];
@@ -87,6 +88,11 @@ export const TECH_CATEGORIES: Record<
     label: 'AI 도구',
     description: 'AI 코딩 에이전트와 활용 도구의 역할, 작업 방식, 검토와 안전 경계를 설명합니다.',
     tone: 'blue',
+  },
+  ai_philosophy: {
+    label: 'AI와 사람 사이',
+    description: 'AI가 우리의 관계, 생각, 일과 삶을 어떻게 바꾸는지 오래된 질문과 새로운 관점으로 풀어봅니다.',
+    tone: 'amber',
   },
 };
 

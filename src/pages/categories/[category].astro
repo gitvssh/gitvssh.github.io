@@ -27,7 +27,7 @@ const seriesCount = new Set(posts.flatMap((post) => post.data.series?.slug ?? []
 <BaseLayout title={category.label} description={category.description}>
   <div class="shell listing-page">
     <header class="listing-header">
-      <p class="eyebrow">IT CORE CATEGORY</p>
+      <p class="eyebrow">TOPIC CATEGORY</p>
       <h1>{category.label}</h1>
       <p>{category.description}</p>
       <p class="listing-summary">{posts.length}개의 글 · {seriesCount}개의 연재</p>
