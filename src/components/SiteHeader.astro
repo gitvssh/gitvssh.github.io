@@ -1,5 +1,5 @@
 ---
-import { SITE_NAME, TRACKS } from '../lib/content';
+import { SITE_NAME, TECH_CATEGORIES, TRACKS } from '../lib/content';
 
 const currentPath = Astro.url.pathname;
 const isCurrent = (path: string) =>
@@ -28,6 +28,14 @@ const isCurrent = (path: string) =>
             );
           })
         }
+        <li>
+          <a
+            href="/categories/ai_philosophy/"
+            aria-current={isCurrent('/categories/ai_philosophy/') ? 'page' : undefined}
+          >
+            {TECH_CATEGORIES.ai_philosophy.label}
+          </a>
+        </li>
         <li>
           <a href="/archives/" aria-current={isCurrent('/archives/') ? 'page' : undefined}>
             아카이브
