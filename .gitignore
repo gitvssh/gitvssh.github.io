@@ -4,7 +4,6 @@ dist/
 
 .env
 .env.*
-!.env.example
 
 *.log
 *.tmp
@@ -18,4 +17,5 @@ private/
 studio/
 inputs/
 outputs/
+output/
 _vault/
