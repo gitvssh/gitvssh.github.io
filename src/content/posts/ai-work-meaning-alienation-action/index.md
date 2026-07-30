@@ -11,7 +11,6 @@ category: ai_philosophy
 tags:
   - "AI 일자리"
   - "AI 윤리"
-  - "AI 활용"
 audience: general
 readerOutcome: "AI가 대신한 업무의 개수보다 결과·과정·동료·결정에 대한 자신의 관계를 점검해, 일의 의미를 다시 설계한다."
 contentFormats:
