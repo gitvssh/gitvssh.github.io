@@ -30,6 +30,14 @@ const isCurrent = (path: string) =>
         }
         <li>
           <a
+            href="/categories/development_episode/"
+            aria-current={isCurrent('/categories/development_episode/') ? 'page' : undefined}
+          >
+            {TECH_CATEGORIES.development_episode.label}
+          </a>
+        </li>
+        <li>
+          <a
             href="/categories/ai_philosophy/"
             aria-current={isCurrent('/categories/ai_philosophy/') ? 'page' : undefined}
           >

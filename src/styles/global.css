@@ -1391,6 +1391,32 @@ p {
   }
 }
 
+@media (max-width: 1040px) {
+  .site-header__inner {
+    display: block;
+    width: 100%;
+  }
+
+  .wordmark {
+    padding: 15px 20px 8px;
+  }
+
+  .site-header nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .site-nav {
+    width: max-content;
+    padding-inline: 20px;
+    gap: 18px;
+  }
+
+  .site-nav a {
+    padding-block: 11px 10px;
+  }
+}
+
 @media (max-width: 800px) {
   .discovery-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -1430,30 +1456,6 @@ p {
 
   .topic-navigation a {
     min-width: 150px;
-  }
-
-  .site-header__inner {
-    display: block;
-    width: 100%;
-  }
-
-  .wordmark {
-    padding: 15px 20px 8px;
-  }
-
-  .site-header nav {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .site-nav {
-    width: max-content;
-    padding-inline: 20px;
-    gap: 18px;
-  }
-
-  .site-nav a {
-    padding-block: 11px 10px;
   }
 
   .masthead__inner {
