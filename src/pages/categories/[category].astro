@@ -7,6 +7,7 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from '../../lib/content';
+import { getPublishedSeries } from '../../lib/series';
 
 export function getStaticPaths() {
   return Object.keys(TECH_CATEGORIES).map((category) => ({ params: { category } }));
@@ -21,20 +22,9 @@ const posts = sortPosts(
       !data.draft && data.track === 'tech_column' && data.category === categoryKey,
   ),
 );
-const seriesDirectory = new Map<string, { title: string; count: number }>();
-
-for (const post of posts) {
-  const series = post.data.series;
-  if (!series) continue;
-
-  const existing = seriesDirectory.get(series.slug);
-  seriesDirectory.set(series.slug, {
-    title: series.title,
-    count: (existing?.count ?? 0) + 1,
-  });
-}
-
-const seriesEntries = [...seriesDirectory.entries()];
+const seriesEntries = getPublishedSeries(
+  await getCollection('posts', ({ data }) => !data.draft),
+).filter((series) => series.category === categoryKey);
 ---
 
 <BaseLayout title={category.label} description={category.description}>
@@ -50,17 +40,19 @@ const seriesEntries = [...seriesDirectory.entries()];
       seriesEntries.length > 0 && (
         <section class="category-directory" aria-labelledby="subcategory-directory-heading">
           <div class="section-heading">
-            <h2 id="subcategory-directory-heading">소카테고리</h2>
+            <h2 id="subcategory-directory-heading">이 카테고리의 연재</h2>
+            <a class="section-heading__link" href="/series/">전체 연재 보기 →</a>
           </div>
-          <div class="category-index__grid">
-            {seriesEntries.map(([slug, series]) => (
+          <div class="category-index__grid category-index__grid--wide">
+            {seriesEntries.map((series) => (
               <a
-                class="category-index__item"
+                class="category-index__item series-index__item"
                 style={`--category-accent: var(--${category.tone})`}
-                href={`/series/${slug}/`}
+                href={`/series/${series.slug}/`}
               >
                 <span>{series.title}</span>
-                <p>{series.count}편 · 순서대로 읽기</p>
+                <p>{series.description}</p>
+                <p class="series-index__count">{series.posts.length}편 · 순서대로 읽기</p>
               </a>
             ))}
           </div>
