@@ -3,7 +3,7 @@ title: "OpenAI가 공개한 GPT-Live 실시간 구조: 말하기와 깊은 추�
 description: "OpenAI GPT-Live가 오디오의 실시간 경로와 검색·추론·도구 호출의 비동기 경로를 어떻게 분리했는지 정리합니다."
 slug: "openai-gpt-live-realtime-architecture"
 publishedAt: 2026-08-04
-updatedAt: 2026-08-06
+updatedAt: 2026-08-04
 track: news
 subtype: announcement_analysis
 tags:
@@ -52,7 +52,7 @@ OpenAI가 공개한 구조에서 오디오는 전용 미디어 경로를 지납�
 
 실시간 음성 세션은 오래 열려 있고 문맥은 계속 커집니다. 모델 인스턴스를 교체하거나 문맥을 압축할 때마다 멈춘다면 자연스러운 대화가 깨집니다. GPT-Live는 기존 인스턴스가 계속 말하는 동안 새 인스턴스를 데우고 현재 문맥을 미리 채운 뒤, 준비가 끝나면 전환한다고 OpenAI는 밝혔습니다. 문맥 압축도 같은 방식으로 뒤에서 처리합니다.
 
-시작 지연에는 네트워크 프로토콜도 관여합니다. OpenAI는 WARP 제안으로 WebRTC 미디어·데이터 시작의 네트워크 왕복을 여섯 번에서 한 번으로 줄였다고 설명했습니다. 여기에는 경계가 있습니다. WARP는 2026년 8월 6일 현재 IETF Internet-Draft 단계이며 최종 표준 여부는 열려 있습니다.
+시작 지연에는 네트워크 프로토콜도 관여합니다. OpenAI는 WARP 제안으로 WebRTC 미디어·데이터 시작의 네트워크 왕복을 여섯 번에서 한 번으로 줄였다고 설명했습니다. 여기에는 경계가 있습니다. WARP는 2026년 8월 4일 현재 IETF Internet-Draft 단계이며 최종 표준 여부는 열려 있습니다.
 
 ## 회사 측 성능 주장은 범위를 붙여 읽습니다
 
@@ -82,4 +82,4 @@ ChatGPT Voice의 GPT-Live 제공은 진행 중입니다. OpenAI가 이번 글에
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
 
-Updated: 2026-08-06
+Updated: 2026-08-04
