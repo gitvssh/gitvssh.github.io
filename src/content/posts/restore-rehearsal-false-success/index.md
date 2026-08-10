@@ -3,8 +3,8 @@ title: "복구 리허설은 성공했는데 목표 시각 이전 기록이 없�
 description: "MySQL 시점 복구 리허설이 성공 로그를 남겼지만 목표 시각 이전 마커가 빠졌습니다. 파이프 왼쪽 실패가 가려진 원인과 마커 대조 관문을 기록합니다."
 searchTitle: "MySQL PITR 거짓 성공: mysqlbinlog와 셸 파이프 실패"
 slug: "restore-rehearsal-false-success"
-publishedAt: 2026-08-09
-updatedAt: 2026-08-09
+publishedAt: 2026-08-10T18:12:49+09:00
+updatedAt: 2026-08-10T18:12:49+09:00
 track: tech_column
 subtype: case_study
 category: development_episode
@@ -31,7 +31,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 모두 통과 표시가 뜬 복원 리허설 보고판 아래에서 비어 있는 마커 자리 하나를 발견하는 표지"
 sourceUrl: "urn:internal:payment-platform:restore-rehearsal-2026-07-10"
 featured: false
-draft: true
+draft: false
 ---
 글·해설: 다메카솔
 
