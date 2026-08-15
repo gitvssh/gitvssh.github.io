@@ -32,7 +32,7 @@ function latestPostDate(posts: Post[]) {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const siteUrl = site ?? new URL('https://gitvssh.github.io');
+  const siteUrl = site ?? new URL('https://blog.damecasol.com');
   const posts = await getCollection('posts', ({ data }) => !data.draft);
   const latestSiteDate = latestPostDate(posts);
   const entries: SitemapEntry[] = [
