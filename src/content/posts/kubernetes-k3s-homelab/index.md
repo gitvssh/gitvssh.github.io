@@ -1,6 +1,6 @@
 ---
 title: "Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것"
-description: "컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다."
+description: "단순히 Docker 컨테이너를 띄우는 것과 쿠버네티스 클러스터를 운영하는 것은 무엇이 다를까요? k3s의 경량화 아키텍처와 홈랩 환경에서의 도입 기준을 명확히 정리합니다."
 slug: "kubernetes-k3s-homelab"
 publishedAt: 2026-07-20
 updatedAt: 2026-07-28
@@ -12,7 +12,7 @@ tags:
   - "K3s"
   - "홈랩"
 audience: builder
-readerOutcome: "컨테이너 런타임, Kubernetes 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 구분하고 자신의 홈랩에 k3s가 필요한지 판단한다."
+readerOutcome: "컨테이너 런타임과 쿠버네티스 오케스트레이션의 차이를 이해하고, k3s 아키텍처의 장단점을 바탕으로 홈랩 인프라 도입 타당성을 판단할 수 있다."
 contentFormats:
   - article
   - comic
@@ -28,136 +28,90 @@ sourceUrl: "https://kubernetes.io/docs/concepts/overview/"
 featured: false
 draft: false
 ---
-저는 시놀로지 NAS 한 대에 k3s를 올려 배포와 스토리지, 네트워크를 익혔습니다. 작은 단일 노드 클러스터는 좋은 학습장이었습니다. 하지만 Airflow 작업과 k3s 시스템 구성요소가 적은 CPU 코어를 나눠 쓰기 시작하자 32GB RAM의 여유만으로는 문제가 풀리지 않았습니다. 밤에 NAS를 끄면 메타데이터 DB와 오브젝트 스토리지도 함께 사라졌고, 한 노드가 멈추면 클러스터 전체가 멈추는 구조도 그대로였습니다.
-
-이때부터 제 질문은 “k3s를 실행할 수 있는가?”에서 “어떤 상태를 몇 시간 동안, 어떤 장애까지 견디며 운영할 것인가?”로 바뀌었습니다.
-
-**컨테이너 런타임은 컨테이너를 실행하고 Kubernetes는 여러 컨테이너와 노드의 원하는 상태를 계속 맞춥니다.** k3s는 이 운영 모델을 없앤 별도 도구가 아니라 설치와 기본 구성요소를 한데 묶은 Kubernetes 배포판입니다. 설치 부담은 줄여 주지만 CPU 경합, 24시간 의존성, 노드 장애를 어떻게 다룰지는 운영자가 결정해야 합니다.
-
 글·해설: 다메카솔
 
-Updated: 2026-07-28
+"Docker Compose로도 서비스 잘 돌아가는데, 굳이 홈랩에 쿠버네티스(k3s)까지 올려야 할까?"
 
-## 컨테이너를 실행하는 일과 클러스터를 운영하는 일
+홈랩을 구축할 때 가장 많이 부딪히는 질문입니다. 저 역시 시놀로지 NAS 위에 k3s를 처음 띄워보며 배포, 네트워크, 스토리지 볼륨을 만져보았습니다. 단일 노드 학습용으로는 훌륭했지만, Airflow 파이프라인이 돌며 CPU가 바닥나고 야간에 NAS가 꺼지면 클러스터 전체가 뻗는 문제를 겪으면서 질문이 바뀌었습니다.
+
+"단순히 쿠버네티스를 띄울 수 있는가?"가 아니라, **"쿠버네티스가 해결해 주는 진짜 문제는 무엇이고, 내가 감당해야 할 운영 비용(Tax)은 어디까지인가?"**였습니다.
+
+이번 글에서는 컨테이너 런타임과 쿠버네티스의 본질적인 차이, 그리고 경량 배포판인 **k3s의 아키텍처적 장단점**을 정리해 보았습니다.
+
+## 컨테이너 실행(Docker)과 클러스터 운영(k8s)의 차이
 
 ![컨테이너가 실행된 뒤에도 여러 노드의 배치와 장애 복구를 누가 맡는지 묻는 카솔](./page-01.webp)
 
-컨테이너 런타임의 책임은 컨테이너를 실제로 실행하는 데 있습니다. Kubernetes 노드에도 containerd나 CRI-O처럼 CRI와 호환되는 런타임이 필요합니다. Kubernetes가 런타임을 대체하는 것이 아니라, 런타임 위에서 더 큰 운영 상태를 관리하는 셈입니다.
+많은 분들이 Docker와 쿠버네티스를 동급의 기술로 오해하곤 합니다. 하지만 두 기술은 시스템 계층 구조에서 담당하는 역할이 완전히 다릅니다:
 
-여기서 구분해야 할 층이 생깁니다.
+| 계층 | 핵심 질문 | 대표 컴포넌트 |
+| :--- | :--- | :--- |
+| **컨테이너 런타임** | "이 컨테이너 프로세스를 어떻게 격리하고 실행할까?" | containerd, CRI-O, Docker Engine |
+| **클러스터 오케스트레이션** | "수십 대의 노드 중 어디에 파드를 띄우고, 노드가 죽었을 때 어떻게 자가 치유(Self-healing)할까?" | Kubernetes (API Server, Scheduler, Controller) |
+| **애플리케이션 계층** | "비즈니스 로직을 어떻게 처리하고 데이터 무결성을 지킬까?" | 백엔드 API, 마이크로서비스, DB |
 
-| 층 | 주로 답하는 질문 | 대표 구성요소 |
-| --- | --- | --- |
-| 컨테이너 실행 | 이 컨테이너 프로세스를 어떻게 시작하고 격리할까? | containerd, CRI-O 같은 런타임 |
-| 클러스터 제어 | 어떤 워크로드를 어느 노드에 놓고, 고장 뒤 어떤 상태로 되돌릴까? | Kubernetes API, 스케줄러, 컨트롤러 |
-| 애플리케이션 | 요청을 어떻게 처리하고 데이터 오류를 어떻게 막을까? | 실제 서비스 코드와 데이터베이스 |
+Docker나 containerd가 '개별 엔진'이라면, 쿠버네티스는 '수많은 엔진을 묶어 하나의 거대한 가상 컴퓨터처럼 조율하는 관제탑'입니다.
 
-이 경계를 그어야 자가 복구도 정확히 이해할 수 있습니다. Kubernetes는 실패한 컨테이너를 재시작하거나 사라진 복제본을 대체할 수 있습니다.
-
-하지만 같은 결함을 가진 컨테이너를 다시 띄우면 같은 버그가 그대로 돌아옵니다. 사용할 수 없어진 스토리지와 손상된 데이터도 별도의 복구 설계가 필요합니다.
-
-## 원하는 상태를 계속 맞추는 제어 시스템
+## 쿠버네티스의 핵심 원리: '선언형 제어 루프(Reconciliation Loop)'
 
 ![원하는 Pod 상태와 현재 상태의 차이를 컨트롤러가 감지하고 대체 Pod로 줄이는 흐름](./page-02.webp)
 
-Kubernetes를 이해하는 가장 짧은 길은 `spec`과 `status`를 나눠 보는 것입니다.
+쿠버네티스를 지탱하는 가장 우아한 아키텍처 철학은 **선언적 모델(Declarative Model)**입니다.
 
-사용자는 객체의 `spec`에 원하는 상태를 적습니다. 컨트롤 플레인은 관찰한 현재 상태를 `status`로 갱신하고, 둘 사이에 차이가 생기면 컨트롤러가 다시 맞추려고 움직입니다.
+1. **`spec` (내가 바라는 상태)**: "웹서버 파드 3개를 항상 유지해 줘."라고 매니페스트에 선언합니다.
+2. **`status` (현재 실제 상태)**: 컨트롤 플레인이 노드들을 지속적으로 헬스체크합니다.
+3. **제어 루프 (Reconciliation)**: 만약 노드 하나가 죽어 실제 파드가 2개로 줄어들면, 컨트롤러가 둘 사이의 차이를 감지하고 즉시 다른 건강한 노드에 새 파드를 생성하여 3개를 다시 맞춥니다.
 
-예를 들어 Deployment에 복제본 세 개를 원한다고 선언했는데 현재 두 개만 준비됐다면, 컨트롤러는 새 Pod를 만들어 차이를 줄입니다. 중요한 점은 A 다음 B, B 다음 C를 한 번 실행하고 끝내는 스크립트가 아니라는 데 있습니다. 상태를 계속 관찰하고 조정하는 루프입니다.
+이 '자가 치유(Self-healing)'와 '자동 스케줄링' 덕분에, 우리는 서버 1대가 새벽에 불시에 죽더라도 직접 일어나서 재시작 스크립트를 칠 필요가 없어집니다.
 
-이 모델은 강력하지만 전제도 있습니다. 새 Pod를 놓을 노드의 CPU와 메모리가 부족하면 스케줄링은 멈춥니다. PersistentVolume을 다시 붙일 수 없는 상태라면 Pod만 교체해도 서비스는 돌아오지 않습니다. Kubernetes가 관리할 수 있는 범위와 외부 의존성을 함께 봐야 하는 이유입니다.
-
-## 컨트롤 플레인과 워커 노드는 무엇을 하나
-
-![컨트롤 플레인의 API와 배치 조정 결정이 워커의 kubelet과 컨테이너 실행으로 이어지는 구조](./page-03.webp)
-
-클러스터는 크게 컨트롤 플레인과 워커 노드로 나뉩니다. 각 구성요소의 이름보다 먼저 책임을 잡으면 구조가 선명해집니다.
-
-- `kube-apiserver`는 Kubernetes API의 입구입니다.
-- 상태 저장 계층은 API 서버가 다루는 클러스터 상태를 보존합니다. 일반 Kubernetes 구성에서는 etcd가 이 역할을 맡습니다.
-- `kube-scheduler`는 아직 노드가 정해지지 않은 Pod를 살피고 적합한 노드를 고릅니다.
-- `kube-controller-manager`의 컨트롤러들은 선언한 상태와 실제 상태의 차이를 줄입니다.
-- 워커의 `kubelet`은 자신이 맡은 Pod와 컨테이너가 실행되도록 관리합니다.
-- 컨테이너 런타임은 마지막 실행 단계에서 실제 컨테이너를 시작합니다.
-
-이 구분은 역할에 대한 것이고, 물리 서버 배치는 별개의 선택입니다. 단일 노드 학습 클러스터에서는 한 장비가 server와 worker 역할을 함께 맡을 수 있습니다. 역할의 논리적 경계와 물리 장비의 수를 같은 것으로 생각하지 않는 편이 좋습니다.
-
-## k3s는 무엇을 줄이고 무엇을 남기는가
+## k3s는 무엇을 가볍게 만들었나?
 
 ![k3s가 Kubernetes 구성요소를 server와 agent로 묶지만 데이터스토어 운영은 남는다고 설명하는 구조도](./page-04.webp)
 
-k3s는 Kubernetes의 핵심 역할을 더 적은 설치 단위로 묶습니다. 공식 문서는 k3s를 Kubernetes 적합성을 갖춘 배포판으로 설명하며, 단일 바이너리와 함께 containerd, Flannel, CoreDNS, Ingress 등 여러 구성요소를 기본 제공한다고 안내합니다. 이 묶음 덕분에 처음부터 각 부품을 따로 골라 연결해야 하는 부담이 줄어듭니다.
+오리지널 쿠버네티스(k8s)는 엔터프라이즈 환경을 타깃으로 하여 etcd, kube-apiserver, controller-manager, scheduler 등이 수많은 개별 바이너리와 무거운 메모리(노드당 수 GB)를 요구합니다.
 
-구조 자체는 남습니다. `k3s server`는 컨트롤 플레인과 데이터스토어를 관리하고, `k3s agent`는 워커로 참여합니다. server와 agent 모두 kubelet, 컨테이너 런타임, CNI를 실행합니다.
+Rancher가 만든 **k3s**는 이 무거운 구조를 홈랩과 엣지(Edge) 환경에 맞게 극한으로 경량화했습니다:
+- **단일 바이너리 패키징**: 복잡한 컴포넌트들을 단 하나의 실행 파일로 통합
+- **가벼운 스토리지 백엔드**: etcd 외에도 경량 SQLite(기본) 및 외부 RDBMS(PostgreSQL/MySQL) 지원
+- **필수 애드온 내장**: containerd, Flannel(CNI), CoreDNS, Traefik(Ingress Controller)을 기본 번들링하여 설치 1줄로 클러스터 구축 완료
 
-데이터스토어 선택은 특히 중요합니다.
+| k3s 데이터스토어 구성 | 장점 | 운영 시 주의점 |
+| :--- | :--- | :--- |
+| **단일 Server (SQLite)** | 메모리 소모 극최소화, 세팅이 가장 쉬움 | Server 노드가 죽으면 컨트롤 플레인이 전면 중단됨 |
+| **3-Server HA (Embedded etcd)** | 노드 1대 장애 시에도 클러스터 무중단 유지 | etcd 쿼럼 유지 및 고속 디스크(NVMe) 필수 |
+| **외부 DB 백엔드** | 기존 PostgreSQL/MySQL 인프라 활용 가능 | 외부 DB 서버의 가용성이 클러스터 전체 가용성을 좌우함 |
 
-| 구성 | 데이터스토어 | 운영상 의미 |
-| --- | --- | --- |
-| 단일 server | 기본 embedded SQLite 사용 가능 | 시작은 단순하지만 server 장애가 곧 컨트롤 플레인 중단으로 이어집니다. |
-| 다중 server, embedded HA | embedded etcd, server 3대 이상 | 컨트롤 플레인 가용성을 높이는 대신 쿼럼과 디스크 지연을 관리해야 합니다. |
-| 다중 server, 외부 DB | MySQL·PostgreSQL·etcd 등, server 2대 이상 | 외부 데이터스토어의 가용성과 백업도 클러스터 운영 범위에 들어옵니다. |
-
-따라서 “k3s는 가벼우니 운영도 저절로 쉽다”는 결론은 너무 빠릅니다. 설치 진입점은 단순해져도 DNS, 네트워크, 인증서, 영구 스토리지, 데이터스토어 백업, 버전 업그레이드는 여전히 설계해야 합니다.
-
-## 최소 요구사항은 실제 권장 사양이 아니다
-
-K3s 공식 요구사항이 제시하는 설치 하한선은 작습니다. 2026년 7월 23일 확인 기준으로 server는 2코어와 2GB RAM, agent는 1코어와 512MB RAM입니다.
-
-| 노드 역할 | 공식 최소 CPU | 공식 최소 RAM |
-| --- | ---: | ---: |
-| server | 2코어 | 2GB |
-| agent | 1코어 | 512MB |
-
-이 숫자가 덮는 범위는 k3s 자체까지이고, 사용자 워크로드 자원은 따로 더해야 합니다. 이미지 다운로드와 압축 해제는 CPU와 디스크 IO를 사용하고, 컨트롤 플레인 변경이 잦거나 Operator가 많으면 server 부하도 커집니다. 데이터스토어와 컨테이너 이미지 저장소, 워크로드 볼륨이 같은 느린 디스크를 다투면 RAM이 남아도 클러스터가 답답해질 수 있습니다.
-
-그러므로 최소 요구사항은 “설치가 시작될 수 있는 선”으로만 읽어야 합니다. 실제 장비를 고를 때는 워크로드의 CPU·메모리, 디스크 지연과 IOPS, 애드온, 복제본 수, 장애 때 남겨 둘 여유까지 더해야 합니다.
-
-## 홈랩에서 k3s가 필요한지 판단하는 법
+## 홈랩에 k3s가 진짜 필요한 시점은 언제인가?
 
 ![카솔이 Kubernetes 학습과 다중 노드 운영 목적을 스토리지 DNS 백업 책임과 함께 비교하는 판단표](./page-05.webp)
 
-먼저 목적을 한 문장으로 적어 보세요. 목적이 “서버 한 대에서 소수의 컨테이너를 편하게 실행한다”라면 Compose나 운영체제 서비스 관리자가 더 단순할 수 있습니다. 반대로 Kubernetes API, 선언형 배포, 스케줄링, Operator, 다중 노드 장애를 배우려는 목적이라면 단일 노드 k3s도 충분히 의미가 있습니다.
+단순히 집에서 토이 프로젝트 몇 개 띄우는 것이 목적이라면 Docker Compose만으로도 충분히 훌륭합니다. k3s가 아무리 가벼워졌더라도 **네트워크 CNI, 인그레스 라우팅, PVC 스토리지 바인딩, 인증서 갱신**이라는 쿠버네티스 특유의 운영 복잡도는 여전히 존재하기 때문입니다.
 
-아래 질문에서 오른쪽 책임까지 받아들일 수 있을 때 도입이 오래갑니다.
+하지만 다음과 같은 목표가 있다면 홈랩 k3s는 최고의 실전 훈련장이 됩니다:
 
-- Kubernetes API와 운영 모델 자체를 배울 이유가 있는가?
-- 노드를 늘리거나 워크로드를 다른 노드로 옮길 필요가 있는가?
-- server와 agent의 역할, 데이터스토어 토폴로지를 설명할 수 있는가?
-- 영구 스토리지와 백업을 복제와 별개로 설계할 수 있는가?
-- DNS·CNI·Ingress·인증서 가운데 내가 운영할 범위를 정했는가?
-- 정기적으로 업그레이드하고 장애 뒤 복구를 연습할 시간이 있는가?
+1. **실무 환경의 쿠버네티스 API/오브젝트(Deployment, Service, Ingress, HPA)를 온몸으로 체득하고 싶을 때**
+2. **미니 PC 여러 대를 묶어 실제 다중 노드 분산 환경과 장애 복구(Self-healing)를 경험하고 싶을 때**
+3. **ArgoCD, Prometheus, Grafana, Vault 같은 클라우드 네이티브 GitOps/모니터링 스택을 프로덕션과 동일하게 구축해보고 싶을 때**
 
-한두 항목에 아직 답하지 못해도 설치를 미룰 필요는 없습니다. 다만 학습용 단일 노드와 24시간 서비스를 맡길 운영 클러스터를 같은 안전 수준으로 취급하지는 마세요. 처음부터 목적과 실패 허용 범위를 분리하면 k3s는 좋은 학습 도구가 되고, 나중에는 어떤 계층을 강화해야 하는지도 보입니다.
+## 다메카솔의 해석: 툴 도입보다 중요한 것은 운영 책임의 범위
 
-## 자주 묻는 질문
+시니어 엔지니어로서 새로운 기술 스택을 선택할 때 가장 경계해야 할 것은 "남들이 다 쓰니까 멋있어 보여서 도입하는 것"입니다.
 
-### k3s는 Kubernetes와 다른 기술인가요?
+홈랩에 k3s를 올리기로 결정했다면 다음 3가지를 명확히 준비해야 합니다:
 
-별도의 오케스트레이션 모델이 아닙니다. k3s는 Kubernetes 적합성을 갖춘 배포판이며 Kubernetes API와 컨트롤러 모델을 사용합니다. 차이는 설치 방식, 기본 데이터스토어, 함께 묶이는 구성요소와 기본값에 있습니다.
+1. **학습용과 프로덕션용의 분리**: 단일 노드 k3s로 가볍게 실험하며 감을 익힌 뒤, 24시간 가용성이 필요한 서비스는 3노드 HA 클러스터로 단계적으로 마이그레이션하세요.
+2. **영구 스토리지(Persistent Volume) 전략 수립**: 파드는 죽어도 다시 뜨지만, 로컬 디스크에만 저장된 데이터는 노드 장애 시 유실됩니다. Longhorn이나 NFS 스토리지 클래스를 반드시 초기에 설계해야 합니다.
+3. **백업과 복구 리허설**: etcd 스냅샷 백업과 볼륨 백업을 정기적으로 수행하고, 빈 머신에서 클러스터를 처음부터 다시 복원하는 훈련을 거쳐야 진짜 내 인프라가 됩니다.
 
-### 단일 노드 k3s에도 의미가 있나요?
+## 함께 읽을 인프라 글
 
-학습 목적이라면 의미가 있습니다. Deployment, Service, Ingress, PersistentVolume, Operator 같은 Kubernetes 개념을 작은 환경에서 익힐 수 있습니다. 노드 한 대의 장애를 견디는 고가용성은 여기서 한 단계 더 나아간 구성입니다.
-
-### NAS에 k3s를 바로 설치해도 되나요?
-
-장비 이름보다 운영체제와 커널 조건을 먼저 확인해야 합니다. K3s는 현대적인 Linux와 cgroup을 전제로 하며, 지원되지 않는 NAS 전용 OS에서는 업데이트나 커널 모듈, 네트워크 구성이 걸림돌이 될 수 있습니다. 이런 경우에는 NAS 위의 Linux VM이나 별도 미니 PC가 경계를 더 분명하게 만듭니다.
-
-이 개념 글이 나온 실제 구축 배경은 [홈랩 쿠버네티스 구축기 1편: RAM은 32GB인데 Airflow DAG가 계속 실패한 이유](/posts/why-homelab-kubernetes/)에서 이어집니다.
+- [홈랩 쿠버네티스 구축기: 32GB RAM 뒤에 숨겨진 CPU 병목](/posts/why-homelab-kubernetes/)
+- [K3s etcd 쿼럼 원리와 3노드 HA 아키텍처](/posts/three-node-etcd-quorum-context/)
 
 ## 출처
 
-- Kubernetes, [Overview](https://kubernetes.io/docs/concepts/overview/)
-- Kubernetes, [Kubernetes Components](https://kubernetes.io/docs/concepts/overview/components/)
-- Kubernetes, [Objects In Kubernetes](https://kubernetes.io/docs/concepts/overview/working-with-objects/)
-- Kubernetes, [Container Runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
-- Kubernetes, [Kubernetes Self-Healing](https://kubernetes.io/docs/concepts/architecture/self-healing/)
-- K3s, [K3s - Lightweight Kubernetes](https://docs.k3s.io/)
-- K3s, [Architecture](https://docs.k3s.io/architecture)
-- K3s, [Cluster Datastore](https://docs.k3s.io/datastore)
-- K3s, [Requirements](https://docs.k3s.io/installation/requirements)
-- K3s, [Resource Profiling](https://docs.k3s.io/reference/resource-profiling)
+- [Kubernetes Documentation — Concepts & Architecture Overview](https://kubernetes.io/docs/concepts/overview/)
+- [K3s Documentation — Lightweight Kubernetes Architecture](https://docs.k3s.io/architecture)
+- [K3s Documentation — Cluster Datastore Options](https://docs.k3s.io/datastore)
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
