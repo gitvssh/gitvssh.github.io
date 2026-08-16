@@ -9,7 +9,6 @@ track: tech_column
 subtype: opinion
 category: ai_philosophy
 tags:
-  - "AI 활용"
   - "AI 윤리"
   - "LLM"
 audience: general

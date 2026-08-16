@@ -7,11 +7,9 @@ updatedAt: 2026-07-25
 track: news
 subtype: release_announcement
 tags:
-  - GitHub Copilot
-  - AI 활용
-  - Claude Opus 5
-  - AI 모델
-  - 사용량 기반 과금
+  - "AI 코딩 도구"
+  - "AI 모델"
+  - "AI 활용"
 audience: developer
 readerOutcome: "Claude Opus 5를 GitHub Copilot에서 선택할 수 있는 조건과 사용 전 확인할 비용·보호 장치를 판단합니다."
 contentFormats:
@@ -74,7 +72,7 @@ GitHub Copilot은 입력, 출력, 캐시 입력, 캐시 쓰기 토큰을 모델�
 
 ## 다메카솔의 사용 전 체크
 
-새 모델을 선택하기 전에는 다섯 질문이면 충분합니다.
+저라면 이 가운데 비용부터 확인하겠습니다. 요금제와 정책은 막히면 바로 알 수 있지만, 캐시 쓰기까지 얹히는 장기 작업의 비용은 청구서가 와야 보이기 때문입니다. 새 모델을 선택하기 전에는 다섯 질문이면 충분합니다.
 
 - 내 요금제가 Pro+, Max, Business, Enterprise 가운데 하나인가?
 - 조직 계정이라면 관리자가 Claude Opus 5 정책을 켰는가?
@@ -90,4 +88,4 @@ Claude Opus 5가 Copilot에 들어왔다는 사실은 출발점입니다. 실제
 - [GitHub Docs — Supported AI models in GitHub Copilot](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
 - [GitHub Docs — Models and pricing for GitHub Copilot](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

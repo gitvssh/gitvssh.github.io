@@ -21,7 +21,20 @@ const posts = sortPosts(
       !data.draft && data.track === 'tech_column' && data.category === categoryKey,
   ),
 );
-const seriesCount = new Set(posts.flatMap((post) => post.data.series?.slug ?? [])).size;
+const seriesDirectory = new Map<string, { title: string; count: number }>();
+
+for (const post of posts) {
+  const series = post.data.series;
+  if (!series) continue;
+
+  const existing = seriesDirectory.get(series.slug);
+  seriesDirectory.set(series.slug, {
+    title: series.title,
+    count: (existing?.count ?? 0) + 1,
+  });
+}
+
+const seriesEntries = [...seriesDirectory.entries()];
 ---
 
 <BaseLayout title={category.label} description={category.description}>
@@ -30,8 +43,30 @@ const seriesCount = new Set(posts.flatMap((post) => post.data.series?.slug ?? []
       <p class="eyebrow">TOPIC CATEGORY</p>
       <h1>{category.label}</h1>
       <p>{category.description}</p>
-      <p class="listing-summary">{posts.length}개의 글 · {seriesCount}개의 연재</p>
+      <p class="listing-summary">{posts.length}개의 글 · {seriesEntries.length}개의 연재</p>
     </header>
+
+    {
+      seriesEntries.length > 0 && (
+        <section class="category-directory" aria-labelledby="subcategory-directory-heading">
+          <div class="section-heading">
+            <h2 id="subcategory-directory-heading">소카테고리</h2>
+          </div>
+          <div class="category-index__grid">
+            {seriesEntries.map(([slug, series]) => (
+              <a
+                class="category-index__item"
+                style={`--category-accent: var(--${category.tone})`}
+                href={`/series/${slug}/`}
+              >
+                <span>{series.title}</span>
+                <p>{series.count}편 · 순서대로 읽기</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
 
     {
       posts.length > 0 ? (

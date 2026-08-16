@@ -7,10 +7,8 @@ updatedAt: 2026-07-22
 track: news
 subtype: announcement_analysis
 tags:
-  - AI 인프라
-  - NVIDIA Vera Rubin
-  - AI 추론
-  - 에너지 효율
+  - "AI 하드웨어"
+  - "AI 인프라"
 audience: builder
 readerOutcome: "Vera Rubin의 양산 확대와 랙 단위 설계의 의미를 설명하고 전력당 토큰 수치를 조건과 함께 검토할 수 있습니다."
 contentFormats:
@@ -63,7 +61,7 @@ CoreWeave는 먼저 랙을 가동하고 측정값을 공개했습니다. 다른 
 
 ## 다메카솔의 해석: 최고 수치보다 측정 경계를 먼저 맞추세요
 
-Vera Rubin은 AI 인프라의 계산 단위를 GPU 한 장에서 랙과 데이터센터로 넓혀 보여 줍니다. 실제 도입 판단도 같은 경계에서 해야 합니다.
+저는 이런 발표의 랙 단위 수치를 제 워크로드로 환산하기 전까지는 판단을 유보하는 편입니다. Vera Rubin은 AI 인프라의 계산 단위를 GPU 한 장에서 랙과 데이터센터로 넓혀 보여 주고, 실제 도입 판단도 같은 경계에서 해야 합니다.
 
 - 워크로드: 내가 쓰는 모델과 입력·출력 길이로 측정합니다.
 - 품질과 정밀도: 정확도나 출력 품질을 유지한 비교인지 확인합니다.
@@ -80,4 +78,4 @@ Vera Rubin은 AI 인프라의 계산 단위를 GPU 한 장에서 랙과 데이�
 - [CoreWeave 발표 — First-Ever Measured Vera Rubin NVL72 Silicon Performance Stats](https://coreweave.com/blog/nvidia-vera-rubin-nvl72-on-coreweave-10x-more-tokens-per-megawatt-than-blackwell)
 - [NVIDIA 기술 발표 — Spectrum-6 Arrives in Gigascale AI Factories](https://blogs.nvidia.com/blog/nvidia-spectrum-six-arrives-in-gigascale-ai-factories/)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

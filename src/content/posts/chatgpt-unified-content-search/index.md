@@ -7,11 +7,8 @@ updatedAt: 2026-07-15
 track: news
 subtype: release_announcement
 tags:
-  - ChatGPT
-  - AI 활용
-  - 통합 검색
-  - 프로젝트
-  - 파일 검색
+  - "AI 활용"
+  - "LLM"
 audience: general
 readerOutcome: "내 ChatGPT 자료 검색과 웹 검색을 구분하고 콘텐츠 유형 필터로 원하는 작업을 다시 열 수 있다."
 contentFormats:
@@ -106,4 +103,4 @@ OpenAI는 새 검색을 출시했다고 밝혔지만 정확도 개선 폭이나 
 - [OpenAI — File storage and Library in ChatGPT](https://help.openai.com/en/articles/20001052/library)
 - [OpenAI — ChatGPT Search](https://help.openai.com/en/articles/9237897-chatgpt-search)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

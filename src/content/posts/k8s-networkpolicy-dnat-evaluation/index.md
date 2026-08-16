@@ -1,6 +1,6 @@
 ---
 title: "Kubernetes NetworkPolicy 간헐적 connection refused: DNAT 뒤 목적지를 확인한 기록"
-description: "독자는 Service 경로의 간헐적 connection refused에서 DNAT 뒤 실제 목적지를 확인하고 대상 종류에 맞는 정책 표현을 선택할 수 있다."
+description: "Service 경로에서 connection refused가 간헐적으로 뜬다면 정책이 실제로 평가하는 목적지를 의심해야 합니다. DNAT 뒤 목적지를 확인하고 대상 종류에 맞는 NetworkPolicy를 고른 기록입니다."
 slug: "k8s-networkpolicy-dnat-evaluation"
 publishedAt: 2026-07-20
 updatedAt: 2026-07-20
@@ -8,11 +8,8 @@ track: tech_column
 subtype: case_study
 category: network
 tags:
-  - "kubernetes networkpolicy"
-  - "dnat"
-  - "kube router"
-  - "service clusterip"
-  - "intermittent failure debugging"
+  - "Kubernetes"
+  - "네트워킹"
 audience: developer
 readerOutcome: "독자는 Service 경로의 간헐적 connection refused에서 DNAT 뒤 실제 목적지를 확인하고 대상 종류에 맞는 정책 표현을 선택할 수 있다."
 contentFormats:
@@ -144,6 +141,6 @@ Kubernetes 문서는 `ipBlock`을 주로 클러스터 외부 IP 범위를 선택
 - kube-router, [Network Policy Controller source](https://github.com/cloudnativelabs/kube-router/blob/master/pkg/controllers/netpol/network_policy_controller.go)
 - 내부 운영 기록: 실패 패턴 I-39, 인프라 CHANGELOG 2026-07-17. 공개 글에는 인프라 식별자와 원문 경로를 노출하지 않았습니다.
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
 
 Updated: 2026-07-21

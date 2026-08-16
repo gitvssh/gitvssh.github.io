@@ -7,10 +7,8 @@ updatedAt: 2026-07-20
 track: news
 subtype: incident_security
 tags:
-  - Hugging Face
-  - AI 보안
-  - 액세스 토큰
-  - 침해 대응
+  - "AI 보안"
+  - "AI 에이전트"
 audience: developer
 readerOutcome: "허깅페이스가 공개한 침입 경로와 아직 확인되지 않은 영향 범위를 구분하고, 액세스 토큰 교체와 최근 활동 점검을 바로 실행해야 하는 이유를 설명할 수 있다."
 contentFormats:
@@ -65,7 +63,7 @@ draft: false
 
 ## 다메카솔의 해석: 토큰도 공격 표면으로 관리해야 합니다
 
-이번 사고는 공개 모델이 변조됐다는 증거가 아닙니다. 더 직접적인 운영 교훈은 데이터 처리 경로와 장기 자격 증명을 별도 공격 표면으로 취급해야 한다는 점입니다.
+저는 이번 사고의 교훈이 모델 자체보다 데이터 처리 경로와 장기 자격 증명에 있다고 봅니다. 공개 모델이 변조됐다는 증거는 발표에 없었습니다.
 
 허깅페이스 공식 문서는 앱이나 사용처마다 토큰을 하나씩 나누고, 운영 환경에서는 필요한 리소스에만 접근하는 fine-grained 토큰을 권고합니다. 한 토큰이 유출돼도 다른 사용처까지 함께 멈추거나 넓은 권한이 노출되지 않게 만드는 구조입니다.
 
@@ -85,5 +83,5 @@ draft: false
 - [허깅페이스 User access tokens 문서](https://huggingface.co/docs/hub/security-tokens)
 - [허깅페이스 Audit Logs 문서](https://huggingface.co/docs/hub/audit-logs)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
 

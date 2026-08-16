@@ -1,17 +1,14 @@
 ---
 title: "AI가 논문 도표를 다시 그리지 않고 고치는 법"
-description: "래스터 재생성과 편집 가능한 벡터 원시 요소 편집의 차이, 저자 개정 이력에서 편집 스킬을 축적하는 루프, 현재 실험의 한계를 설명할 수 있다."
+description: "화살표 하나만 옮겨 달라고 했는데 AI가 도표 전체를 다시 그린다면 래스터를 재생성했기 때문입니다. SciDiagramEdit은 벡터 원시 요소를 편집하고 저자 개정 이력에서 편집 스킬을 축적합니다. 현재 실험의 한계도 함께 봅니다."
 slug: "scidiagramedit-paper-figure-revision"
 publishedAt: 2026-07-18
 updatedAt: 2026-07-18
 track: paper
 subtype: systems
 tags:
-  - "scientific diagram"
-  - "svg editing"
-  - "agent skill"
-  - "paper revision"
-  - "human in the loop"
+  - "AI 에이전트"
+  - "AI 활용"
 audience: developer
 readerOutcome: "래스터 재생성과 편집 가능한 벡터 원시 요소 편집의 차이, 저자 개정 이력에서 편집 스킬을 축적하는 루프, 현재 실험의 한계를 설명할 수 있다."
 contentFormats:
@@ -103,6 +100,6 @@ SciDiagramEdit은 모든 것을 억지로 벡터화하지 않습니다. 텍스�
 - [SciDiagramEdit: Learning to Edit Scientific Diagrams from Paper Revisions — arXiv 초록](https://arxiv.org/abs/2607.15272)
 - [SciDiagramEdit arXiv v1 PDF](https://arxiv.org/pdf/2607.15272)
 
-이 글의 만화 이미지는 AI로 생성했습니다. 논문 그림·표·사례는 복제하지 않고 의미를 보존해 새 도식으로 구성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 논문의 그림·표·스크린샷은 복제하지 않고 핵심 의미를 새 장면으로 재구성했습니다.
 
 Updated: 2026-07-18

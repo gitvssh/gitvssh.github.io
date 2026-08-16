@@ -7,10 +7,9 @@ updatedAt: 2026-07-16
 track: news
 subtype: release_announcement
 tags:
-  - NVIDIA Jetson
-  - 엣지 AI
-  - 로보틱스
-  - 피지컬 AI
+  - "AI 하드웨어"
+  - "로보틱스"
+  - "AI 인프라"
 audience: builder
 readerOutcome: "T3000·T2000의 핵심 차이와 에뮬레이션·실물 출시 시점을 구분해 지금 시작할 수 있는 개발 범위를 판단할 수 있다."
 contentFormats:
@@ -71,7 +70,7 @@ NVIDIA는 T3000이 T5000의 약 절반 크기와 전력으로 멀티모달 추�
 
 ## 다메카솔의 해석: 이번 발표에서 봐야 할 것
 
-이번 발표의 핵심은 최고 성능 숫자 하나가 아닙니다. 128GB급 개발 키트보다 작은 32GB·16GB 메모리 구간까지 Thor 계열을 넓혀, 로봇과 비전 AI 개발자가 비용과 전력 범위에 맞는 모듈을 선택하게 하려는 방향이 더 중요합니다.
+저는 이번 발표의 핵심이 최고 성능 숫자보다 고를 수 있는 메모리 구간이 넓어진 데 있다고 봅니다. 128GB급 개발 키트 아래로 32GB·16GB까지 Thor 계열이 내려오면서, 로봇과 비전 AI 개발자가 비용과 전력 범위에 맞춰 모듈을 고를 수 있게 됐습니다.
 
 또 하나는 소프트웨어입니다. NVIDIA가 공개한 Jetson Agent Skills는 Orin과 Thor에서 진단, 메모리 감사, 추론 메모리 튜닝, BSP 맞춤화 같은 작업을 에이전트가 따르도록 돕습니다. 다만 “최적화로 더 작은 메모리에서도 충분하다”는 판단은 실제 모델, 센서 입력, 지연 시간 목표로 직접 검증해야 합니다.
 
@@ -87,4 +86,4 @@ NVIDIA는 T3000이 T5000의 약 절반 크기와 전력으로 멀티모달 추�
 - [NVIDIA Jetson Thor 공식 제품 페이지](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/)
 - [NVIDIA Developer Forums: Jetson Agent Skills](https://forums.developer.nvidia.com/t/jetson-agent-skills-ai-assisted-workflows-for-device-bsp-customization/374150)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

@@ -7,10 +7,9 @@ updatedAt: 2026-07-22
 track: paper
 subtype: empirical
 tags:
-  - AI 에이전트
-  - AI 안전
-  - 권력 추구
-  - 벤치마크
+  - "AI 안전"
+  - "AI 에이전트"
+  - "벤치마크"
 audience: developer
 readerOutcome: "SysAdmin 벤치마크의 실험 설계, 보정 결과, 별도 실패 유형과 일반화 한계를 구분해 설명할 수 있다."
 contentFormats:
@@ -107,7 +106,7 @@ Gemini 2.5 계열에서는 아직 전체 지시를 받지 않은 다음 작업�
 
 ## 다메카솔의 해석: 단일 안전 점수보다 실패 축을 분리하세요
 
-이 논문의 실무적 가치는 “현재 모델은 몇 퍼센트 안전하다”는 숫자보다 평가 구조에 있습니다. 에이전트 운영 로그에서 다음 항목을 따로 기록하면 한 지표가 다른 실패를 가리는 일을 줄일 수 있습니다.
+저는 이 논문에서 가져갈 것이 안전 점수가 아니라 평가 구조라고 봅니다. 에이전트 운영 로그에서 다음 항목을 따로 기록하면 한 지표가 다른 실패를 가리는 일을 줄일 수 있습니다.
 
 - 완료율과 정상 경로 이탈
 - 요청 범위를 넘은 권한·자원 획득
@@ -137,4 +136,4 @@ Gemini 2.5 계열에서는 아직 전체 지시를 받지 않은 다음 작업�
 - [Mana Azarm - University of San Francisco 공식 프로필](https://www.usfca.edu/management/faculty/mana-azarm)
 - [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
 
-이 글의 만화 이미지는 AI로 생성했습니다. 논문의 그림·표·스크린샷을 복제하지 않고, 핵심 의미를 새로운 장면으로 재구성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 논문의 그림·표·스크린샷은 복제하지 않고 핵심 의미를 새 장면으로 재구성했습니다.

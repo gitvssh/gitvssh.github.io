@@ -7,9 +7,8 @@ updatedAt: 2026-07-23
 track: news
 subtype: fact_brief
 tags:
-  - GitHub Models
-  - GitHub
-  - AI
+  - "AI 모델"
+  - "AI 활용"
 cover: "./cover.webp"
 coverAlt: "카솔이 GitHub Models의 2026년 7월 30일 종료 일정을 가리키는 표지"
 sourceUrl: "https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/"
@@ -35,6 +34,8 @@ draft: false
 GitHub Models는 **2026년 7월 30일 완전히 종료**됩니다. GitHub의 7월 1일 공식 공지에 따르면 playground뿐 아니라 model catalog, inference API, BYOK endpoint와 관련 UI도 종료 대상이며, 활성 사용자를 포함한 모든 고객에게 적용됩니다.
 
 카솔과 함께 종료 범위와 준비 일정을 짧게 정리했습니다.
+
+글·해설: 다메카솔
 
 ## 핵심 내용
 
@@ -73,4 +74,4 @@ GitHub는 모델 접근이 필요한 새 프로젝트와 기존 프로젝트에�
 
 - GitHub Changelog, [GitHub Models is being fully retired on July 30, 2026](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/), 2026-07-01
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

@@ -7,10 +7,8 @@ updatedAt: 2026-07-18
 track: news
 subtype: announcement_analysis
 tags:
-  - AI 에이전트
-  - 경쟁 정책
-  - 상호운용성
-  - 개방형 표준
+  - "AI 에이전트"
+  - "AI 규제"
 audience: builder
 readerOutcome: "프랑스 경쟁당국이 지적한 AI 에이전트 시장의 확장 장벽과 플랫폼화 위험을 설명하고, 상호운용성·데이터 이동성·개방형 표준을 제품 검토 항목으로 구분할 수 있다."
 contentFormats:
@@ -68,7 +66,7 @@ draft: false
 
 ## 다메카솔의 해석: 성능표에 ‘갈아탈 수 있는가’를 추가하자
 
-기능 비교표에는 보통 모델 성능, 가격, 도구 수가 먼저 놓입니다. 이제는 다른 서비스와 연결되는지, 대화·작업 기록을 내보낼 수 있는지, 추천 순서와 제휴 관계를 설명하는지도 함께 확인할 필요가 있습니다.
+저는 앞으로 에이전트 비교표에서 “갈아탈 수 있는가”가 성능 숫자보다 위에 놓일 거라고 봅니다. 기능 비교표에는 보통 모델 성능, 가격, 도구 수가 먼저 놓입니다. 이제는 다른 서비스와 연결되는지, 대화·작업 기록을 내보낼 수 있는지, 추천 순서와 제휴 관계를 설명하는지도 함께 확인할 필요가 있습니다.
 
 개발 단계에서는 네 가지 질문으로 바꿀 수 있습니다.
 
@@ -85,5 +83,5 @@ draft: false
 - [프랑스 경쟁당국 의견서 26-A-05 공식 페이지](https://www.autoritedelaconcurrence.fr/fr/avis/relatif-au-fonctionnement-concurrentiel-du-secteur-des-agents-dintelligence-artificielle)
 - [프랑스 경쟁당국 의견서 발표자료 PDF](https://www.autoritedelaconcurrence.fr/sites/default/files/2026-07/Avis_26-A-05_ADLC_conference_compressed.pdf)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
 

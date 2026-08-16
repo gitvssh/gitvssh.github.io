@@ -1,17 +1,14 @@
 ---
 title: "Meta AI가 이메일·캘린더를 연결해 반복 작업을 맡는다"
-description: "독자는 Meta AI의 앱 연결, 반복 작업, 리서치·슬라이드 기능과 선택 지역 롤아웃·개인정보 경계를 구분해 사용 전 확인 항목을 정할 수 있다."
+description: "Meta AI가 이메일·캘린더 앱에 연결해 계획을 세우고 반복 작업을 처리합니다. 2026년 7월 24일 발표에서 기능 범위, 선택 지역 롤아웃, 개인정보 경계가 각각 어디까지인지 나눠 정리했습니다."
 slug: "meta-ai-action-features"
 publishedAt: 2026-07-26
 updatedAt: 2026-07-26
 track: news
 subtype: release_announcement
 tags:
-  - "meta ai"
-  - "AI 활용"
   - "AI 에이전트"
-  - "email calendar connectors"
-  - "recurring tasks"
+  - "AI 활용"
 audience: general
 readerOutcome: "독자는 Meta AI의 앱 연결, 반복 작업, 리서치·슬라이드 기능과 선택 지역 롤아웃·개인정보 경계를 구분해 사용 전 확인 항목을 정할 수 있다."
 contentFormats:
@@ -43,7 +40,7 @@ Meta의 발표에서 가장 큰 변화는 Meta AI가 답을 만드는 데서 멈
 
 ![웹과 문서 조각이 연구 코어에 모여 무문자 슬라이드 묶음으로 바뀌고 조절 경로가 방향을 바꾸는 만화](./page-02.webp)
 
-한 번 예약한 알림만이 새 범위의 전부는 아닙니다. Meta는 Meta AI가 웹의 정보, 연구 논문, Meta 앱에서 크리에이터와 커뮤니티가 공유한 내용을 모아 리서치 결과를 만들고, 이를 슬라이드로 바꿀 수 있다고 밝혔습니다. 결과의 정확성이나 출처 품질을 독립적으로 검증했다는 뜻은 아니므로, 중요한 판단에는 원문을 다시 확인해야 합니다.
+새 범위는 한 번 예약한 알림보다 넓습니다. Meta는 Meta AI가 웹의 정보, 연구 논문, Meta 앱에서 크리에이터와 커뮤니티가 공유한 내용을 모아 리서치 결과를 만들고, 이를 슬라이드로 바꿀 수 있다고 밝혔습니다. 결과의 정확성이나 출처 품질을 독립적으로 검증했다는 뜻은 아니므로, 중요한 판단에는 원문을 다시 확인해야 합니다.
 
 작업이 끝날 때까지 기다릴 필요도 없다고 Meta는 설명합니다. 보고서·프레젠테이션·계획을 만드는 동안 초점, 말투, 분량을 바꾸라고 지시하면 진행 중인 결과를 수정합니다. [OpenAI Presence가 업무 에이전트의 권한과 평가를 운영 문제로 다룬 사례](/posts/openai-presence-agent-operations/)처럼, 생성 능력보다 중간 수정과 결과 확인 경로가 실제 사용성을 좌우합니다.
 
@@ -53,7 +50,7 @@ Meta의 발표에서 가장 큰 변화는 Meta AI가 답을 만드는 데서 멈
 
 현재 이용 가능 범위는 발표 문구보다 좁을 수 있습니다. Meta는 7월 24일부터 Meta AI 앱과 meta.ai의 **선택 지역**에 새 기능을 배포하기 시작했다고 밝혔지만, 발표문에는 해당 국가의 전체 목록이 없습니다. 더 많은 국가와 표면으로 확대하고 WhatsApp에도 몇 주 안에 가져오겠다는 내용은 현재 상태가 아니라 미래 계획입니다.
 
-Incognito Chat도 일반 연결 작업과 같은 뜻이 아닙니다. Meta는 Incognito Chat을 일반 Meta AI 대화와 분리된 임시·비저장 대화 경로로 설명했으며, 별도의 롤아웃 일정이 적용됩니다. 연결한 이메일·캘린더 맥락과 반복 작업이 자동으로 Incognito 처리된다고 발표하지는 않았습니다.
+Incognito Chat은 일반 연결 작업과 다른 조건에서 동작합니다. Meta는 Incognito Chat을 일반 Meta AI 대화와 분리된 임시·비저장 대화 경로로 설명했으며, 별도의 롤아웃 일정이 적용됩니다. 연결한 이메일·캘린더 맥락과 반복 작업이 자동으로 Incognito 처리된다고 발표하지는 않았습니다.
 
 ## 사용 전에 네 가지를 확인합니다
 
@@ -72,6 +69,6 @@ Muse Spark 1.1은 이 기능을 구동하는 모델입니다. Meta는 계획, �
 - [Meta AI — Introducing Muse Spark 1.1](https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/)
 - [Meta — Introducing a Completely Private Way to Chat With AI](https://about.fb.com/news/2026/05/incognito-chat-whatsapp-meta-ai/)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
 
 Updated: 2026-07-26

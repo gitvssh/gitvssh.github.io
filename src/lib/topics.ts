@@ -38,6 +38,10 @@ function normalizedTagSet(tags: string[]) {
 }
 
 export function postMatchesTopic(post: Post, slug: TopicSlug) {
+  if (slug === 'ai-use' && post.data.category === 'ai_philosophy') {
+    return false;
+  }
+
   const postTags = normalizedTagSet(post.data.tags);
   const topic = TOPICS[slug];
   const tagMatches = topic.sourceTags.some((tag) =>

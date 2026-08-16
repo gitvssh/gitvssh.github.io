@@ -7,11 +7,9 @@ updatedAt: 2026-07-17
 track: news
 subtype: release_announcement
 tags:
-  - Gemini
-  - AI 활용
-  - Parallel Web Search
-  - 웹 그라운딩
-  - AI 에이전트
+  - "AI 에이전트"
+  - "AI 활용"
+  - "LLM"
 audience: builder
 readerOutcome: "Parallel Web Search가 추가된 범위와 Preview, 데이터 전달, 과금 조건을 구분해 도입 전 확인 항목을 정할 수 있다."
 contentFormats:
@@ -85,7 +83,7 @@ Zero Data Retention은 기본값이 아닙니다. 공식 문서 기준으로 ZDR
 
 ## 다메카솔의 해석: 연결보다 검증 절차가 먼저다
 
-네이티브 통합은 에이전트가 웹 근거를 얻는 연결 단계를 줄여 줍니다. 하지만 운영 적합성까지 자동으로 해결하지는 않습니다. 최소한 다음 다섯 항목을 작은 테스트에서 확인하는 것이 좋습니다.
+저라면 이 통합을 도입 결정이 아니라 검증 대상으로 다루겠습니다. 네이티브 통합은 에이전트가 웹 근거를 얻는 연결 단계를 줄여 줍니다. 하지만 운영 적합성까지 자동으로 해결하지는 않습니다. 최소한 다음 다섯 항목을 작은 테스트에서 확인하는 것이 좋습니다.
 
 - 선택한 Gemini 모델이 현재 지원되는가
 - 어떤 입력이 검색 쿼리로 바뀌어 외부로 전달되는가
@@ -99,4 +97,4 @@ Zero Data Retention은 기본값이 아닙니다. 공식 문서 기준으로 ZDR
 - [Google Cloud Documentation — Grounding with Parallel Web Search](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-parallel)
 - [Google Cloud Documentation — Grounding overview](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/overview)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

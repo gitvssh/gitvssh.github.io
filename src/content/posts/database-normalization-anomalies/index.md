@@ -9,10 +9,8 @@ track: tech_column
 subtype: concept
 category: database
 tags:
-  - 데이터베이스
-  - 정규화
-  - 이상 현상
-  - 관계형 모델
+  - "데이터베이스"
+  - "데이터 모델링"
 audience: developer
 readerOutcome: "주문 통합 테이블에서 삽입·갱신·삭제 이상을 찾아 역할별 테이블로 분리하고 반정규화의 책임을 설명할 수 있다."
 contentFormats:
@@ -253,4 +251,4 @@ PostgreSQL 공식 문서의 정의대로 PK는 한 행을 유일하게 식별하
 - [Google Cloud — What is database normalization?](https://cloud.google.com/discover/what-is-database-normalization)
 - [Microsoft Learn — Modeling for Performance](https://learn.microsoft.com/en-us/ef/core/performance/modeling-for-performance)
 
-이 글의 만화 이미지는 AI로 생성했으며, 모든 공개 텍스트는 결정적 레터링으로 별도 합성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다.

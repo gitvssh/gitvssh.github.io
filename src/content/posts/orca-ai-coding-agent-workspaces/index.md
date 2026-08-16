@@ -1,6 +1,6 @@
 ---
 title: "Orca란? 여러 AI 코딩 에이전트의 작업 공간을 나누는 도구"
-description: "독자는 Orca가 모델이나 에이전트 자체가 아니라 여러 AI 코딩 에이전트의 worktree와 검토 흐름을 정리하는 환경임을 이해하고, 권한 우회 기본값을 검토한 뒤 안전한 첫 사용 범위를 정할 수 있다."
+description: "Orca는 Codex나 Claude Code를 대체하는 모델이 아니라, 여러 코딩 에이전트를 각자의 Git worktree로 나눠 주는 데스크톱 환경입니다. 권한 우회 기본값과 안전한 첫 사용 범위까지 살펴봅니다."
 slug: "orca-ai-coding-agent-workspaces"
 publishedAt: 2026-07-25
 updatedAt: 2026-07-25
@@ -8,13 +8,10 @@ track: tech_column
 subtype: architecture
 category: ai_tools
 tags:
-  - "orca"
+  - "AI 코딩 도구"
+  - "Git"
+  - "코드 리뷰"
   - "AI 활용"
-  - "AI 에이전트"
-  - "git worktree"
-  - "codex"
-  - "claude code"
-  - "code review"
 audience: builder
 readerOutcome: "독자는 Orca가 모델이나 에이전트 자체가 아니라 여러 AI 코딩 에이전트의 worktree와 검토 흐름을 정리하는 환경임을 이해하고, 권한 우회 기본값을 검토한 뒤 안전한 첫 사용 범위를 정할 수 있다."
 contentFormats:
@@ -114,6 +111,6 @@ Orca의 가치는 에이전트를 많이 띄우는 데 있지 않습니다. **�
 - [Diff viewer](https://www.onorca.dev/docs/review/diff-viewer)
 - [Git worktree 공식 문서](https://git-scm.com/docs/git-worktree)
 
-> 이 글의 일러스트는 생성형 AI로 만든 뒤, 본문의 한글 문구를 별도 레터링으로 합성했습니다. 제품 화면이나 로고를 복제하지 않은 설명용 이미지입니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·제품 화면·문서 도표 등 외부 이미지 자산은 사용하지 않았습니다.
 
 _확인일: 2026-07-25. Orca의 지원 에이전트와 권한 기본값은 바뀔 수 있으므로 실제 도입 전 공식 문서를 다시 확인하세요._

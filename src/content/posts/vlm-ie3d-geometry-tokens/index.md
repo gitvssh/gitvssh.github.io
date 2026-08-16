@@ -1,17 +1,14 @@
 ---
 title: "사진만 보고 3D를 읽는 두 지도, VLM-IE3D가 결합한 것"
-description: "VLM-IE3D의 IGT, EGT, 3D-aware adapter 역할을 구분하고, 보고된 벤치마크 개선과 실제 적용 한계를 함께 설명할 수 있다."
+description: "영상 속 물체는 맞히면서 둘 사이의 거리는 틀리는 VLM이 있습니다. VLM-IE3D는 전역 배치를 읽는 IGT와 세부 거리를 재는 EGT를 3D-aware adapter로 합칩니다. 보고된 개선폭과 적용 한계를 함께 봅니다."
 slug: "vlm-ie3d-geometry-tokens"
 publishedAt: 2026-07-26
 updatedAt: 2026-07-26
 track: paper
 subtype: systems
 tags:
-  - "vision language model"
-  - "3d reasoning"
-  - "geometry token"
-  - "rgb video"
-  - "spatial grounding"
+  - "멀티모달 AI"
+  - "벤치마크"
 audience: developer
 readerOutcome: "VLM-IE3D의 IGT, EGT, 3D-aware adapter 역할을 구분하고, 보고된 벤치마크 개선과 실제 적용 한계를 함께 설명할 수 있다."
 contentFormats:
@@ -78,7 +75,7 @@ ScanRefer에서 정제 전 Acc@0.25는 Qwen2.5-VL-3B의 34.0%에서 VLM-IE3D의 
 
 ![성인형 카솔이 벤치마크 문과 실제 방 사이에서 재구성 오차, 지연 시간, 실제 장면 조건을 점검하는 만화](./page-05.webp)
 
-논문에는 별도의 limitations 절이 없습니다. 그래도 평가 경계는 읽을 수 있습니다. 주요 장면 이해 실험은 실내 데이터셋에 집중했고, 작업군마다 모델을 따로 학습했으며, RGB에서 기하를 재구성하는 앞단의 오차도 최종 위치 추정에 전달될 수 있습니다.
+저라면 이 모델을 검토할 때 평균 점수보다 앞단의 재구성 오차부터 재보겠습니다. 논문에는 별도의 limitations 절이 없지만 평가 경계는 읽을 수 있습니다. 주요 장면 이해 실험은 실내 데이터셋에 집중했고, 작업군마다 모델을 따로 학습했으며, RGB에서 기하를 재구성하는 앞단의 오차도 최종 위치 추정에 전달될 수 있습니다.
 
 따라서 실무 검토에서는 평균 점수 하나보다 네 가지를 함께 보아야 합니다.
 
@@ -106,6 +103,6 @@ ScanRefer에서 정제 전 Acc@0.25는 Qwen2.5-VL-3B의 34.0%에서 VLM-IE3D의 
 - [논문 원문 PDF](https://arxiv.org/pdf/2607.21595)
 - [공식 구현 저장소](https://github.com/Vegetebird/VLM-IE3D)
 
-이 글과 만화 이미지는 AI로 생성했습니다. 논문의 그림·표·사진과 프로젝트 로고를 복제하지 않고 핵심 구조를 새로운 장면으로 재구성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 논문의 그림·표·스크린샷은 복제하지 않고 핵심 의미를 새 장면으로 재구성했습니다.
 
 Updated: 2026-07-26

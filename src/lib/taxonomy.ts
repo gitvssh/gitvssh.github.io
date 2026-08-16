@@ -35,6 +35,7 @@ export const TECH_CATEGORY_KEYS = [
   'interview_core',
   'infrastructure',
   'ai_tools',
+  'development_episode',
   'ai_philosophy',
 ] as const;
 
@@ -88,6 +89,11 @@ export const TECH_CATEGORIES: Record<
     label: 'AI 도구',
     description: 'AI 코딩 에이전트와 활용 도구의 역할, 작업 방식, 검토와 안전 경계를 설명합니다.',
     tone: 'blue',
+  },
+  development_episode: {
+    label: '개발 에피소드',
+    description: '직접 구축하고 운영하며 겪은 시행착오, 관찰과 복구 과정을 에피소드로 기록합니다.',
+    tone: 'green',
   },
   ai_philosophy: {
     label: 'AI와 사람 사이',

@@ -7,10 +7,9 @@ updatedAt: 2026-07-24
 track: news
 subtype: announcement_analysis
 tags:
-  - GitHub Copilot
-  - AI 에이전트
-  - 이슈 자동화
-  - AI 거버넌스
+  - "AI 에이전트"
+  - "AI 코딩 도구"
+  - "운영 자동화 안전"
 audience: developer
 readerOutcome: "GitHub Issues 자동화의 근거·신뢰도·승인 기능이 하는 일과 적용 범위를 설명하고, 승인 UI와 실제 권한 통제를 구분할 수 있습니다."
 contentFormats:
@@ -39,7 +38,7 @@ GitHub는 2026년 7월 23일 Issues의 에이전트 자동화에 **변경 근거
 
 관리자는 네 수준 가운데 하나를 고를 수 있습니다. `Full control`은 모든 변경을 검토 대기로 보내고, `Cautious`는 높은 신뢰도만 자동 적용합니다. `Balanced`는 모호한 변경을 보류하며, `Full automation`은 불확실하다고 표시된 변경만 멈춥니다.
 
-현재 이 흐름이 다루는 이슈 속성은 라벨, 필드, 이슈 유형, 이슈 닫기, 담당자 지정입니다. 신뢰도는 성공 확률을 보증하는 객관적 점수가 아니라 자동화가 해당 행동에 붙인 분류입니다. 어떤 임계값을 쓰든 잘못된 자동 적용이 불가능해지는 것은 아닙니다.
+현재 이 흐름이 다루는 이슈 속성은 라벨, 필드, 이슈 유형, 이슈 닫기, 담당자 지정입니다. 신뢰도는 성공 확률을 보증하는 객관적 점수가 아니라 자동화가 해당 행동에 붙인 분류입니다. 임계값이 줄이는 것은 잘못된 자동 적용의 빈도이지 가능성 자체입니다.
 
 ## 적용된 변경도 이유를 따라갈 수 있습니다
 
@@ -47,7 +46,7 @@ GitHub는 2026년 7월 23일 Issues의 에이전트 자동화에 **변경 근거
 
 GitHub는 지원되는 행동마다 변경 이유를 기록합니다. 자동 적용된 변경도, 제안으로 남았다가 승인된 변경도 이슈에서 근거를 확인할 수 있습니다. 검토 대기 제안은 하나씩 수락·거절하거나 여러 건을 한꺼번에 처리할 수 있습니다.
 
-근거·신뢰도·승인은 Copilot cloud agent 자동화에만 묶인 UI가 아닙니다. GitHub Agentic Workflows와 REST·GraphQL API도 같은 정보를 다룹니다. 에이전트가 어디서 실행됐는지보다 어떤 이슈 변경 의도를 남겼는지가 공통 계약에 가깝습니다.
+근거·신뢰도·승인은 Copilot cloud agent 자동화 밖에서도 쓰이는 UI입니다. GitHub Agentic Workflows와 REST·GraphQL API도 같은 정보를 다룹니다. 에이전트가 어디서 실행됐는지보다 어떤 이슈 변경 의도를 남겼는지가 공통 계약에 가깝습니다.
 
 범위는 좁게 읽어야 합니다. 이 기능은 자동화가 수행하는 지원 이슈 속성 변경에만 적용됩니다. 풀 리퀘스트를 열거나 코드를 푸시하는 다른 행동까지 같은 승인 흐름이 보호하지는 않습니다.
 
@@ -63,7 +62,7 @@ GitHub 문서는 승인 기능을 “워크플로 편의 기능”으로 설명�
 
 ## 다메카솔의 해석: 자동화 수준보다 먼저 권한 표를 봅니다
 
-새 검토 기능은 “에이전트가 왜 이 라벨을 붙였나”를 추적하고 애매한 변경을 사람에게 돌려보내는 데 유용합니다. 그러나 `Full control`을 선택했다고 해서 과도한 권한이 안전해지는 것은 아닙니다. 승인 흐름을 우회할 수 있는 API 경로가 존재한다는 공식 경고가 그 차이를 보여 줍니다.
+저는 이번 발표에서 가장 무거운 문장이 승인 흐름을 우회할 수 있는 API 경로가 있다는 공식 경고라고 봅니다. 새 검토 기능은 “에이전트가 왜 이 라벨을 붙였나”를 추적하고 애매한 변경을 사람에게 돌려보내는 데 유용합니다. 그러나 `Full control`을 선택했다고 해서 과도한 권한이 안전해지는 것은 아닙니다. 승인 흐름을 우회할 수 있는 API 경로가 존재한다는 공식 경고가 그 차이를 보여 줍니다.
 
 운영 점검은 두 층으로 나누면 선명합니다.
 
@@ -80,4 +79,4 @@ GitHub Issues의 새 기능은 사람을 자동화 흐름에 끼워 넣는 방�
 - [GitHub Docs — About rationale, confidence, and approvals for issues](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automation-rationale-and-approvals)
 - [GitHub Docs — About Copilot automations](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations)
 
-이 글의 만화 이미지는 AI로 생성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
