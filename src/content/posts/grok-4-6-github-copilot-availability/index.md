@@ -7,7 +7,7 @@ updatedAt: 2026-08-15
 track: news
 subtype: announcement_analysis
 tags:
-  - GitHub Copilot
+  - AI 코딩 도구
   - AI 활용
   - AI 모델
 audience: developer

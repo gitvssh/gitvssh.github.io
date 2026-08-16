@@ -10,7 +10,7 @@ subtype: empirical
 tags:
   - "AI 안전"
   - "LLM"
-  - "AI 모델 평가"
+  - "벤치마크"
 audience: developer
 readerOutcome: "activation steering이 목표 밖 행동에 비대칭 부작용을 만들 수 있는 이유와, 조정 전 예측이 실제 사후 검증을 대신하지 못하는 범위를 설명할 수 있다."
 contentFormats:
@@ -96,6 +96,6 @@ Activation steering을 제품에 넣는다면 목표 행동 점수 하나로 성
 - [공식 arXiv PDF](https://arxiv.org/pdf/2608.11227)
 - [공식 arXiv TeX source bundle](https://export.arxiv.org/e-print/2608.11227)
 
-이 글의 만화 이미지는 AI로 생성했습니다. 논문 표와 그림은 복제하지 않고, claim ledger에 근거해 자체 시각 언어로 재구성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 논문 표와 그림은 복제하지 않고, claim ledger에 근거해 자체 시각 언어로 재구성했습니다.
 
 Updated: 2026-08-13

@@ -14,9 +14,9 @@ series:
   order: 5
 tags:
   - "홈랩"
-  - "백업"
-  - "오브젝트 스토리지"
-  - "OOMKilled"
+  - "스토리지"
+  - "리눅스 운영"
+  - "관측 가능성"
 audience: developer
 readerOutcome: "전송 동시성이 곱해져 공유 게이트웨이를 압박하는 경로를 찾고, 복사 완료와 객체 단위 정합성 검증을 분리한다."
 contentFormats:

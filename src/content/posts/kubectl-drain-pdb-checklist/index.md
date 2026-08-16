@@ -41,7 +41,7 @@ drain은 노드를 유지보수할 수 있는 상태로 만드는 절차입니�
 
 ```bash
 kubectl drain <node> --ignore-daemonsets
-# 유지보수
+: "유지보수"
 kubectl uncordon <node>
 ```
 

@@ -9,8 +9,8 @@ track: paper
 subtype: empirical
 tags:
   - "LLM"
-  - "AI 모델 평가"
-  - "프롬프트 엔지니어링"
+  - "AI 모델"
+  - "벤치마크"
 audience: developer
 readerOutcome: "개별 제약 통과율과 전체 동시 통과율을 구분하고, 복잡한 AI 작업을 단계별 생성과 결정적 검증으로 나눠야 하는 이유를 설명할 수 있다."
 contentFormats:

@@ -9,7 +9,6 @@ track: paper
 subtype: empirical
 tags:
   - "AI 에이전트"
-  - "통계"
   - "벤치마크"
 audience: developer
 readerOutcome: "실행된 코드, 적절한 통계 방법, p값의 근접성, 결론의 일관성을 별도 증거로 확인하고 인간 통계 검토가 필요한 경계를 설명할 수 있다."

@@ -9,8 +9,8 @@ track: paper
 subtype: systems
 tags:
   - "LLM"
-  - "구조화 출력"
-  - "추론 시스템"
+  - "AI 모델"
+  - "컴파일러"
 audience: developer
 readerOutcome: "큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점을 설명하고, 전용 경로와 일반 경로를 구분할 수 있다."
 contentFormats:

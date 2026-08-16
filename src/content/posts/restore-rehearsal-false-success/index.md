@@ -13,10 +13,10 @@ series:
   title: "선불결제 플랫폼 개발기"
   order: 1
 tags:
-  - "MySQL"
-  - "PITR"
-  - "복구 리허설"
-  - "셸 스크립트"
+  - "데이터베이스"
+  - "고가용성"
+  - "스토리지"
+  - "운영 자동화 안전"
 audience: developer
 readerOutcome: "복원 잡의 성공 종료코드와 복구 가능성을 분리하고, 파이프 왼쪽 실패를 중간 파일과 복원 마커 대조 관문으로 드러낸다."
 contentFormats:

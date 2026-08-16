@@ -7,9 +7,9 @@ updatedAt: 2026-08-13
 track: news
 subtype: release_announcement
 tags:
-  - Gemini
+  - AI 모델
   - AI 에이전트
-  - 업무 자동화
+  - AI 활용
 audience: builder
 readerOutcome: "발표된 파트너 목록과 현재 내 계정의 실제 사용 가능 범위를 구분할 수 있습니다."
 contentFormats:

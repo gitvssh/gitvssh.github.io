@@ -15,8 +15,8 @@ series:
 tags:
   - "홈랩"
   - "Kubernetes"
-  - "NetworkPolicy"
-  - "네트워크 격리"
+  - "네트워킹"
+  - "운영 자동화 안전"
 audience: developer
 readerOutcome: "정책 객체의 저장과 실제 패킷 집행을 분리하고, 허용·차단 양쪽의 연결 시험으로 경계를 검증한다."
 contentFormats:
@@ -107,11 +107,11 @@ systemctl cat k3s | grep -- --disable-network-policy
 양성 시험은 라벨을 붙인 소비자 파드에서 데이터베이스에 접속해 질의 하나를 보내는 것이었고, 성공했습니다. 음성 시험은 둘로 나눴습니다. 하나는 같은 네임스페이스 안에 있지만 허용 라벨이 없는 파드, 다른 하나는 정책이 아예 언급하지 않은 네임스페이스의 파드입니다. 두 파드 모두 데이터베이스 포트에서 timeout으로 막혔습니다.
 
 ```bash
-# 음성 1: 같은 네임스페이스, 라벨 없음
+: "음성 1: 같은 네임스페이스, 라벨 없음"
 kubectl -n app-ns run probe-nolabel --rm -it --restart=Never \
   --image=<psql 이미지> -- psql -h <db-service> -p 5432 -c 'SELECT 1'
 
-# 음성 2: 정책에 없는 네임스페이스
+: "음성 2: 정책에 없는 네임스페이스"
 kubectl -n other-ns run probe-outside --rm -it --restart=Never \
   --image=<psql 이미지> -- psql -h <db-service> -p 5432 -c 'SELECT 1'
 ```

@@ -11,7 +11,6 @@ tags:
   - "멀티모달 AI"
   - "AI 에이전트"
   - "벤치마크"
-  - "AI 모델 평가"
 audience: builder
 readerOutcome: "시각 도구 호출 횟수와 관측의 실제 기여를 구분하고, 정책·궤적·단계 개입과 Visual Evidence Gain의 역할을 설명해 자체 에이전트 평가에 호출 필요성·관측 기여·중단 시점을 추가할 수 있다."
 contentFormats:

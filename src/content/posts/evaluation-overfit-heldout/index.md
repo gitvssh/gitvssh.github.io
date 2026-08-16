@@ -16,7 +16,6 @@ tags:
   - "벤치마크"
   - "RAG"
   - "LLM"
-  - "평가셋"
 audience: developer
 readerOutcome: "높은 내부 점수가 일반화 성능이 아닐 수 있는 경로를 구분하고, 조정에 쓰지 않은 held-out 표본에서 정밀도와 재현율을 함께 기록한다."
 contentFormats:

@@ -9,9 +9,7 @@ track: paper
 subtype: empirical
 tags:
   - "멀티모달 AI"
-  - "AI 영상"
   - "벤치마크"
-  - "AI 모델 평가"
 audience: builder
 readerOutcome: "고정된 전역 지표와 입력별 루브릭의 차이를 설명하고, VideoArgus의 입력 전용 기준 생성·증거 수집·VLM 판단·한계 검토 흐름을 자체 영상 QA에 적용할 수 있다."
 contentFormats:
