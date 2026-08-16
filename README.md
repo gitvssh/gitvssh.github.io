@@ -46,24 +46,23 @@ See [Deployment](#deployment) for where that build actually runs.
 
 ## Deployment
 
-The canonical address is `https://blog.damecasol.com/` (Cloudflare DNS →
-GitHub Pages). This repository is subject to the homelab CI policy, so the
-build runs on the homelab's own runner rather than a GitHub-hosted one, and it
-must not leave anything in GitHub's Actions artifact storage.
+Canonical address: `https://blog.damecasol.com/`. The visitor never reaches
+GitHub directly — Cloudflare terminates TLS at the edge with the zone's
+`*.damecasol.com` certificate and forwards to GitHub Pages:
 
-| | Now | Target |
-|---|---|---|
-| Build machine | GitHub-hosted (`ubuntu-latest`) | homelab runner (`homelab-blog`) |
-| Handoff to Pages | `upload-pages-artifact` → Actions storage (~90 MB per publish) | push `dist/` to the `gh-pages` branch |
+```
+visitor → Cloudflare edge (TLS) → GitHub Pages (gh-pages branch)
+```
 
-The migration is in progress; the runner is not registered yet. Until the
-switch lands, publishing works exactly as before. Do not change `runs-on`
-before the runner reports Ready — a queued job would never find a runner and
-publishing would stop.
+Under the homelab CI policy this repository builds on the homelab's own runner
+(`runs-on: homelab-blog`) and never uses GitHub's Actions artifact storage; the
+build pushes `dist/` to `gh-pages` and Pages serves that branch. The publish
+step writes `CNAME` and `.nojekyll` into the output — both are required.
 
-Status, ordering, and the remaining steps live in the `homelab-gitops`
-repository under `.ai/projects/arc-blog-onboarding/` (`CHARTER.md` and
-`RUNBOOK-phase2.md`).
+The DNS record must stay proxied. GitHub never issued a certificate for the
+custom domain, so switching the record back to DNS-only would break HTTPS.
+
+Details and history: `homelab-gitops` `.ai/projects/arc-blog-onboarding/`.
 
 ## Analytics
 

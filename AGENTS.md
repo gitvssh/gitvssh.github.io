@@ -41,29 +41,41 @@ pnpm build
 The public-repository check is an allowlist gate. Do not weaken it to admit a
 production artifact; adapt the public post or keep that artifact in the studio.
 
-## Deployment — migration in progress (2026-08-15)
+## Deployment (2026-08-16)
 
-Publishing content works as it always has. This section exists so a session
-that opens `.github/workflows/deploy-pages.yml` knows why it is about to change
-and does not change it early or in a conflicting way.
+Publishing content works as it always has. This section explains the delivery
+path so a session that opens `.github/workflows/deploy-pages.yml` does not
+undo it.
 
-This repository now falls under the homelab CI policy (`homelab-gitops`
-`docs/homelab-project-policy.md`, sections 3.1 and 5.1). Two rules apply:
+This repository falls under the homelab CI policy (`homelab-gitops`
+`docs/homelab-project-policy.md`, sections 3.1 and 5.1):
 
-1. CI jobs run on the homelab's own repository-scoped runner, not a
-   GitHub-hosted one.
-2. GitHub's Actions artifact storage stays unused. Today
-   `upload-pages-artifact` parks roughly 90 MB there on every publish, which
-   is the violation being closed.
+1. CI runs on the homelab's own repository-scoped runner, not a GitHub-hosted
+   one. The workflow's single job uses `runs-on: homelab-blog`.
+2. GitHub's Actions artifact storage stays unused. The build pushes `dist/` to
+   the `gh-pages` branch instead of uploading a Pages artifact, and Pages
+   serves that branch.
 
-Target shape, once the runner exists: a single job on `runs-on: homelab-blog`
-that builds and then pushes `dist/` to a `gh-pages` branch, with the Pages
-source switched to that branch. The web resume repository already publishes
-this way. `CNAME` (`blog.damecasol.com`) and `.nojekyll` must be written into
-the published output — without them the custom domain is dropped and Jekyll
-hides Astro's `_astro/` directory.
+`CNAME` (`blog.damecasol.com`) and `.nojekyll` are written into `dist/` by the
+publish step. Removing either breaks the site: without `CNAME` the custom
+domain is dropped, and without `.nojekyll` Jekyll hides Astro's `_astro/`
+directory, so every stylesheet 404s.
 
-**Do not change `runs-on` before the runner reports Ready.** A queued job would
-never be assigned a runner and publishing would stop. The switch is sequenced
-in `homelab-gitops` `.ai/projects/arc-blog-onboarding/RUNBOOK-phase2.md`; that
-project's `CHARTER.md` holds current status and the open questions.
+Delivery path — the visitor never reaches GitHub directly:
+
+```
+visitor → Cloudflare edge (TLS, *.damecasol.com cert) → GitHub Pages
+```
+
+`blog.damecasol.com` is a proxied Cloudflare record. GitHub never issued a
+certificate for the custom domain, so the edge terminates TLS with the zone
+certificate instead. Two things follow. GitHub will not issue its own
+certificate while the record is proxied, so **do not set the record back to
+DNS-only** expecting HTTPS to keep working — that reverts to the broken state.
+And because traffic now passes through Cloudflare, Zaraz is available, which is
+how the section 4.2 analytics requirement should eventually be met; the GA
+measurement ID is still compiled into the site today, which that policy
+forbids.
+
+Status and history live in `homelab-gitops`
+`.ai/projects/arc-blog-onboarding/` (`CHARTER.md`, `RUNBOOK-phase2.md`).
