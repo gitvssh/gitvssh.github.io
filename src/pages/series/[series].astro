@@ -2,59 +2,46 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import PostCard from '../../components/PostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { sortSeriesPosts, TECH_CATEGORIES } from '../../lib/content';
-
-type SeriesInfo = NonNullable<CollectionEntry<'posts'>['data']['series']>;
+import { sortPosts, TECH_CATEGORIES } from '../../lib/content';
+import { getPublishedSeries, type PublishedSeries } from '../../lib/series';
 
 export async function getStaticPaths() {
-  const posts = await getCollection(
-    'posts',
-    ({ data }) => !data.draft && data.track === 'tech_column' && Boolean(data.series),
-  );
-  const uniqueSeries = new Map<
-    string,
-    { series: SeriesInfo; category: NonNullable<CollectionEntry<'posts'>['data']['category']> }
-  >();
+  const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 
-  for (const post of posts) {
-    if (post.data.series && post.data.category) {
-      uniqueSeries.set(post.data.series.slug, {
-        series: post.data.series,
-        category: post.data.category,
-      });
-    }
-  }
-
-  return [...uniqueSeries.entries()].map(([slug, props]) => ({
-    params: { series: slug },
-    props,
+  return getPublishedSeries(posts).map((series) => ({
+    params: { series: series.slug },
+    props: { series },
   }));
 }
 
 interface Props {
-  series: SeriesInfo;
-  category: NonNullable<CollectionEntry<'posts'>['data']['category']>;
+  series: PublishedSeries;
 }
 
-const { series, category: categoryKey } = Astro.props;
-const category = TECH_CATEGORIES[categoryKey];
-const posts = sortSeriesPosts(
-  await getCollection(
-    'posts',
-    ({ data }) => !data.draft && data.series?.slug === series.slug,
-  ),
-);
+const { series } = Astro.props;
+const category = TECH_CATEGORIES[series.category];
+const posts: CollectionEntry<'posts'>[] = series.posts;
 ---
 
-<BaseLayout title={series.title} description={`${category.label} 카테고리의 ${series.title} 연재입니다.`}>
+<BaseLayout title={series.title} description={series.description}>
   <div class="shell listing-page">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <a href="/">홈</a><span aria-hidden="true">/</span><a href="/series/">연재</a>
+      <span aria-hidden="true">/</span><a href={`/categories/${series.category}/`}>{category.label}</a>
+    </nav>
+
     <header class="listing-header">
       <p class="eyebrow">LONG-FORM SERIES · {category.label}</p>
       <h1>{series.title}</h1>
-      <p>{category.description}</p>
-      <p class="listing-summary">총 {posts.length}편 · 순서대로 읽기</p>
+      <p>{series.description}</p>
+      <p class="listing-summary">총 {posts.length}편 · 1편부터 순서대로 읽기</p>
     </header>
 
     <div class="post-list">{posts.map((post) => <PostCard post={post} />)}</div>
+
+    <div class="listing-actions">
+      <a class="back-link" href={`/categories/${series.category}/`}>← {category.label} 글 더 보기</a>
+      <a class="back-link" href="/series/">다른 연재 보기 →</a>
+    </div>
   </div>
 </BaseLayout>

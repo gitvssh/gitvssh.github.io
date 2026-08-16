@@ -14,7 +14,7 @@ function escapeXml(value: string) {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const siteUrl = site ?? new URL('https://gitvssh.github.io');
+  const siteUrl = site ?? new URL('https://blog.damecasol.com');
   const now = Date.now();
   const newsPosts = (
     await getCollection(

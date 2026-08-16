@@ -6,18 +6,24 @@ on:
   pull_request:
   workflow_dispatch:
 
+# contents: write is what publishes — the build pushes dist/ to the gh-pages
+# branch. The Pages-artifact permissions (pages, id-token) are gone with the
+# artifact upload they served.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
+# cancel-in-progress stays off: back-to-back publishes must queue, not cancel,
+# so every run can verify its own exact-SHA deployment (2026-08-08 precedent:
+# a publish 89s after the previous one cancelled that run's verification).
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  # One job, not two: the homelab scale set runs at most one runner, so a
+  # separate deploy job would queue behind this one.
   build:
-    runs-on: ubuntu-latest
+    runs-on: homelab-blog
     env:
       ASTRO_TELEMETRY_DISABLED: "1"
       PUBLIC_GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
@@ -46,24 +52,24 @@ jobs:
       - name: Check and build
         run: pnpm run build
 
-      - name: Configure GitHub Pages
+      - name: Publish to gh-pages
         if: github.repository == 'gitvssh/gitvssh.github.io' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: actions/configure-pages@v5
-
-      - name: Upload GitHub Pages artifact
-        if: github.repository == 'gitvssh/gitvssh.github.io' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: dist
-
-  deploy:
-    if: github.repository == 'gitvssh/gitvssh.github.io' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd dist
+          # Without CNAME the custom domain is dropped on the next deploy;
+          # without .nojekyll GitHub runs Jekyll, which hides _astro/.
+          echo blog.damecasol.com > CNAME
+          touch .nojekyll
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy: ${GITHUB_SHA}"
+          # Feed the token through a credential helper reading the environment,
+          # so it never appears in argv or in the stored remote URL.
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c credential.helper='!f() { printf "username=x-access-token\npassword=%s\n" "$GH_TOKEN"; }; f' \
+            push -q --force origin gh-pages

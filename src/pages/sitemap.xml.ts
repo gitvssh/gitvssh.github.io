@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { TECH_CATEGORIES, TRACKS } from '../lib/content';
+import { getPublishedSeries } from '../lib/series';
 import { getPublishedTopics, getTopicPosts } from '../lib/topics';
 
 type Post = CollectionEntry<'posts'>;
@@ -31,7 +32,7 @@ function latestPostDate(posts: Post[]) {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const siteUrl = site ?? new URL('https://gitvssh.github.io');
+  const siteUrl = site ?? new URL('https://blog.damecasol.com');
   const posts = await getCollection('posts', ({ data }) => !data.draft);
   const latestSiteDate = latestPostDate(posts);
   const entries: SitemapEntry[] = [
@@ -63,14 +64,15 @@ export const GET: APIRoute = async ({ site }) => {
     });
   }
 
-  const series = new Map<string, Post[]>();
-  for (const post of posts) {
-    const slug = post.data.series?.slug;
-    if (!slug) continue;
-    series.set(slug, [...(series.get(slug) ?? []), post]);
+  const publishedSeries = getPublishedSeries(posts);
+  if (publishedSeries.length > 0) {
+    entries.push({
+      path: '/series/',
+      lastmod: latestPostDate(publishedSeries.flatMap((series) => series.posts)),
+    });
   }
-  for (const [slug, seriesPosts] of series) {
-    entries.push({ path: `/series/${slug}/`, lastmod: latestPostDate(seriesPosts) });
+  for (const series of publishedSeries) {
+    entries.push({ path: `/series/${series.slug}/`, lastmod: latestPostDate(series.posts) });
   }
 
   for (const topic of getPublishedTopics(posts)) {

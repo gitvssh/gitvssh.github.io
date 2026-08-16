@@ -547,6 +547,10 @@ p {
   gap: 12px;
 }
 
+.category-index__grid--wide {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .category-index__item {
   min-height: 142px;
   padding: 20px;
@@ -572,6 +576,27 @@ p {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 13px;
+}
+
+.series-index__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.series-index__item .series-index__count {
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.listing-actions {
+  display: flex;
+  margin-top: 42px;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .listing-page {

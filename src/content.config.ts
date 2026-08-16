@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { getSeriesDefinition } from './lib/series';
 import { TECH_CATEGORY_KEYS } from './lib/taxonomy';
 
 const posts = defineCollection({
@@ -123,6 +124,34 @@ const posts = defineCollection({
           path: ['series'],
           message: 'series를 사용하려면 category가 필요합니다.',
         });
+      }
+
+      if (data.series) {
+        const registeredSeries = getSeriesDefinition(data.series.slug);
+
+        if (!registeredSeries) {
+          context.addIssue({
+            code: 'custom',
+            path: ['series', 'slug'],
+            message: '등록되지 않은 연재입니다. src/lib/series.ts의 SERIES에 먼저 등록합니다.',
+          });
+        } else {
+          if (registeredSeries.title !== data.series.title) {
+            context.addIssue({
+              code: 'custom',
+              path: ['series', 'title'],
+              message: 'series.title은 SERIES에 등록된 연재 제목과 같아야 합니다.',
+            });
+          }
+
+          if (data.category && registeredSeries.category !== data.category) {
+            context.addIssue({
+              code: 'custom',
+              path: ['category'],
+              message: 'category는 SERIES에 등록된 연재의 카테고리와 같아야 합니다.',
+            });
+          }
+        }
       }
 
       if (

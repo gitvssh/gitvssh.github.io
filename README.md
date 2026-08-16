@@ -1,6 +1,7 @@
 # gitvssh.github.io
 
-Public Astro source for `https://gitvssh.github.io/`.
+Public Astro source for `https://blog.damecasol.com/`.
+The old `gitvssh.github.io` address still works; GitHub redirects it here (301).
 
 This repository contains only material required to build and operate the
 public blog:
@@ -41,6 +42,27 @@ pnpm build
 `pnpm check` first runs the public-repository allowlist and secret-pattern
 gate, then Astro's type checks. The production build is written to `dist/`.
 GitHub Actions deploys only from `gitvssh/gitvssh.github.io` on `main`.
+See [Deployment](#deployment) for where that build actually runs.
+
+## Deployment
+
+Canonical address: `https://blog.damecasol.com/`. The visitor never reaches
+GitHub directly — Cloudflare terminates TLS at the edge with the zone's
+`*.damecasol.com` certificate and forwards to GitHub Pages:
+
+```
+visitor → Cloudflare edge (TLS) → GitHub Pages (gh-pages branch)
+```
+
+Under the homelab CI policy this repository builds on the homelab's own runner
+(`runs-on: homelab-blog`) and never uses GitHub's Actions artifact storage; the
+build pushes `dist/` to `gh-pages` and Pages serves that branch. The publish
+step writes `CNAME` and `.nojekyll` into the output — both are required.
+
+The DNS record must stay proxied. GitHub never issued a certificate for the
+custom domain, so switching the record back to DNS-only would break HTTPS.
+
+Details and history: `homelab-gitops` `.ai/projects/arc-blog-onboarding/`.
 
 ## Analytics
 
