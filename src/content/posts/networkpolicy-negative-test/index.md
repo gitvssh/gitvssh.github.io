@@ -31,7 +31,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 초록으로 표시된 정책 카드 넉 장 앞에서 데이터베이스를 감싼 점선 차단벽을 확인하는 표지"
 sourceUrl: "urn:internal:homelab-k8s:networkpolicy-pilot-2026-07-13"
 featured: false
-draft: true
+draft: false
 ---
 글·해설: 다메카솔
 
