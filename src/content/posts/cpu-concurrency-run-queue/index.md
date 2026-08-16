@@ -62,7 +62,7 @@ draft: false
 
 ```bash
 uptime
-# 14:10:05 up 10 days, 0.61, 1.25, 2.50 4/828 22084
+// 14:10:05 up 10 days, 0.61, 1.25, 2.50 4/828 22084
 ```
 
 리눅스 커널에서 Load Average는 **"CPU를 할당받기 위해 런큐에서 기다리는 프로세스(R 상태) + 디스크 I/O 등을 기다리며 언인터럽터블 슬립에 빠진 프로세스(D 상태)"의 합계**입니다.
@@ -73,10 +73,10 @@ uptime
 
 ```bash
 cat /proc/pressure/cpu
-# some avg10=12.50 avg60=8.20 avg300=3.10 total=4829102
+// some avg10=12.50 avg60=8.20 avg300=3.10 total=4829102
 
 cat /proc/pressure/io
-# some avg10=0.00 avg60=0.00 avg300=0.00 total=12040
+// some avg10=0.00 avg60=0.00 avg300=0.00 total=12040
 ```
 
 - `cpu`의 `some` 수치가 높다면? 👉 진짜 **CPU 코어 부족 및 런큐 경합**
@@ -96,11 +96,11 @@ cat /proc/pressure/io
 cgroup v2 노드에서는 다음 지표를 통해 쓰로틀링 발생 여부를 디버깅할 수 있습니다:
 
 ```bash
-# cgroup v2 cpu 통계 확인
+// cgroup v2 cpu 통계 확인
 cat /sys/fs/cgroup/kubepods.slice/.../cpu.stat
-# nr_periods 1024
-# nr_throttled 340      <-- 쿼터를 초과해 멈춘 주기 횟수
-# throttled_usec 482000 <-- 누적 대기 시간 (마이크로초)
+// nr_periods 1024
+// nr_throttled 340      <-- 쿼터를 초과해 멈춘 주기 횟수
+// throttled_usec 482000 <-- 누적 대기 시간 (마이크로초)
 ```
 
 ## Airflow 파이프라인 동시성 병목 튜닝

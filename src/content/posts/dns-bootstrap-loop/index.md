@@ -54,7 +54,7 @@ draft: false
 
 ```bash
 resolvectl status
-# Current DNS Server: 10.43.0.10 (쿠버네티스 CoreDNS Service VIP)
+// Current DNS Server: 10.43.0.10 (쿠버네티스 CoreDNS Service VIP)
 ```
 
 쿠버네티스 파드를 띄워야 할 **리눅스 호스트 노드 자체의 기본 DNS 서버**가, 방금 만든 쿠버네티스 내부 Service VIP를 가리키고 있었던 것입니다.
@@ -84,10 +84,10 @@ resolvectl status
 3. **DHCP 오염 차단**: 공유기 DHCP가 멋대로 DNS 설정을 덮어쓰지 못하도록 systemd-networkd에 `UseDNS=false`를 명시합니다.
 
 ```bash
-# 호스트 DNS가 로컬 dnsmasq로 고정되었는지 검증
+// 호스트 DNS가 로컬 dnsmasq로 고정되었는지 검증
 resolvectl status
 
-# 로컬 데몬을 통한 외부 레지스트리 도메인 해석 확인
+// 로컬 데몬을 통한 외부 레지스트리 도메인 해석 확인
 dig @127.0.0.1 +short registry.k8s.io
 ```
 

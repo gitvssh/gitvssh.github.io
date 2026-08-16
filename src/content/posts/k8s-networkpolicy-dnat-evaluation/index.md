@@ -69,14 +69,14 @@ CI 러너 파드가 사내 이미지 레지스트리 서비스(`registry.default
 
 ### 1단계: 엔드포인트 생존 확인
 ```bash
-# Service에 연결된 실제 백엔드 IP 목록 조회
+// Service에 연결된 실제 백엔드 IP 목록 조회
 kubectl get endpointslice -l kubernetes.io/service-name=<서비스명> -o wide
 ```
 백엔드 파드가 준비(`Ready`) 상태인지, 컨테이너 프로세스가 실제로 해당 포트(`targetPort`)를 열고 Listen 중인지 확인합니다.
 
 ### 2단계: 반복 호출을 통한 패킷 경로 추적
 ```bash
-# 출발 파드 내부에서 연속 호출 테스트
+// 출발 파드 내부에서 연속 호출 테스트
 kubectl exec -it <출발파드> -- sh -c \
   'for i in $(seq 1 10); do curl -s -o /dev/null -w "%{http_code}\n" http://<서비스명>:<포트>; done'
 ```
@@ -84,7 +84,7 @@ kubectl exec -it <출발파드> -- sh -c \
 
 ### 3단계: 노드 레벨 방화벽 체인 및 ipset 검증
 ```bash
-# 노드에 직접 접속하여 CNI 방화벽 룰과 차단 로그 확인
+// 노드에 직접 접속하여 CNI 방화벽 룰과 차단 로그 확인
 sudo iptables-save -t filter | grep -E 'KUBE-ROUTER|KUBE-POD-FW'
 sudo ipset list
 ```
@@ -102,7 +102,7 @@ sudo ipset list
 | **Service 포트 매핑** | 컨테이너의 실제 `targetPort` 기준 매칭 | Service의 가상 `port`만 선언 |
 
 ```yaml
-# 올바른 NetworkPolicy 작성 예시
+#--- 올바른 NetworkPolicy 작성 예시 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

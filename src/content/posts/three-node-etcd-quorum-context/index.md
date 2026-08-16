@@ -75,7 +75,7 @@ K3s의 내장 고가용성(HA embedded etcd) 아키텍처는 분산 합의 알�
 
 ```bash
 kubectl get svc -A
-# 아무 출력 없이 정상 종료 (Exit code 0)
+// 아무 출력 없이 정상 종료 (Exit code 0)
 ```
 
 에러가 났다면 즉시 이상함을 눈치챘겠지만, 명령어가 `0`으로 정상 종료되었기 때문에 "아직 초기 상태라 서비스가 없나 보다" 하고 넘어가기 쉬웠습니다. 하지만 실제로는 kubeconfig의 `current-context`가 로컬 개발용 kind 클러스터로 잡혀 있었던 것입니다.
@@ -93,13 +93,13 @@ kubectl get svc -A
 이 사건 이후 인프라 자동화 스크립트에는 치명적인 쓰기(Write) 작업 전에 **'클러스터 지문(Fingerprint)'을 3중으로 검증하는 가드레일**을 필수로 추가했습니다:
 
 ```bash
-# 1. 현재 컨텍스트 이름 검증
+// 1. 현재 컨텍스트 이름 검증
 kubectl config current-context
 
-# 2. API 서버 엔드포인트 확인
+// 2. API 서버 엔드포인트 확인
 kubectl cluster-info
 
-# 3. 노드 호스트명 목록 검증
+// 3. 노드 호스트명 목록 검증
 kubectl get nodes -o name
 ```
 

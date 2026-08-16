@@ -83,13 +83,13 @@ KCFG="$HOME/.kube/prod.yaml"
 CTX="prod-admin"
 K=(kubectl --kubeconfig "$KCFG" --context "$CTX")
 
-# 1. API 서버 엔드포인트 검증
+// 1. API 서버 엔드포인트 검증
 "${K[@]}" config view --minify -o jsonpath='{.clusters[0].cluster.server}'
 
-# 2. 현재 로그인된 실효 사용자(RBAC) 확인
+// 2. 현재 로그인된 실효 사용자(RBAC) 확인
 "${K[@]}" auth whoami
 
-# 3. 타깃 클러스터의 실제 노드 호스트명 목록 검증
+// 3. 타깃 클러스터의 실제 노드 호스트명 목록 검증
 "${K[@]}" get nodes -o name
 ```
 
@@ -116,14 +116,14 @@ set -euo pipefail
 
 K=(kubectl --kubeconfig "$KCFG" --context "$CTX")
 
-# API 서버 주소 검증
+// API 서버 주소 검증
 actual_server="$("${K[@]}" config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
 if [[ "$actual_server" != "$EXPECTED_SERVER" ]]; then
   echo "❌ [ERROR] API 서버 불일치! 기대값: $EXPECTED_SERVER, 실제값: $actual_server" >&2
   exit 1
 fi
 
-# 노드 목록 지문 대조
+// 노드 목록 지문 대조
 actual_nodes="$("${K[@]}" get nodes -o name | sort)"
 if [[ "$actual_nodes" != "$EXPECTED_NODES" ]]; then
   echo "❌ [ERROR] 타깃 클러스터 노드 지문 불일치! 잘못된 클러스터 접근 차단." >&2
