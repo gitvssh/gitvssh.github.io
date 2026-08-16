@@ -12,9 +12,12 @@ on:
 permissions:
   contents: write
 
+# cancel-in-progress stays off: back-to-back publishes must queue, not cancel,
+# so every run can verify its own exact-SHA deployment (2026-08-08 precedent:
+# a publish 89s after the previous one cancelled that run's verification).
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # One job, not two: the homelab scale set runs at most one runner, so a
