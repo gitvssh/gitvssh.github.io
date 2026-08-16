@@ -1,6 +1,6 @@
 ---
 title: "GitHub Issues, AI 자동화에 승인·신뢰도·근거를 붙였다"
-description: "GitHub Issues 에이전트 자동화의 변경 근거, 신뢰도, 승인 흐름과 실제 보안 경계인 저장소·에이전트 권한을 구분해 설명합니다."
+description: "GitHub Issues에 AI 에이전트 자동화 통제 기능이 도입되었습니다. 라벨링 및 담당자 지정 시 신뢰도 점수와 변경 근거(Rationale)를 남기는 메커니즘과, UI 승인 창 뒤에 숨겨진 실제 API 권한 경계를 분석합니다."
 slug: "github-issues-agent-automation-controls"
 publishedAt: 2026-07-24
 updatedAt: 2026-07-24
@@ -11,7 +11,7 @@ tags:
   - "AI 코딩 도구"
   - "운영 자동화 안전"
 audience: developer
-readerOutcome: "GitHub Issues 자동화의 근거·신뢰도·승인 기능이 하는 일과 적용 범위를 설명하고, 승인 UI와 실제 권한 통제를 구분할 수 있습니다."
+readerOutcome: "GitHub Issues의 AI 에이전트 승인 흐름과 신뢰도 모델을 이해하고, 단순 UI 승인 창과 실제 저장소/API 권한(RBAC) 통제를 분리하여 안전한 자동화 가드레일을 구축할 수 있다."
 contentFormats:
   - article
   - comic
@@ -25,58 +25,65 @@ sourceUrl: "https://github.blog/changelog/2026-07-23-agent-automation-controls-i
 featured: true
 draft: false
 ---
-
-GitHub는 2026년 7월 23일 Issues의 에이전트 자동화에 **변경 근거, 신뢰도, 승인 흐름**을 추가했습니다. 라벨·필드·이슈 유형·닫기·담당자 변경을 바로 적용할지 사람에게 제안할지 나누고, 무엇을 왜 바꿨는지도 남기는 공개 프리뷰입니다. 다만 승인 패널은 보안 장치가 아닙니다. 에이전트가 실제로 할 수 있는 일은 저장소·에이전트 권한과 허용된 도구가 정합니다.
-
 글·해설: 다메카솔
 
-## 신뢰도가 낮으면 변경을 제안으로 멈춥니다
+GitHub Issues에서 AI 에이전트가 버그 리포트를 분석해 자동으로 담당자를 배정하고, 적절한 라벨을 붙이며, 완료된 이슈를 닫아주는 자동화는 매우 매력적입니다.
+
+하지만 에이전트가 잘못된 맥락으로 이슈를 오판해 엉뚱한 사람에게 티켓을 몰아주거나, 아직 해결되지 않은 중요 장애 이슈를 멋대로 닫아버린다면 협업에 큰 혼선이 빚어집니다.
+
+최근 GitHub는 이러한 문제를 방어하기 위해 **Issues 에이전트 자동화에 '변경 근거(Rationale)', '신뢰도(Confidence)', '사람 승인(Human-in-the-loop) 가드레일'을 전격 도입**했습니다.
+
+이번 글에서는 GitHub의 새로운 에이전트 통제 모델과, **"UI 승인 화면이 결코 보안 샌드박스를 대체할 수 없는 이유"**를 살펴보겠습니다.
+
+## 신뢰도가 낮으면 자동 반영 대신 '사람 검토 대기'로 보류
 
 ![이슈 변경 토큰이 신뢰도에 따라 자동 적용과 사람 검토 대기 경로로 나뉘는 만화](./page-01.webp)
 
-자동화는 지원되는 각 이슈 변경에 `high`, `medium`, `low` 신뢰도를 매깁니다. 저장소의 자동화 수준이 임계값을 정하고, 그보다 낮은 변경은 바로 적용하지 않고 제안으로 보류합니다. 기본 `Cautious` 수준에서는 `high`만 자동 적용하고 나머지는 사람이 검토합니다.
+새로운 시스템에서 AI 에이전트는 이슈 속성(라벨, 담당자, 이슈 타입, 닫기 여부)을 변경할 때마다 자체적인 신뢰도(`High`, `Medium`, `Low`)를 매깁니다:
 
-관리자는 네 수준 가운데 하나를 고를 수 있습니다. `Full control`은 모든 변경을 검토 대기로 보내고, `Cautious`는 높은 신뢰도만 자동 적용합니다. `Balanced`는 모호한 변경을 보류하며, `Full automation`은 불확실하다고 표시된 변경만 멈춥니다.
+저장소 관리자는 팀의 성향에 맞춰 4단계의 통제 레벨을 설정할 수 있습니다:
+- **Full Control (전면 수동)**: 모든 AI 변경사항을 사람의 승인 대기열로 전달
+- **Cautious (보수적 - 기본값)**: `High` 신뢰도만 자동 적용하고 나머지는 사람 검토 대기
+- **Balanced (균형)**: 애매한 변경만 선별하여 보류
+- **Full Automation (전면 자동)**: 불확실성이 극히 높은 일부 경우를 제외하고 자동 적용
 
-현재 이 흐름이 다루는 이슈 속성은 라벨, 필드, 이슈 유형, 이슈 닫기, 담당자 지정입니다. 신뢰도는 성공 확률을 보증하는 객관적 점수가 아니라 자동화가 해당 행동에 붙인 분류입니다. 임계값이 줄이는 것은 잘못된 자동 적용의 빈도이지 가능성 자체입니다.
-
-## 적용된 변경도 이유를 따라갈 수 있습니다
+## 왜 그렇게 바꿨는지 '추론 근거(Rationale)'를 남긴다
 
 ![자동 적용과 검토 대기 행동이 모두 이유의 궤적을 남기고 사람이 제안을 살펴보는 만화](./page-02.webp)
 
-GitHub는 지원되는 행동마다 변경 이유를 기록합니다. 자동 적용된 변경도, 제안으로 남았다가 승인된 변경도 이슈에서 근거를 확인할 수 있습니다. 검토 대기 제안은 하나씩 수락·거절하거나 여러 건을 한꺼번에 처리할 수 있습니다.
+단순히 "라벨이 `bug`로 변경되었습니다"라고만 뜨면 사람은 왜 그렇게 판단했는지 알 길이 없습니다.
 
-근거·신뢰도·승인은 Copilot cloud agent 자동화 밖에서도 쓰이는 UI입니다. GitHub Agentic Workflows와 REST·GraphQL API도 같은 정보를 다룹니다. 에이전트가 어디서 실행됐는지보다 어떤 이슈 변경 의도를 남겼는지가 공통 계약에 가깝습니다.
+새로운 기능은 에이전트가 **"이슈 본문 3번째 단락의 스택트레이스 에러 로그를 기반으로 `backend-error` 라벨을 제안함"**처럼 구체적인 판단 근거를 이슈 타임라인에 남깁니다. 개발자는 이 근거를 읽고 클릭 한 번으로 수락하거나 거절할 수 있습니다.
 
-범위는 좁게 읽어야 합니다. 이 기능은 자동화가 수행하는 지원 이슈 속성 변경에만 적용됩니다. 풀 리퀘스트를 열거나 코드를 푸시하는 다른 행동까지 같은 승인 흐름이 보호하지는 않습니다.
-
-## 승인 패널과 권한 경계는 다른 층입니다
+## 주의: 승인 UI는 '보안 경계'가 아니다
 
 ![사람 검토 데스크 옆을 지나는 경로와 실제 권한을 제한하는 좁은 문을 카솔이 구분해 가리키는 만화](./page-03.webp)
 
-GitHub 문서는 승인 기능을 “워크플로 편의 기능”으로 설명합니다. 서버에서 강제하는 보안 경계가 아니기 때문입니다. 이슈를 바꿀 권한이 있는 에이전트는 REST나 GraphQL API로 제안 단계를 거치지 않고 변경을 바로 적용할 수도 있습니다.
+여기서 엔지니어링 관점에서 가장 중요한 맹점이 있습니다.
 
-실제 통제는 더 아래에 있습니다. 자동화에 필요한 도구만 허용하고, 저장소와 에이전트 권한으로 행동 범위를 좁혀야 합니다. 검토 패널은 사람이 판단하기 쉽게 만드는 관찰·승인 층이고, 권한은 애초에 할 수 있는 일을 제한하는 보안 층입니다.
+GitHub 공식 문서가 밝히고 있듯, 이 승인 기능은 어디까지나 **'워크플로우 편의 기능(Workflow Convenience)'**일 뿐, 서버 레벨에서 강제되는 **'보안 격리 장치(Security Boundary)'가 아닙니다.**
 
-이번 기능은 공개 프리뷰라 바뀔 수 있습니다. GitHub 문서 기준으로 지원 Copilot 요금제의 private 및 internal 저장소에서 제공되며, 관리자가 기능을 비활성화했거나 Copilot cloud agent가 켜지지 않은 환경에서는 사용할 수 없습니다.
+에이전트에게 부여된 GitHub Token(PAT / GitHub App)에 `issues: write` 권한이 열려 있다면, 악의적이거나 탈취당한 에이전트 스크립트는 **웹 UI의 승인 창을 우회하여 REST/GraphQL API를 통해 이슈를 직접 조작**할 수 있습니다.
 
-## 다메카솔의 해석: 자동화 수준보다 먼저 권한 표를 봅니다
+따라서 진정한 통제는 화면 위의 승인 버튼이 아니라, **"에이전트 토큰의 최소 권한(Least Privilege) 부여와 허용 도구(Tool Allowlist) 제한"**이라는 밑단 보안에서 완성됩니다.
 
-저는 이번 발표에서 가장 무거운 문장이 승인 흐름을 우회할 수 있는 API 경로가 있다는 공식 경고라고 봅니다. 새 검토 기능은 “에이전트가 왜 이 라벨을 붙였나”를 추적하고 애매한 변경을 사람에게 돌려보내는 데 유용합니다. 그러나 `Full control`을 선택했다고 해서 과도한 권한이 안전해지는 것은 아닙니다. 승인 흐름을 우회할 수 있는 API 경로가 존재한다는 공식 경고가 그 차이를 보여 줍니다.
+## 다메카솔의 해석: AI 워크플로우를 통제하는 4단계 아키텍처
 
-운영 점검은 두 층으로 나누면 선명합니다.
+AI 에이전트를 실무 개발 파이프라인에 통합할 때 다음 4단계 계층을 명확히 분리하여 설계해야 합니다:
 
-- 검토 층: 어떤 변경에 근거와 신뢰도가 남고, 무엇이 제안으로 멈추는가?
-- 권한 층: 에이전트가 어떤 저장소·도구·행동에 접근할 수 있는가?
-- 범위 층: 이슈 속성 밖의 PR 생성·코드 푸시는 어떤 별도 통제를 거치는가?
-- 기록 층: 직접 적용과 승인 적용을 나중에 구분하고 감사할 수 있는가?
+1. **관측 및 승인 계층 (UI Level)**: 애매한 판단은 사람의 리뷰 대기열로 보내고, 모든 자동화 행동에 추론 근거(Rationale)를 로깅하세요.
+2. **토큰 권한 계층 (API Level)**: 에이전트에게 필요한 최소 스코프만 부여하고, 프로덕션 배포나 코드 푸시(`contents: write`) 권한을 이슈 관리 토큰에 섞지 마세요.
+3. **영역별 격리 계층 (Domain Level)**: 이슈 라벨링용 에이전트와 PR 머지용 에이전트의 역할과 샌드박스를 분리해야 연쇄 오동작을 막을 수 있습니다.
+4. **감사 추적 계층 (Audit Level)**: 사람이 직접 수락한 변경과 에이전트가 독자적으로 실행한 변경을 분리하여 사후 추적할 수 있어야 합니다.
 
-GitHub Issues의 새 기능은 사람을 자동화 흐름에 끼워 넣는 방법을 정교하게 만들었습니다. 다음 단계는 승인 화면을 믿는 것이 아니라, 에이전트가 승인 화면 바깥에서 할 수 있는 일까지 권한으로 닫는 것입니다.
+## 함께 읽을 AI 시스템 글
+
+- [AI 코딩 에이전트 작업 공간 격리(Orca)와 권한 제어](/posts/orca-ai-coding-agent-workspaces/)
+- [Copilot 보안 API 실증 연구와 검증 가드레일](/posts/copilot-security-api-study/)
 
 ## 출처
 
 - [GitHub Changelog — Agent automation controls in GitHub Issues in public preview](https://github.blog/changelog/2026-07-23-agent-automation-controls-in-github-issues-in-public-preview/)
-- [GitHub Docs — About rationale, confidence, and approvals for issues](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automation-rationale-and-approvals)
-- [GitHub Docs — About Copilot automations](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations)
+- [GitHub Documentation — About rationale, confidence, and approvals for issues](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automation-rationale-and-approvals)
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

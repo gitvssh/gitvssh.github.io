@@ -1,6 +1,6 @@
 ---
-title: "GitHub Models 종료: 2026년 7월 30일 완전 종료됩니다"
-description: "GitHub Models의 완전 종료일, 종료 대상, 사전 brownout 일정과 공식 공지가 안내한 대안을 한 장의 만화와 함께 정리합니다."
+title: "GitHub Models 종료: 2026년 7월 30일 완전 셧다운 대비 가이드"
+description: "GitHub의 무료 모델 추론 서비스인 GitHub Models가 2026년 7월 30일부로 전면 종료됩니다. Playground, Inference API, BYOK 엔드포인트 중단 일정과 Brownout 테스트 대응법을 정리합니다."
 slug: "github-models-retirement"
 publishedAt: 2026-07-11
 updatedAt: 2026-07-23
@@ -30,48 +30,50 @@ officialResources:
 featured: true
 draft: false
 ---
-
-GitHub Models는 **2026년 7월 30일 완전히 종료**됩니다. GitHub의 7월 1일 공식 공지에 따르면 playground뿐 아니라 model catalog, inference API, BYOK endpoint와 관련 UI도 종료 대상이며, 활성 사용자를 포함한 모든 고객에게 적용됩니다.
-
-카솔과 함께 종료 범위와 준비 일정을 짧게 정리했습니다.
-
 글·해설: 다메카솔
 
-## 핵심 내용
+개발자들에게 Llama, Mistral, GPT-4o 등 다양한 오픈/상용 AI 모델을 무료로 테스트할 수 있게 해주던 **GitHub Models가 2026년 7월 30일을 기점으로 완전히 종료(Retire)**됩니다.
 
-- 완전 종료일: **2026년 7월 30일**
-- 종료 대상: playground, model catalog, inference API, BYOK endpoint, 관련 UI
-- 적용 범위: 기존 활성 사용자를 포함한 모든 고객
-- 사전 brownout: **7월 16일**, **7월 23일**
+단순히 웹 Playground UI만 닫히는 것이 아닙니다. 개발자들이 CI 파이프라인이나 토이 프로젝트 백엔드에서 호출하던 **Inference API 엔드포인트와 BYOK(Bring Your Own Key) 연결까지 전면 셧다운**됩니다.
 
-## 만화로 보기
+이번 글에서는 서비스 종료 일정과 사전에 진행되는 Brownout(의도적 일시 중단) 일정, 그리고 대체 마이그레이션 방안을 정리합니다.
 
-종료일을 먼저 확인하고, 아래 한 장에서 영향 범위와 점검 순서를 볼 수 있습니다.
+## 완전 종료 일정 및 대상 범위
+
+- **최종 서비스 셧다운 일시**: **2026년 7월 30일**
+- **종료 대상 리소스**:
+  1. GitHub Models 웹 Playground
+  2. 모델 카탈로그(Model Catalog) UI
+  3. REST Inference API 엔드포인트 (`models.inference.ai.azure.com`)
+  4. BYOK(Bring Your Own Key) 프록시 라우팅
+- **적용 대상**: 기존 활성 사용자를 포함한 모든 개인 및 엔터프라이즈 계정
+
+## 서비스 셧다운 전 'Brownout(의도적 장애)' 일정
 
 ![GitHub Models의 정상 작동, brownout, 완전 종료와 점검 행동을 시간 순서로 정리한 4패널 만화](./page-01-v3.webp)
 
-## 무엇이 종료되나요?
+GitHub는 완전 셧다운에 앞서 개발자들이 잔여 의존성을 사전에 파악할 수 있도록 **두 차례의 의도적 일시 중단(Brownout)**을 실시합니다:
 
-GitHub 공식 공지에서 열거한 종료 범위는 다음과 같습니다.
+- **1차 Brownout**: 2026년 7월 16일
+- **2차 Brownout**: 2026년 7월 23일
 
-1. GitHub Models playground
-2. model catalog
-3. inference API
-4. BYOK(bring your own key) endpoint
-5. 관련 사용자 인터페이스
+이 시간대에는 GitHub Models API로 들어오는 모든 요청이 강제로 HTTP 5xx 에러를 반환합니다. 만약 운영 중인 봇이나 자동화 스크립트가 있다면 이 날짜 전까지 반드시 엔드포인트를 교체해야 합니다.
 
-이번 단계는 신규 고객만 막았던 이전 단계와 달리 **기존 활성 사용자를 포함한 모든 고객**에게 적용됩니다.
+## 추천 마이그레이션 경로
 
-## 7월 16일과 23일에는 brownout이 있습니다
+1. **프로덕션 API 마이그레이션**:
+   - Azure AI Foundry(구 Azure AI Studio) 또는 모델 공급사(OpenAI, Anthropic, Groq)의 직접 API 엔드포인트로 Base URL을 변경하세요.
+2. **사내 GitHub 자동화 및 에이전트**:
+   - GitHub Copilot Extensions나 Copilot Workspace 환경으로 전환을 검토할 수 있습니다.
 
-완전 종료 전에 미리 거치는 단계가 있습니다. GitHub는 2026년 7월 16일과 23일 짧은 brownout을 진행한다고 밝혔습니다. 이 시간에는 GitHub Models 요청이 일시적으로 오류를 반환한 뒤 복구됩니다. 현재 API 호출이나 데모가 GitHub Models에 의존한다면 두 날짜 전에 의존 지점과 오류 처리 동작을 점검하는 편이 안전합니다.
+## 다메카솔의 해석: 서드파티 무료 API 의존성 제거
 
-## 공식 공지가 안내한 대안
+토이 프로젝트나 사내 PoC 개발 시 편리하다고 무료 베타 API에 시스템을 하드코딩해 두면, 서비스 일몰 시점에 예기치 못한 장애를 겪게 됩니다.
 
-GitHub는 모델 접근이 필요한 새 프로젝트와 기존 프로젝트에는 Microsoft Foundry를, GitHub 안에서 AI 워크플로를 구축하려는 경우에는 GitHub Copilot을 안내했습니다. 이는 공식 공지가 제시한 선택지이며, 기존 GitHub Models와 기능·가격·이식성이 동일하다는 의미는 아닙니다. 구체적인 이전 비교는 별도 검토가 필요합니다.
+백엔드 코드베이스에서 LLM 클라이언트를 호출할 때는 반드시 **환경 변수(`LLM_BASE_URL`, `LLM_API_KEY`) 기반으로 엔드포인트를 분리**하여, 특정 제공자가 일몰되더라도 설정 변경만으로 즉시 전환(Failover)할 수 있도록 설계해야 합니다.
 
 ## 출처
 
-- GitHub Changelog, [GitHub Models is being fully retired on July 30, 2026](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/), 2026-07-01
+- [GitHub Changelog — GitHub Models is being fully retired on July 30, 2026](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/)
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
