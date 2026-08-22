@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유 | 다메카솔</title><meta name="description" content="CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다."><link rel="canonical" href="https://blog.damecasol.com/posts/dns-bootstrap-loop/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유"><meta property="og:description" content="CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다."><meta property="og:url" content="https://blog.damecasol.com/posts/dns-bootstrap-loop/"><meta property="og:image" content="https://blog.damecasol.com/social/dns-bootstrap-loop.webp"><meta property="og:image:alt" content="남성 카솔이 두 CoreDNS 인스턴스가 정상인 홈랩 아래에서 노드 resolver가 같은 클러스터로 되돌아가는 순환을 발견하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유","description":"CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다.","datePublished":"2026-07-31T00:00:00.000Z","dateModified":"2026-07-31T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/dns-bootstrap-loop/","image":["https://blog.damecasol.com/social/dns-bootstrap-loop.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"개발 에피소드","keywords":["홈랩","K3s","Kubernetes","네트워킹"],"isAccessibleForFree":true,"isPartOf":{"@type":"CreativeWorkSeries","name":"홈랩 쿠버네티스 구축기","position":3}}</script><article class="article" data-analytics-article data-content-id="dns-bootstrap-loop" data-content-track="tech_column" data-content-category="development_episode"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/development_episode/">개발 에피소드</a><span aria-hidden="true">/</span><a href="/series/homelab-k8s/">홈랩 쿠버네티스 구축기</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/development_episode/">개발 에피소드</a><a class="series-label" href="/series/homelab-k8s/">홈랩 쿠버네티스 구축기 3편</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-31T00:00:00.000Z">2026년 7월 31일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BaFdXpO7_1KLBjl.webp" srcset="/_astro/cover.BaFdXpO7_2eNNvd.webp 640w, /_astro/cover.BaFdXpO7_21gii4.webp 960w, /_astro/cover.BaFdXpO7_1KLBjl.webp 1024w" alt="남성 카솔이 두 CoreDNS 인스턴스가 정상인 홈랩 아래에서 노드 resolver가 같은 클러스터로 되돌아가는 순환을 발견하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#두-replica가-해결한-범위" data-toc-link="두-replica가-해결한-범위" data-analytics-event="toc_click" data-analytics-target="두-replica가-해결한-범위">두 replica가 해결한 범위</a></li><li class="article-toc__depth-2"><a href="#시작-순서를-그렸더니-보인-고리" data-toc-link="시작-순서를-그렸더니-보인-고리" data-analytics-event="toc_click" data-analytics-target="시작-순서를-그렸더니-보인-고리">시작 순서를 그렸더니 보인 고리</a></li><li class="article-toc__depth-2"><a href="#pod-수명주기-밖으로-내린-dns-바닥" data-toc-link="pod-수명주기-밖으로-내린-dns-바닥" data-analytics-event="toc_click" data-analytics-target="pod-수명주기-밖으로-내린-dns-바닥">Pod 수명주기 밖으로 내린 DNS 바닥</a></li><li class="article-toc__depth-2"><a href="#공용-dns는-왜-예비선이-아닌가" data-toc-link="공용-dns는-왜-예비선이-아닌가" data-analytics-event="toc_click" data-analytics-target="공용-dns는-왜-예비선이-아닌가">공용 DNS는 왜 예비선이 아닌가</a></li><li class="article-toc__depth-2"><a href="#남은-문제-호스트-서비스의-부팅-순서" data-toc-link="남은-문제-호스트-서비스의-부팅-순서" data-analytics-event="toc_click" data-analytics-target="남은-문제-호스트-서비스의-부팅-순서">남은 문제: 호스트 서비스의 부팅 순서</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>CoreDNS 두 replica가 지킨 것은 이미 떠 있는 클러스터의 DNS였습니다. 빈 클러스터에서 첫 이미지를 받는 길은 별도로 확인해야 했습니다.</p>
+<p>2026년 7월 14일 아침, 홈랩의 내부 이름이 한꺼번에 풀리지 않았습니다. 애플리케이션과 ingress는 직접 주소로 확인하면 살아 있었습니다. 밤에 꺼지는 NAS VM의 DHCP 주소가 바뀌었는데, DNS 기록은 이전 주소를 가리키고 있었습니다.</p>
+<p>저는 그날 내부 DNS를 24시간 k3s 클러스터로 옮겼습니다. CoreDNS를 두 replica로 띄우고, 서로 다른 노드에 배치했으며, PDB와 VIP도 붙였습니다. 클러스터 밖에서 새 DNS와 기존 DNS의 답을 대조했을 때 결과도 같았습니다. 여기까지는 잘 고친 것처럼 보였습니다.</p>
+<p>한 줄이 그 판단을 뒤집었습니다. k3s 노드에서 <code>resolvectl status</code>를 보니 현재 DNS 서버가 방금 만든 인클러스터 VIP였습니다. DNS Pod를 시작해야 하는 노드가, 아직 시작되지 않을 수 있는 그 DNS만 바라보고 있었습니다.</p>
+<blockquote>
+<p>이 글은 <code>~/dev/infra</code>의 2026년 7월 14일 Git 기록과 PARA Vault의 I-25 수집본을 다시 대조해 썼습니다. E03에서 실제 콜드 재구축 실패나 <code>no such host</code>가 발생했다는 로그는 찾지 못했습니다. 그 오류 원문은 후속 신규 노드 사건인 E05에 남아 있습니다. 이번 편은 장애를 겪고 복구한 기록이 아니라, resolver 측정으로 다음 장애의 조건을 발견해 제거한 기록입니다.</p>
+</blockquote>
+<h2 id="두-replica가-해결한-범위">두 replica가 해결한 범위</h2>
+<p>첫 문제는 명확했습니다. 내부 DNS가 밤에 꺼지는 NAS VM 한 대와 DHCP 주소 하나에 묶여 있었습니다. 주소가 바뀌자 애플리케이션이 멈춘 것처럼 보였지만, 실제로 끊긴 것은 이름에서 주소로 가는 길이었습니다.</p>
+<p>그래서 CoreDNS 두 replica를 k3s 안에 두었습니다. 한 Pod가 사라져도 다른 Pod가 VIP 뒤에서 응답하고, zone 파일은 인벤토리에서 생성하도록 바꿨습니다. 평시 가용성과 주소 변경의 재발 방지라는 두 목표에는 맞는 교정이었습니다.</p>
+<p><img alt="주소가 바뀐 NAS DNS 한 대에서 두 CoreDNS 인스턴스와 하나의 VIP로 옮겨 간 뒤, 노드 resolver 선이 다시 VIP로 연결된 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.4OGpPOCF_1iwWOt.webp" srcset=""></p>
+<p>빠진 질문이 있었습니다. 클러스터가 이미 떠 있을 때 DNS가 계속 응답하는가? 이 질문에는 답했습니다. 클러스터가 비어 있을 때 DNS를 처음 띄울 수 있는가? 그 경로는 그리지 않았습니다.</p>
+<p>평시 HA와 부트스트랩 독립성은 별도 조건입니다.</p>
+<h2 id="시작-순서를-그렸더니-보인-고리">시작 순서를 그렸더니 보인 고리</h2>
+<p>K3s는 기본 구성에서 server가 시작될 때 CoreDNS를 자동 배포합니다. 노드가 Pod 이미지를 내려받을 때는 kubelet이 container runtime에 pull을 맡기고, registry 이름을 주소로 바꿀 DNS가 먼저 필요합니다.</p>
+<p>당시 측정한 노드 resolver는 인클러스터 CoreDNS VIP 하나를 현재 서버로 골랐습니다. 이 상태에서 빈 노드가 CoreDNS 이미지를 새로 받아야 한다고 가정하면 시작 순서는 한 바퀴 돌아옵니다.</p>
+<ol>
+<li>노드가 CoreDNS 이미지를 받을 registry 이름을 풉니다.</li>
+<li>노드의 DNS 질의는 인클러스터 VIP로 갑니다.</li>
+<li>CoreDNS Pod는 아직 시작되지 않았습니다.</li>
+<li>그 Pod를 시작하려면 먼저 이미지를 받아야 합니다.</li>
+</ol>
+<p><img alt="노드에서 레지스트리 조회와 CoreDNS 이미지, 클러스터 DNS를 거쳐 다시 노드로 돌아오는 콜드 부트스트랩 순환 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.DhQI3cfF_1BHU8s.webp" srcset=""></p>
+<p>이 고리는 당시 설정과 공식 동작을 합쳐 얻은 아키텍처 추론입니다. zero-cache 상태로 클러스터를 지운 뒤 실패를 재현한 기록은 없습니다. Kubernetes의 <code>IfNotPresent</code> 정책은 로컬 이미지가 있으면 pull을 생략하므로 캐시가 이런 의존성을 가릴 수 있지만, 당시 CoreDNS의 실제 이미지 보유 상태와 pull policy도 회수하지 못했습니다.</p>
+<p>그래서 <code>no such host</code>를 이 장면의 결과로 붙이지 않았습니다. 더 극적인 제목보다 사건 경계가 중요했습니다.</p>
+<h2 id="pod-수명주기-밖으로-내린-dns-바닥">Pod 수명주기 밖으로 내린 DNS 바닥</h2>
+<p>제가 고친 대상은 CoreDNS replica 수가 아니라 노드의 첫 이름 해석 경로였습니다. 각 k3s 노드에서 <code>dnsmasq</code>를 systemd 서비스로 실행하고, 노드는 자기 로컬 dnsmasq를 먼저 본 뒤 다른 노드의 dnsmasq를 보도록 구성했습니다. 어느 resolver도 Kubernetes Pod가 뜰 때까지 기다리지 않습니다.</p>
+<p>DHCP가 다시 인클러스터 VIP를 밀어 넣지 못하도록 systemd-networkd drop-in에는 <code>UseDNS=false</code>를 두었습니다. 노드의 resolver 설정은 로컬과 peer로 고정했습니다.</p>
+<p><img alt="Kubernetes 경계 아래의 각 호스트에서 dnsmasq가 먼저 떠 있고, 노드들이 로컬과 피어 DNS로 연결된 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.38hdDqqd_Z1nPGxJ.webp" srcset=""></p>
+<p>적용 playbook은 세 가지를 검사했습니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">resolvectl</span><span style="color:#032F62"> status</span></span>
+<span class="line"><span style="color:#6F42C1">dig</span><span style="color:#032F62"> @127.0.0.1</span><span style="color:#032F62"> +short</span><span style="color:#032F62"> registry.k8s.io</span></span>
+<span class="line"><span style="color:#6F42C1">dig</span><span style="color:#032F62"> +short</span><span style="color:#032F62"> registry.k8s.io</span></span></code></pre>
+<p>첫 출력에서 인클러스터 VIP가 사라지고 로컬 resolver가 보여야 합니다. 두 번째는 dnsmasq 자체의 응답을, 세 번째는 애플리케이션이 실제로 쓰는 시스템 resolver 경로를 확인합니다. 당시 교정 기록에는 로컬 resolver와 peer가 반영됐고, 클러스터 DNS를 거치지 않은 registry 이름 해석도 통과했다고 남아 있습니다.</p>
+<p>여기서 “클러스터 밖”은 물리 장비의 위치보다 프로세스 생명주기 경계를 가리킵니다. 같은 미니PC에서 돌더라도 Kubernetes Pod와 control-plane의 생명주기 밖에 있는 호스트 프로세스면 이 고리를 끊을 수 있습니다. 이 홈랩에서는 dnsmasq가 그 역할을 맡았습니다.</p>
+<h2 id="공용-dns는-왜-예비선이-아닌가">공용 DNS는 왜 예비선이 아닌가</h2>
+<p>사설 이름을 아는 DNS 뒤에 공용 DNS를 하나 더 쓰면 안전해 보입니다. 하지만 공용 DNS는 사설 이름을 모를 때 timeout 대신 NXDOMAIN이라는 정상적인 부정 응답을 돌려줄 수 있습니다. RFC 2308은 NXDOMAIN을 negative caching 대상으로 정의합니다.</p>
+<p>systemd-resolved 문서도 같은 lookup scope에 둔 DNS 서버들이 같은 zone에 대해 같은 결과를 내야 한다고 설명합니다. 사설 zone을 아는 resolver와 모르는 resolver를 한 목록에 섞으면 두 서버가 동등한 대체재가 되지 못합니다.</p>
+<p><img alt="사설 영역과 공용 영역의 DNS 질의가 한 목록에서 충돌하는 모습과, 영역별 라우팅으로 분리된 모습을 비교한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.Dbb3zNuY_Z1cVal1.webp" srcset=""></p>
+<p>이 환경에서는 노드 resolver를 로컬+peer dnsmasq로 맞추고, 사설 이름과 공용 이름은 DNS 계층 안에서 조건부로 전달했습니다. 공용 DNS를 실제 보조 서버로 넣어 사고를 겪은 기록은 없습니다. 설정을 고치면서 미리 제거한 함정입니다.</p>
+<h2 id="남은-문제-호스트-서비스의-부팅-순서">남은 문제: 호스트 서비스의 부팅 순서</h2>
+<p>호스트 계층으로 옮겼다고 시작 순서가 저절로 완성되지는 않았습니다. 7월 27일에는 dnsmasq가 주소를 가진 인터페이스보다 먼저 시작해 실패하는 후속 문제가 기록됐고, 서비스가 <code>network-online.target</code> 뒤에 오도록 보강했습니다.</p>
+<p>저는 이 대목이 이번 사건의 결론이라고 봅니다. 기반 서비스를 아래 계층에 놓는 일과 그 계층 안에서의 부팅 순서를 검증하는 일은 한 묶음입니다.</p>
+<p>콜드 부트스트랩을 검토할 때는 평시 대시보드 대신 네 질문을 씁니다.</p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>확인할 증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>노드가 첫 이미지를 받기 전에 어떤 DNS를 쓰는가</td>
+<td><code>resolvectl status</code>, 시스템 resolver를 거치는 실제 조회</td>
+</tr>
+<tr>
+<td>그 DNS 프로세스는 Kubernetes 없이 시작하는가</td>
+<td>systemd 의존성과 interface 준비 상태</td>
+</tr>
+<tr>
+<td>이미지가 하나도 없어도 시작 경로가 열리는가</td>
+<td>새 노드·캐시 없는 조건 또는 air-gap 이미지 목록</td>
+</tr>
+<tr>
+<td>사설 이름을 묻는 모든 resolver가 같은 답을 내는가</td>
+<td>zone별 직접 질의와 routing domain 설정</td>
+</tr>
+</tbody>
+</table>
+<p>외부 dnsmasq만이 정답은 아닙니다. K3s 공식 air-gap 절차처럼 필요한 이미지를 미리 넣거나, 독립된 사설 registry와 registry mirror를 두어도 순환을 끊을 수 있습니다. 제가 지금 고정하는 원칙은 구현 이름보다 짧습니다. <strong>클러스터를 시작하는 데 필요한 의존성은, 아직 시작되지 않은 클러스터 하나에만 기대지 않습니다.</strong></p>
+<p>다음 4편에서는 CoreDNS가 44시간 동안 정상처럼 보였지만, 재시작하는 순간 잘못된 상위 DNS를 읽을 상태였던 <code>resolv.conf</code> 스냅숏 문제를 다룹니다. 5편에서는 이번 글에서 빼 둔 실제 <code>no such host</code>와 신규 노드의 절반짜리 DNS 베이스라인을 이어갑니다.</p>
+<p>Kubernetes와 k3s의 기본 역할이 먼저 필요하면 <a href="/posts/kubernetes-k3s-homelab/">Kubernetes와 k3s는 무엇이 다른가</a>를 함께 읽을 수 있습니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li>개인 인프라 Git 기록: DNS VM 주소 변경 교정, 2026-07-14, commit <code>729eec914</code></li>
+<li>개인 인프라 Git 기록: 인클러스터 CoreDNS와 VIP 도입, 2026-07-14, commit <code>65fd80dc5</code></li>
+<li>개인 인프라 Git 기록: 노드 DNS 바닥과 resolver pin, 2026-07-14, commit <code>893c55256</code></li>
+<li>개인 인프라 Git 기록: dnsmasq network-online 보강, 2026-07-27, commit <code>76de47a98</code></li>
+<li><a href="https://docs.k3s.io/networking/networking-services">K3s: Networking Services</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/containers/images/">Kubernetes: Images</a></li>
+<li><a href="https://docs.k3s.io/installation/airgap">K3s: Air-Gap Install</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemd-resolved.service.html">systemd-resolved.service manual</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc2308">RFC 2308: Negative Caching of DNS Queries</a></li>
+</ul>
+<p>사설 주소, 내부 도메인과 호스트명은 공개하지 않았습니다. 2026년 7월 31일 공식 문서를 다시 확인했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·문서 도표 등 외부 이미지 자산은 사용하지 않았습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><nav class="series-navigation" aria-label="연재 글 이동"><div><a href="/posts/three-node-etcd-quorum-context/"><span>이전 편</span>3노드여야 하는 이유, 그리고 빈 결과의 함정</a></div><a class="series-navigation__index" href="/series/homelab-k8s/">전체 연재 보기</a><div class="series-navigation__next"><a href="/posts/networkpolicy-negative-test/"><span>다음 편</span>NetworkPolicy가 Synced였는데, 막히는지는 따로 시험했습니다</a></div></nav><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/networkpolicy-negative-test/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.gWCp9_cb_IN4E7.webp" srcset="/_astro/cover.gWCp9_cb_R4PCh.webp 240w, /_astro/cover.gWCp9_cb_25fRdK.webp 360w, /_astro/cover.gWCp9_cb_Z1LKeYH.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-16T00:00:00.000Z">2026년 8월 16일</time></div><h3><a href="/posts/networkpolicy-negative-test/" data-analytics-event="related_post_click" data-analytics-target="networkpolicy-negative-test">3분만에 만화로 보는 IT - 기술 해설 | NetworkPolicy가 Synced였는데, 막히는지는 따로 시험했습니다</a></h3><p>NetworkPolicy 선언이 Synced인 것과 패킷이 실제로 차단되는 것은 다릅니다. 기본 차단, AND·OR 선택자, 집행 계층과 음성 테스트를 기록합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/three-node-etcd-quorum-context/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.54SSLWSX_urWN5.webp" srcset="/_astro/cover.54SSLWSX_2zE8R.webp 240w, /_astro/cover.54SSLWSX_1fKFJl.webp 360w, /_astro/cover.54SSLWSX_2sVHkO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-25T00:00:00.000Z">2026년 7월 25일</time></div><h3><a href="/posts/three-node-etcd-quorum-context/" data-analytics-event="related_post_click" data-analytics-target="three-node-etcd-quorum-context">3분만에 만화로 보는 IT - 기술 해설 | 3노드여야 하는 이유, 그리고 빈 결과의 함정</a></h3><p>미니PC 세 대로 k3s embedded etcd 구성을 세운 뒤 빈 kubectl 출력을 만났습니다. 쿼럼 계산의 범위와, 자동화가 엉뚱한 클러스터에서 자격을 꺼내기 직전에 멈춘 사건을 다룬 홈랩 구축기 2편입니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/why-homelab-kubernetes/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.ClXKEV5B_gs2PT.webp" srcset="/_astro/cover.ClXKEV5B_ZhREVe.webp 240w, /_astro/cover.ClXKEV5B_UilEf.webp 360w, /_astro/cover.ClXKEV5B_28tnfI.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-18T00:00:00.000Z">2026년 7월 18일</time></div><h3><a href="/posts/why-homelab-kubernetes/" data-analytics-event="related_post_click" data-analytics-target="why-homelab-kubernetes">3분만에 만화로 보는 IT - 기술 해설 | RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</a></h3><p>RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/development_episode/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 개발 에피소드 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

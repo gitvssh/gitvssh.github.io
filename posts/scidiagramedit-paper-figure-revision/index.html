@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI가 논문 도표를 다시 그리지 않고 고치는 법: SciDiagramEdit 분석 | 다메카솔</title><meta name="description" content="AI에게 '화살표 하나만 옮겨줘'라고 부탁했을 때 왜 그림 전체를 다시 그려서 엉뚱하게 망가뜨릴까요? 픽셀 재생성 대신 SVG 벡터 요소를 정밀 수정하고 개정 이력에서 편집 스킬을 학습하는 SciDiagramEdit 기술을 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/scidiagramedit-paper-figure-revision/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 논문 도표를 다시 그리지 않고 고치는 법: SciDiagramEdit 분석"><meta property="og:description" content="AI에게 '화살표 하나만 옮겨줘'라고 부탁했을 때 왜 그림 전체를 다시 그려서 엉뚱하게 망가뜨릴까요? 픽셀 재생성 대신 SVG 벡터 요소를 정밀 수정하고 개정 이력에서 편집 스킬을 학습하는 SciDiagramEdit 기술을 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/scidiagramedit-paper-figure-revision/"><meta property="og:image" content="https://blog.damecasol.com/social/scidiagramedit-paper-figure-revision.webp"><meta property="og:image:alt" content="카솔이 흐트러진 래스터 재생성과 정돈된 벡터 편집 결과를 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 논문 도표를 다시 그리지 않고 고치는 법: SciDiagramEdit 분석","description":"AI에게 '화살표 하나만 옮겨줘'라고 부탁했을 때 왜 그림 전체를 다시 그려서 엉뚱하게 망가뜨릴까요? 픽셀 재생성 대신 SVG 벡터 요소를 정밀 수정하고 개정 이력에서 편집 스킬을 학습하는 SciDiagramEdit 기술을 분석합니다.","datePublished":"2026-07-18T00:00:00.000Z","dateModified":"2026-07-18T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/scidiagramedit-paper-figure-revision/","image":["https://blog.damecasol.com/social/scidiagramedit-paper-figure-revision.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","AI 활용"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="scidiagramedit-paper-figure-revision" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-18T00:00:00.000Z">2026년 7월 18일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a><a href="/topics/ai-use/">#AI 활용</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 논문 도표를 다시 그리지 않고 고치는 법: SciDiagramEdit 분석</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI에게 &#39;화살표 하나만 옮겨줘&#39;라고 부탁했을 때 왜 그림 전체를 다시 그려서 엉뚱하게 망가뜨릴까요? 픽셀 재생성 대신 SVG 벡터 요소를 정밀 수정하고 개정 이력에서 편집 스킬을 학습하는 SciDiagramEdit 기술을 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DZBMPl16_IKJAp.webp" srcset="/_astro/cover.DZBMPl16_Z1olMWL.webp 640w, /_astro/cover.DZBMPl16_Z1BTjaU.webp 960w, /_astro/cover.DZBMPl16_IKJAp.webp 1024w" alt="카솔이 흐트러진 래스터 재생성과 정돈된 벡터 편집 결과를 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#래스터-픽셀-재생성-vs-구조화된-벡터-편집" data-toc-link="래스터-픽셀-재생성-vs-구조화된-벡터-편집" data-analytics-event="toc_click" data-analytics-target="래스터-픽셀-재생성-vs-구조화된-벡터-편집">래스터 픽셀 재생성 vs 구조화된 벡터 편집</a></li><li class="article-toc__depth-2"><a href="#실제-arxiv-논문-개정-이력-364쌍을-통한-스킬-학습" data-toc-link="실제-arxiv-논문-개정-이력-364쌍을-통한-스킬-학습" data-analytics-event="toc_click" data-analytics-target="실제-arxiv-논문-개정-이력-364쌍을-통한-스킬-학습">실제 arXiv 논문 개정 이력 364쌍을 통한 스킬 학습</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-지식의-텍스트-패치라는-엔지니어링-패러다임" data-toc-link="다메카솔의-해석-지식의-텍스트-패치라는-엔지니어링-패러다임" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-지식의-텍스트-패치라는-엔지니어링-패러다임">다메카솔의 해석: ’지식의 텍스트 패치’라는 엔지니어링 패러다임</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-시스템-글" data-toc-link="함께-읽을-ai-시스템-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>논문이나 아키텍처 문서에 들어갈 다이어그램을 AI로 수정할 때, “B 박스에서 C 박스로 가는 화살표 하나만 위치를 바꿔줘”라고 프롬프트를 넣었더니 <strong>도표 전체를 새로 그려버리면서 기존 텍스트 폰트, 정렬, 색상까지 엉망으로 뭉개지는 경험</strong>을 해보셨을 겁니다.</p>
+<p>이 문제의 근본 원인은 DALL-E나 Midjourney 같은 이미지 생성 AI가 도표를 <strong>’독립된 객체들의 집합’이 아니라 ’한 장의 평면 픽셀(Raster Image)’로 취급하기 때문</strong>입니다.</p>
+<p>최근 발표된 시스템 논문 <strong>SciDiagramEdit: Learning to Edit Scientific Diagrams from Paper Revisions</strong>는 이 문제를 해결하기 위해 **“도표를 SVG 벡터 코드로 파싱하여 수정이 필요한 특정 요소만 정밀하게 타깃 편집하고, 실패한 수정 경험을 스킬 파일로 누적하는 자율 진화 아키텍처”**를 제안했습니다.</p>
+<h2 id="래스터-픽셀-재생성-vs-구조화된-벡터-편집">래스터 픽셀 재생성 vs 구조화된 벡터 편집</h2>
+<p><img alt="화살표 하나를 옮겨 달라는 요청 뒤 도표 전체가 다시 렌더링돼 다른 요소까지 바뀌는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.BRfUtoHN_9Stb0.webp" srcset=""></p>
+<p>과학 도표와 시스템 아키텍처 다이어그램은 단순한 예술 그림이 아닙니다. **텍스트 라벨, 화살표 연결선, 컨테이너 박스, 그래프 플롯이 엄격한 논리적 관계(Semantics)**로 결합된 구조물입니다.</p>
+<ul>
+<li><strong>기존 래스터 방식 (Diffusion)</strong>: 전체 픽셀을 디퓨전으로 노이즈 제거하며 다시 그리기 때문에, 국소적인 수정 요청에도 주변 레이아웃의 무결성이 와르르 무너집니다.</li>
+<li><strong>SciDiagramEdit의 하이브리드 SVG 방식</strong>:
+<ul>
+<li>텍스트, 화살표, 박스는 주소 지정이 가능한 <strong>네이티브 SVG 벡터 요소</strong>로 보존</li>
+<li>손실 없는 벡터화가 어려운 복잡한 실험 사진이나 히트맵 플롯만 <strong><code>&lt;image&gt;</code> 래스터 패널</strong>로 캡슐화</li>
+</ul>
+</li>
+</ul>
+<p><img alt="도표가 벡터 요소와 래스터 패널로 분해됐다가 편집 가능한 결과로 다시 조립되는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.D95YNIaF_Zw6QxK.webp" srcset=""></p>
+<p>이를 통해 에이전트는 특정 라벨의 오타를 고치거나 화살표 좌표만 핀포인트로 수정하는 코드를 생성할 수 있게 됩니다.</p>
+<h2 id="실제-arxiv-논문-개정-이력-364쌍을-통한-스킬-학습">실제 arXiv 논문 개정 이력 364쌍을 통한 스킬 학습</h2>
+<p><img alt="arXiv 도표의 수정 전, 수정 의도, 수정 후, 체크 항목이 하나의 기록으로 연결되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.DgF9xcZW_ZKn3CL.webp" srcset=""></p>
+<p>연구진은 실제 연구자들이 논문 리비전 과정에서 다이어그램을 수정한 전후 데이터 364쌍(총 2,628개 원자적 편집 태스크)을 수집하여 벤치마크를 구축했습니다.</p>
+<p>그리고 **에디터(Editor) ➡️ 심판(Judge) ➡️ 코치(Coach)**로 이어지는 3자 피드백 루프를 구축했습니다:</p>
+<p><img alt="편집, 평가, 규칙 패치, 검증, 보존이 시계 방향으로 이어지는 스킬 진화 루프" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.DZOGuinO_Z1nJqew.webp" srcset=""></p>
+<ol>
+<li><strong>Editor</strong>: 현재 스킬 가이드라인을 읽고 SVG 코드 수정안 생성</li>
+<li><strong>Judge</strong>: 수정된 결과물이 원본의 논리적 연결성을 훼손하지 않았는지 의미 체크리스트 평가</li>
+<li><strong>Coach</strong>: 수정 과정에서 발생한 실패 원인(예: “화살표를 늘릴 때 텍스트 박스와 겹치는 문제”)을 분석하여 <strong>스킬 파일(<code>skills.md</code>)에 새로운 방어 규칙을 패치(Patch)</strong></li>
+</ol>
+<p>이러한 피드백 루프를 통해 에이전트는 모델을 재학습(Fine-tuning)하지 않고도, <strong>스킬 텍스트 파일의 진화만으로 편집 성공률(0.932)을 비약적으로 끌어올렸습니다.</strong></p>
+<h2 id="다메카솔의-해석-지식의-텍스트-패치라는-엔지니어링-패러다임">다메카솔의 해석: ’지식의 텍스트 패치’라는 엔지니어링 패러다임</h2>
+<p>SciDiagramEdit이 주는 가장 큰 영감은 **“AI 에이전트의 능력 향상을 위해 거대한 가중치를 다시 학습할 필요 없이, 실패 경험을 구조화된 텍스트 스킬 규칙으로 축적(Workflow as Knowledge)할 수 있다”**는 점입니다.</p>
+<p>실무 AI 시스템을 구축할 때 다음 패턴을 적용해 볼 수 있습니다:</p>
+<ol>
+<li><strong>상태의 코드화/구조화</strong>: UI나 문서를 다룰 때 이미지로 변환하지 말고, HTML/SVG/Markdown 같은 텍스트 기반 객체 트리(AST) 상태를 유지하세요.</li>
+<li><strong>체크리스트 기반 회귀 방지</strong>: 수정 작업 후 “의도한 곳만 바뀌었는지, 의도치 않은 다른 요소가 훼손되지 않았는지” 검증하는 불변성(Invariance) 체크리스트를 자동화해야 합니다.</li>
+<li><strong>지속적 스킬 패치</strong>: 에이전트가 실패할 때마다 시스템 프롬프트 전체를 갈아엎지 말고, 룰 기반의 모듈형 스킬 파일로 개선사항을 누적 관리하세요.</li>
+</ol>
+<h2 id="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</h2>
+<ul>
+<li><a href="/posts/workflow-as-knowledge/">워크플로우를 지식으로 자산화하는 방법론</a></li>
+<li><a href="/posts/llm-agent-skill-regression-tax/">LLM 에이전트 스킬 주입과 회귀 방어 전략</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.15272">SciDiagramEdit: Learning to Edit Scientific Diagrams from Paper Revisions, arXiv:2607.15272</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/statemem-agent-memory-state-tracking/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CF2i2M_K_Z2iMc90.webp" srcset="/_astro/cover.CF2i2M_K_ZwWtST.webp 240w, /_astro/cover.CF2i2M_K_FdwGz.webp 360w, /_astro/cover.CF2i2M_K_1Soyi3.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-21T00:00:00.000Z">2026년 8월 21일</time></div><h3><a href="/posts/statemem-agent-memory-state-tracking/" data-analytics-event="related_post_click" data-analytics-target="statemem-agent-memory-state-tracking">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 기억하고도 현재 상태를 놓칠 수 있습니다</a></h3><p>StateMemBench가 사실 회상과 현재 상태 추적을 어떻게 분리했는지, StateMem의 만료·의존성 재검사 방식과 합성 평가·호출 비용의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/knowsim-information-calibration/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.zThrtrWR_1OCOVX.webp" srcset="/_astro/cover.zThrtrWR_JdWJ7.webp 240w, /_astro/cover.zThrtrWR_1WoYkA.webp 360w, /_astro/cover.zThrtrWR_Z1TB7RR.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-19T00:00:00.000Z">2026년 8월 19일</time></div><h3><a href="/posts/knowsim-information-calibration/" data-analytics-event="related_post_click" data-analytics-target="knowsim-information-calibration">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 설명은 왜 초보자에겐 벅차고 숙련자에겐 지루할까</a></h3><p>KnowSim이 사용자의 지식 상태와 인지 과부하를 턴마다 추적하는 방법, 인간-AI 대화 검증, 지식 수준별 모델 차이와 인간 연구의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/physics-of-ai-agent-collectives/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.tyNT2uLa_D6R03.webp" srcset="/_astro/cover.tyNT2uLa_2aVLA6.webp 240w, /_astro/cover.tyNT2uLa_Z1G4kCm.webp 360w, /_astro/cover.tyNT2uLa_ZsSj1S.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-18T00:00:00.000Z">2026년 8월 18일</time></div><h3><a href="/posts/physics-of-ai-agent-collectives/" data-analytics-event="related_post_click" data-analytics-target="physics-of-ai-agent-collectives">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 집단은 왜 한쪽으로 쏠릴까</a></h3><p>1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

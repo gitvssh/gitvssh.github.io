@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>RAM은 32GB인데 Airflow DAG가 계속 실패한 이유 | 다메카솔</title><meta name="description" content="RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다."><link rel="canonical" href="https://blog.damecasol.com/posts/why-homelab-kubernetes/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | RAM은 32GB인데 Airflow DAG가 계속 실패한 이유"><meta property="og:description" content="RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다."><meta property="og:url" content="https://blog.damecasol.com/posts/why-homelab-kubernetes/"><meta property="og:image" content="https://blog.damecasol.com/social/why-homelab-kubernetes.webp"><meta property="og:image:alt" content="카솔이 넉넉한 메모리 저장고와 좁은 CPU 처리 관문, 야간의 NAS를 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | RAM은 32GB인데 Airflow DAG가 계속 실패한 이유","description":"RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다.","datePublished":"2026-07-18T00:00:00.000Z","dateModified":"2026-07-28T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/why-homelab-kubernetes/","image":["https://blog.damecasol.com/social/why-homelab-kubernetes.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"개발 에피소드","keywords":["홈랩","Kubernetes","리눅스 운영"],"isAccessibleForFree":true,"isPartOf":{"@type":"CreativeWorkSeries","name":"홈랩 쿠버네티스 구축기","position":1}}</script><article class="article" data-analytics-article data-content-id="why-homelab-kubernetes" data-content-track="tech_column" data-content-category="development_episode"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/development_episode/">개발 에피소드</a><span aria-hidden="true">/</span><a href="/series/homelab-k8s/">홈랩 쿠버네티스 구축기</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/development_episode/">개발 에피소드</a><a class="series-label" href="/series/homelab-k8s/">홈랩 쿠버네티스 구축기 1편</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-18T00:00:00.000Z">2026년 7월 18일</time></span><span>수정 <time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.ClXKEV5B_gs2PT.webp" srcset="/_astro/cover.ClXKEV5B_Z2oiQ30.webp 640w, /_astro/cover.ClXKEV5B_2skLxM.webp 960w, /_astro/cover.ClXKEV5B_gs2PT.webp 1024w" alt="카솔이 넉넉한 메모리 저장고와 좁은 CPU 처리 관문, 야간의 NAS를 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#이미-nas에서-k3s를-배우고-있었습니다" data-toc-link="이미-nas에서-k3s를-배우고-있었습니다" data-analytics-event="toc_click" data-analytics-target="이미-nas에서-k3s를-배우고-있었습니다">이미 NAS에서 k3s를 배우고 있었습니다</a></li><li class="article-toc__depth-2"><a href="#32gb-ram이-cpu-병목을-가렸습니다" data-toc-link="32gb-ram이-cpu-병목을-가렸습니다" data-analytics-event="toc_click" data-analytics-target="32gb-ram이-cpu-병목을-가렸습니다">32GB RAM이 CPU 병목을 가렸습니다</a></li><li class="article-toc__depth-2"><a href="#반복-실패는-하나의-원인만-갖지-않았습니다" data-toc-link="반복-실패는-하나의-원인만-갖지-않았습니다" data-analytics-event="toc_click" data-analytics-target="반복-실패는-하나의-원인만-갖지-않았습니다">반복 실패는 하나의 원인만 갖지 않았습니다</a></li><li class="article-toc__depth-2"><a href="#메타데이터-db만-옮기면-절반만-고칩니다" data-toc-link="메타데이터-db만-옮기면-절반만-고칩니다" data-analytics-event="toc_click" data-analytics-target="메타데이터-db만-옮기면-절반만-고칩니다">메타데이터 DB만 옮기면 절반만 고칩니다</a></li><li class="article-toc__depth-2"><a href="#24시간-서비스는-24시간-의존성-위에-둡니다" data-toc-link="24시간-서비스는-24시간-의존성-위에-둡니다" data-analytics-event="toc_click" data-analytics-target="24시간-서비스는-24시간-의존성-위에-둡니다">24시간 서비스는 24시간 의존성 위에 둡니다</a></li><li class="article-toc__depth-2"><a href="#내-환경에-적용할-점검-질문" data-toc-link="내-환경에-적용할-점검-질문" data-analytics-event="toc_click" data-analytics-target="내-환경에-적용할-점검-질문">내 환경에 적용할 점검 질문</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-개념-글" data-toc-link="함께-읽을-개념-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-개념-글">함께 읽을 개념 글</a></li><li class="article-toc__depth-2"><a href="#출처와-범위" data-toc-link="출처와-범위" data-analytics-event="toc_click" data-analytics-target="출처와-범위">출처와 범위</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>시놀로지 NAS에는 RAM이 32GB나 있었습니다. 이미 그 장비에서 학습용 k3s 클러스터를 운영하고 있었고, 메모리도 남아 보였습니다. 그런데 Airflow DAG는 계속 실패했습니다. 부족했던 것은 RAM이 아니라 CPU 코어였습니다.</p>
+<p>문제는 하나 더 있었습니다. NAS를 밤에 끄면 Airflow가 쓰던 메타데이터 데이터베이스와 S3 호환 오브젝트 스토리지도 함께 사라졌습니다. 낮에는 계산 자원이 막혔고, 밤에는 의존 서비스가 존재하지 않았습니다. 새 홈랩 Kubernetes 환경은 이 두 제약을 분리해 해결하려고 만든 24시간 운영 계층입니다.</p>
+<h2 id="이미-nas에서-k3s를-배우고-있었습니다">이미 NAS에서 k3s를 배우고 있었습니다</h2>
+<p>처음부터 별도 미니 PC 클러스터가 있었던 것은 아닙니다. 시놀로지 NAS라는 제한된 장비 위에 k3s를 올리고 배포, 스토리지, 네트워크, 복구를 직접 겪어보는 것이 출발점이었습니다.</p>
+<p>설치 명령을 따라 하는 실습보다 운영 중 생기는 제약을 배우고 싶었습니다.</p>
+<p>NAS의 32GB RAM은 이 목적에 충분해 보였습니다. 대시보드에서 남는 메모리를 확인하면 장비 전체에도 여유가 있다고 생각하기 쉽습니다. 하지만 RAM이 남는다는 사실은 CPU 코어도 남는다는 뜻이 아닙니다.</p>
+<p><img alt="시놀로지형 NAS에서 학습용 k3s를 운영하다 넓은 메모리 공간과 좁은 CPU 처리 관문을 비교하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.U2pOqdHe_Z1srlvq.webp" srcset=""></p>
+<h2 id="32gb-ram이-cpu-병목을-가렸습니다">32GB RAM이 CPU 병목을 가렸습니다</h2>
+<p>운영 당시 저는 부족한 CPU 코어를 병목으로 판단했습니다. 동시에 실행되는 작업과 k3s 시스템 구성 요소가 적은 코어를 나눠 썼고, 메모리 부족 흔적 없이 작업이 밀렸습니다. 다만 당시 CPU 지표와 Airflow 오류 로그는 지금 회수하지 못해, 어떤 실패가 CPU 경합에서 시작됐는지까지 다시 증명한 상태는 아닙니다.</p>
+<p>RAM은 실행 중인 데이터와 프로세스를 담을 공간에 가깝습니다. CPU 코어는 같은 시간에 처리할 수 있는 계산량과 동시성에 영향을 줍니다. 32GB라는 한 숫자만 보고 서버 자원이 충분하다고 판단하면, 실행 대기와 CPU 경합은 보이지 않습니다.</p>
+<p>그래서 점검 질문도 바꿨습니다. 실패 시각의 CPU 사용률과 실행 대기 작업은 어땠는가? 같은 노드에서 어떤 시스템 Pod와 DAG가 겹쳤는가? 동시 실행 수를 줄였을 때 같은 작업이 끝까지 완료되는가? 단순 재시작 뒤 한 번 성공한 결과보다 이 대조가 원인에 가깝습니다.</p>
+<h2 id="반복-실패는-하나의-원인만-갖지-않았습니다">반복 실패는 하나의 원인만 갖지 않았습니다</h2>
+<p>CPU 경합을 줄여도 NAS가 꺼진 밤에는 DAG가 끝날 수 없었습니다.</p>
+<p>소음 때문에 NAS를 야간에 종료했고, 그 장비에 Airflow 메타데이터 데이터베이스와 원본 데이터를 쓰는 S3 호환 저장소가 함께 있었습니다. 계산할 자원이 있어도 작업이 의존하는 상태 서비스가 사라진 셈입니다.</p>
+<p>두 실패는 구분해야 합니다. CPU 코어 부족은 제한된 시간 안에 작업을 처리할 수 있느냐의 문제입니다. 야간 종료는 DB와 저장소가 그 시간에 존재하느냐의 문제입니다. 오류가 모두 Airflow에 나타났다고 해서 같은 원인으로 묶으면, 한쪽만 고치고 장애를 남기게 됩니다.</p>
+<p><img alt="낮의 CPU 경합과 밤의 NAS 종료로 끊긴 데이터베이스·오브젝트 저장소 경로를 나란히 보여 주는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B-JbJN6l_2oMzJM.webp" srcset=""></p>
+<h2 id="메타데이터-db만-옮기면-절반만-고칩니다">메타데이터 DB만 옮기면 절반만 고칩니다</h2>
+<p>처음에는 Airflow 메타데이터 데이터베이스만 24시간 장비로 옮기면 된다고 생각했습니다. 의존 경로를 따라가 보니 DAG는 수집한 원본 데이터도 NAS의 오브젝트 스토리지에 쓰고 있었습니다. DB 연결이 살아나도 <code>boto3</code>가 꺼진 저장소에 연결하는 단계에서 다시 멈춥니다.</p>
+<p>필요한 것은 DB 한 개의 이사가 아니었습니다. 24시간 켜진 하드웨어, 상태 서비스를 올릴 컴퓨트와 스토리지, 데이터베이스 운영 계층, 오브젝트 스토리지를 한 묶음으로 설계해야 했습니다. 이 요구와 Kubernetes 운영을 직접 배우려는 목표가 겹치면서 3노드 k3s 구성이 선택지가 됐습니다.</p>
+<p>다른 선택도 가능했습니다. NAS를 계속 켜 두거나, 미니 PC 한 대에서 Docker Compose로 운영하거나, 클라우드로 옮길 수 있었습니다. 각 선택에는 소음과 단일 장애점, 정비 중 중단, 비용이라는 다른 대가가 있습니다. 이 홈랩에서는 복제와 자동 복구, 선언적 운영을 직접 경험한다는 학습 가치까지 포함해 k3s를 골랐습니다.</p>
+<p><img alt="메타데이터 데이터베이스만 옮기면 오브젝트 저장소 경로가 남고, 두 경로를 함께 상시 클러스터로 옮겨야 하는 의존성 흐름" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.D-UInrPZ_Z86s70.webp" srcset=""></p>
+<h2 id="24시간-서비스는-24시간-의존성-위에-둡니다">24시간 서비스는 24시간 의존성 위에 둡니다</h2>
+<p>최종 역할은 전원과 가동시간을 기준으로 나눴습니다. 24시간 돌아야 하는 컴퓨트와 상태 서비스는 상시 가동 미니 PC 클러스터로 옮겼습니다. 밤에 꺼지는 NAS는 백업과 파일 서버처럼 주간 가동과 양립하는 역할에 집중시켰습니다.</p>
+<p>2026년 7월 17일 Airflow를 새 클러스터 안에서 기동한 뒤 야간 DAG 실패가 사라졌다는 운영 기록은 남아 있습니다. 새 환경은 CPU와 가동시간 조건을 함께 바꿨기 때문에 이 전후 비교만으로 각 실패의 원인을 분리해 증명할 수는 없습니다. 이 글에서는 당시 운영 판단과 지금 확인 가능한 기록의 범위를 나눠 적었습니다.</p>
+<p>저는 이후 서버 사양을 볼 때 RAM부터 보지 않습니다. 작업이 어디에서 기다리는지, 밤에도 살아 있어야 할 의존성이 무엇인지부터 적습니다.</p>
+<p>이 홈랩에서 Kubernetes는 그 두 조건을 분리해 운영하고 직접 실패를 겪어 보기 위한 선택이었습니다.</p>
+<p><img alt="카솔이 상시 컴퓨트·상태 서비스 계층과 주간 백업·파일 서버 역할로 분리한 NAS를 설명하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04._HP2DU1g_Zchd76.webp" srcset=""></p>
+<h2 id="내-환경에-적용할-점검-질문">내 환경에 적용할 점검 질문</h2>
+<ol>
+<li>실패한 작업은 메모리, CPU, 디스크 I/O 가운데 무엇을 기다리고 있었는가?</li>
+<li>실패 시각에 같은 노드에서 어떤 시스템 서비스와 작업이 겹쳤는가?</li>
+<li>애플리케이션의 DB, 오브젝트 스토리지, DNS, 인증 서비스는 필요한 시간에 모두 살아 있었는가?</li>
+<li>첫 가설에서 옮기지 않은 의존성이 하나라도 남아 있지 않은가?</li>
+<li>동시 실행 수를 줄이거나 의존성을 옮긴 뒤 같은 작업이 반복해서 완료되는가?</li>
+</ol>
+<p>다음 편에서는 미니PC 세 대를 고른 이유와, 새 클러스터를 점검하다 엉뚱한 kubectl 컨텍스트를 보고 있음을 알아차린 사건을 다룹니다. <a href="/posts/three-node-etcd-quorum-context/">홈랩 쿠버네티스 구축기 2편: 3노드여야 하는 이유, 그리고 빈 결과의 함정</a>으로 이어집니다.</p>
+<p>이후 구축기에서는 DNS, 스토리지, 인증, GitOps, 네트워크 정책 문제를 하나씩 다룹니다. 출발점은 32GB RAM 뒤에 가려진 CPU 병목과 밤마다 사라지는 상태 서비스였습니다.</p>
+<h2 id="함께-읽을-개념-글">함께 읽을 개념 글</h2>
+<ul>
+<li><a href="/posts/kubernetes-k3s-homelab/">Kubernetes와 k3s는 무엇이 다른가</a>: 홈랩에서 오케스트레이션이 필요한 조건과 k3s가 줄이는 운영 부담을 설명합니다.</li>
+<li><a href="/posts/cpu-concurrency-run-queue/">RAM은 남는데 작업이 실패할 때 보는 CPU 동시성</a>: CPU 사용률, 실행 대기열, Kubernetes 자원 제한과 Airflow 동시성을 구분합니다.</li>
+<li><a href="/posts/state-service-uptime-design/">24시간 서비스의 가동시간과 의존성 설계</a>: DB와 오브젝트 스토리지를 포함한 전체 실행 경로를 점검합니다.</li>
+</ul>
+<h2 id="출처와-범위">출처와 범위</h2>
+<ul>
+<li>개인 인프라 운영 기록: <code>왜 홈랩에 Kubernetes를 세웠나 — 야간에 꺼지는 NAS에 묶인 Airflow</code> (2026-07-20)</li>
+<li>개인 아키텍처 결정 기록: <code>홈랩 코어·상태 계층 배치</code> (2026-07-07)</li>
+<li>CPU 코어 제약: 2026-07-21 작성자 직접 보정</li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><nav class="series-navigation" aria-label="연재 글 이동"><div><span class="series-navigation__empty">첫 편입니다</span></div><a class="series-navigation__index" href="/series/homelab-k8s/">전체 연재 보기</a><div class="series-navigation__next"><a href="/posts/three-node-etcd-quorum-context/"><span>다음 편</span>3노드여야 하는 이유, 그리고 빈 결과의 함정</a></div></nav><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/networkpolicy-negative-test/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.gWCp9_cb_IN4E7.webp" srcset="/_astro/cover.gWCp9_cb_R4PCh.webp 240w, /_astro/cover.gWCp9_cb_25fRdK.webp 360w, /_astro/cover.gWCp9_cb_Z1LKeYH.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-16T00:00:00.000Z">2026년 8월 16일</time></div><h3><a href="/posts/networkpolicy-negative-test/" data-analytics-event="related_post_click" data-analytics-target="networkpolicy-negative-test">3분만에 만화로 보는 IT - 기술 해설 | NetworkPolicy가 Synced였는데, 막히는지는 따로 시험했습니다</a></h3><p>NetworkPolicy 선언이 Synced인 것과 패킷이 실제로 차단되는 것은 다릅니다. 기본 차단, AND·OR 선택자, 집행 계층과 음성 테스트를 기록합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/dns-bootstrap-loop/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BaFdXpO7_1KLBjl.webp" srcset="/_astro/cover.BaFdXpO7_ZIW9bW.webp 240w, /_astro/cover.BaFdXpO7_tdRow.webp 360w, /_astro/cover.BaFdXpO7_1GoT00.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-31T00:00:00.000Z">2026년 7월 31일</time></div><h3><a href="/posts/dns-bootstrap-loop/" data-analytics-event="related_post_click" data-analytics-target="dns-bootstrap-loop">3분만에 만화로 보는 IT - 기술 해설 | CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유</a></h3><p>CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/three-node-etcd-quorum-context/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.54SSLWSX_urWN5.webp" srcset="/_astro/cover.54SSLWSX_2zE8R.webp 240w, /_astro/cover.54SSLWSX_1fKFJl.webp 360w, /_astro/cover.54SSLWSX_2sVHkO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-25T00:00:00.000Z">2026년 7월 25일</time></div><h3><a href="/posts/three-node-etcd-quorum-context/" data-analytics-event="related_post_click" data-analytics-target="three-node-etcd-quorum-context">3분만에 만화로 보는 IT - 기술 해설 | 3노드여야 하는 이유, 그리고 빈 결과의 함정</a></h3><p>미니PC 세 대로 k3s embedded etcd 구성을 세운 뒤 빈 kubectl 출력을 만났습니다. 쿼럼 계산의 범위와, 자동화가 엉뚱한 클러스터에서 자격을 꺼내기 직전에 멈춘 사건을 다룬 홈랩 구축기 2편입니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/development_episode/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 개발 에피소드 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

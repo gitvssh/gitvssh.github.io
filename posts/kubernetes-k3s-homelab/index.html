@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것 | 다메카솔</title><meta name="description" content="컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/kubernetes-k3s-homelab/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것"><meta property="og:description" content="컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/kubernetes-k3s-homelab/"><meta property="og:image" content="https://blog.damecasol.com/social/kubernetes-k3s-homelab.webp"><meta property="og:image:alt" content="카솔이 컨테이너 실행 층과 여러 노드의 상태를 조정하는 Kubernetes 제어 층을 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것","description":"컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다.","datePublished":"2026-07-20T00:00:00.000Z","dateModified":"2026-07-28T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/kubernetes-k3s-homelab/","image":["https://blog.damecasol.com/social/kubernetes-k3s-homelab.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"인프라·운영","keywords":["Kubernetes","K3s","홈랩"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="kubernetes-k3s-homelab" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-20T00:00:00.000Z">2026년 7월 20일</time></span><span>수정 <time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.C9GJGlFd_ZfdCYM.webp" srcset="/_astro/cover.C9GJGlFd_11N1KR.webp 640w, /_astro/cover.C9GJGlFd_NfvxI.webp 960w, /_astro/cover.C9GJGlFd_ZfdCYM.webp 1024w" alt="카솔이 컨테이너 실행 층과 여러 노드의 상태를 조정하는 Kubernetes 제어 층을 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#컨테이너를-실행하는-일과-클러스터를-운영하는-일" data-toc-link="컨테이너를-실행하는-일과-클러스터를-운영하는-일" data-analytics-event="toc_click" data-analytics-target="컨테이너를-실행하는-일과-클러스터를-운영하는-일">컨테이너를 실행하는 일과 클러스터를 운영하는 일</a></li><li class="article-toc__depth-2"><a href="#원하는-상태를-계속-맞추는-제어-시스템" data-toc-link="원하는-상태를-계속-맞추는-제어-시스템" data-analytics-event="toc_click" data-analytics-target="원하는-상태를-계속-맞추는-제어-시스템">원하는 상태를 계속 맞추는 제어 시스템</a></li><li class="article-toc__depth-2"><a href="#컨트롤-플레인과-워커-노드는-무엇을-하나" data-toc-link="컨트롤-플레인과-워커-노드는-무엇을-하나" data-analytics-event="toc_click" data-analytics-target="컨트롤-플레인과-워커-노드는-무엇을-하나">컨트롤 플레인과 워커 노드는 무엇을 하나</a></li><li class="article-toc__depth-2"><a href="#k3s는-무엇을-줄이고-무엇을-남기는가" data-toc-link="k3s는-무엇을-줄이고-무엇을-남기는가" data-analytics-event="toc_click" data-analytics-target="k3s는-무엇을-줄이고-무엇을-남기는가">k3s는 무엇을 줄이고 무엇을 남기는가</a></li><li class="article-toc__depth-2"><a href="#최소-요구사항은-실제-권장-사양이-아니다" data-toc-link="최소-요구사항은-실제-권장-사양이-아니다" data-analytics-event="toc_click" data-analytics-target="최소-요구사항은-실제-권장-사양이-아니다">최소 요구사항은 실제 권장 사양이 아니다</a></li><li class="article-toc__depth-2"><a href="#홈랩에서-k3s가-필요한지-판단하는-법" data-toc-link="홈랩에서-k3s가-필요한지-판단하는-법" data-analytics-event="toc_click" data-analytics-target="홈랩에서-k3s가-필요한지-판단하는-법">홈랩에서 k3s가 필요한지 판단하는 법</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#k3s는-kubernetes와-다른-기술인가요" data-toc-link="k3s는-kubernetes와-다른-기술인가요" data-analytics-event="toc_click" data-analytics-target="k3s는-kubernetes와-다른-기술인가요">k3s는 Kubernetes와 다른 기술인가요?</a></li><li class="article-toc__depth-3"><a href="#단일-노드-k3s에도-의미가-있나요" data-toc-link="단일-노드-k3s에도-의미가-있나요" data-analytics-event="toc_click" data-analytics-target="단일-노드-k3s에도-의미가-있나요">단일 노드 k3s에도 의미가 있나요?</a></li><li class="article-toc__depth-3"><a href="#nas에-k3s를-바로-설치해도-되나요" data-toc-link="nas에-k3s를-바로-설치해도-되나요" data-analytics-event="toc_click" data-analytics-target="nas에-k3s를-바로-설치해도-되나요">NAS에 k3s를 바로 설치해도 되나요?</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>저는 시놀로지 NAS 한 대에 k3s를 올려 배포와 스토리지, 네트워크를 익혔습니다. 작은 단일 노드 클러스터는 좋은 학습장이었습니다. 하지만 Airflow 작업과 k3s 시스템 구성요소가 적은 CPU 코어를 나눠 쓰기 시작하자 32GB RAM의 여유만으로는 문제가 풀리지 않았습니다. 밤에 NAS를 끄면 메타데이터 DB와 오브젝트 스토리지도 함께 사라졌고, 한 노드가 멈추면 클러스터 전체가 멈추는 구조도 그대로였습니다.</p>
+<p>이때부터 제 질문은 “k3s를 실행할 수 있는가?”에서 “어떤 상태를 몇 시간 동안, 어떤 장애까지 견디며 운영할 것인가?”로 바뀌었습니다.</p>
+<p><strong>컨테이너 런타임은 컨테이너를 실행하고 Kubernetes는 여러 컨테이너와 노드의 원하는 상태를 계속 맞춥니다.</strong> k3s는 이 운영 모델을 없앤 별도 도구가 아니라 설치와 기본 구성요소를 한데 묶은 Kubernetes 배포판입니다. 설치 부담은 줄여 주지만 CPU 경합, 24시간 의존성, 노드 장애를 어떻게 다룰지는 운영자가 결정해야 합니다.</p>
+<p>글·해설: 다메카솔</p>
+<p>Updated: 2026-07-28</p>
+<h2 id="컨테이너를-실행하는-일과-클러스터를-운영하는-일">컨테이너를 실행하는 일과 클러스터를 운영하는 일</h2>
+<p><img alt="컨테이너가 실행된 뒤에도 여러 노드의 배치와 장애 복구를 누가 맡는지 묻는 카솔" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.B3ij81pW_Q3fzr.webp" srcset=""></p>
+<p>컨테이너 런타임의 책임은 컨테이너를 실제로 실행하는 데 있습니다. Kubernetes 노드에도 containerd나 CRI-O처럼 CRI와 호환되는 런타임이 필요합니다. Kubernetes가 런타임을 대체하는 것이 아니라, 런타임 위에서 더 큰 운영 상태를 관리하는 셈입니다.</p>
+<p>여기서 구분해야 할 층이 생깁니다.</p>
+<table>
+<thead>
+<tr>
+<th>층</th>
+<th>주로 답하는 질문</th>
+<th>대표 구성요소</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>컨테이너 실행</td>
+<td>이 컨테이너 프로세스를 어떻게 시작하고 격리할까?</td>
+<td>containerd, CRI-O 같은 런타임</td>
+</tr>
+<tr>
+<td>클러스터 제어</td>
+<td>어떤 워크로드를 어느 노드에 놓고, 고장 뒤 어떤 상태로 되돌릴까?</td>
+<td>Kubernetes API, 스케줄러, 컨트롤러</td>
+</tr>
+<tr>
+<td>애플리케이션</td>
+<td>요청을 어떻게 처리하고 데이터 오류를 어떻게 막을까?</td>
+<td>실제 서비스 코드와 데이터베이스</td>
+</tr>
+</tbody>
+</table>
+<p>이 경계를 그어야 자가 복구도 정확히 이해할 수 있습니다. Kubernetes는 실패한 컨테이너를 재시작하거나 사라진 복제본을 대체할 수 있습니다.</p>
+<p>하지만 같은 결함을 가진 컨테이너를 다시 띄우면 같은 버그가 그대로 돌아옵니다. 사용할 수 없어진 스토리지와 손상된 데이터도 별도의 복구 설계가 필요합니다.</p>
+<h2 id="원하는-상태를-계속-맞추는-제어-시스템">원하는 상태를 계속 맞추는 제어 시스템</h2>
+<p><img alt="원하는 Pod 상태와 현재 상태의 차이를 컨트롤러가 감지하고 대체 Pod로 줄이는 흐름" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BwgC05Gv_2fFEDl.webp" srcset=""></p>
+<p>Kubernetes를 이해하는 가장 짧은 길은 <code>spec</code>과 <code>status</code>를 나눠 보는 것입니다.</p>
+<p>사용자는 객체의 <code>spec</code>에 원하는 상태를 적습니다. 컨트롤 플레인은 관찰한 현재 상태를 <code>status</code>로 갱신하고, 둘 사이에 차이가 생기면 컨트롤러가 다시 맞추려고 움직입니다.</p>
+<p>예를 들어 Deployment에 복제본 세 개를 원한다고 선언했는데 현재 두 개만 준비됐다면, 컨트롤러는 새 Pod를 만들어 차이를 줄입니다. 중요한 점은 A 다음 B, B 다음 C를 한 번 실행하고 끝내는 스크립트가 아니라는 데 있습니다. 상태를 계속 관찰하고 조정하는 루프입니다.</p>
+<p>이 모델은 강력하지만 전제도 있습니다. 새 Pod를 놓을 노드의 CPU와 메모리가 부족하면 스케줄링은 멈춥니다. PersistentVolume을 다시 붙일 수 없는 상태라면 Pod만 교체해도 서비스는 돌아오지 않습니다. Kubernetes가 관리할 수 있는 범위와 외부 의존성을 함께 봐야 하는 이유입니다.</p>
+<h2 id="컨트롤-플레인과-워커-노드는-무엇을-하나">컨트롤 플레인과 워커 노드는 무엇을 하나</h2>
+<p><img alt="컨트롤 플레인의 API와 배치 조정 결정이 워커의 kubelet과 컨테이너 실행으로 이어지는 구조" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.DeEAztAI_KLUr7.webp" srcset=""></p>
+<p>클러스터는 크게 컨트롤 플레인과 워커 노드로 나뉩니다. 각 구성요소의 이름보다 먼저 책임을 잡으면 구조가 선명해집니다.</p>
+<ul>
+<li><code>kube-apiserver</code>는 Kubernetes API의 입구입니다.</li>
+<li>상태 저장 계층은 API 서버가 다루는 클러스터 상태를 보존합니다. 일반 Kubernetes 구성에서는 etcd가 이 역할을 맡습니다.</li>
+<li><code>kube-scheduler</code>는 아직 노드가 정해지지 않은 Pod를 살피고 적합한 노드를 고릅니다.</li>
+<li><code>kube-controller-manager</code>의 컨트롤러들은 선언한 상태와 실제 상태의 차이를 줄입니다.</li>
+<li>워커의 <code>kubelet</code>은 자신이 맡은 Pod와 컨테이너가 실행되도록 관리합니다.</li>
+<li>컨테이너 런타임은 마지막 실행 단계에서 실제 컨테이너를 시작합니다.</li>
+</ul>
+<p>이 구분은 역할에 대한 것이고, 물리 서버 배치는 별개의 선택입니다. 단일 노드 학습 클러스터에서는 한 장비가 server와 worker 역할을 함께 맡을 수 있습니다. 역할의 논리적 경계와 물리 장비의 수를 같은 것으로 생각하지 않는 편이 좋습니다.</p>
+<h2 id="k3s는-무엇을-줄이고-무엇을-남기는가">k3s는 무엇을 줄이고 무엇을 남기는가</h2>
+<p><img alt="k3s가 Kubernetes 구성요소를 server와 agent로 묶지만 데이터스토어 운영은 남는다고 설명하는 구조도" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.vY0LZoJD_TxLtp.webp" srcset=""></p>
+<p>k3s는 Kubernetes의 핵심 역할을 더 적은 설치 단위로 묶습니다. 공식 문서는 k3s를 Kubernetes 적합성을 갖춘 배포판으로 설명하며, 단일 바이너리와 함께 containerd, Flannel, CoreDNS, Ingress 등 여러 구성요소를 기본 제공한다고 안내합니다. 이 묶음 덕분에 처음부터 각 부품을 따로 골라 연결해야 하는 부담이 줄어듭니다.</p>
+<p>구조 자체는 남습니다. <code>k3s server</code>는 컨트롤 플레인과 데이터스토어를 관리하고, <code>k3s agent</code>는 워커로 참여합니다. server와 agent 모두 kubelet, 컨테이너 런타임, CNI를 실행합니다.</p>
+<p>데이터스토어 선택은 특히 중요합니다.</p>
+<table>
+<thead>
+<tr>
+<th>구성</th>
+<th>데이터스토어</th>
+<th>운영상 의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 server</td>
+<td>기본 embedded SQLite 사용 가능</td>
+<td>시작은 단순하지만 server 장애가 곧 컨트롤 플레인 중단으로 이어집니다.</td>
+</tr>
+<tr>
+<td>다중 server, embedded HA</td>
+<td>embedded etcd, server 3대 이상</td>
+<td>컨트롤 플레인 가용성을 높이는 대신 쿼럼과 디스크 지연을 관리해야 합니다.</td>
+</tr>
+<tr>
+<td>다중 server, 외부 DB</td>
+<td>MySQL·PostgreSQL·etcd 등, server 2대 이상</td>
+<td>외부 데이터스토어의 가용성과 백업도 클러스터 운영 범위에 들어옵니다.</td>
+</tr>
+</tbody>
+</table>
+<p>따라서 “k3s는 가벼우니 운영도 저절로 쉽다”는 결론은 너무 빠릅니다. 설치 진입점은 단순해져도 DNS, 네트워크, 인증서, 영구 스토리지, 데이터스토어 백업, 버전 업그레이드는 여전히 설계해야 합니다.</p>
+<h2 id="최소-요구사항은-실제-권장-사양이-아니다">최소 요구사항은 실제 권장 사양이 아니다</h2>
+<p>K3s 공식 요구사항이 제시하는 설치 하한선은 작습니다. 2026년 7월 23일 확인 기준으로 server는 2코어와 2GB RAM, agent는 1코어와 512MB RAM입니다.</p>
+<table>
+<thead>
+<tr>
+<th>노드 역할</th>
+<th style="text-align: right">공식 최소 CPU</th>
+<th style="text-align: right">공식 최소 RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>server</td>
+<td style="text-align: right">2코어</td>
+<td style="text-align: right">2GB</td>
+</tr>
+<tr>
+<td>agent</td>
+<td style="text-align: right">1코어</td>
+<td style="text-align: right">512MB</td>
+</tr>
+</tbody>
+</table>
+<p>이 숫자가 덮는 범위는 k3s 자체까지이고, 사용자 워크로드 자원은 따로 더해야 합니다. 이미지 다운로드와 압축 해제는 CPU와 디스크 IO를 사용하고, 컨트롤 플레인 변경이 잦거나 Operator가 많으면 server 부하도 커집니다. 데이터스토어와 컨테이너 이미지 저장소, 워크로드 볼륨이 같은 느린 디스크를 다투면 RAM이 남아도 클러스터가 답답해질 수 있습니다.</p>
+<p>그러므로 최소 요구사항은 “설치가 시작될 수 있는 선”으로만 읽어야 합니다. 실제 장비를 고를 때는 워크로드의 CPU·메모리, 디스크 지연과 IOPS, 애드온, 복제본 수, 장애 때 남겨 둘 여유까지 더해야 합니다.</p>
+<h2 id="홈랩에서-k3s가-필요한지-판단하는-법">홈랩에서 k3s가 필요한지 판단하는 법</h2>
+<p><img alt="카솔이 Kubernetes 학습과 다중 노드 운영 목적을 스토리지 DNS 백업 책임과 함께 비교하는 판단표" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.BdHXDgLP_Z2d4omw.webp" srcset=""></p>
+<p>먼저 목적을 한 문장으로 적어 보세요. 목적이 “서버 한 대에서 소수의 컨테이너를 편하게 실행한다”라면 Compose나 운영체제 서비스 관리자가 더 단순할 수 있습니다. 반대로 Kubernetes API, 선언형 배포, 스케줄링, Operator, 다중 노드 장애를 배우려는 목적이라면 단일 노드 k3s도 충분히 의미가 있습니다.</p>
+<p>아래 질문에서 오른쪽 책임까지 받아들일 수 있을 때 도입이 오래갑니다.</p>
+<ul>
+<li>Kubernetes API와 운영 모델 자체를 배울 이유가 있는가?</li>
+<li>노드를 늘리거나 워크로드를 다른 노드로 옮길 필요가 있는가?</li>
+<li>server와 agent의 역할, 데이터스토어 토폴로지를 설명할 수 있는가?</li>
+<li>영구 스토리지와 백업을 복제와 별개로 설계할 수 있는가?</li>
+<li>DNS·CNI·Ingress·인증서 가운데 내가 운영할 범위를 정했는가?</li>
+<li>정기적으로 업그레이드하고 장애 뒤 복구를 연습할 시간이 있는가?</li>
+</ul>
+<p>한두 항목에 아직 답하지 못해도 설치를 미룰 필요는 없습니다. 다만 학습용 단일 노드와 24시간 서비스를 맡길 운영 클러스터를 같은 안전 수준으로 취급하지는 마세요. 처음부터 목적과 실패 허용 범위를 분리하면 k3s는 좋은 학습 도구가 되고, 나중에는 어떤 계층을 강화해야 하는지도 보입니다.</p>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="k3s는-kubernetes와-다른-기술인가요">k3s는 Kubernetes와 다른 기술인가요?</h3>
+<p>별도의 오케스트레이션 모델이 아닙니다. k3s는 Kubernetes 적합성을 갖춘 배포판이며 Kubernetes API와 컨트롤러 모델을 사용합니다. 차이는 설치 방식, 기본 데이터스토어, 함께 묶이는 구성요소와 기본값에 있습니다.</p>
+<h3 id="단일-노드-k3s에도-의미가-있나요">단일 노드 k3s에도 의미가 있나요?</h3>
+<p>학습 목적이라면 의미가 있습니다. Deployment, Service, Ingress, PersistentVolume, Operator 같은 Kubernetes 개념을 작은 환경에서 익힐 수 있습니다. 노드 한 대의 장애를 견디는 고가용성은 여기서 한 단계 더 나아간 구성입니다.</p>
+<h3 id="nas에-k3s를-바로-설치해도-되나요">NAS에 k3s를 바로 설치해도 되나요?</h3>
+<p>장비 이름보다 운영체제와 커널 조건을 먼저 확인해야 합니다. K3s는 현대적인 Linux와 cgroup을 전제로 하며, 지원되지 않는 NAS 전용 OS에서는 업데이트나 커널 모듈, 네트워크 구성이 걸림돌이 될 수 있습니다. 이런 경우에는 NAS 위의 Linux VM이나 별도 미니 PC가 경계를 더 분명하게 만듭니다.</p>
+<p>이 개념 글이 나온 실제 구축 배경은 <a href="/posts/why-homelab-kubernetes/">홈랩 쿠버네티스 구축기 1편: RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</a>에서 이어집니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li>Kubernetes, <a href="https://kubernetes.io/docs/concepts/overview/">Overview</a></li>
+<li>Kubernetes, <a href="https://kubernetes.io/docs/concepts/overview/components/">Kubernetes Components</a></li>
+<li>Kubernetes, <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/">Objects In Kubernetes</a></li>
+<li>Kubernetes, <a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/">Container Runtimes</a></li>
+<li>Kubernetes, <a href="https://kubernetes.io/docs/concepts/architecture/self-healing/">Kubernetes Self-Healing</a></li>
+<li>K3s, <a href="https://docs.k3s.io/">K3s - Lightweight Kubernetes</a></li>
+<li>K3s, <a href="https://docs.k3s.io/architecture">Architecture</a></li>
+<li>K3s, <a href="https://docs.k3s.io/datastore">Cluster Datastore</a></li>
+<li>K3s, <a href="https://docs.k3s.io/installation/requirements">Requirements</a></li>
+<li>K3s, <a href="https://docs.k3s.io/reference/resource-profiling">Resource Profiling</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/etcd-quorum-odd-members/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Dus3jeH7_2vxE0n.webp" srcset="/_astro/cover.Dus3jeH7_UzOMN.webp 240w, /_astro/cover.Dus3jeH7_28KQoh.webp 360w, /_astro/cover.Dus3jeH7_Z1IffOb.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-27T00:00:00.000Z">2026년 7월 27일</time></div><h3><a href="/posts/etcd-quorum-odd-members/" data-analytics-event="related_post_click" data-analytics-target="etcd-quorum-odd-members">3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산</a></h3><p>과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/homelab-mini-pc-nic-m2-selection/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ci0neV7Y_1ajU3.webp" srcset="/_astro/cover.Ci0neV7Y_2tISWP.webp 240w, /_astro/cover.Ci0neV7Y_Z1nhdfC.webp 360w, /_astro/cover.Ci0neV7Y_Za6bE9.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></div><h3><a href="/posts/homelab-mini-pc-nic-m2-selection/" data-analytics-event="related_post_click" data-analytics-target="homelab-mini-pc-nic-m2-selection">3분만에 만화로 보는 IT - 기술 해설 | 홈랩 미니PC 고르는 법: CPU·RAM보다 NIC와 M.2 슬롯을 먼저 볼 때</a></h3><p>미니PC 비교표의 CPU와 RAM은 기준선일 뿐입니다. 84GB 복원에 88분이 걸린 경험을 바탕으로 NIC, 스위치, M.2 슬롯, 여유 공간을 하나의 데이터 경로로 놓고 후보를 거르는 방법을 정리했습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/kubectl-context-cluster-fingerprint/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.C5K6D-ZI_1wqNqd.webp" srcset="/_astro/cover.C5K6D-ZI_ZTpKt5.webp 240w, /_astro/cover.C5K6D-ZI_iKg7o.webp 360w, /_astro/cover.C5K6D-ZI_1vVhHR.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-26T00:00:00.000Z">2026년 7월 26일</time></div><h3><a href="/posts/kubectl-context-cluster-fingerprint/" data-analytics-event="related_post_click" data-analytics-target="kubectl-context-cluster-fingerprint">3분만에 만화로 보는 IT - 기술 해설 | kubectl은 어느 클러스터를 보고 있는가: 빈 출력 전에 확인할 kubeconfig 지문</a></h3><p>kubectl이 오류 없이 빈 결과를 냈다고 해서 대상 클러스터가 맞는 것은 아닙니다. kubeconfig가 병합되는 순서를 짚고, 자격 추출이나 쓰기 전에 API server와 예상 노드 지문까지 확인하는 절차를 만듭니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

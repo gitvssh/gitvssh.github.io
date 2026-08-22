@@ -1,0 +1,402 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계 | 다메카솔</title><meta name="description" content="애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."><link rel="canonical" href="https://blog.damecasol.com/posts/state-service-uptime-design/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계"><meta property="og:description" content="애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."><meta property="og:url" content="https://blog.damecasol.com/posts/state-service-uptime-design/"><meta property="og:image" content="https://blog.damecasol.com/social/state-service-uptime-design.webp"><meta property="og:image:alt" content="불이 켜진 애플리케이션 건물에서 꺼진 데이터베이스와 오브젝트 스토리지로 이어진 경로가 끊겨 있고 남성 카솔이 이를 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계","description":"애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다.","datePublished":"2026-07-22T00:00:00.000Z","dateModified":"2026-07-28T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/state-service-uptime-design/","image":["https://blog.damecasol.com/social/state-service-uptime-design.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"인프라·운영","keywords":["고가용성","스토리지","데이터베이스","홈랩"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="state-service-uptime-design" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-22T00:00:00.000Z">2026년 7월 22일</time></span><span>수정 <time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CfMubh1n_2vLPHy.webp" srcset="/_astro/cover.CfMubh1n_Z10OutJ.webp 640w, /_astro/cover.CfMubh1n_Z1en0GS.webp 960w, /_astro/cover.CfMubh1n_2vLPHy.webp 1024w" alt="불이 켜진 애플리케이션 건물에서 꺼진 데이터베이스와 오브젝트 스토리지로 이어진 경로가 끊겨 있고 남성 카솔이 이를 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#가동시간은-겹치는-시간창입니다" data-toc-link="가동시간은-겹치는-시간창입니다" data-analytics-event="toc_click" data-analytics-target="가동시간은-겹치는-시간창입니다">가동시간은 겹치는 시간창입니다</a></li><li class="article-toc__depth-2"><a href="#사용자-기능-하나에서-의존성-그래프를-그립니다" data-toc-link="사용자-기능-하나에서-의존성-그래프를-그립니다" data-analytics-event="toc_click" data-analytics-target="사용자-기능-하나에서-의존성-그래프를-그립니다">사용자 기능 하나에서 의존성 그래프를 그립니다</a></li><li class="article-toc__depth-2"><a href="#db만-옮기는-안으로는-왜-부족했을까" data-toc-link="db만-옮기는-안으로는-왜-부족했을까" data-analytics-event="toc_click" data-analytics-target="db만-옮기는-안으로는-왜-부족했을까">DB만 옮기는 안으로는 왜 부족했을까</a></li><li class="article-toc__depth-2"><a href="#상시-실행예약-지원복구-보관을-분리합니다" data-toc-link="상시-실행예약-지원복구-보관을-분리합니다" data-analytics-event="toc_click" data-analytics-target="상시-실행예약-지원복구-보관을-분리합니다">상시 실행·예약 지원·복구 보관을 분리합니다</a></li><li class="article-toc__depth-2"><a href="#statefulset과-pdb가-해결하지-않는-것" data-toc-link="statefulset과-pdb가-해결하지-않는-것" data-analytics-event="toc_click" data-analytics-target="statefulset과-pdb가-해결하지-않는-것">StatefulSet과 PDB가 해결하지 않는 것</a></li><li class="article-toc__depth-2"><a href="#rto와-rpo는-장비보다-질문을-먼저-정합니다" data-toc-link="rto와-rpo는-장비보다-질문을-먼저-정합니다" data-analytics-event="toc_click" data-analytics-target="rto와-rpo는-장비보다-질문을-먼저-정합니다">RTO와 RPO는 장비보다 질문을 먼저 정합니다</a></li><li class="article-toc__depth-2"><a href="#가동시간-설계-초안-만들기" data-toc-link="가동시간-설계-초안-만들기" data-analytics-event="toc_click" data-analytics-target="가동시간-설계-초안-만들기">가동시간 설계 초안 만들기</a></li><li class="article-toc__depth-2"><a href="#중단-시험과-실제-기능-검증은-따로-계획합니다" data-toc-link="중단-시험과-실제-기능-검증은-따로-계획합니다" data-analytics-event="toc_click" data-analytics-target="중단-시험과-실제-기능-검증은-따로-계획합니다">중단 시험과 실제 기능 검증은 따로 계획합니다</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#db를-24시간-켜-두면-고가용성이-되나요" data-toc-link="db를-24시간-켜-두면-고가용성이-되나요" data-analytics-event="toc_click" data-analytics-target="db를-24시간-켜-두면-고가용성이-되나요">DB를 24시간 켜 두면 고가용성이 되나요?</a></li><li class="article-toc__depth-3"><a href="#백업-nas는-항상-켜-둬야-하나요" data-toc-link="백업-nas는-항상-켜-둬야-하나요" data-analytics-event="toc_click" data-analytics-target="백업-nas는-항상-켜-둬야-하나요">백업 NAS는 항상 켜 둬야 하나요?</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>Synology NAS에서 학습용 k3s를 운영하던 때, NAS는 소음 때문에 밤에 껐습니다. 문제는 애플리케이션만 다른 장비에서 계속 실행했다는 점입니다. Airflow의 메타데이터 DB와 task가 결과를 쓰는 S3 호환 오브젝트 스토리지는 NAS에 있었고, NAS가 꺼지면 둘도 함께 사라졌습니다.</p>
+<p>처음에는 메타데이터 DB만 상시 가동 장비로 옮기는 안을 검토했습니다. 하지만 task의 저장 경로는 여전히 NAS의 S3 호환 오브젝트 스토리지를 향하고 있었습니다. DB만 옮겨도 밤에는 저장 경로가 끊기는 구조였습니다.</p>
+<p>저는 이때부터 장비별 전원 시간이 아니라 DAG 한 번이 지나가는 전체 경로를 기준으로 옮길 대상을 판단했습니다.</p>
+<p><strong>애플리케이션의 실질 가동시간은 필수 의존성이 함께 사용 가능한 시간으로 제한됩니다.</strong> 24시간 기능이 필요하다면 DB와 오브젝트 스토리지, 이름 해석과 인증처럼 그 기능이 통과하는 경로도 같은 시간 동안 살아 있어야 합니다.</p>
+<p>글·해설: 다메카솔</p>
+<blockquote>
+<p>당시의 정확한 장애 타임스탬프와 로그는 회수하지 못했습니다. 확인 가능한 것은 야간에 꺼지는 NAS에 메타데이터 DB와 오브젝트 스토리지가 함께 있었고, DB만 옮기는 안으로는 task 저장 경로가 남는다는 설계 맥락까지입니다. 아래 절차는 현재 환경에서 같은 구조를 찾기 위한 방법입니다.</p>
+</blockquote>
+<h2 id="가동시간은-겹치는-시간창입니다">가동시간은 겹치는 시간창입니다</h2>
+<p><img alt="소비자는 하루 종일 켜져 있지만 DB와 스토리지는 일부 시간만 켜져 있어 실제 동작 시간이 겹치는 구간으로 좁아지는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.C8oZ8AFf_1GoFlO.webp" srcset=""></p>
+<p>애플리케이션 프로세스가 하루 종일 살아 있어도 요청을 처리하려면 다른 서비스가 필요합니다. 로그인에는 인증과 사용자 DB가, 파일 업로드에는 이름 해석과 메타데이터 DB와 오브젝트 스토리지가 필요할 수 있습니다.</p>
+<p>이 가운데 하나라도 필요한 순간에 사용할 수 없다면 프로세스는 살아 있어도 기능은 중단됩니다.</p>
+<p>따라서 가동시간은 서버별 숫자가 아니라 겹치는 시간창의 문제입니다. 사용자 기능 하나가 통과하는 필수 의존성들의 <strong>공통 시간창</strong>을 찾는 문제입니다. 소비자는 24시간 켜져 있고 DB가 주간에만 켜진다면 해당 기능의 가동시간은 DB의 시간창을 넘지 못합니다.</p>
+<p>이 기준이 적용되는 대상은 소비자가 24시간 필요로 하는 의존 서비스까지입니다. 낮에만 쓰는 개발 환경은 의존성도 그 시간에 맞추면 됩니다. 목표는 무조건적인 상시 가동이 아니라, 독자가 기대하는 사용 시간과 실행 경로의 가동시간을 일치시키는 것입니다.</p>
+<h2 id="사용자-기능-하나에서-의존성-그래프를-그립니다">사용자 기능 하나에서 의존성 그래프를 그립니다</h2>
+<p><img alt="하나의 워크플로가 메타데이터 DB, 오브젝트 저장소, DNS, 인증에 의존하는 실행 경로를 보여 주는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B9Nw-XMH_1HRV10.webp" srcset=""></p>
+<p>“Airflow를 운영한다”처럼 제품 전체를 적으면 의존성이 금세 추상적이 됩니다. 대신 “새 원본 파일 하나를 수집해 저장한다”처럼 결과를 확인할 수 있는 사용자 기능 하나를 고릅니다. 그다음 호출 경로를 끝까지 따라갑니다.</p>
+<p>Airflow 공식 문서는 메타데이터 데이터베이스가 task와 DAG, variable 등의 상태를 저장하며 Airflow 동작에 필요하다고 설명합니다. 그러나 task의 출력이 별도 오브젝트 스토리지에 기록된다면 DB 접속 성공만으로 작업 성공을 말할 수 없습니다. Kubernetes 안에서도 워크로드가 Service를 이름으로 찾는다면 DNS가 공통 선행 의존성이 될 수 있습니다.</p>
+<p>아래 표부터 채우면 숨은 경로가 드러납니다.</p>
+<table>
+<thead>
+<tr>
+<th>의존성</th>
+<th>기능에서 하는 일</th>
+<th>필요한 시간창</th>
+<th>꺼지면 보이는 현상</th>
+<th>실제 확인 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNS</td>
+<td>서비스 이름을 주소로 해석</td>
+<td>요청 처리 시간 전체</td>
+<td>연결 전에 이름 해석 실패</td>
+<td>새 Pod에서 실제 Service 이름 조회</td>
+</tr>
+<tr>
+<td>인증·비밀정보</td>
+<td>호출 주체와 자격 증명 확인</td>
+<td>로그인·접속·갱신 시점</td>
+<td>로그인 또는 토큰 갱신 실패</td>
+<td>새 세션으로 인증부터 재실행</td>
+</tr>
+<tr>
+<td>메타데이터 DB</td>
+<td>실행 상태와 참조 정보 저장</td>
+<td>스케줄·실행·조회 시간</td>
+<td>task 상태 기록·조회 실패</td>
+<td>새 작업 생성 후 상태 저장 확인</td>
+</tr>
+<tr>
+<td>오브젝트 스토리지</td>
+<td>원본과 결과 객체 저장</td>
+<td>task가 읽고 쓰는 시간</td>
+<td>작업 후반의 업로드·다운로드 실패</td>
+<td>새 객체 쓰기와 다시 읽기</td>
+</tr>
+<tr>
+<td>외부 API</td>
+<td>입력 수집 또는 후속 호출</td>
+<td>해당 stage 실행 시간</td>
+<td>일부 단계만 재시도·실패</td>
+<td>같은 요청을 제한된 입력으로 재현</td>
+</tr>
+</tbody>
+</table>
+<p>연결 문자열만 보지 말고 세 가지를 더 확인합니다. 이름이 어디에서 해석되는지, 자격 증명이 언제 갱신되는지, 성공 판정 전에 어떤 저장이 끝나야 하는지입니다. DNS cache나 이미 열린 DB connection 때문에 기존 Pod는 잠시 정상처럼 보여도 새 연결은 실패할 수 있습니다.</p>
+<h2 id="db만-옮기는-안으로는-왜-부족했을까">DB만 옮기는 안으로는 왜 부족했을까</h2>
+<p><img alt="메타데이터 DB는 상시 클러스터로 옮겼지만 오브젝트 저장소가 야간에 꺼지는 NAS에 남아 실행 경로가 여전히 끊기는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Co1fJsbZ_Z2jdO4y.webp" srcset=""></p>
+<p>홈랩에서 처음 검토한 안은 메타데이터 DB만 상시 가동 장비로 옮기는 것이었습니다. 그러나 task가 원본을 쓰는 경로를 따라가 보니 야간에 꺼지는 NAS의 오브젝트 스토리지가 남았습니다. 저는 DB 하나의 위치보다 DAG가 끝까지 통과해야 하는 경로를 먼저 옮겨야 한다고 판단했습니다.</p>
+<p>이 실수는 마이그레이션에서 자주 반복됩니다. 눈에 잘 띄는 데이터베이스만 옮기고 다음 항목을 놓칩니다.</p>
+<ul>
+<li>결과 파일과 원본 객체가 저장되는 경로</li>
+<li>DNS, 인증, 비밀정보 전달처럼 모든 연결보다 먼저 필요한 서비스</li>
+<li>queue, cache, registry처럼 특정 단계에서만 만나는 의존성</li>
+<li>실패 알림과 재시도가 다시 호출하는 외부 시스템</li>
+</ul>
+<p>이 사례에서 마이그레이션의 완료 조건은 “DB가 새 서버에서 실행됨”보다 길어야 합니다. <strong>새 입력이 들어와 최종 결과를 다시 읽을 때까지 이전 실행 경로를 전혀 사용하지 않는 것</strong>까지 확인해야 합니다. 로그와 설정 검색, 네트워크 관측, 실제 end-to-end 요청을 함께 쓰는 이유입니다.</p>
+<h2 id="상시-실행예약-지원복구-보관을-분리합니다">상시 실행·예약 지원·복구 보관을 분리합니다</h2>
+<p><img alt="라이브 의존성은 상시 실행 계층, 백업 NAS는 예약 지원 계층, 독립 사본은 복구 보관 계층으로 나눈 구조" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DzPWzuaR_161NVG.webp" srcset=""></p>
+<p>의존성 목록을 만들었다면 장비가 아니라 역할을 기준으로 세 계층으로 나눕니다.</p>
+<table>
+<thead>
+<tr>
+<th>계층</th>
+<th>대표 대상</th>
+<th>전원·가동 원칙</th>
+<th>검증 질문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>상시 실행</td>
+<td>라이브 DB, 라이브 오브젝트 스토리지, 필수 DNS·인증</td>
+<td>사용자 기능의 필요 시간창과 일치</td>
+<td>지금 새 요청이 처음부터 끝까지 성공하는가?</td>
+</tr>
+<tr>
+<td>예약 지원</td>
+<td>백업 NAS, 배치 전용 파일 서버, 점검 도구</td>
+<td>정해진 작업 창에 켜지고 놓친 작업을 처리</td>
+<td>예약을 놓치면 언제, 어떻게 다시 실행하는가?</td>
+</tr>
+<tr>
+<td>복구·보관</td>
+<td>분리된 백업, 오프사이트·콜드 사본</td>
+<td>평소 라이브 경로와 분리</td>
+<td>운영 데이터가 없어도 정한 시점으로 복구 가능한가?</td>
+</tr>
+</tbody>
+</table>
+<p>이 구분을 하면 NAS를 밤에 꺼도 되는 조건도 선명해집니다. NAS가 라이브 오브젝트 스토리지라면 꺼진 시간의 기능도 중단됩니다. 반대로 NAS가 예약 백업 대상이고, 백업 창과 놓친 작업의 재시도 정책이 있다면 애플리케이션과 같은 시간 내내 켜져 있을 필요는 없습니다.</p>
+<p>복제와 백업은 이 표에서 다른 칸을 담당합니다. replica는 현재 서비스를 이어 가기 위한 사본이고, 백업은 삭제·손상·랜섬웨어·운영 실수 뒤 과거 시점으로 돌아가기 위한 사본입니다. replica가 여러 개여도 잘못된 삭제가 모두 복제될 수 있고, 백업이 있어도 복원에 시간이 걸리면 현재 요청은 중단됩니다. Longhorn 복제, 데이터베이스 장애 조치, 3-2-1 백업 정책은 각각 별도 설계로 다뤄야 합니다.</p>
+<h2 id="statefulset과-pdb가-해결하지-않는-것">StatefulSet과 PDB가 해결하지 않는 것</h2>
+<p>Kubernetes의 리소스 이름이 그보다 큰 운영 목표처럼 들릴 때가 있습니다. 역할을 정확히 나누면 과신을 피할 수 있습니다.</p>
+<p>StatefulSet은 Pod에 안정적인 네트워크 식별자와 지속 스토리지를 연결하고 순서가 필요한 배포·확장을 돕습니다. 그러나 스토리지 자체, 데이터베이스 복제와 장애 조치 정책, 백업은 각각 따로 설계해야 하는 계층입니다. StatefulSet을 썼다는 사실만으로 DB가 고가용성이라고 말할 수 없습니다.</p>
+<p>PodDisruptionBudget(PDB)은 노드 drain 같은 <strong>자발적 축출</strong>에서 동시에 중단될 수 있는 Pod 수를 제한합니다. Kubernetes 공식 문서도 PDB가 Pod의 상시 가동을 보장하지 않는다고 명시합니다. 노드 전원 상실, 하드웨어 장애, 같은 스토리지 장애, 애플리케이션 오류까지 막는 방패가 아닙니다.</p>
+<p>replica를 늘릴 때는 개수보다 배치 경계를 먼저 봅니다. Kubernetes 문서는 zone을 장애 도메인으로 보고 replica를 분산해 상관된 장애를 줄이는 원칙을 설명합니다. 홈랩에서는 이를 다음과 같이 번역할 수 있습니다.</p>
+<ul>
+<li>서로 다른 노드지만 같은 멀티탭에 연결돼 있는가?</li>
+<li>다른 노드의 볼륨이 결국 같은 NAS와 같은 디스크 풀에 있는가?</li>
+<li>DNS와 인증이 한 대의 VM에 함께 묶여 있는가?</li>
+<li>노드가 나뉘어도 같은 스위치 하나를 반드시 통과하는가?</li>
+</ul>
+<p>이것은 “각 자원을 반드시 이중화하라”는 처방이 아닙니다. 한 번의 고장으로 무엇이 함께 사라지는지 표시하고, 그 영향이 받아들일 수 있는지 결정하라는 뜻입니다.</p>
+<h2 id="rto와-rpo는-장비보다-질문을-먼저-정합니다">RTO와 RPO는 장비보다 질문을 먼저 정합니다</h2>
+<p>NIST SP 800-34는 RTO를 허용할 수 없는 영향이 생기기 전 자원이 중단될 수 있는 최대 시간, RPO를 장애 이전 어느 시점까지 데이터를 복구해야 하는지로 정의합니다. 홈랩에서는 복잡한 계약서보다 두 질문으로 시작해도 충분합니다.</p>
+<ol>
+<li>이 기능이 중단된 뒤 언제까지 다시 쓸 수 있어야 하는가?</li>
+<li>복구할 때 최근 데이터가 어느 시점까지 남아 있어야 하는가?</li>
+</ol>
+<p>예를 들어 개인 사진 업로드가 밤새 중단돼도 괜찮지만 마지막 사본은 잃으면 안 되는 서비스와, 수집 pipeline이 10분만 멈춰도 입력을 놓치지만 원본을 다시 받을 수 있는 서비스는 설계가 달라집니다. 전자는 데이터 보존 쪽이, 후자는 실행 연속성과 재처리 쪽이 더 중요할 수 있습니다.</p>
+<p>RTO와 RPO를 적었다고 목표를 달성한 것은 아닙니다. 실제 복원 시간이 목표 안에 들어오는지, 백업에서 필요한 시점의 데이터가 나오는지 시험해야 합니다. 복구 순서도 의존성 그래프를 따릅니다. 공통 선행 서비스와 상태 서비스를 복구하지 않은 채 소비자 Pod부터 재시작하면 실패를 반복할 뿐입니다.</p>
+<h2 id="가동시간-설계-초안-만들기">가동시간 설계 초안 만들기</h2>
+<p>아래 여섯 단계는 문서가 없는 홈랩에서 가동시간 설계의 초안을 만드는 순서입니다. 호출 경로와 장애 경계를 적은 뒤 실제 중단 시험은 다음 단계로 분리합니다.</p>
+<ol>
+<li><strong>사용자 기능 하나를 고릅니다.</strong> “서비스 운영” 대신 “새 파일 하나를 업로드하고 다시 읽기”처럼 성공을 판정할 수 있게 적습니다.</li>
+<li><strong>호출 경로를 끝까지 그립니다.</strong> DNS, 인증, DB, queue, cache, 오브젝트 스토리지, 외부 API를 빠뜨리지 않습니다.</li>
+<li><strong>각 의존성의 필요 시간창을 적습니다.</strong> 항상 필요한지, 특정 stage에서만 필요한지, 예약 작업에서만 필요한지 구분합니다.</li>
+<li><strong>세 계층으로 나눕니다.</strong> 라이브 실행, 예약 지원, 복구·보관 중 하나에 놓습니다. 라이브 경로가 예약 장비를 통과하면 이유를 검토합니다.</li>
+<li><strong>공유 장애 경계를 표시합니다.</strong> 노드뿐 아니라 전원, 네트워크, 스토리지 풀, DNS·인증 호스트를 원으로 묶습니다.</li>
+<li><strong>RTO·RPO 질문에 답합니다.</strong> 허용 중단 시간과 되돌아갈 데이터 시점을 대략이라도 적습니다.</li>
+</ol>
+<h2 id="중단-시험과-실제-기능-검증은-따로-계획합니다">중단 시험과 실제 기능 검증은 따로 계획합니다</h2>
+<p><img alt="서로 다른 노드의 복제본도 같은 전원과 스토리지를 공유하면 함께 중단될 수 있으며 남성 카솔이 실제 기능과 복구 순서를 시험하는 마무리 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.CJWd_9Q2_Z2u0gmB.webp" srcset=""></p>
+<p>Pod phase가 <code>Running</code>이면 Pod가 노드에 배치됐고 모든 컨테이너가 생성됐으며, 적어도 하나가 실행 중이거나 시작·재시작 중이라는 뜻입니다. 모든 컨테이너가 <code>Ready</code>이거나 사용자 기능이 성공했다는 뜻은 아닙니다.</p>
+<p><code>Ready</code> 조건도 Kubernetes가 설정된 readiness 검사를 통과했다고 판단한 결과입니다. 검사 범위에 DB와 오브젝트 저장이 없다면 실제 사용자 경로의 성공까지 보장하지 않습니다. 가동시간 검증은 같은 입력을 넣고 최종 결과를 다시 읽는 합성 점검으로 닫아야 합니다.</p>
+<p>최소 시험 기록은 다음 정도면 됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>기록 항목</th>
+<th>남길 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시험 기능</td>
+<td>입력과 기대 결과</td>
+</tr>
+<tr>
+<td>중단 대상</td>
+<td>DB, 스토리지, DNS, 노드, 전원 등</td>
+</tr>
+<tr>
+<td>탐지</td>
+<td>어떤 경보·로그·사용자 현상으로 알았는가</td>
+</tr>
+<tr>
+<td>영향</td>
+<td>어느 단계까지 성공하고 어디서 멈췄는가</td>
+</tr>
+<tr>
+<td>복구 순서</td>
+<td>공통 선행 서비스 → 상태 서비스 → 소비자</td>
+</tr>
+<tr>
+<td>복구 증거</td>
+<td>새 입력 성공, DB 기록 확인, 객체 다시 읽기</td>
+</tr>
+<tr>
+<td>소요 시간·데이터 시점</td>
+<td>실제 RTO·RPO 목표와 비교</td>
+</tr>
+</tbody>
+</table>
+<p>초안 다음에는 별도의 검증 단계가 필요합니다. 실제 중단 시험은 영향 범위, 관측 방법, 백업과 복구 순서, 중단 권한을 정한 별도 계획으로 수행합니다. 작은 테스트 namespace와 합성 데이터로 시작하고, 전원을 끄기 어렵다면 제한된 범위의 방화벽이나 Service endpoint 차단으로 실패 경로부터 관찰할 수 있습니다.</p>
+<p>제가 이 홈랩에서 먼저 고친 것은 장비 수가 아니라 배치 기준이었습니다. DAG가 지나가는 경로를 그린 뒤에야 상시 가동할 서비스와 예약하거나 분리할 장비를 구분할 수 있었습니다.</p>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="db를-24시간-켜-두면-고가용성이-되나요">DB를 24시간 켜 두면 고가용성이 되나요?</h3>
+<p>아닙니다. 상시 가동은 계획된 전원 시간의 문제이고 고가용성은 장애가 발생해도 서비스를 이어 갈 수 있는 구조와 운영 절차의 문제입니다. DB 한 대를 계속 켜도 그 장비나 볼륨은 단일 장애점일 수 있습니다.</p>
+<h3 id="백업-nas는-항상-켜-둬야-하나요">백업 NAS는 항상 켜 둬야 하나요?</h3>
+<p>라이브 실행 경로에 없다면 반드시 그럴 필요는 없습니다. 다만 예약된 백업 창, 장비 기동 실패 탐지, 놓친 작업의 재시도, 정기 복원 시험이 있어야 합니다. 백업 대상이 꺼진 동안 애플리케이션이 그 NAS를 읽거나 쓰면 이미 라이브 의존성입니다.</p>
+<p>이 설계를 적용하게 된 실제 홈랩 배경은 <a href="/posts/why-homelab-kubernetes/">홈랩 쿠버네티스 구축기 1편: RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</a>에서 이어집니다.</p>
+<blockquote>
+<p><strong>정정 (2026-07-28)</strong>: 초판은 메타데이터 DB를 상시 가동 장비로 실제 옮긴 뒤에도 문제가 남은 것처럼 썼고, Pod의 <code>Running</code> 상태를 단순히 컨테이너가 떠 있는 상태로 설명했습니다. 현재 글은 DB 이전이 검토 단계였다는 사실과 Kubernetes Pod phase의 정확한 범위를 반영해 고쳤습니다. 또한 가동시간 설계 초안 작성과 실제 중단 시험을 분리했습니다.</p>
+</blockquote>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html">Apache Airflow 3.3.0: Architecture Overview</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">Kubernetes: Pod Lifecycle</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">Kubernetes: DNS for Services and Pods</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">Kubernetes: StatefulSets</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/run-application/configure-pdb/">Kubernetes: Specifying a Disruption Budget</a></li>
+<li><a href="https://kubernetes.io/docs/setup/best-practices/multiple-zones/">Kubernetes: Running in multiple zones</a></li>
+<li><a href="https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-34r1.pdf">NIST SP 800-34 Rev. 1</a></li>
+</ul>
+<p>이 글의 홈랩 사례는 작성자의 정본 초안과 내부 근거 감사 기록에 기반하며, 당시 상세 로그와 타임스탬프는 미회수 상태입니다. 기술 설명은 2026년 7월 24일 확인한 공식 문서를 기준으로 작성했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·제품 화면·문서 도표 등 외부 이미지 자산은 사용하지 않았습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/homelab-mini-pc-nic-m2-selection/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ci0neV7Y_1ajU3.webp" srcset="/_astro/cover.Ci0neV7Y_2tISWP.webp 240w, /_astro/cover.Ci0neV7Y_Z1nhdfC.webp 360w, /_astro/cover.Ci0neV7Y_Za6bE9.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></div><h3><a href="/posts/homelab-mini-pc-nic-m2-selection/" data-analytics-event="related_post_click" data-analytics-target="homelab-mini-pc-nic-m2-selection">3분만에 만화로 보는 IT - 기술 해설 | 홈랩 미니PC 고르는 법: CPU·RAM보다 NIC와 M.2 슬롯을 먼저 볼 때</a></h3><p>미니PC 비교표의 CPU와 RAM은 기준선일 뿐입니다. 84GB 복원에 88분이 걸린 경험을 바탕으로 NIC, 스위치, M.2 슬롯, 여유 공간을 하나의 데이터 경로로 놓고 후보를 거르는 방법을 정리했습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/etcd-quorum-odd-members/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Dus3jeH7_2vxE0n.webp" srcset="/_astro/cover.Dus3jeH7_UzOMN.webp 240w, /_astro/cover.Dus3jeH7_28KQoh.webp 360w, /_astro/cover.Dus3jeH7_Z1IffOb.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-27T00:00:00.000Z">2026년 7월 27일</time></div><h3><a href="/posts/etcd-quorum-odd-members/" data-analytics-event="related_post_click" data-analytics-target="etcd-quorum-odd-members">3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산</a></h3><p>과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/kubernetes-k3s-homelab/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.C9GJGlFd_ZfdCYM.webp" srcset="/_astro/cover.C9GJGlFd_Z1VWUVi.webp 240w, /_astro/cover.C9GJGlFd_ZILTkO.webp 360w, /_astro/cover.C9GJGlFd_to7fE.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-20T00:00:00.000Z">2026년 7월 20일</time></div><h3><a href="/posts/kubernetes-k3s-homelab/" data-analytics-event="related_post_click" data-analytics-target="kubernetes-k3s-homelab">3분만에 만화로 보는 IT - 기술 해설 | Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 전에 알아둘 것</a></h3><p>컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

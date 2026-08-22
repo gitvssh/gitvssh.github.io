@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>Vera Rubin 양산 시작: AI 인프라가 &#39;전력당 토큰(Tokens per Watt)&#39;을 보는 이유 | 다메카솔</title><meta name="description" content="NVIDIA의 차세대 AI 팩토리 아키텍처 Vera Rubin NVL72가 글로벌 전면 양산에 들어갔습니다. 개별 GPU 스펙을 넘어 랙 스케일(Rack-scale) 통합 설계와 전력 효율(Tokens/Watt) 관점의 인프라 전환을 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/nvidia-vera-rubin-full-production/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 뉴스 | Vera Rubin 양산 시작: AI 인프라가 '전력당 토큰(Tokens per Watt)'을 보는 이유"><meta property="og:description" content="NVIDIA의 차세대 AI 팩토리 아키텍처 Vera Rubin NVL72가 글로벌 전면 양산에 들어갔습니다. 개별 GPU 스펙을 넘어 랙 스케일(Rack-scale) 통합 설계와 전력 효율(Tokens/Watt) 관점의 인프라 전환을 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/nvidia-vera-rubin-full-production/"><meta property="og:image" content="https://blog.damecasol.com/social/nvidia-vera-rubin-full-production.webp"><meta property="og:image:alt" content="카솔이 Vera Rubin을 상징하는 AI 랙 전체의 전력 입력과 토큰 출력을 점검하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"3분만에 만화로 보는 IT - AI 뉴스 | Vera Rubin 양산 시작: AI 인프라가 '전력당 토큰(Tokens per Watt)'을 보는 이유","description":"NVIDIA의 차세대 AI 팩토리 아키텍처 Vera Rubin NVL72가 글로벌 전면 양산에 들어갔습니다. 개별 GPU 스펙을 넘어 랙 스케일(Rack-scale) 통합 설계와 전력 효율(Tokens/Watt) 관점의 인프라 전환을 분석합니다.","datePublished":"2026-07-22T00:00:00.000Z","dateModified":"2026-07-22T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/nvidia-vera-rubin-full-production/","image":["https://blog.damecasol.com/social/nvidia-vera-rubin-full-production.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 뉴스","keywords":["AI 하드웨어","AI 인프라"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="nvidia-vera-rubin-full-production" data-content-track="news"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/news/">AI 뉴스</a></nav><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-22T00:00:00.000Z">2026년 7월 22일</time></span></div><h1>3분만에 만화로 보는 IT - AI 뉴스 | Vera Rubin 양산 시작: AI 인프라가 &#39;전력당 토큰(Tokens per Watt)&#39;을 보는 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>NVIDIA의 차세대 AI 팩토리 아키텍처 Vera Rubin NVL72가 글로벌 전면 양산에 들어갔습니다. 개별 GPU 스펙을 넘어 랙 스케일(Rack-scale) 통합 설계와 전력 효율(Tokens/Watt) 관점의 인프라 전환을 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DvSjSF-f_ZGXDId.webp" srcset="/_astro/cover.DvSjSF-f_Z1LceSK.webp 640w, /_astro/cover.DvSjSF-f_Z1YJK6T.webp 960w, /_astro/cover.DvSjSF-f_ZGXDId.webp 1024w" alt="카솔이 Vera Rubin을 상징하는 AI 랙 전체의 전력 입력과 토큰 출력을 점검하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#단일-칩을-넘어선-랙-스케일rack-scale-통합-설계" data-toc-link="단일-칩을-넘어선-랙-스케일rack-scale-통합-설계" data-analytics-event="toc_click" data-analytics-target="단일-칩을-넘어선-랙-스케일rack-scale-통합-설계">단일 칩을 넘어선 ‘랙 스케일(Rack-scale)’ 통합 설계</a></li><li class="article-toc__depth-2"><a href="#전력당-토큰tokens-per-watt-데이터센터의-새로운-north-star" data-toc-link="전력당-토큰tokens-per-watt-데이터센터의-새로운-north-star" data-analytics-event="toc_click" data-analytics-target="전력당-토큰tokens-per-watt-데이터센터의-새로운-north-star">전력당 토큰(Tokens per Watt): 데이터센터의 새로운 North Star</a></li><li class="article-toc__depth-2"><a href="#클라우드-도입-로드맵과-벤치마크-해석-시-주의점" data-toc-link="클라우드-도입-로드맵과-벤치마크-해석-시-주의점" data-analytics-event="toc_click" data-analytics-target="클라우드-도입-로드맵과-벤치마크-해석-시-주의점">클라우드 도입 로드맵과 벤치마크 해석 시 주의점</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-인프라-엔지니어가-준비해야-할-하드웨어-전환" data-toc-link="다메카솔의-해석-인프라-엔지니어가-준비해야-할-하드웨어-전환" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-인프라-엔지니어가-준비해야-할-하드웨어-전환">다메카솔의 해석: 인프라 엔지니어가 준비해야 할 하드웨어 전환</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-인프라-글" data-toc-link="함께-읽을-ai-인프라-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-인프라-글">함께 읽을 AI 인프라 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>데이터센터를 구축하는 인프라 아키텍트들에게 요즘 가장 무서운 제약은 “GPU 살 예산이 부족해서”가 아니라, **“변전소에서 데이터센터로 끌어올 수 있는 전력(Megawatt) 용량이 물리적 한계에 부딪혔기 때문”**입니다.</p>
+<p>데이터센터의 전력 공급 한도가 10MW로 묶여 있다면, 개별 GPU가 아무리 빨라도 전기를 너무 많이 먹으면 랙을 채울 수 없습니다.</p>
+<p>NVIDIA가 글로벌 전면 양산(Full Production) 확대를 발표한 <strong>Vera Rubin NVL72</strong>는 바로 이 지점을 겨냥합니다.</p>
+<p>단순히 “새로운 GPU 칩”이 아니라, <strong>72개의 Rubin GPU, 36개의 Vera CPU, NVLink 6 스위치, BlueField-4 DPU, 액체 냉각 배관을 단 하나의 거대한 랙 스케일 컴퓨터로 통합하여 ’메가와트(MW)당 처리 가능한 토큰 수’를 10배 끌어올린 시스템</strong>입니다.</p>
+<p>이번 글에서는 Vera Rubin 플랫폼이 제시하는 차세대 AI 팩토리 아키텍처와 엔지니어링 시사점을 정리합니다.</p>
+<h2 id="단일-칩을-넘어선-랙-스케일rack-scale-통합-설계">단일 칩을 넘어선 ‘랙 스케일(Rack-scale)’ 통합 설계</h2>
+<p><img alt="GPU와 CPU, 네트워크, DPU, 냉각 부품이 하나의 AI 랙 시스템으로 결합되는 과정" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.CnIv1Ad9_Z1RbDjG.webp" srcset=""></p>
+<p>거대 LLM(추론 모델 및 MoE)의 학습과 서빙에서 병목은 GPU 코어 연산이 아니라 **“GPU 간의 통신 지연(All-Reduce Communication Latency)”**입니다.</p>
+<p>Vera Rubin NVL72는 7종류의 특화 칩과 5종류의 모듈식 트레이를 단일 랙으로 결합했습니다:</p>
+<ul>
+<li><strong>Rubin GPU 72장 + Vera CPU 36장</strong>: 에이전트의 워크플로우 오케스트레이션과 모델 추론 연산을 최적 비율로 분배</li>
+<li><strong>NVLink 6 스위치</strong>: 72장의 GPU가 마치 단 1장의 거대한 단일 GPU 메모리 풀처럼 초고속으로 통신</li>
+<li><strong>Spectrum-6 &amp; BlueField-4 DPU</strong>: 스토리지 I/O와 클러스터 간 패킷 라우팅 오버헤드를 GPU로부터 100% 오프로딩</li>
+</ul>
+<h2 id="전력당-토큰tokens-per-watt-데이터센터의-새로운-north-star">전력당 토큰(Tokens per Watt): 데이터센터의 새로운 North Star</h2>
+<p><img alt="같은 전력 입력을 받은 두 AI 랙의 토큰 처리 흐름과 특정 벤치마크 조건을 비교하는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.svTyMySC_Z2dKMoe.webp" srcset=""></p>
+<p>CoreWeave가 실제 가동 중인 Vera Rubin 랙에서 측정한 DeepSeek-R1 벤치마크에 따르면, <strong>동일한 메가와트(MW) 전력 소비 대비 초당 토큰 처리량이 이전 세대(Blackwell NVL72) 대비 최대 10배까지 폭증</strong>했습니다.</p>
+<p>전력망 확설이 수년씩 걸리는 글로벌 데이터센터 환경에서, **“같은 전기 요금과 전력 용량으로 10배 많은 AI 추론 트래픽을 감당할 수 있다”**는 것은 인프라 TCO 관점에서 엄청난 경제적 우위를 의미합니다.</p>
+<h2 id="클라우드-도입-로드맵과-벤치마크-해석-시-주의점">클라우드 도입 로드맵과 벤치마크 해석 시 주의점</h2>
+<p><img alt="카솔이 Vera Rubin의 파트너별 제공 경로와 모델, 정밀도, 지연시간, 소프트웨어 조건을 확인하는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BIcYdxHR_i3hXq.webp" srcset=""></p>
+<p>현재 CoreWeave, Google Cloud, Microsoft Azure, OCI 등 주요 AI 네이티브 클라우드에서 파일럿 랙이 가동 중입니다. 하지만 ’10배’라는 수치를 실무에 대입할 때는 다음 조건을 확인해야 합니다:</p>
+<ol>
+<li><strong>배치 크기(Batch Size)와 지연 시간(TTFT)</strong>: 대량 배치 처리량(Throughput) 중심의 10배 수치가 단일 요청의 첫 토큰 지연 시간(Time to First Token) 단축을 의미하는 것은 아닙니다.</li>
+<li><strong>양산 단계(Ramping)와 일반 가용성(GA)</strong>: 현재는 주요 빅테크 및 전용 파트너사 위주로 우선 배정되고 있으며, 일반 엔터프라이즈 인스턴스 오픈은 순차적으로 진행됩니다.</li>
+</ol>
+<h2 id="다메카솔의-해석-인프라-엔지니어가-준비해야-할-하드웨어-전환">다메카솔의 해석: 인프라 엔지니어가 준비해야 할 하드웨어 전환</h2>
+<p>Vera Rubin의 등장은 백엔드 및 인프라 엔지니어에게 중요한 기술적 변화를 시사합니다.</p>
+<ol>
+<li><strong>액체 냉각(Direct-to-Chip Liquid Cooling)의 표준화</strong>: 수백 kW급 고밀도 랙이 기본이 되면서 공랭식 데이터센터 설계는 종말을 고하고 있습니다.</li>
+<li><strong>FP4 저정밀도 연산 파이프라인</strong>: 성능과 전력 효율의 도약은 4비트 양자화(FP4) 연산의 하드웨어 네이티브 가속에서 나옵니다. 우리 모델이 저정밀도 환경에서 정확도 손실 없이 서빙될 수 있도록 양자화 파이프라인(AWQ, SmoothQuant 등)을 준비해야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-ai-인프라-글">함께 읽을 AI 인프라 글</h2>
+<ul>
+<li><a href="/posts/nvidia-jetson-thor-t3000-t2000/">NVIDIA Jetson Thor 엣지 로보틱스 모듈 분석</a></li>
+<li><a href="/posts/why-homelab-kubernetes/">홈랩 쿠버네티스 구축기와 하드웨어 병목 분석</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://blogs.nvidia.com/blog/vera-rubin/">NVIDIA Official Blog — Vera Rubin Driving Performance Per Watt in Full Production</a></li>
+<li><a href="https://coreweave.com/blog/nvidia-vera-rubin-nvl72-on-coreweave-10x-more-tokens-per-megawatt-than-blackwell">CoreWeave Official Blog — First-Ever Measured Vera Rubin NVL72 Silicon Performance Stats</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/openai-ports-pike-data-center-agreement/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CCgfKcVf_1C1MxQ.webp" srcset="/_astro/cover.CCgfKcVf_ZTeKuN.webp 240w, /_astro/cover.CCgfKcVf_iVg5F.webp 360w, /_astro/cover.CCgfKcVf_1w7hG9.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-18T00:00:00.000Z">2026년 8월 18일</time></div><h3><a href="/posts/openai-ports-pike-data-center-agreement/" data-analytics-event="related_post_click" data-analytics-target="openai-ports-pike-data-center-agreement">3분만에 만화로 보는 IT - AI 뉴스 | OpenAI가 오하이오 AI 데이터센터 계약에 들어갔습니다: 지금 확정된 것과 미래 계획</a></h3><p>OpenAI의 PORTS-Pike 용량 확보 계약을 기존 캠퍼스 계획, 첫 가용 시점, 후속 전력·허가·금융 조건과 나눠 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/nvidia-jetson-thor-t3000-t2000/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CyJGwqj__ZFCvz7.webp" srcset="/_astro/cover.CyJGwqj__ZjJXKg.webp 240w, /_astro/cover.CyJGwqj__Sq2Pd.webp 360w, /_astro/cover.CyJGwqj__26B4qG.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-07-16T00:00:00.000Z">2026년 7월 16일</time></div><h3><a href="/posts/nvidia-jetson-thor-t3000-t2000/" data-analytics-event="related_post_click" data-analytics-target="nvidia-jetson-thor-t3000-t2000">3분만에 만화로 보는 IT - AI 뉴스 | Jetson T3000·T2000 발표: 지금 가능한 것과 2027년에 나오는 것</a></h3><p>NVIDIA가 차세대 피지컬 AI 및 로보틱스용 엣지 모듈인 Jetson Thor T3000(32GB)과 T2000(16GB)을 발표했습니다. 하드웨어 스펙 비교와 에뮬레이션 일정, 엣지 AI 도입 전략을 분석합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/openai-gpt-5-6-sol-ultrafast-preview/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DRGQT-Mg_Z1UvJmM.webp" srcset="/_astro/cover.DRGQT-Mg_ZwcGLt.webp 240w, /_astro/cover.DRGQT-Mg_FXjO0.webp 360w, /_astro/cover.DRGQT-Mg_1T9lpt.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-14T00:00:00.000Z">2026년 8월 14일</time></div><h3><a href="/posts/openai-gpt-5-6-sol-ultrafast-preview/" data-analytics-event="related_post_click" data-analytics-target="openai-gpt-5-6-sol-ultrafast-preview">3분만에 만화로 보는 IT - AI 뉴스 | GPT-5.6 Sol Ultrafast 프리뷰: 속도 발표와 실제 접근 범위</a></h3><p>OpenAI가 공개한 GPT-5.6 Sol Ultrafast의 공급사 최대 속도, 제한 프리뷰 접근 범위, 실제 지연 측정 항목을 구분합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/news/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 뉴스 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

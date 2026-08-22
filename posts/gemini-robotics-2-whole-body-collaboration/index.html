@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다 | 다메카솔</title><meta name="description" content="Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/gemini-robotics-2-whole-body-collaboration/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 뉴스 | Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다"><meta property="og:description" content="Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/gemini-robotics-2-whole-body-collaboration/"><meta property="og:image" content="https://blog.damecasol.com/social/gemini-robotics-2-whole-body-collaboration.webp"><meta property="og:image:alt" content="카솔이 상위 추론과 동작 제어, 서로 다른 로봇 몸을 연결한 Gemini Robotics 2 구조를 안내하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"3분만에 만화로 보는 IT - AI 뉴스 | Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다","description":"Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다.","datePublished":"2026-08-02T00:00:00.000Z","dateModified":"2026-08-02T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/gemini-robotics-2-whole-body-collaboration/","image":["https://blog.damecasol.com/social/gemini-robotics-2-whole-body-collaboration.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 뉴스","keywords":["AI 모델","멀티모달 AI","로보틱스","AI 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="gemini-robotics-2-whole-body-collaboration" data-content-track="news"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/news/">AI 뉴스</a></nav><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-02T00:00:00.000Z">2026년 8월 2일</time></span></div><h1>3분만에 만화로 보는 IT - AI 뉴스 | Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BhEcJW3G_ZzVtM.webp" srcset="/_astro/cover.BhEcJW3G_Z2eQ0zv.webp 640w, /_astro/cover.BhEcJW3G_Z2sovME.webp 960w, /_astro/cover.BhEcJW3G_ZzVtM.webp 1024w" alt="카솔이 상위 추론과 동작 제어, 서로 다른 로봇 몸을 연결한 Gemini Robotics 2 구조를 안내하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#생각과-동작을-두-층으로-나눕니다" data-toc-link="생각과-동작을-두-층으로-나눕니다" data-analytics-event="toc_click" data-analytics-target="생각과-동작을-두-층으로-나눕니다">생각과 동작을 두 층으로 나눕니다</a></li><li class="article-toc__depth-2"><a href="#전신과-손-여러-로봇을-한-흐름에-묶습니다" data-toc-link="전신과-손-여러-로봇을-한-흐름에-묶습니다" data-analytics-event="toc_click" data-analytics-target="전신과-손-여러-로봇을-한-흐름에-묶습니다">전신과 손, 여러 로봇을 한 흐름에 묶습니다</a></li><li class="article-toc__depth-2"><a href="#공개된-er-2와-제한된-동작-모델을-구분합니다" data-toc-link="공개된-er-2와-제한된-동작-모델을-구분합니다" data-analytics-event="toc_click" data-analytics-target="공개된-er-2와-제한된-동작-모델을-구분합니다">공개된 ER 2와 제한된 동작 모델을 구분합니다</a></li><li class="article-toc__depth-2"><a href="#안전-정지는-모델만의-일이-아닙니다" data-toc-link="안전-정지는-모델만의-일이-아닙니다" data-analytics-event="toc_click" data-analytics-target="안전-정지는-모델만의-일이-아닙니다">안전 정지는 모델만의 일이 아닙니다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석" data-toc-link="다메카솔의-해석" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석">다메카솔의 해석</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>Google DeepMind는 2026년 7월 30일 <strong>Gemini Robotics 2</strong> 모델군을 발표했습니다. 이번 변화는 로봇이 영상을 보고 계획하는 상위 추론, 몸을 움직이는 하위 제어, 기기 내부 실행을 서로 다른 모델 역할로 나눈 데 있습니다. ER 2는 개발자가 지금 API로 시험할 수 있지만, 실제 동작을 만드는 VLA와 온디바이스 모델은 조기 접근 파트너 범위입니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="생각과-동작을-두-층으로-나눕니다">생각과 동작을 두 층으로 나눕니다</h2>
+<p><img alt="영상 관찰이 상위 추론 코어와 동작 코어를 거쳐 휴머노이드 전신 관절로 이어지는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.CvInmc9r_U1wfx.webp" srcset=""></p>
+<p>Gemini Robotics ER 2는 로봇의 상위 수준 두뇌 역할을 맡습니다. 영상·이미지·음성·텍스트를 받아 공간과 작업 진행을 이해하고, 여러 단계를 계획한 다음 하위 Vision-Language-Action(VLA) 모델이나 로봇 API를 도구처럼 호출합니다. VLA는 그 계획을 실제 관절과 그리퍼 움직임으로 바꾸는 층입니다.</p>
+<p>연속 영상은 작업이 어디까지 진행됐는지 확인하는 데 쓰입니다. Google DeepMind는 ER 2가 실패를 발견하면 단계를 조정하고, 작업의 시작과 끝을 구분하며, 여러 분 동안 수백 번의 결정을 포함하는 흐름을 다룬다고 설명합니다. 이 대목은 회사가 공개한 모델·시연 범위의 주장입니다.</p>
+<h2 id="전신과-손-여러-로봇을-한-흐름에-묶습니다">전신과 손, 여러 로봇을 한 흐름에 묶습니다</h2>
+<p><img alt="휴머노이드가 몸을 숙여 물건을 집고 양팔 로봇과 이동 로봇이 작업을 넘겨받는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.CnA5X0oc_Z1OABIg.webp" srcset=""></p>
+<p>전신 제어가 이번 발표의 눈에 띄는 변화입니다. 이전 상체 중심 작업을 넘어 휴머노이드가 걷고, 숙이고, 뻗고, 물건을 집는 움직임을 한 작업 안에서 이어 간다고 Google DeepMind는 밝혔습니다. 양손과 그리퍼의 정밀 조작, 서로 다른 형태의 로봇이 한 작업을 넘겨받는 협업도 함께 시연했습니다.</p>
+<p>On-Device 2는 네트워크 지연이나 연결이 어려운 로봇 내부 실행을 겨냥합니다. 회사는 새로운 양팔 로봇 형태에 몇 시간 분량, 대체로 200개 미만의 예시로 적응할 수 있다고 설명했습니다. 이 수치는 공개된 적응 조건의 결과이며, 모든 로봇과 현장에서 같은 비용으로 재현된다는 뜻은 아닙니다.</p>
+<p><a href="/posts/robottt-long-context-policies/">긴 시각·행동 이력을 다루는 RobotTT 연구</a>가 정책의 기억 문제를 보여 줬다면, 이번 발표는 그 정책이 실제 몸을 움직이기 전에 어떤 추론·제어 층을 거치는지 보여 줍니다. 둘은 같은 로보틱스 범주에 있지만 질문이 다릅니다.</p>
+<h2 id="공개된-er-2와-제한된-동작-모델을-구분합니다">공개된 ER 2와 제한된 동작 모델을 구분합니다</h2>
+<p><img alt="열린 개발자 문과 파트너 전용 문, 사람 접근에 멈춘 로봇을 카솔이 점검하는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.D9nrC7lp_2jVnE8.webp" srcset=""></p>
+<p>ER 2는 Gemini API와 Google AI Studio에서 공개 제공됩니다. Gemini Enterprise Agent Platform에서는 private preview이며, 개발 예제도 공식 GitHub 저장소에 공개됐습니다. 반면 Gemini Robotics 2 VLA와 On-Device 2는 조기 접근 파트너 대상입니다.</p>
+<p>따라서 “Gemini Robotics 2가 공개됐다”는 문장만으로 휴머노이드 모터 제어 모델까지 누구나 내려받아 쓸 수 있다고 해석하기 어렵습니다. 지금 일반 개발자가 바로 시험할 수 있는 중심은 ER 2의 상위 추론과 도구 오케스트레이션입니다. 실제 로봇 동작 층의 접근 조건은 별도로 확인해야 합니다.</p>
+<h2 id="안전-정지는-모델만의-일이-아닙니다">안전 정지는 모델만의 일이 아닙니다</h2>
+<p>공식 안전 자료는 사람이 가까워졌을 때 보호 정지를 호출하고, 실행 불가능하거나 불확실한 요청에서는 사람에게 도움을 구하는 능력을 평가합니다. 새 ASIMOV-Agentic 벤치마크도 안전 제약을 지키고 환경을 감시하며 모호함을 풀어내는 상위 오케스트레이터에 초점을 둡니다.</p>
+<p>물리 안전장치는 계속 필요합니다. 보고서는 비상 정지, 물리 장벽, 속도·힘 제한이 기본이라고 적고, 모델 카드는 의료·교통처럼 오작동이 사망·부상·재산 피해로 이어질 수 있는 안전 중요 작업에 Robotics Models를 사용하지 말라고 요구합니다.</p>
+<h2 id="다메카솔의-해석">다메카솔의 해석</h2>
+<p>제가 이번 발표에서 가장 중요하게 본 부분은 화려한 휴머노이드 동작보다 <strong>역할과 접근 범위를 나눈 구조</strong>입니다. 개발자는 ER 2로 계획·진행 추적·도구 호출을 시험할 수 있고, 실제 모터 제어는 VLA와 로봇 API의 책임으로 남습니다. 시연을 볼 때도 어떤 모델이 어떤 몸에서 어떤 조건으로 움직였는지, 실패 시 안전 정지가 어디서 작동하는지부터 확인하겠습니다.</p>
+<p>실제 도입 검토는 네 질문으로 시작할 수 있습니다.</p>
+<ul>
+<li>내가 접근할 수 있는 것은 ER 2인가, VLA·On-Device 2까지인가?</li>
+<li>상위 추론이 호출하는 로봇 API와 VLA에 속도·힘·공간 제한이 있는가?</li>
+<li>사람 접근, 센서 오류, 실행 불가능한 요청에서 보호 정지와 이관이 작동하는가?</li>
+<li>회사 시연의 로봇·과제·평가 조건이 내 환경과 얼마나 가까운가?</li>
+</ul>
+<p>Gemini Robotics 2는 생각하는 층과 움직이는 층을 연결하는 큰 업데이트입니다. 다음 판단은 데모의 동작 수보다 공개된 모델 범위, 하위 제어 인터페이스, 물리 안전장치를 내 환경에 대조하는 일입니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/">Google DeepMind — Gemini Robotics 2 brings whole body intelligence to robots</a></li>
+<li><a href="https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-robotics-er-2/">Google — Introducing Gemini Robotics ER 2</a></li>
+<li><a href="https://deepmind.google/models/model-cards/gemini-robotics-er-2/">Google DeepMind — Gemini Robotics ER 2 Model Card</a></li>
+<li><a href="https://storage.googleapis.com/deepmind-media/gemini-robotics/Gemini-Robotics-2-Safety.pdf">Google DeepMind — Gemini Robotics 2: Safety Evaluations</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-02</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/openai-astra-cyber-capability-controls/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CpIdNzNY_2kzPTe.webp" srcset="/_astro/cover.CpIdNzNY_15eDEn.webp 240w, /_astro/cover.CpIdNzNY_2ipFfQ.webp 360w, /_astro/cover.CpIdNzNY_Z1yAqWB.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-10T00:00:00.000Z">2026년 8월 10일</time></div><h3><a href="/posts/openai-astra-cyber-capability-controls/" data-analytics-event="related_post_click" data-analytics-target="openai-astra-cyber-capability-controls">3분만에 만화로 보는 IT - AI 뉴스 | OpenAI Astra의 일부 내부 작업 중단: ‘Critical 가능성’을 다루는 방식</a></h3><p>OpenAI가 Astra의 Critical 사이버 역량 가능성을 이유로 강화한 내부 통제와 High·Critical 대응 시점의 차이를 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/fable-5-biology-safeguards-update/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B9rGHm4d_42znf.webp" srcset="/_astro/cover.B9rGHm4d_Zshukp.webp 240w, /_astro/cover.B9rGHm4d_JSwg4.webp 360w, /_astro/cover.B9rGHm4d_1X4xQx.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></div><h3><a href="/posts/fable-5-biology-safeguards-update/" data-analytics-event="related_post_click" data-analytics-target="fable-5-biology-safeguards-update">3분만에 만화로 보는 IT - AI 뉴스 | Fable 5 생물학 질문이 덜 막힌다: 안전 분류기의 경계를 좁힌 업데이트</a></h3><p>Anthropic이 Fable 5의 생물학 안전 분류기 오탐을 줄인 방법과 계속 제한되는 전문 연구 범위를 구분합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/openai-zdr-private-safety-processing/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.QN0Xi86U_295vcC.webp" srcset="/_astro/cover.QN0Xi86U_TQCHi.webp 240w, /_astro/cover.QN0Xi86U_282EiL.webp 360w, /_astro/cover.QN0Xi86U_Z1IXrTG.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-20T00:00:00.000Z">2026년 8월 20일</time></div><h3><a href="/posts/openai-zdr-private-safety-processing/" data-analytics-event="related_post_click" data-analytics-target="openai-zdr-private-safety-processing">3분만에 만화로 보는 IT - AI 뉴스 | OpenAI ZDR용 비공개 안전 처리 프리뷰: 원문 없이 연속 위험을 찾는 방식</a></h3><p>OpenAI ZDR의 현재 보존 범위와 Private Safety Processing 프리뷰가 원문 고객 콘텐츠와 제한된 안전 신호를 어떻게 분리하는지 설명합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/news/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 뉴스 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

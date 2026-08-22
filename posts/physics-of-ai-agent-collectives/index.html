@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>멀티 에이전트 집단행동과 통계역학 | 다메카솔</title><meta name="description" content="1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/physics-of-ai-agent-collectives/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 집단은 왜 한쪽으로 쏠릴까"><meta property="og:description" content="1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/physics-of-ai-agent-collectives/"><meta property="og:image" content="https://blog.damecasol.com/social/physics-of-ai-agent-collectives.webp"><meta property="og:image:alt" content="성인형 카솔이 서로 연결된 AI 에이전트 집단의 두 흐름 사이에서 집단행동을 설명하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 집단은 왜 한쪽으로 쏠릴까","description":"1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다.","datePublished":"2026-08-18T00:00:00.000Z","dateModified":"2026-08-18T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/physics-of-ai-agent-collectives/","image":["https://blog.damecasol.com/social/physics-of-ai-agent-collectives.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","AI 모델","AI 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="physics-of-ai-agent-collectives" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-18T00:00:00.000Z">2026년 8월 18일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 집단은 왜 한쪽으로 쏠릴까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.tyNT2uLa_D6R03.webp" srcset="/_astro/cover.tyNT2uLa_4vAtk.webp 640w, /_astro/cover.tyNT2uLa_Z91TIO.webp 960w, /_astro/cover.tyNT2uLa_D6R03.webp 1024w" alt="성인형 카솔이 서로 연결된 AI 에이전트 집단의 두 흐름 사이에서 집단행동을 설명하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#32개-에이전트가-같은-질문을-반복해서-논의했다" data-toc-link="32개-에이전트가-같은-질문을-반복해서-논의했다" data-analytics-event="toc_click" data-analytics-target="32개-에이전트가-같은-질문을-반복해서-논의했다">32개 에이전트가 같은 질문을 반복해서 논의했다</a></li><li class="article-toc__depth-2"><a href="#복잡한-대화가-세-가지-집단-상태로-정리됐다" data-toc-link="복잡한-대화가-세-가지-집단-상태로-정리됐다" data-analytics-event="toc_click" data-analytics-target="복잡한-대화가-세-가지-집단-상태로-정리됐다">복잡한 대화가 세 가지 집단 상태로 정리됐다</a></li><li class="article-toc__depth-2"><a href="#수학에서는-정답을-모았고-정치-문항에서는-방향성-편향도-모았다" data-toc-link="수학에서는-정답을-모았고-정치-문항에서는-방향성-편향도-모았다" data-analytics-event="toc_click" data-analytics-target="수학에서는-정답을-모았고-정치-문항에서는-방향성-편향도-모았다">수학에서는 정답을 모았고, 정치 문항에서는 방향성 편향도 모았다</a></li><li class="article-toc__depth-2"><a href="#작은-통계역학-모델은-다음-의견을-어떻게-예측했나" data-toc-link="작은-통계역학-모델은-다음-의견을-어떻게-예측했나" data-analytics-event="toc_click" data-analytics-target="작은-통계역학-모델은-다음-의견을-어떻게-예측했나">작은 통계역학 모델은 다음 의견을 어떻게 예측했나</a></li><li class="article-toc__depth-2"><a href="#계수는-관측을-압축한-설명이지-원인-판정이-아니다" data-toc-link="계수는-관측을-압축한-설명이지-원인-판정이-아니다" data-analytics-event="toc_click" data-analytics-target="계수는-관측을-압축한-설명이지-원인-판정이-아니다">계수는 관측을 압축한 설명이지 원인 판정이 아니다</a></li><li class="article-toc__depth-2"><a href="#적용-전에-확인할-실험-범위와-공개-아티팩트" data-toc-link="적용-전에-확인할-실험-범위와-공개-아티팩트" data-analytics-event="toc_click" data-analytics-target="적용-전에-확인할-실험-범위와-공개-아티팩트">적용 전에 확인할 실험 범위와 공개 아티팩트</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석" data-toc-link="다메카솔의-해석" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석">다메카솔의 해석</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>여러 AI 에이전트를 연결하면 답이 모이기도 하지만, 같은 연결이 공유된 편향까지 증폭할 수 있습니다. 중요한 것은 에이전트 수가 아니라, 개인의 성향과 이웃의 압력이 반복 상호작용에서 어떻게 결합되는지입니다.</p>
+<p>2026년 8월 17일 arXiv에 공개된 <strong>Physics of Agents: Statistical Mechanics Predicts Collective Behavior of AI Agents</strong>는 1만 개가 넘는 LLM 에이전트 집단을 시뮬레이션했습니다. 저자들은 복잡한 자연어 대화를 무관심·양극화·합의라는 세 집단 상태로 정리하고, 통계역학에서 가져온 작은 확률 모델로 다음 의견 변화를 예측했습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>32개 에이전트가 하나의 이진 문항을 두고 8라운드 동안 메시지를 교환했습니다.</li>
+<li>집단은 약한 의견이 흩어진 무관심, 강한 두 진영의 양극화, 한쪽으로 모인 합의 상태를 보였습니다.</li>
+<li>객관적 수학 문항에서는 네 모델 모두 집단 정답률이 높아졌습니다.</li>
+<li>주관적 정치 문항에서는 네 모델 중 세 모델이 오른쪽 방향으로 이동했습니다. 이는 사람 사회가 아니라 특정 페르소나를 준 LLM 시뮬레이션 결과입니다.</li>
+<li>세 결합계수만 쓴 갱신 규칙도 보지 않은 문항에서 한 단계 의견 변화를 75~86의 balanced accuracy로 예측했습니다.</li>
+</ul>
+<h2 id="32개-에이전트가-같은-질문을-반복해서-논의했다">32개 에이전트가 같은 질문을 반복해서 논의했다</h2>
+<p><img alt="여러 AI 에이전트가 네트워크에서 메시지를 교환하며 약한 의견을 강한 의견으로 바꾸는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.BVM1JP1t_1crftX.webp" srcset=""></p>
+<p>주 실험의 한 집단에는 에이전트 32개가 들어갑니다. 에이전트들은 하나의 이진 문항에 먼저 답한 뒤, 고정된 대칭 네트워크에서 이웃의 최신 메시지를 받고 다시 의견을 냅니다. 이 과정을 8라운드 반복했습니다. 과거 대화 전체가 아니라 현재 받은편지함만 보는 단순한 Markov 갱신입니다.</p>
+<p>실험 모델은 GPT-4o-mini, Gemma-3n-E4B-it, Qwen3.5-9B, Llama-3.1-8B-Instruct입니다. 객관 영역에는 MATH에서 가져온 수학 문항과 서로 다른 수학 전문성을, 주관 영역에는 정치 성향 문항과 서로 다른 페르소나를 사용했습니다.</p>
+<p>이 구성은 실제 온라인 커뮤니티를 복제한 것이 아닙니다. 하나의 질문, 고정된 연결망, 이진 의견이라는 통제된 조건에서 LLM 집단의 의견 변화만 떼어 본 실험입니다. 이후 결과를 읽을 때도 이 경계를 유지해야 합니다.</p>
+<h2 id="복잡한-대화가-세-가지-집단-상태로-정리됐다">복잡한 대화가 세 가지 집단 상태로 정리됐다</h2>
+<p><img alt="에이전트 집단이 무관심, 양극화, 합의의 세 가지 시각적 상태로 나뉘는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B59TpPjx_Z6Al4g.webp" srcset=""></p>
+<p>저자들의 핵심 관찰 분석은 9,600개 시뮬레이션 집단을 사용했습니다. 미관측 그래프 일반화와 비동기 갱신 실험까지 포함하면 전체 데이터는 1만 개가 넘는 집단입니다.</p>
+<p>각 에이전트의 의견에는 방향과 강도가 있습니다. 약한 의견들이 흩어져 있으면 무관심, 강한 의견이 양쪽 진영으로 갈리면 양극화, 강한 의견이 한쪽으로 모이면 합의입니다. 출발점에서는 약한 의견이 많았지만, 메시지를 반복해서 주고받을수록 확신이 커지고 집단은 더 질서 있는 상태로 이동했습니다.</p>
+<p>여기서 “질서”는 사실에 가까워졌다는 뜻이 아닙니다. 의견이 약한 상태에서 강하고 정렬된 상태로 변했다는 동역학 표현입니다. 정답 여부는 객관 문항에서 별도로 측정해야 합니다.</p>
+<h2 id="수학에서는-정답을-모았고-정치-문항에서는-방향성-편향도-모았다">수학에서는 정답을 모았고, 정치 문항에서는 방향성 편향도 모았다</h2>
+<p>객관적 수학 문항 6,400개 집단 궤적에서는 네 모델 모두 상호작용 뒤 집단 정답 비율이 높아졌습니다. 처음에 틀린 다수가 정답으로 바뀐 경우가, 정답 다수가 오답으로 바뀐 경우보다 많았습니다. 서로 다른 전문성을 가진 에이전트의 정보가 연결망을 따라 모이는 효과입니다.</p>
+<p>주관적 정치 문항에서는 다른 결과가 나타났습니다. 저자들은 네 모델 중 세 모델의 집단 의견이 상호작용 뒤 오른쪽 방향으로 이동했다고 보고했습니다. 이 결과는 사람 집단의 정치 성향을 측정한 것이 아니며, 연구진이 설정한 페르소나와 문항, 모델에 한정된 LLM 시뮬레이션입니다. 방향의 원인을 사회 일반으로 확대할 근거도 아직 없습니다.</p>
+<p>따라서 “에이전트끼리 토론시키면 더 정확해진다”는 한 문장만 가져가면 절반만 맞습니다. 객관 문항에서는 정답 정보가 모였고, 주관 문항에서는 모델에 이미 들어 있던 방향성도 함께 모였습니다.</p>
+<h2 id="작은-통계역학-모델은-다음-의견을-어떻게-예측했나">작은 통계역학 모델은 다음 의견을 어떻게 예측했나</h2>
+<p><img alt="개인의 성향과 우호·비우호 이웃의 압력이 확률 갱신 기계로 들어가는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.kDNJ-DBy_15ULQ6.webp" srcset=""></p>
+<p>저자들은 각 에이전트의 자연어 메시지 내용을 직접 모델링하지 않았습니다. 대신 현재 의견을 강화하거나 뒤집는 힘을 세 부분으로 나눴습니다.</p>
+<p>첫째는 에이전트 개인의 기본 성향을 나타내는 내재장입니다. 둘째는 같은 방향의 우호 이웃이 끌어당기는 힘, 셋째는 반대 방향의 비우호 이웃이 미는 힘입니다. 이 세 결합계수를 Ising 계열 확률 갱신 규칙에 넣고 실제 의견 전환에 맞췄습니다.</p>
+<p>보지 않은 시험 문항에서 이 규칙의 한 단계 balanced accuracy는 모델과 문항 유형에 따라 75<del>86, 초기 상태부터 여러 단계를 굴린 rollout balanced accuracy는 61</del>77이었습니다. GPT-4o-mini 그래프 일반화 표에서는 학습하지 않은 연결 구조를 포함한 16개 열 중 15개에서 세 결합계수 규칙이 가장 높은 한 단계 점수를 냈습니다.</p>
+<p>논문의 <code>social temperature</code>는 GPT나 다른 LLM의 생성 온도가 아닙니다. 적합한 확률 갱신 규칙이 얼마나 잡음에 흔들리는지를 나타내는 변수입니다. 저자들은 적합 동작점인 T=1이 대부분 집단의 임계온도 아래에 있어, 작은 압력도 집단 질서로 이어지기 쉬웠다고 해석했습니다.</p>
+<h2 id="계수는-관측을-압축한-설명이지-원인-판정이-아니다">계수는 관측을 압축한 설명이지 원인 판정이 아니다</h2>
+<p>적합된 유효 우호 연결 계수는 모델과 문항 유형에 따라 0.99~3.03이었고, 비우호 연결 계수는 0.73을 넘지 않았습니다. 저자들은 이 차이가 양극화보다 합의가 더 자주 나타나는 이유를 설명한다고 봤습니다.</p>
+<p>객관 문항용 확장 규칙에서는 네 모델 모두 현재 정답을 가진 우호 이웃에게 더 강하게 끌리고, 오답을 가진 비우호 이웃에게 더 강하게 밀리는 비대칭도 보였습니다. 그러나 이것은 관측된 전환을 가장 잘 설명하도록 맞춘 계수입니다. 연결 종류를 독립적으로 개입해 인과효과를 확인한 실험과 같지 않습니다.</p>
+<p>예측 점수가 높다는 사실도 자연어 대화의 의미를 모두 설명했다는 뜻은 아닙니다. 적합 모델은 메시지 내용, 설득 전략, 근거의 질을 버리고 의견 상태만 남겼습니다. 작은 모델의 장점은 집단 변화를 압축해서 비교할 수 있다는 것이고, 한계는 어떤 문장이 왜 사람이나 모델을 설득했는지 말해 주지 못한다는 것입니다.</p>
+<h2 id="적용-전에-확인할-실험-범위와-공개-아티팩트">적용 전에 확인할 실험 범위와 공개 아티팩트</h2>
+<p><img alt="성인형 카솔이 정답을 모으는 흐름과 편향을 키우는 흐름 사이의 경계를 설명하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CxjMybU2_wkjrD.webp" srcset=""></p>
+<p>직접 범위는 하나의 이진 문항, 고정·대칭 통신망, 최신 받은편지함만 보는 갱신입니다. 실제 멀티 에이전트 제품처럼 질문이 여러 개 이어지거나, 역할과 연결이 시간에 따라 바뀌거나, 외부 도구 결과가 개입하는 조건은 아직 검증되지 않았습니다. 동기식 갱신을 벗어난 추가 실험이 있어도 이 기본 단순화는 남습니다.</p>
+<p>논문은 공식 GitHub 저장소, 프로젝트 페이지, Hugging Face 조직을 연결합니다. 2026년 8월 18일 확인 시 GitHub 저장소에는 README와 Apache-2.0 라이선스만 있었고 실행 코드가 없었습니다. 프로젝트 페이지는 404를 반환했고, Hugging Face 조직에는 공개 데이터셋이 0개였습니다. 이 글은 원문 PDF와 TeX를 대조했지만 시뮬레이션을 독립 재현했다고 주장하지 않습니다.</p>
+<h2 id="다메카솔의-해석">다메카솔의 해석</h2>
+<p>제가 멀티 에이전트 시스템에 추가할 것은 더 많은 토론 라운드가 아니라 <strong>집단 상태 계기판</strong>입니다. 완료율과 최종 답만 기록하면, 시스템이 맞는 답으로 수렴한 것인지 같은 편향을 강하게 공유하게 된 것인지 구분하기 어렵습니다.</p>
+<p>운영 지표를 네 갈래로 나누겠습니다. 첫째는 의견 다양성이 얼마나 남았는지, 둘째는 상호작용 뒤 확신만 커졌는지, 셋째는 객관 문항에서 오답이 정답으로 실제 전환됐는지, 넷째는 주관 문항에서 특정 방향으로 지속적으로 이동하는지입니다. 정답이 정의되지 않는 일이라면 반대 역할의 에이전트나 독립 검증 경로도 연결망 밖에 두겠습니다.</p>
+<p>여기부터는 논문 결과를 운영 설계로 옮긴 제 판단입니다. 이 연구가 보여 준 것은 통제된 LLM 집단에서 같은 상호작용이 진실 탐색과 편향 증폭을 동시에 만들 수 있다는 사실입니다. 실제 제품에서는 집단의 합의 자체보다, 무엇이 합의를 만들었고 반대 증거가 살아 있는지를 함께 측정해야 합니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Physics of Agents: Statistical Mechanics Predicts Collective Behavior of AI Agents</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Batu El, Jinhee Paeng, Fatih Dinc, Shiye Su, Mete Erdogan, Aneesh Pappu, Haotian Ye, Wanjia Zhao, Surya Ganguli, James Zou</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-08-17 13:41:24 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>Artificial Intelligence (cs.AI), Multiagent Systems (cs.MA)</td>
+</tr>
+<tr>
+<td>이 글의 분류</td>
+<td>empirical paper</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.16578">Physics of Agents — arXiv:2608.16578</a></li>
+<li><a href="https://arxiv.org/pdf/2608.16578">공식 arXiv PDF</a></li>
+<li><a href="https://github.com/batu-el/physics-of-agents">저자가 연결한 GitHub 저장소</a></li>
+<li><a href="https://huggingface.co/physics-of-agents">저자가 연결한 Hugging Face 조직</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>논문 그림과 프로젝트 시각물은 복제하지 않고, 검증한 주장만 자체 시각 언어로 재구성했습니다.</p>
+<p>Updated: 2026-08-18</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/twin-test-time-world-model/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BOOiPm30_1XEEdO.webp" srcset="/_astro/cover.BOOiPm30_Zywoy8.webp 240w, /_astro/cover.BOOiPm30_DDC2l.webp 360w, /_astro/cover.BOOiPm30_1QODCO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-17T00:00:00.000Z">2026년 8월 17일</time></div><h3><a href="/posts/twin-test-time-world-model/" data-analytics-event="related_post_click" data-analytics-target="twin-test-time-world-model">3분만에 만화로 보는 IT - AI 논문 읽기 | 모르는 게임을 복사해서 푸는 테스트타임 월드 모델</a></h3><p>낯선 게임을 실행 가능한 Python 트윈으로 복사하고 과거 전환을 검증한 뒤 행동하는 Twin의 구조와 성과, 적용 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/tool-specifications-agent-safety/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Kf85ih_3_2tRplH.webp" srcset="/_astro/cover.Kf85ih_3_Z3uNKK.webp 240w, /_astro/cover.Kf85ih_3_19FcOI.webp 360w, /_astro/cover.Kf85ih_3_2mQeqc.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-03T00:00:00.000Z">2026년 8월 3일</time></div><h3><a href="/posts/tool-specifications-agent-safety/" data-analytics-event="related_post_click" data-analytics-target="tool-specifications-agent-safety">3분만에 만화로 보는 IT - AI 논문 읽기 | 도구 스키마가 AI 에이전트의 거절을 약하게 만들 때</a></h3><p>같은 모델도 도구 스키마를 받으면 유해 요청 거절이 약해진다는 연구와 SafeKeep의 평문 안전 관문, 평가 범위를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/sysadmin-ai-power-seeking-benchmark/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D-ttR_DF_1B0Q0k.webp" srcset="/_astro/cover.D-ttR_DF_Z2nkhsF.webp 240w, /_astro/cover.D-ttR_DF_Z1a9fRc.webp 360w, /_astro/cover.D-ttR_DF_31KIh.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-07-22T00:00:00.000Z">2026년 7월 22일</time></div><h3><a href="/posts/sysadmin-ai-power-seeking-benchmark/" data-analytics-event="related_post_click" data-analytics-target="sysadmin-ai-power-seeking-benchmark">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 권력 추구, 리눅스 관리자 실험에서 어떻게 측정했나</a></h3><p>서버 관리를 맡긴 AI 에이전트가 성공률을 높이기 위해 몰래 루트 권한을 얻거나 종료 지시를 거부한다면? 7개 프런티어 모델을 대상으로 한 SysAdmin 벤치마크 실험 결과를 분석합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

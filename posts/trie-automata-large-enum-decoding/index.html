@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>LLM 구조화 출력의 enum 병목과 트라이 디코딩 | 다메카솔</title><meta name="description" content="큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/trie-automata-large-enum-decoding/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | 수천 개 선택지를 빠르게 제한하는 트라이 디코딩"><meta property="og:description" content="큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/trie-automata-large-enum-decoding/"><meta property="og:image" content="https://blog.damecasol.com/social/trie-automata-large-enum-decoding.webp"><meta property="og:image:alt" content="성인형 카솔이 많은 추상 토큰을 준비된 트라이 경로로 분기하는 장치를 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | 수천 개 선택지를 빠르게 제한하는 트라이 디코딩","description":"큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다.","datePublished":"2026-08-15T00:00:00.000Z","dateModified":"2026-08-15T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/trie-automata-large-enum-decoding/","image":["https://blog.damecasol.com/social/trie-automata-large-enum-decoding.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["LLM","AI 모델","컴파일러"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="trie-automata-large-enum-decoding" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-15T00:00:00.000Z">2026년 8월 15일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | 수천 개 선택지를 빠르게 제한하는 트라이 디코딩</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.D4vUdug2_Z2jTrdD.webp" srcset="/_astro/cover.D4vUdug2_ZPlyqo.webp 640w, /_astro/cover.D4vUdug2_Z13T4Dx.webp 960w, /_astro/cover.D4vUdug2_Z2jTrdD.webp 1024w" alt="성인형 카솔이 많은 추상 토큰을 준비된 트라이 경로로 분기하는 장치를 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#선택지는-단순해도-검사-경로는-단순하지-않다" data-toc-link="선택지는-단순해도-검사-경로는-단순하지-않다" data-analytics-event="toc_click" data-analytics-target="선택지는-단순해도-검사-경로는-단순하지-않다">선택지는 단순해도 검사 경로는 단순하지 않다</a></li><li class="article-toc__depth-2"><a href="#문자-트라이와-토큰-매칭을-분리한다" data-toc-link="문자-트라이와-토큰-매칭을-분리한다" data-analytics-event="toc_click" data-analytics-target="문자-트라이와-토큰-매칭을-분리한다">문자 트라이와 토큰 매칭을 분리한다</a></li><li class="article-toc__depth-2"><a href="#큰-배치에서-처리량-차이가-커졌다" data-toc-link="큰-배치에서-처리량-차이가-커졌다" data-analytics-event="toc_click" data-analytics-target="큰-배치에서-처리량-차이가-커졌다">큰 배치에서 처리량 차이가 커졌다</a></li><li class="article-toc__depth-2"><a href="#빠른-컴파일러라는-뜻은-아니다" data-toc-link="빠른-컴파일러라는-뜻은-아니다" data-analytics-event="toc_click" data-analytics-target="빠른-컴파일러라는-뜻은-아니다">빠른 컴파일러라는 뜻은 아니다</a></li><li class="article-toc__depth-2"><a href="#유효한-출력과-정확한-답은-다르다" data-toc-link="유효한-출력과-정확한-답은-다르다" data-analytics-event="toc_click" data-analytics-target="유효한-출력과-정확한-답은-다르다">유효한 출력과 정확한 답은 다르다</a></li><li class="article-toc__depth-2"><a href="#어디까지-적용할-수-있나" data-toc-link="어디까지-적용할-수-있나" data-analytics-event="toc_click" data-analytics-target="어디까지-적용할-수-있나">어디까지 적용할 수 있나</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석" data-toc-link="다메카솔의-해석" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석">다메카솔의 해석</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>LLM에게 수천 개 후보 중 하나만 고르게 하면 출력 형식은 단순합니다. 그런데 일반 문법 엔진은 이 평평한 목록도 매 토큰 단계마다 큰 어휘와 대조할 수 있습니다. 선택지가 커질수록 모델 추론보다 제약 처리 쪽이 병목이 되는 이유입니다.</p>
+<p>COLM 2026 채택 논문 <strong>Trie Automata for Constrained Decoding over Large Finite Sets</strong>는 이 경우만 겨냥한 전용 경로를 제안합니다. 허용 문자열은 문자 트라이로 묶고, 토크나이저 어휘와의 연결은 미리 계산합니다. 이 글은 그 구조, 보고된 속도 차이, 그리고 적용하면 안 되는 범위를 분리해 살펴봅니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>큰 평평한 enum을 일반 문법으로 처리하면 매 단계의 어휘 검사 비용이 커질 수 있습니다.</li>
+<li>논문은 문자 트라이와 Aho-Corasick 매칭으로 상태별 유효 토큰을 미리 계산합니다.</li>
+<li>큰 배치의 반복 디코딩에서는 이 사전 계산이 큰 처리량 차이로 이어졌습니다.</li>
+<li>작은 일회성 집합, 자주 바뀌는 집합, 중첩 스키마는 같은 결론으로 묶을 수 없습니다.</li>
+<li>허용 집합 안의 답이라는 사실은 의미상 정답이라는 뜻이 아닙니다.</li>
+</ul>
+<h2 id="선택지는-단순해도-검사-경로는-단순하지-않다">선택지는 단순해도 검사 경로는 단순하지 않다</h2>
+<p><img alt="거대한 일반 문법 장치가 넓은 어휘 토큰장을 반복해서 훑는 병목 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.EPFCR2xE_Z1OXxt9.webp" srcset=""></p>
+<p>도구 이름, 상품 코드, 분류 레이블처럼 출력 후보가 유한한 일은 흔합니다. 문제는 이 목록을 JSON Schema 같은 일반 문법 표현으로 컴파일했을 때 생깁니다. 일반 constrained decoding은 현재 상태에서 어떤 모델 토큰이 문법을 깨지 않는지 찾아야 합니다. 논문은 그 비용을 어휘 크기와 토큰 길이에 비례한 반복 검사로 설명합니다.</p>
+<p>선택지가 열 개면 이 비용이 잘 보이지 않을 수 있습니다. 수천 개의 이름이 비슷한 접두사를 공유하고, 같은 스키마로 많은 요청을 처리하면 상황이 달라집니다. 평평한 선택지 하나를 위해 범용 문법 장치를 매번 통과하는 셈입니다.</p>
+<h2 id="문자-트라이와-토큰-매칭을-분리한다">문자 트라이와 토큰 매칭을 분리한다</h2>
+<p><img alt="문자 트라이와 토큰 매칭 기어가 상태별 유효 출구를 미리 밝히는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02._fqShj0c_1X4wDM.webp" srcset=""></p>
+<p>연구진은 허용 문자열을 문자 단위 트라이에 저장합니다. <code>get_weather</code>, <code>get_weekly_report</code>처럼 접두사가 겹치는 이름은 앞부분 경로를 공유하고, 갈라지는 지점에서만 분기합니다.</p>
+<p>하지만 모델은 문자가 아니라 토큰을 냅니다. 한 토큰이 여러 글자를 품을 수도 있습니다. 논문은 토크나이저 전체 어휘를 Aho-Corasick 오토마톤에 넣어, 각 토큰이 트라이의 어느 경로를 이어 갈 수 있는지 연결합니다. 이 오토마톤은 같은 토크나이저에서 재사용할 수 있고, 실제 선택지 목록에 따른 트라이와 상태별 마스크만 따로 만듭니다.</p>
+<p>그 결과 디코딩 때는 전체 어휘를 다시 훑기보다 현재 트라이 상태에서 미리 준비된 유효 토큰만 조회합니다. 논문이 제시한 계산량도 전체 어휘 크기가 아니라 현재 상태의 유효 토큰 수에 비례합니다.</p>
+<h2 id="큰-배치에서-처리량-차이가-커졌다">큰 배치에서 처리량 차이가 커졌다</h2>
+<p><img alt="반복해서 전체를 훑는 느린 경로와 준비된 지역 출구로 여러 요청이 흐르는 경로의 대비" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.F3gO0BXB_RqRXC.webp" srcset=""></p>
+<p>Qwen3-8B의 151K 어휘와 합성 도구 이름 1,000개 조건에서 상태 마스크 조회는 제안법 0.65마이크로초, XGrammar 5.8마이크로초였습니다. 같은 비교 안에서는 약 9배 차이입니다. 이 값은 엔진 전체 처리량이 아니라 상태 마스크 조회 한 부분의 측정입니다.</p>
+<p>end-to-end vLLM 실험은 더 큰 차이를 보고했습니다. A100 80GB, greedy decoding, batch 256, 합성 도구 이름 1,000개 조건에서 제안 통합은 초당 219.4요청, XGrammar 통합은 7.5요청으로 29.3배였습니다. 이 숫자는 알고리즘만 떼어 낸 보편 속도 향상이 아닙니다. vLLM 통합 경로, 큰 배치, 합성 데이터의 접두사 공유가 함께 들어간 결과입니다.</p>
+<p>batch 128 분석에서도 차이의 위치가 보입니다. 제안 마스킹은 약 10마이크로초로 약 10밀리초 forward pass의 0.1%였지만, XGrammar는 783마이크로초, LLGuidance는 3,716마이크로초였습니다. 반복 요청이 병렬로 쌓일수록 사전 계산된 지역 조회가 추론 파이프라인을 덜 막았습니다.</p>
+<h2 id="빠른-컴파일러라는-뜻은-아니다">빠른 컴파일러라는 뜻은 아니다</h2>
+<p>전용 자료구조에는 초기 비용이 있습니다. 같은 합성 표에서 트라이 컴파일은 선택지 10개부터 10,000개까지 30<del>40밀리초였습니다. LLGuidance는 1</del>24밀리초였습니다. 작은 목록을 한 번만 쓰고 버린다면 디코딩 이득보다 준비 비용이 더 중요할 수 있습니다.</p>
+<p>목록이 바뀌면 트라이 전체를 다시 만들어야 합니다. 논문 구현은 증분 갱신을 지원하지 않습니다. 혼합 스키마의 선택지 5,000개 예시는 약 37밀리초 재컴파일을 보고했지만, 그 실험은 컴파일 시간 비교이지 서비스 처리량 검증이 아닙니다.</p>
+<p>단일 요청에서는 모든 방식에 공통인 큰 비트마스크 적용이 약 31마이크로초로 지배적이었습니다. 논문도 CPU 마스킹을 사용했으므로 GPU에서 마스킹하는 구현에서는 상대 차이가 달라질 수 있습니다. 제안 구현은 Rust, XGrammar 비교 구현은 C++라는 차이도 남습니다.</p>
+<h2 id="유효한-출력과-정확한-답은-다르다">유효한 출력과 정확한 답은 다르다</h2>
+<p>네 공개 분류 데이터셋과 여섯 모델의 24개 조합에서 constrained decoding은 허용된 레이블을 100% 출력했고, 21개 조합에서 가장 높은 정확도를 기록했습니다. 그렇다고 유효성 자체가 정답을 보증하지는 않습니다. 디코더는 후보 집합 밖의 문자열을 막을 뿐, 모델이 잘못된 후보를 고르는 일까지 막지 못합니다.</p>
+<p>논문은 토크나이저로 표현 가능한 어휘에서 트라이 방식과 FSM 방식이 같은 허용 출력을 만든다고 분석합니다. 구현은 무작위 표본 1,000개에서 동등성을 확인했다고 보고했습니다. 이는 출력 언어의 동등성 근거이지 모든 실제 모델·스키마 조합의 독립 재현은 아닙니다.</p>
+<h2 id="어디까지-적용할-수-있나">어디까지 적용할 수 있나</h2>
+<p>직접 범위는 평평한 유한 집합입니다. 중첩 객체, 숫자 범위, 조건부 필드처럼 일반 문법이 필요한 구조는 그대로 범용 백엔드에 남습니다. 논문은 큰 enum 하위 구조만 트라이로 보내고 나머지를 일반 엔진이 맡는 혼합 경로를 제시하지만, 그 부분의 평가는 컴파일 시간까지입니다.</p>
+<p>공식 arXiv 원문과 COLM 2026 채택 페이지는 확인할 수 있지만, 2026년 8월 15일 현재 공식 코드·데이터 링크는 노출되지 않았습니다. 논문은 출판 시 코드를 공개한다고 적습니다. 따라서 이 글은 논문의 측정값을 보고하되 독립 실행으로 재현했다고 주장하지 않습니다.</p>
+<p><img alt="카솔이 평평한 유한 집합과 작은 일회성 작업과 중첩 구조를 서로 다른 처리 경로로 나누는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CcgcSnT7_Zq8nRJ.webp" srcset=""></p>
+<h2 id="다메카솔의-해석">다메카솔의 해석</h2>
+<p>제가 가져갈 설계 원칙은 “enum이면 무조건 트라이”가 아닙니다. 선택지가 크고, 접두사를 공유하며, 같은 목록으로 요청을 반복할 때만 전용 경로의 초기 비용을 상쇄하기 쉽습니다. 작은 일회성 목록은 가벼운 일반 엔진이, 중첩 스키마는 범용 또는 혼합 경로가 더 자연스럽습니다.</p>
+<p>운영에서는 세 값을 따로 재야 합니다. 스키마 컴파일 시간, 디코딩 단계의 마스크 시간, 실제 end-to-end 처리량입니다. 하나의 마이크로벤치마크가 빨라졌다고 전체 서비스가 같은 비율로 빨라진다고 결론 내리면 안 됩니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Trie Automata for Constrained Decoding over Large Finite Sets</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Xingzi Xu, Karim Bouyarmane</td>
+</tr>
+<tr>
+<td>arXiv</td>
+<td>2608.12574 v1</td>
+</tr>
+<tr>
+<td>제출</td>
+<td>2026-08-12 20:38:51 UTC</td>
+</tr>
+<tr>
+<td>공식 목록 확인</td>
+<td>2026-08-14 cs.AI new</td>
+</tr>
+<tr>
+<td>학회</td>
+<td>COLM 2026 채택</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>원문·TeX source 공개, 공식 실행 코드·데이터 링크 미확인</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.12574">논문 초록과 메타데이터 — arXiv:2608.12574</a></li>
+<li><a href="https://arxiv.org/pdf/2608.12574">논문 원문 PDF</a></li>
+<li><a href="https://export.arxiv.org/e-print/2608.12574">공식 arXiv TeX source bundle</a></li>
+<li><a href="https://colmweb.org/AcceptedPapers.html">COLM 2026 공식 채택 논문 목록</a></li>
+<li><a href="/posts/generative-compilation/">관련 글: 생성형 컴파일이 만드는 중간 표현</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-15</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-compositional-constraint-collapse/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.JUj83uVQ_20uDmr.webp" srcset="/_astro/cover.JUj83uVQ_1yBisp.webp 240w, /_astro/cover.JUj83uVQ_Z2ioNK3.webp 360w, /_astro/cover.JUj83uVQ_Z15dM9z.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-14T00:00:00.000Z">2026년 8월 14일</time></div><h3><a href="/posts/llm-compositional-constraint-collapse/" data-analytics-event="related_post_click" data-analytics-target="llm-compositional-constraint-collapse">3분만에 만화로 보는 IT - AI 논문 읽기 | LLM은 왜 조건이 늘면 한꺼번에 무너질까</a></h3><p>LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/phantom-gains-measured-null/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B65mNId7_ZFE2B.webp" srcset="/_astro/cover.B65mNId7_PBkEP.webp 240w, /_astro/cover.B65mNId7_23Mmgj.webp 360w, /_astro/cover.B65mNId7_Z1NdJW9.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-22T00:00:00.000Z">2026년 8월 22일</time></div><h3><a href="/posts/phantom-gains-measured-null/" data-analytics-event="related_post_click" data-analytics-target="phantom-gains-measured-null">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 자기 개선을 측정하려면 변하지 않은 모델도 함께 봐야 합니다</a></h3><p>동결 대조군에서도 생기는 문제별 학습과 손실을 측정하고, measured null·exact test로 AI 자기 개선 주장을 감사하는 방법을 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/statemem-agent-memory-state-tracking/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CF2i2M_K_Z2iMc90.webp" srcset="/_astro/cover.CF2i2M_K_ZwWtST.webp 240w, /_astro/cover.CF2i2M_K_FdwGz.webp 360w, /_astro/cover.CF2i2M_K_1Soyi3.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-21T00:00:00.000Z">2026년 8월 21일</time></div><h3><a href="/posts/statemem-agent-memory-state-tracking/" data-analytics-event="related_post_click" data-analytics-target="statemem-agent-memory-state-tracking">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 기억하고도 현재 상태를 놓칠 수 있습니다</a></h3><p>StateMemBench가 사실 회상과 현재 상태 추적을 어떻게 분리했는지, StateMem의 만료·의존성 재검사 방식과 합성 평가·호출 비용의 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

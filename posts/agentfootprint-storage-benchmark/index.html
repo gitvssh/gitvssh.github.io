@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 에이전트의 숨은 저장 발자국, AgentFootprint가 측정한 것 | 다메카솔</title><meta name="description" content="AI 에이전트가 작업을 끝내면 토큰 비용은 멈추지만 디스크 용량은 계속 쌓입니다. 체크포인트와 로그의 중복 직렬화 문제, 그리고 복원성(Resilience)과 스토리지 비용의 트레이드오프를 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/agentfootprint-storage-benchmark/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 숨은 저장 발자국, AgentFootprint가 측정한 것"><meta property="og:description" content="AI 에이전트가 작업을 끝내면 토큰 비용은 멈추지만 디스크 용량은 계속 쌓입니다. 체크포인트와 로그의 중복 직렬화 문제, 그리고 복원성(Resilience)과 스토리지 비용의 트레이드오프를 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/agentfootprint-storage-benchmark/"><meta property="og:image" content="https://blog.damecasol.com/social/agentfootprint-storage-benchmark.webp"><meta property="og:image:alt" content="성인형 카솔이 작업을 마친 AI 에이전트 뒤에 남은 데이터 블록과 저장 장치를 측정하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 숨은 저장 발자국, AgentFootprint가 측정한 것","description":"AI 에이전트가 작업을 끝내면 토큰 비용은 멈추지만 디스크 용량은 계속 쌓입니다. 체크포인트와 로그의 중복 직렬화 문제, 그리고 복원성(Resilience)과 스토리지 비용의 트레이드오프를 분석합니다.","datePublished":"2026-07-24T00:00:00.000Z","dateModified":"2026-07-24T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/agentfootprint-storage-benchmark/","image":["https://blog.damecasol.com/social/agentfootprint-storage-benchmark.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","스토리지","관측 가능성","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="agentfootprint-storage-benchmark" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-24T00:00:00.000Z">2026년 7월 24일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 숨은 저장 발자국, AgentFootprint가 측정한 것</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI 에이전트가 작업을 끝내면 토큰 비용은 멈추지만 디스크 용량은 계속 쌓입니다. 체크포인트와 로그의 중복 직렬화 문제, 그리고 복원성(Resilience)과 스토리지 비용의 트레이드오프를 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.D1LdcZVu_Z1X1zhK.webp" srcset="/_astro/cover.D1LdcZVu_XpN6V.webp 640w, /_astro/cover.D1LdcZVu_JRhSM.webp 960w, /_astro/cover.D1LdcZVu_Z1X1zhK.webp 1024w" alt="성인형 카솔이 작업을 마친 AI 에이전트 뒤에 남은 데이터 블록과 저장 장치를 측정하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#산출물은-39바이트인데-남겨진-찌꺼기는-131mb" data-toc-link="산출물은-39바이트인데-남겨진-찌꺼기는-131mb" data-analytics-event="toc_click" data-analytics-target="산출물은-39바이트인데-남겨진-찌꺼기는-131mb">산출물은 39바이트인데 남겨진 찌꺼기는 131MB?</a></li><li class="article-toc__depth-2"><a href="#파일-크기만-보면-안-보이는-직렬화-중복의-함정" data-toc-link="파일-크기만-보면-안-보이는-직렬화-중복의-함정" data-analytics-event="toc_click" data-analytics-target="파일-크기만-보면-안-보이는-직렬화-중복의-함정">파일 크기만 보면 안 보이는 ’직렬화 중복’의 함정</a></li><li class="article-toc__depth-2"><a href="#성공률-100-뒤에-숨겨진-복원력r-등급의-격차" data-toc-link="성공률-100-뒤에-숨겨진-복원력r-등급의-격차" data-analytics-event="toc_click" data-analytics-target="성공률-100-뒤에-숨겨진-복원력r-등급의-격차">성공률 100% 뒤에 숨겨진 복원력(R 등급)의 격차</a></li><li class="article-toc__depth-2"><a href="#해결책-콘텐츠-주소화cas-기반-중복-제거" data-toc-link="해결책-콘텐츠-주소화cas-기반-중복-제거" data-analytics-event="toc_click" data-analytics-target="해결책-콘텐츠-주소화cas-기반-중복-제거">해결책: 콘텐츠 주소화(CAS) 기반 중복 제거</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-에이전트-아키텍처-관점의-스토리지-거버넌스" data-toc-link="다메카솔의-해석-에이전트-아키텍처-관점의-스토리지-거버넌스" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-에이전트-아키텍처-관점의-스토리지-거버넌스">다메카솔의 해석: 에이전트 아키텍처 관점의 스토리지 거버넌스</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-시스템-글" data-toc-link="함께-읽을-ai-시스템-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>AI 에이전트가 코딩이나 데이터 분석 작업을 끝내면 LLM API 토큰 비용 청구는 즉시 멈춥니다. 하지만 서버 디스크에는 무엇이 남아 있을까요?</p>
+<p>세션 데이터베이스(SQLite), 체크포인트 스냅샷, 디버그 트레이스, 대화 히스토리 로그가 기하급수적으로 쌓여갑니다.</p>
+<p>최근 발표된 논문 <strong>The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation</strong>은 LLM 에이전트의 성능을 평가할 때 ’정확도’와 ’토큰 비용’뿐만 아니라 <strong>’실행 후 디스크에 남겨지는 스토리지 발자국(Storage Footprint)’을 1급 평가지표로 다루어야 한다고 제안한 매우 실무적인 연구</strong>입니다.</p>
+<p>이번 글에서는 에이전트 프레임워크들이 왜 이렇게 많은 중복 데이터를 남기는지, 그리고 <strong>세션 복원력(Resilience)을 잃지 않으면서 스토리지를 최적화하는 방법</strong>을 살펴보겠습니다.</p>
+<h2 id="산출물은-39바이트인데-남겨진-찌꺼기는-131mb">산출물은 39바이트인데 남겨진 찌꺼기는 131MB?</h2>
+<p><img alt="작업공간을 떠난 AI 에이전트 뒤로 로그와 체크포인트를 상징하는 데이터 흔적이 디스크에 남는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.BYBtNErd_Z1uYc3F.webp" srcset=""></p>
+<p>논문에서 측정한 실제 공급망 견적 에이전트의 사례는 충격적입니다:</p>
+<ul>
+<li>사용자가 최종적으로 전달받은 유효 산출물(JSON 파일): <strong>2.6MB</strong></li>
+<li>에이전트 프레임워크가 실행 후 디스크에 남겨둔 잔여물(체크포인트/로그): <strong>79MB (산출물의 30배 이상)</strong></li>
+</ul>
+<p>심지어 39바이트짜리 짧은 텍스트 요약을 생성하는 과제에서는 프레임워크 오버헤드로 인해 산출물의 무려 <strong>24,033배</strong>에 달하는 디스크 쓰기가 발생했습니다.</p>
+<p>물론 세션 상태를 저장해두는 것은 장애 발생 시 중간부터 재개(Resume)하거나 실행 과정을 디버깅하기 위해 필수적입니다. 하지만 “무조건 많이 저장할수록 좋다”는 안일한 설계는 프로덕션 환경에서 디스크 풀(Disk Full) 장애와 막대한 클라우드 스토리지 비용으로 직결됩니다.</p>
+<h2 id="파일-크기만-보면-안-보이는-직렬화-중복의-함정">파일 크기만 보면 안 보이는 ’직렬화 중복’의 함정</h2>
+<p><img alt="실행 전 스냅샷과 에이전트 실행, 실행 후 파일시스템 차이를 같은 샌드박스에서 비교하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.CN3-93Mo_ZyFKjx.webp" srcset=""></p>
+<p>연구진은 LangGraph, AutoGen, CrewAI, OpenAI Agents SDK 등 대표적인 8개 프레임워크를 1,061회 독립 샌드박스에서 실행하며 6가지 핵심 지표를 측정했습니다.</p>
+<p>그중 가장 흥미로운 발견은 **‘직렬화(Serialization) 뒤에 숨겨진 거대한 중복’**이었습니다.</p>
+<p><img alt="같은 데이터 블록이 SQLite 페이지와 JSON 이스케이프를 거치며 다르게 보이다가 논리 내용 분석에서 중복으로 드러나는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.CvsODZ_Z_Z1QmjV8.webp" srcset=""></p>
+<ul>
+<li><strong>파일 레벨 단순 청킹 검사</strong>: LangGraph의 SQLite 체크포인트 파일 중복 계수는 <code>1.01</code> (중복이 거의 없어 보임)</li>
+<li><strong>논리 스트림 디코딩 검사</strong>: SQLite 셀과 JSONL 이스케이프 문자를 풀어내어 실제 텍스트 내용을 비교하자 중복 계수가 <strong><code>12.1</code>로 12배 폭증</strong></li>
+</ul>
+<p>즉, SQLite 내부의 페이지 헤더나 JSON 특수문자 이스케이프 때문에 바이트 레벨에서는 다른 데이터처럼 보였지만, 실상은 <strong>동일한 대화 히스토리가 매 턴(Turn)마다 통째로 중복 직렬화되어 저장</strong>되고 있었던 것입니다.</p>
+<h2 id="성공률-100-뒤에-숨겨진-복원력r-등급의-격차">성공률 100% 뒤에 숨겨진 복원력(R 등급)의 격차</h2>
+<p><img alt="같은 성공 신호를 받은 두 AI 에이전트 뒤에 크기가 다른 데이터 더미와 복원 고리가 남는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.qhlcWrIP_joURz.webp" srcset=""></p>
+<p>연구진은 에이전트 프로세스가 불시에 죽었을 때 이전 세션을 얼마나 완벽하게 복원할 수 있는지를 **복원력 등급(R0~R3)**으로 정의했습니다:</p>
+<ul>
+<li><strong>R3</strong>: 새 프로세스에서 이전 대화와 상태를 완벽히 재개 가능</li>
+<li><strong>R1</strong>: 로그는 남아 있으나 구조화된 상태가 깨져 세션 재개 불가</li>
+<li><strong>R0</strong>: 아무것도 복원 불가 (비휘발성 저장 없음)</li>
+</ul>
+<p>실험 결과, 100% 동일한 정답률을 기록한 프레임워크들 사이에서도 디스크 저장량은 무려 <strong>15.7배</strong>나 차이 났습니다. 또한 CrewAI 같은 일부 프레임워크는 디스크에 바이트를 남겼음에도 상태 구조가 불완전해(R1) 프로세스 재기동 시 세션을 이어가지 못했습니다.</p>
+<p>성공률 지표 하나만 보면 모든 프레임워크가 동등해 보이지만, **“진짜 프로덕션 레벨의 장애 복구 능력을 갖추었는가”**를 따져보면 천차만별이었던 셈입니다.</p>
+<h2 id="해결책-콘텐츠-주소화cas-기반-중복-제거">해결책: 콘텐츠 주소화(CAS) 기반 중복 제거</h2>
+<p><img alt="동일 데이터 블록을 한 번만 보관하고 참조선으로 연결한 저장소 앞에서 성인형 카솔이 네 운영 지표를 점검하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.sHpw8yKi_Z27kkgC.webp" srcset=""></p>
+<p>연구진은 이 문제를 해결하기 위해 <strong>콘텐츠 주소화 스토리지(Content-Addressed Storage, CAS)</strong> 기법을 적용한 프로토타입을 테스트했습니다.</p>
+<p>1KB 이상의 텍스트나 프롬프트 블롭(Blob)을 해시(SHA-256)값으로 인덱싱하여 <strong>디스크에는 딱 한 번만 저장하고, 매 턴의 체크포인트에는 가벼운 해시 참조값(포인터)만 남기는 구조</strong>입니다.</p>
+<p>그 결과:</p>
+<ul>
+<li>디스크 저장량이 <strong>4.8배 ~ 32.7배 획기적으로 감소</strong></li>
+<li>세션 복원력(R3 등급)은 100% 완벽하게 유지</li>
+</ul>
+<h2 id="다메카솔의-해석-에이전트-아키텍처-관점의-스토리지-거버넌스">다메카솔의 해석: 에이전트 아키텍처 관점의 스토리지 거버넌스</h2>
+<p>AI 에이전트를 프로덕션 서비스에 서빙하는 백엔드 아키텍트라면 모니터링 대시보드에 토큰 비용뿐 아니라 **스토리지 수명주기(Lifecycle)**를 반드시 포함해야 합니다.</p>
+<ol>
+<li><strong>상태 저장 정책의 차등화</strong>: 모든 임시 추론 단계를 영구 저장하지 말고, 최종 결정된 컨텍스트와 Tool Call 결과만 선별적으로 스냅샷하세요.</li>
+<li><strong>슬라이딩 윈도우 &amp; 증분 체크포인팅</strong>: 전체 대화 히스토리를 매 턴마다 풀 덤프(Full Dump)하지 말고, Git처럼 증분(Delta) 또는 최근 N개 턴 위주로 상태를 유지해야 초선형적 용량 폭증을 막을 수 있습니다.</li>
+<li><strong>GDPR 및 데이터 삭제 파이프라인</strong>: 세션 DB에 사용자의 민감 개인정보가 비가역적으로 엮여 들어가지 않도록, 세션 만료 후 영구 삭제(TTL) 및 비식별화 아키텍처를 사전에 설계해야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</h2>
+<ul>
+<li><a href="/posts/llm-agent-skill-regression-tax/">LLM 에이전트 스킬 주입과 성능 회귀(Regression Tax) 방어 전략</a></li>
+<li><a href="/posts/state-service-uptime-design/">애플리케이션 가용성과 24시간 의존성 아키텍처 설계</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.11149">The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation, arXiv:2607.11149</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/statemem-agent-memory-state-tracking/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CF2i2M_K_Z2iMc90.webp" srcset="/_astro/cover.CF2i2M_K_ZwWtST.webp 240w, /_astro/cover.CF2i2M_K_FdwGz.webp 360w, /_astro/cover.CF2i2M_K_1Soyi3.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-21T00:00:00.000Z">2026년 8월 21일</time></div><h3><a href="/posts/statemem-agent-memory-state-tracking/" data-analytics-event="related_post_click" data-analytics-target="statemem-agent-memory-state-tracking">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 기억하고도 현재 상태를 놓칠 수 있습니다</a></h3><p>StateMemBench가 사실 회상과 현재 상태 추적을 어떻게 분리했는지, StateMem의 만료·의존성 재검사 방식과 합성 평가·호출 비용의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/twin-test-time-world-model/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BOOiPm30_1XEEdO.webp" srcset="/_astro/cover.BOOiPm30_Zywoy8.webp 240w, /_astro/cover.BOOiPm30_DDC2l.webp 360w, /_astro/cover.BOOiPm30_1QODCO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-17T00:00:00.000Z">2026년 8월 17일</time></div><h3><a href="/posts/twin-test-time-world-model/" data-analytics-event="related_post_click" data-analytics-target="twin-test-time-world-model">3분만에 만화로 보는 IT - AI 논문 읽기 | 모르는 게임을 복사해서 푸는 테스트타임 월드 모델</a></h3><p>낯선 게임을 실행 가능한 Python 트윈으로 복사하고 과거 전환을 검증한 뒤 행동하는 Twin의 구조와 성과, 적용 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/fisher-r1-hypothesis-testing/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Lsjq6_PS_2uqKQ.webp" srcset="/_astro/cover.Lsjq6_PS_1OJVXX.webp 240w, /_astro/cover.Lsjq6_PS_Z22gaeu.webp 360w, /_astro/cover.Lsjq6_PS_ZO58D1.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-10T00:00:00.000Z">2026년 8월 10일</time></div><h3><a href="/posts/fisher-r1-hypothesis-testing/" data-analytics-event="related_post_click" data-analytics-target="fisher-r1-hypothesis-testing">3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 p값을 계산해도 통계 결론을 틀릴 수 있는 이유</a></h3><p>Fisher-R1과 P-Bench가 AI 통계 에이전트의 방법 선택, p값, 결론을 따로 평가하는 방식과 재현성 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
