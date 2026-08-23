@@ -32,7 +32,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 순조롭게 차오르는 전송 진행 띠 대신 여러 번 무너진 흔적을 단 게이트웨이를 바라보는 표지"
 sourceUrl: "urn:internal:homelab-k8s:backup-sync-2026-07-19"
 featured: false
-draft: true
+draft: false
 ---
 글·해설: 다메카솔
 
