@@ -26,7 +26,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 애플리케이션 복제 층과 스토리지 복제 층을 살피는 표지"
 sourceUrl: "https://cloudnative-pg.io/docs/current/replication/"
 featured: false
-draft: true
+draft: false
 ---
 
 글·해설: 다메카솔
