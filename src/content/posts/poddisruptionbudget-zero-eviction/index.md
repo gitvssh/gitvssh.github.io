@@ -26,7 +26,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 자발적 중단 경로 앞의 중단 예산 계기를 읽는 표지"
 sourceUrl: "https://kubernetes.io/docs/tasks/run-application/configure-pdb/"
 featured: false
-draft: true
+draft: false
 ---
 
 글·해설: 다메카솔
