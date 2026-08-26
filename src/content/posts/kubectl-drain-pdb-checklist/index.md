@@ -26,7 +26,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 멈춘 drain 흐름과 네 갈래 진단 경로를 살피는 표지"
 sourceUrl: "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_drain/"
 featured: false
-draft: true
+draft: false
 ---
 
 글·해설: 다메카솔
