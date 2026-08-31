@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>LLM 에이전트 장애 원인 분석과 DiagGuard | 다메카솔</title><meta name="description" content="마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/llm-agent-rca-trajectory-evidence/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다"><meta property="og:description" content="마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/llm-agent-rca-trajectory-evidence/"><meta property="og:image" content="https://blog.damecasol.com/social/llm-agent-rca-trajectory-evidence.webp"><meta property="og:image:alt" content="성인형 카솔이 올바른 장애 노드 뒤에 끊어진 증거 경로를 비추는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다","description":"마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다.","datePublished":"2026-08-24T00:00:00.000Z","dateModified":"2026-08-24T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/llm-agent-rca-trajectory-evidence/","image":["https://blog.damecasol.com/social/llm-agent-rca-trajectory-evidence.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","LLM","벤치마크","관측 가능성","운영 자동화 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="llm-agent-rca-trajectory-evidence" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.B75aQWMR_9rpy3.webp" srcset="/_astro/cover.B75aQWMR_RAbqF.webp 640w, /_astro/cover.B75aQWMR_E2Fdw.webp 960w, /_astro/cover.B75aQWMR_9rpy3.webp 1024w" alt="성인형 카솔이 올바른 장애 노드 뒤에 끊어진 증거 경로를 비추는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#맞힌-서비스와-믿을-수-있는-진단은-다르다" data-toc-link="맞힌-서비스와-믿을-수-있는-진단은-다르다" data-analytics-event="toc_click" data-analytics-target="맞힌-서비스와-믿을-수-있는-진단은-다르다">맞힌 서비스와 믿을 수 있는 진단은 다르다</a></li><li class="article-toc__depth-2"><a href="#3500개-진단-경로를-전파-경로와-대조했다" data-toc-link="3500개-진단-경로를-전파-경로와-대조했다" data-analytics-event="toc_click" data-analytics-target="3500개-진단-경로를-전파-경로와-대조했다">3,500개 진단 경로를 전파 경로와 대조했다</a></li><li class="article-toc__depth-2"><a href="#실패는-증거를-다루는-세-방식으로-모였다" data-toc-link="실패는-증거를-다루는-세-방식으로-모였다" data-analytics-event="toc_click" data-analytics-target="실패는-증거를-다루는-세-방식으로-모였다">실패는 증거를 다루는 세 방식으로 모였다</a></li><li class="article-toc__depth-2"><a href="#diagguard는-먼저-펼치고-나중에-의심한다" data-toc-link="diagguard는-먼저-펼치고-나중에-의심한다" data-analytics-event="toc_click" data-analytics-target="diagguard는-먼저-펼치고-나중에-의심한다">DiagGuard는 먼저 펼치고 나중에 의심한다</a></li><li class="article-toc__depth-2"><a href="#한-번의-연구가-운영-토폴로지를-대표하지는-않는다" data-toc-link="한-번의-연구가-운영-토폴로지를-대표하지는-않는다" data-analytics-event="toc_click" data-analytics-target="한-번의-연구가-운영-토폴로지를-대표하지는-않는다">한 번의 연구가 운영 토폴로지를 대표하지는 않는다</a></li><li class="article-toc__depth-2"><a href="#공개-재현의-경계" data-toc-link="공개-재현의-경계" data-analytics-event="toc_click" data-analytics-target="공개-재현의-경계">공개 재현의 경계</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-자동-복구에는-증거-승인선을-둔다" data-toc-link="다메카솔의-해석-자동-복구에는-증거-승인선을-둔다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-자동-복구에는-증거-승인선을-둔다">다메카솔의 해석: 자동 복구에는 증거 승인선을 둔다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#원인-서비스를-맞혔다면-복구-결과도-같은-것-아닌가요" data-toc-link="원인-서비스를-맞혔다면-복구-결과도-같은-것-아닌가요" data-analytics-event="toc_click" data-analytics-target="원인-서비스를-맞혔다면-복구-결과도-같은-것-아닌가요">원인 서비스를 맞혔다면 복구 결과도 같은 것 아닌가요?</a></li><li class="article-toc__depth-3"><a href="#diagguard가-실제-production-incident에서도-검증됐나요" data-toc-link="diagguard가-실제-production-incident에서도-검증됐나요" data-analytics-event="toc_click" data-analytics-target="diagguard가-실제-production-incident에서도-검증됐나요">DiagGuard가 실제 production incident에서도 검증됐나요?</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>장애 원인을 맞힌 진단도 운영에 바로 쓸 수 없습니다. 어떤 로그와 지표를 확인했고, 장애가 어느 서비스를 거쳐 번졌는지 설명하지 못한다면 그 정답은 우연과 구분하기 어렵습니다. 자동 복구까지 연결할수록 이 차이가 커집니다.</p>
+<p>2026년 8월 21일 arXiv에 제출된 **「Beyond Fault Localization: A Trajectory-Level Study of LLM Agents for Microservice Root Cause Analysis」**는 최종 서비스 이름 대신 진단 과정 전체를 들여다봅니다. 저자들은 3,500개 agent trajectory를 주석된 장애 전파 경로와 비교하고, 반복되는 실패를 두 겹의 방어 구조인 DiagGuard로 옮겼습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>root-cause 서비스가 맞아도 증거와 전파 경로가 빠진 진단은 조치 근거로 약합니다.</li>
+<li>저자들은 RCABench 500개 사례에서 일곱 구성의 3,500개 trajectory를 수집했습니다.</li>
+<li>실패는 결정적 증거 누락, 증거 오독, 증거와 무관한 추론의 세 계열로 정리됐습니다.</li>
+<li>별도 AIOps 2025 조건에서 DiagGuard는 Acc@1을 43.5%에서 52.5%로 높였습니다.</li>
+<li>특성화는 단일 토폴로지와 일회 실행에 기대므로 실제 자동 복구에는 별도 승인 조건이 필요합니다.</li>
+</ul>
+<p><img alt="성인형 카솔이 올바른 장애 노드 뒤에 끊어진 증거 경로를 비추는 표지" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/cover.B75aQWMR_9rpy3.webp" srcset=""></p>
+<h2 id="맞힌-서비스와-믿을-수-있는-진단은-다르다">맞힌 서비스와 믿을 수 있는 진단은 다르다</h2>
+<p><img alt="에이전트가 올바른 장애 서비스에 핀을 꽂았지만 중간 증거 경로가 끊겨 운영팀이 조치를 망설이는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.Dhdh93tA_Z2iIhzL.webp" srcset=""></p>
+<p>기존 마이크로서비스 RCA 평가는 대개 원인 서비스를 맞혔는지 봅니다. Acc@1이나 Top-k 정확도는 여러 방법을 비교하기 좋지만, 에이전트가 어떤 근거로 그 답에 도착했는지는 접어 버립니다.</p>
+<p>운영자는 답 하나보다 더 많은 정보를 필요로 합니다. 예를 들어 저장소 계층의 I/O 이상이 데이터베이스를 거쳐 상품 서비스 지연으로 번졌다면, 진단은 그 연결을 telemetry로 뒷받침해야 합니다. 중간 서비스와 방향 간선을 건너뛴 채 마지막 노드만 맞혔다면 복구 대상이나 순서를 잘못 정할 수 있습니다.</p>
+<p>이 논문의 질문은 여기서 시작합니다. <strong>정답률 뒤에 숨은 조사 과정을 비교 가능한 근거로 만들 수 있는가?</strong> 저자들은 root-cause label과 service-level fault-propagation path를 분리해 답했습니다.</p>
+<h2 id="3500개-진단-경로를-전파-경로와-대조했다">3,500개 진단 경로를 전파 경로와 대조했다</h2>
+<p><img alt="수많은 telemetry 조사 흔적을 주석된 장애 전파 경로와 비교해 방문한 노드와 간선을 검사하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.CST9Js2H_Z2o7aHl.webp" srcset=""></p>
+<p>저자들은 공개 RCABench의 1,430개 사례에서 단순 무작위 비복원으로 500개를 골랐습니다. 각 사례에는 원인 서비스 label이 있었지만 서비스 수준 전파 경로는 없어서, 장애 주입 정보와 전후 로그·지표·트레이스, TrainTicket 호출 그래프를 바탕으로 사람이 경로를 주석했습니다.</p>
+<p>그다음 여섯 agent framework를 같은 Qwen backbone으로 비교하고, ThinkDepth.ai 한 구성은 Sonnet으로 다시 돌렸습니다. 사례마다 일곱 trajectory가 생겨 총 3,500개입니다. 각 trajectory는 에이전트의 생각, SQL 질의, 반환된 telemetry, 최종 답을 포함합니다.</p>
+<p>평가는 두 층으로 나뉩니다. 최종 root cause를 맞혔는지 Acc@1으로 보고, 주석 경로의 서비스 노드와 방향 간선을 얼마나 되찾았는지 Node F1과 Edge F1으로 봅니다. 특히 Edge F1은 장애가 서비스 사이에서 어떻게 전파됐는지를 묻습니다.</p>
+<p>공유 Qwen에서 개방형 조사 framework 세 개의 Acc@1은 77.6%에서 79.6% 사이였습니다. 그럼에도 모든 구성의 평균 Edge F1은 0.67을 넘지 못했습니다. ThinkDepth.ai의 backbone을 Sonnet으로 바꾸자 Acc@1은 10.8%p 높아졌지만 Edge F1은 0.66에서 0.67로 거의 그대로였습니다. 더 강한 모델이 전파 경로까지 자동으로 복원해 주지는 않았다는 뜻입니다.</p>
+<h2 id="실패는-증거를-다루는-세-방식으로-모였다">실패는 증거를 다루는 세 방식으로 모였다</h2>
+<p><img alt="결정적 단서를 지나치고 뒤집어 읽고 근거 없는 다리를 만드는 세 실패 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.CSA8FfMl_FtHeb.webp" srcset=""></p>
+<p>성공한 조사에는 방향이 있었습니다. 장애가 영향을 준 서비스와 telemetry 범위에 머물렀고, 실제로 조회한 증거에 맞춰 다음 질의를 바꿨습니다. 인과 사슬이 깊어질수록 질의 의도도 넓어졌습니다.</p>
+<p>반대로 실패는 세 계열로 모였습니다.</p>
+<table>
+<thead>
+<tr>
+<th>실패 계열</th>
+<th>진단에서 벌어진 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>증거 누락</td>
+<td>비교 기준이나 결정적 service·metric·log를 조회하지 않음</td>
+</tr>
+<tr>
+<td>증거 오독</td>
+<td>가져온 신호의 의미, 시간 범위, 호출 방향을 잘못 읽음</td>
+</tr>
+<tr>
+<td>근거 없는 추론</td>
+<td>관측과 연결되지 않은 원인 상태를 만들거나 마찰을 피하려고 결론을 고정함</td>
+</tr>
+</tbody>
+</table>
+<p>두 저자는 154개 실패 trajectory를 독립 코딩했고, 144개에서 같은 코드 집합을 부여해 93.5% 일치를 보고했습니다. 세부 실패 코드는 한 trajectory에 함께 나타날 수 있으므로 비율 합계가 100%가 되는 분류표는 아닙니다.</p>
+<p>인과 사슬 깊이도 난도를 바꿨습니다. Qwen을 쓴 모든 framework는 깊이가 2에서 5로 길어질수록 정확도가 낮아졌습니다. 이상 노드를 찾는 일과 그 노드 사이 전파 방향을 복원하는 일은 서로 다른 난도였습니다.</p>
+<h2 id="diagguard는-먼저-펼치고-나중에-의심한다">DiagGuard는 먼저 펼치고 나중에 의심한다</h2>
+<p><img alt="Grounder가 telemetry를 펼치고 Verifier가 제안된 원인을 증거 경로와 다시 대조하는 이중 방어 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.4EoI01PC_1RDKkL.webp" srcset=""></p>
+<p>저자들은 실패 목록을 사후 설명으로 끝내지 않았습니다. 각 실패를 방어 요구사항으로 바꿔 기존 진단 코어 바깥에 <strong>Grounder</strong>와 <strong>Verifier</strong>를 놓았습니다.</p>
+<p>Grounder는 답을 찾기 전에 이용 가능한 telemetry의 범위와 정상 구간 기준을 펼칩니다. Verifier는 에이전트가 고른 원인이 조회한 증거와 맞는지, 다른 설명을 배제했는지 다시 확인합니다. 하나는 보지 못한 증거를 줄이고, 다른 하나는 보고도 잘못 읽거나 억지로 결론 낸 경우를 겨냥합니다.</p>
+<p>검증 조건은 특성화와 달랐습니다. AIOps 2025의 e-commerce benchmark 400개 incident, 다른 서비스 토폴로지, 다른 vendor의 Seed 2.0 Pro를 사용해 다섯 번 실행했습니다. 이 held-out 조건에서 Acc@1은 43.5%에서 52.5%로, pass@3은 56.9%에서 67.1%로, pass@5는 62.3%에서 73.0%로 높아졌습니다.</p>
+<p>구성요소 제거 실험도 두 층의 역할을 나눠 보여 줍니다. Grounder만 두면 Acc@1이 4.1%p, Verifier만 두면 4.5%p 높아졌고, 둘을 함께 쓰면 9.0%p 높아졌습니다. 이 결과는 다섯 번 실행의 평균과 표준편차로 보고됐습니다.</p>
+<h2 id="한-번의-연구가-운영-토폴로지를-대표하지는-않는다">한 번의 연구가 운영 토폴로지를 대표하지는 않는다</h2>
+<p>특성화는 RCABench의 TrainTicket 한 토폴로지, 고정된 500개 표본, 선택한 agent에 기대고 있습니다. framework와 model을 하나씩 바꿨지만 구현 차이가 완전히 사라진 비교도 아닙니다. 저자들이 별도 benchmark로 transfer를 확인한 점은 이 위험을 줄이지만, 다른 stack과 production incident까지 보증하지는 않습니다.</p>
+<p>process label에는 사람의 주석과 LLM 보조 분류가 들어갑니다. 고정 protocol, 이중 코딩, 사람 검토로 일관성을 확인했어도 주석자의 판단과 judge bias는 남습니다. 특성화의 일곱 구성은 각각 한 번만 실행했고 유의성 검정을 하지 않아, framework 사이 차이는 지시적 결과로 읽어야 합니다.</p>
+<h2 id="공개-재현의-경계">공개 재현의 경계</h2>
+<p>저자들은 주석된 전파 경로, trajectory 분석 pipeline, failure-mode codebook, DiagGuard prompt를 공개할 계획이라고 적었습니다. 2026년 8월 24일 확인한 arXiv 원문과 메타데이터에는 접근 가능한 저자 artifact 저장소가 연결돼 있지 않았습니다.</p>
+<p>저는 13쪽 PDF, API 메타데이터, TeX 원문 묶음과 35개 추출 파일을 보존하고 방법·표·한계를 교차 확인했습니다. 실행 가능한 공식 산출물이 없어 benchmark를 다시 돌리거나 코딩 일치도를 독립 검증하지 않았습니다. 이 글은 공개 원문에 대한 근거 검토입니다.</p>
+<h2 id="다메카솔의-해석-자동-복구에는-증거-승인선을-둔다">다메카솔의 해석: 자동 복구에는 증거 승인선을 둔다</h2>
+<p><img alt="성인형 카솔이 보호된 자동 복구 스위치 앞에서 증거와 장애 전파 경로를 먼저 확인하라고 손짓하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.DiVTIbzh_BMqx4.webp" srcset=""></p>
+<p>제가 LLM RCA를 자동 복구와 연결한다면 <strong>정답 서비스 일치</strong>를 첫 조건으로만 두겠습니다. 다음 세 조건이 닫히기 전에는 변경 권한을 넘기지 않겠습니다.</p>
+<table>
+<thead>
+<tr>
+<th>승인 조건</th>
+<th>확인할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>근거 telemetry</td>
+<td>incident window와 정상 구간을 같은 entity·metric으로 비교했는가</td>
+</tr>
+<tr>
+<td>전파 경로</td>
+<td>관측된 서비스 노드와 방향 간선이 원인에서 증상까지 이어지는가</td>
+</tr>
+<tr>
+<td>반증 확인</td>
+<td>만성 잡음이나 더 단순한 대체 원인을 검토했는가</td>
+</tr>
+</tbody>
+</table>
+<p>세 조건 가운데 하나라도 비면 사람에게 넘기고, 진단 보고서에는 조회하지 않은 telemetry까지 구분해 남겨야 합니다. 모델의 자연어 확신보다 재검사 가능한 evidence chain을 승인 근거로 삼는 설계입니다.</p>
+<p>저의 입장은 분명합니다. LLM RCA의 다음 기준은 “얼마나 자주 맞혔나”에서 멈추면 안 됩니다. “무엇을 보고, 어떤 경로를 따라, 무엇을 배제했나”까지 재생할 수 있어야 자동 복구 권한을 논의할 수 있습니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Beyond Fault Localization: A Trajectory-Level Study of LLM Agents for Microservice Root Cause Analysis</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Qisheng Lu, Aoyang Fang, Junjielong Xu, Jin’ao Shang, Songhan Zhang, Yifan Yang, Xiaochuan Yan, Pinjia He</td>
+</tr>
+<tr>
+<td>공개 이력</td>
+<td>arXiv v1 제출 2026-08-21 17:13:45 UTC</td>
+</tr>
+<tr>
+<td>이 글의 분류</td>
+<td>마이크로서비스 RCA agent trajectory empirical study</td>
+</tr>
+<tr>
+<td>공개 artifact</td>
+<td>수집 시점에 접근 가능한 저자 저장소 없음; 논문은 향후 공개를 예고</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="원인-서비스를-맞혔다면-복구-결과도-같은-것-아닌가요">원인 서비스를 맞혔다면 복구 결과도 같은 것 아닌가요?</h3>
+<p>복구는 대상뿐 아니라 순서와 범위를 요구합니다. 중간 전파 경로가 틀리면 증상 서비스를 원인으로 오인하거나, 정상인 의존성을 먼저 바꿀 수 있습니다. 그래서 endpoint accuracy와 path evidence를 함께 봐야 합니다.</p>
+<h3 id="diagguard가-실제-production-incident에서도-검증됐나요">DiagGuard가 실제 production incident에서도 검증됐나요?</h3>
+<p>이 연구는 공개 benchmark의 주입 장애를 사용했습니다. held-out model·dataset·topology에서 이득을 보였지만, 장기 운영의 불완전한 telemetry와 새로운 fault를 다룬 production 검증은 앞으로의 과제입니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/agentic-coding-production-traces/">AI 코딩 에이전트의 결과보다 작업 흔적을 먼저 읽어야 하는 이유</a></li>
+<li><a href="/posts/statemem-agent-memory-state-tracking/">AI 에이전트는 기억하고도 현재 상태를 놓칠 수 있습니다</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.21310">Qisheng Lu 외, “Beyond Fault Localization: A Trajectory-Level Study of LLM Agents for Microservice Root Cause Analysis,” arXiv:2608.21310</a></li>
+<li><a href="https://arxiv.org/pdf/2608.21310">arXiv v1 PDF</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-24</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

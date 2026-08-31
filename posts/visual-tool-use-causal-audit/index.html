@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 시각 도구 사용 평가, crop-and-zoom 관측은 답을 바꿀까 | 다메카솔</title><meta name="description" content="시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/visual-tool-use-causal-audit/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 화면을 확대했다고 정말 더 잘 본 걸까"><meta property="og:description" content="시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/visual-tool-use-causal-audit/"><meta property="og:image" content="https://blog.damecasol.com/social/visual-tool-use-causal-audit.webp"><meta property="og:image:alt" content="성인형 카솔이 여러 확대 렌즈 가운데 실제 단서와 연결된 렌즈를 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 화면을 확대했다고 정말 더 잘 본 걸까","description":"시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다.","datePublished":"2026-08-08T00:00:00.000Z","dateModified":"2026-08-08T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/visual-tool-use-causal-audit/","image":["https://blog.damecasol.com/social/visual-tool-use-causal-audit.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["멀티모달 AI","AI 에이전트","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="visual-tool-use-causal-audit" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 화면을 확대했다고 정말 더 잘 본 걸까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CMg6Nj-N_Z1lyLxU.webp" srcset="/_astro/cover.CMg6Nj-N_28FfhG.webp 640w, /_astro/cover.CMg6Nj-N_1U7J4x.webp 960w, /_astro/cover.CMg6Nj-N_Z1lyLxU.webp 1024w" alt="성인형 카솔이 여러 확대 렌즈 가운데 실제 단서와 연결된 렌즈를 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#도구를-불렀다는-사실과-그-결과를-썼다는-사실은-다르다" data-toc-link="도구를-불렀다는-사실과-그-결과를-썼다는-사실은-다르다" data-analytics-event="toc_click" data-analytics-target="도구를-불렀다는-사실과-그-결과를-썼다는-사실은-다르다">도구를 불렀다는 사실과 그 결과를 썼다는 사실은 다르다</a></li><li class="article-toc__depth-2"><a href="#세-수준의-개입으로-두-경로를-가른다" data-toc-link="세-수준의-개입으로-두-경로를-가른다" data-analytics-event="toc_click" data-analytics-target="세-수준의-개입으로-두-경로를-가른다">세 수준의 개입으로 두 경로를 가른다</a></li><li class="article-toc__depth-2"><a href="#평균-상승-뒤에-반대-방향의-결과가-섞여-있었다" data-toc-link="평균-상승-뒤에-반대-방향의-결과가-섞여-있었다" data-analytics-event="toc_click" data-analytics-target="평균-상승-뒤에-반대-방향의-결과가-섞여-있었다">평균 상승 뒤에 반대 방향의 결과가 섞여 있었다</a></li><li class="article-toc__depth-2"><a href="#보지-않고-호출하거나-보고도-멈추지-못한다" data-toc-link="보지-않고-호출하거나-보고도-멈추지-못한다" data-analytics-event="toc_click" data-analytics-target="보지-않고-호출하거나-보고도-멈추지-못한다">보지 않고 호출하거나, 보고도 멈추지 못한다</a></li><li class="article-toc__depth-2"><a href="#이득은-도구가-제대로-쓰인-일부-궤적에-집중됐다" data-toc-link="이득은-도구가-제대로-쓰인-일부-궤적에-집중됐다" data-analytics-event="toc_click" data-analytics-target="이득은-도구가-제대로-쓰인-일부-궤적에-집중됐다">이득은 도구가 제대로 쓰인 일부 궤적에 집중됐다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-호출-수-대신-답의-변화를-기록한다" data-toc-link="다메카솔의-해석-호출-수-대신-답의-변화를-기록한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-호출-수-대신-답의-변화를-기록한다">다메카솔의 해석: 호출 수 대신 답의 변화를 기록한다</a></li><li class="article-toc__depth-2"><a href="#crop-and-zoom-밖은-아직-열려-있다" data-toc-link="crop-and-zoom-밖은-아직-열려-있다" data-analytics-event="toc_click" data-analytics-target="crop-and-zoom-밖은-아직-열려-있다">crop-and-zoom 밖은 아직 열려 있다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>화면을 보는 AI가 확대 도구를 열 번 불렀다고 해도, 그 열 번이 답을 더 낫게 만들었다는 뜻은 아닙니다. 모델은 이미 마음속으로 정한 답을 내면서 도구 호출만 덧붙일 수 있습니다. 반대로 유용한 단서를 찾은 뒤에도 확대를 멈추지 못해 시간과 계산 예산을 소모할 수 있습니다. 그래서 도구 호출 기록보다 먼저 물어야 할 질문은 이것입니다. <strong>돌아온 관측이 실제로 답을 바꿨는가?</strong></p>
+<p>2026년 8월 6일 공개된 preprint <strong>The Illusion of Visual Tool-Use: A Causal Audit of Thinking with Images</strong>는 crop-and-zoom 도구를 쓰는 시각 추론 모델을 이 질문으로 감사합니다. 연구진은 도구 사용 전후 정확도만 비교하지 않고, 정책·전체 궤적·한 단계 관측에 각각 개입해 행동 자체의 효과와 시각 증거의 기여를 갈랐습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="도구를-불렀다는-사실과-그-결과를-썼다는-사실은-다르다">도구를 불렀다는 사실과 그 결과를 썼다는 사실은 다르다</h2>
+<p><img alt="확대 렌즈를 움직이는 호출 경로와 단서가 답 나침반을 바꾸는 증거 경로가 갈라진 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.Bqm1whjx_2ibtnV.webp" srcset=""></p>
+<p>시각 도구를 쓰는 모델에는 적어도 세 경로가 섞여 있습니다. 원래 이미지와 질문만으로 답을 내는 직접 경로, 확대나 자르기를 했다는 행동 자체가 답에 주는 지름길, 도구가 돌려준 새 관측이 답을 바꾸는 증거 경로입니다.</p>
+<p>일반적인 정확도 비교는 이 셋을 한꺼번에 봅니다. 도구를 허용했을 때 점수가 올라도, 그 상승이 확대된 시각 정보 덕분인지 알 수 없습니다. 모델이 도구를 부르는 동안 더 오래 추론했기 때문일 수도 있고, 특정 호출 형식이 다음 답을 유도했기 때문일 수도 있습니다. 연구진이 말하는 인과 감사는 이 혼합을 풀어내는 절차입니다.</p>
+<h2 id="세-수준의-개입으로-두-경로를-가른다">세 수준의 개입으로 두 경로를 가른다</h2>
+<p><img alt="같은 시각 도구 사용을 정책 비교, 궤적 교란, 한 단계 비교로 나눈 세 층의 실험 정원" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B7NCHe-j_1BKcXa.webp" srcset=""></p>
+<p>첫째는 <strong>정책 수준</strong>입니다. crop-and-zoom 도구를 허용한 실행과 처음부터 직접 답하게 한 실행을 비교합니다. 이 평균 차이는 도구를 쓸 수 있게 한 전체 효과를 보여주지만, 행동 지름길과 관측 기여를 아직 구분하지는 못합니다.</p>
+<p>둘째는 <strong>궤적 수준</strong>입니다. 모델이 선택한 호출 모양은 유지하되 모든 반환 관측을 같은 모양의 엉뚱한 위치 crop으로 바꿉니다. 진짜 시각 증거를 잃었을 때 전체 실행이 어떻게 무너지는지 보는 방식입니다. 다만 이 차이에는 증거 손실뿐 아니라 이상한 관측에 대한 모델의 반응, 반복 호출, 예산 소진도 함께 들어갑니다.</p>
+<p>셋째는 <strong>한 단계 수준</strong>입니다. 같은 호출과 같은 직전 문맥에서 실제 crop을 넣었을 때 답 확률이 얼마나 변하는지 측정하고, 같은 크기의 다른 위치 crop을 넣었을 때 생기는 변화를 뺍니다. 논문은 이를 Visual Evidence Gain, VEG라고 부릅니다. 같은 행동을 유지한 채 반환된 내용만 바꾸므로, 호출 자체가 만든 지름길을 상쇄하고 관측 내용의 국소 기여를 추정하려는 장치입니다.</p>
+<p>정책·궤적 개입은 관측을 교체할 수 있는 도구 인터페이스가 있다면 black-box 모델에도 적용할 수 있습니다. 반면 한 단계 VEG는 정답 토큰의 점수가 필요해 white-box 접근을 요구합니다. 세 측정값은 서로 대체재가 아니라 서로 다른 질문에 답합니다.</p>
+<h2 id="평균-상승-뒤에-반대-방향의-결과가-섞여-있었다">평균 상승 뒤에 반대 방향의 결과가 섞여 있었다</h2>
+<p>연구진은 공개 시각 도구 모델 6개를 V*, HR-Bench 4K·8K, VisualProbe, MME-RealWorld-Lite에서 비교했습니다. VisualProbe 수치는 Easy·Medium·Hard를 합친 값입니다.</p>
+<p>정책 수준의 정확도 효과는 모델과 벤치마크에 따라 크게 달랐습니다. DeepEyes는 전반적으로 거의 0에 가까웠습니다. Mini-o3는 VisualProbe에서 직접 답하기보다 21.3%포인트 높았지만, Qwen3-VL-8B는 MME-RealWorld-Lite에서 오히려 3.7%포인트 낮았습니다. “도구를 쓰면 좋아진다”는 하나의 문장으로 묶기 어려운 결과입니다.</p>
+<p>한 단계 분석도 평균만으로는 보이지 않는 차이를 드러냈습니다. DeepEyes 호출의 81%는 VEG 절댓값이 0.01보다 작았습니다. Mini-o3에는 유용한 최고점이 있었지만 많은 낮은 기여 호출에 희석됐고, Qwen3-VL-8B의 기여는 답이 포화되기 전 일부 호출에 집중됐습니다.</p>
+<h2 id="보지-않고-호출하거나-보고도-멈추지-못한다">보지 않고 호출하거나, 보고도 멈추지 못한다</h2>
+<p><img alt="답을 이미 고정한 채 렌즈만 반복하는 경로와 단서를 본 뒤에도 확대 터널을 멈추지 못하는 경로" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BVgUNMs4_Z20DVcY.webp" srcset=""></p>
+<p>논문은 도구 궤적을 네 그룹으로 나눕니다. 도구를 부르지 않은 실행, 무의미한 호출인 <strong>Calling Without Looking</strong>, 관측을 유효하게 사용한 <strong>Calibrated</strong>, 유용한 관측 뒤에도 불필요한 호출을 계속한 <strong>Looking Without Planning</strong>입니다.</p>
+<p>V*에서 Calibrated가 차지한 비율은 DeepEyes 7.9%, Qwen3-VL-4B 24.1%, Qwen3-VL-8B 20.9%, Mini-o3 45.0%였습니다. 도구를 제대로 쓴 궤적이 자동으로 다수가 된 것은 아닙니다.</p>
+<p>행동 흔적도 두 실패 모드를 뒷받침했습니다. Calling Without Looking 궤적은 첫 호출 전 사고 블록에서 이미 최종 답에 가까운 결론을 적은 비율이 약 58%였습니다. Calibrated의 약 28%보다 높았습니다. Mini-o3의 Looking Without Planning 호출 중 38%는 원본 이미지 면적의 4%보다 작은 영역을 잘랐습니다. 더 보는 행위가 아니라, 이미 좁아진 곳을 계속 파고드는 행위에 가까웠습니다.</p>
+<h2 id="이득은-도구가-제대로-쓰인-일부-궤적에-집중됐다">이득은 도구가 제대로 쓰인 일부 궤적에 집중됐다</h2>
+<p><img alt="성인형 카솔이 실제 관측이 답을 움직인 밝은 경로를 가리키며 반복 호출 경로에 중단 원칙을 세우는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.Qhbg7Haq_Z1tPzRD.webp" srcset=""></p>
+<p>V*의 네 인터페이스 기반 모델에서는 Calibrated 그룹만 모두 양의 정책 효과를 보였습니다. 전체 0이 아닌 효과의 대부분도 이 그룹이 설명했습니다. HR-Bench-4K에서도 같은 정성적 패턴이 보고됐습니다. 즉 전체 평균이 좋아 보인다면, 모든 도구 호출이 조금씩 기여해서가 아니라 도구가 제대로 쓰인 일부 궤적의 이득이 나머지를 덮었을 가능성을 점검해야 합니다.</p>
+<h2 id="다메카솔의-해석-호출-수-대신-답의-변화를-기록한다">다메카솔의 해석: 호출 수 대신 답의 변화를 기록한다</h2>
+<p>제가 이 결과를 제품 평가로 옮긴다면 성공 지표를 “도구를 몇 번 썼는가”에서 끝내지 않겠습니다. 호출 전후 답 상태, 반환 관측, 같은 호출의 반사실 관측이 만든 변화, 추가 호출이 새 증거를 더했는지, 중단 기준을 넘겼는지를 함께 기록해야 합니다.</p>
+<p>black-box 서비스라면 우선 도구 허용과 직접 답하기를 비교하고, 동일한 호출 자리에 다른 위치 관측을 넣는 궤적 교란부터 시작할 수 있습니다. 내부 점수까지 볼 수 있다면 VEG와 비슷한 한 단계 검사를 더할 수 있습니다. 이 적용 순서는 논문이 실서비스에서 검증한 처방이 아니라, 연구 방법을 운영 로그에 옮긴 다메카솔의 해석입니다.</p>
+<h2 id="crop-and-zoom-밖은-아직-열려-있다">crop-and-zoom 밖은 아직 열려 있다</h2>
+<p>이번 실험은 공개 모델과 crop-and-zoom 도구에 한정됩니다. OCR, 분할, 비디오 프레임 선택, 코드 기반 이미지 조작, 외부 검색에서도 같은 실패 비율이 재현됐다는 뜻은 아닙니다. 정책·궤적 분석은 black-box에서도 가능하지만 VEG는 token score가 필요한 white-box 분석입니다.</p>
+<p>논문은 결과만 보상하는 강화학습이 이런 습관을 만들 수 있다는 가설을 제시합니다. 그러나 보상 신호만 바꾼 통제 학습으로 확인한 인과 결론은 아닙니다. 또한 2026년 8월 8일 확인한 공식 코드 저장소의 commit <code>0a5a3e3</code>에는 README와 MIT LICENSE만 있었고, 실행 코드·데이터·체크포인트·실험 설정은 없었습니다. 지금 공개된 자료만으로 전체 실험을 재현할 수 있다고 보기는 어렵습니다.</p>
+<p>다음에 화면 에이전트가 확대나 캡처를 여러 번 호출한다면, 호출 횟수보다 한 가지를 먼저 보세요. <strong>그 관측을 다른 것으로 바꿨을 때 답도 함께 바뀌는가?</strong></p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>The Illusion of Visual Tool-Use: A Causal Audit of Thinking with Images</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Zhiheng Wang, Bo Peng, Lai Wei, Chaochao Lu</td>
+</tr>
+<tr>
+<td>소속</td>
+<td>Shanghai Artificial Intelligence Laboratory, Shanghai Jiao Tong University, Shanghai Innovation Institute</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-08-06 17:01:08 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.CV, cs.AI</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>arXiv preprint, 학회·출판사 채택 페이지 미확인</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.06270">논문 초록과 메타데이터 — arXiv:2608.06270</a></li>
+<li><a href="https://arxiv.org/pdf/2608.06270">논문 원문 PDF</a></li>
+<li><a href="https://github.com/OpenCausaLab/CauAudit">공식 CauAudit 코드 저장소</a></li>
+<li><a href="/posts/tactile-computer-use-agents/">관련 글: AI가 화면을 보고 컴퓨터를 쓰게 만드는 법</a></li>
+<li><a href="/posts/videoargus-evidence-video-evaluation/">관련 글: AI 영상 평가가 점수 하나로 끝나면 안 되는 이유</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-08</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/gui-agent-environment-state-verification/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CgIuvfWn_yrnbi.webp" srcset="/_astro/cover.CgIuvfWn_ZLjrm3.webp 240w, /_astro/cover.CgIuvfWn_qQzeq.webp 360w, /_astro/cover.CgIuvfWn_1E2AOT.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-07-29T00:00:00.000Z">2026년 7월 29일</time></div><h3><a href="/posts/gui-agent-environment-state-verification/" data-analytics-event="related_post_click" data-analytics-target="gui-agent-environment-state-verification">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까</a></h3><p>GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

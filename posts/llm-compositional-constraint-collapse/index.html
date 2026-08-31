@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>LLM 다중 제약은 몇 개부터 무너질까 | 다메카솔</title><meta name="description" content="LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/llm-compositional-constraint-collapse/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | LLM은 왜 조건이 늘면 한꺼번에 무너질까"><meta property="og:description" content="LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/llm-compositional-constraint-collapse/"><meta property="og:image" content="https://blog.damecasol.com/social/llm-compositional-constraint-collapse.webp"><meta property="og:image:alt" content="성인형 카솔이 여러 조건 토큰이 한 출력 경로에 몰리는 제약 라우팅 장치를 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | LLM은 왜 조건이 늘면 한꺼번에 무너질까","description":"LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다.","datePublished":"2026-08-14T00:00:00.000Z","dateModified":"2026-08-14T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/llm-compositional-constraint-collapse/","image":["https://blog.damecasol.com/social/llm-compositional-constraint-collapse.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["LLM","AI 모델","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="llm-compositional-constraint-collapse" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-14T00:00:00.000Z">2026년 8월 14일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | LLM은 왜 조건이 늘면 한꺼번에 무너질까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.JUj83uVQ_20uDmr.webp" srcset="/_astro/cover.JUj83uVQ_ZwNRDm.webp 640w, /_astro/cover.JUj83uVQ_ZKmnQv.webp 960w, /_astro/cover.JUj83uVQ_20uDmr.webp 1024w" alt="성인형 카솔이 여러 조건 토큰이 한 출력 경로에 몰리는 제약 라우팅 장치를 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#하나씩-통과해도-전부-통과하는-것은-아닙니다" data-toc-link="하나씩-통과해도-전부-통과하는-것은-아닙니다" data-analytics-event="toc_click" data-analytics-target="하나씩-통과해도-전부-통과하는-것은-아닙니다">하나씩 통과해도 전부 통과하는 것은 아닙니다</a></li><li class="article-toc__depth-2"><a href="#cse는-제약-수를-늘리고-규칙으로-판정했습니다" data-toc-link="cse는-제약-수를-늘리고-규칙으로-판정했습니다" data-analytics-event="toc_click" data-analytics-target="cse는-제약-수를-늘리고-규칙으로-판정했습니다">CSE는 제약 수를 늘리고 규칙으로 판정했습니다</a></li><li class="article-toc__depth-2"><a href="#완만한-하락이-전체-응답에서는-절벽이-됩니다" data-toc-link="완만한-하락이-전체-응답에서는-절벽이-됩니다" data-analytics-event="toc_click" data-analytics-target="완만한-하락이-전체-응답에서는-절벽이-됩니다">완만한 하락이 전체 응답에서는 절벽이 됩니다</a></li><li class="article-toc__depth-2"><a href="#계획과-재시도가-붕괴를-없애지는-못했습니다" data-toc-link="계획과-재시도가-붕괴를-없애지는-못했습니다" data-analytics-event="toc_click" data-analytics-target="계획과-재시도가-붕괴를-없애지는-못했습니다">계획과 재시도가 붕괴를 없애지는 못했습니다</a></li><li class="article-toc__depth-2"><a href="#공개물과-집계의-경계" data-toc-link="공개물과-집계의-경계" data-analytics-event="toc_click" data-analytics-target="공개물과-집계의-경계">공개물과 집계의 경계</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석" data-toc-link="다메카솔의-해석" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석">다메카솔의 해석</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>조건이 8개가 되자 개별 조건은 평균 40.7% 통과했지만, 여덟 조건을 모두 만족한 응답은 5.7%뿐이었습니다. 하나씩 보면 완만한 하락인데 전부를 요구하는 순간 결과가 가파르게 무너졌습니다.</p>
+<p>2026년 8월 14일 arXiv Artificial Intelligence 새 목록에 실린 <strong>Large Language Models Can Follow Instructions, But Not Many at Once</strong>는 이 간격을 <code>Constraint Saturation Evaluation</code>으로 측정합니다. 연구진은 LLM judge 대신 결정적 규칙 검사기를 쓰고, 동시에 요구하는 제약 수를 1개에서 12개까지 늘렸습니다. 이 글은 논문이 보고한 곱셈형 붕괴와 그 적용 범위를 분리해 살펴봅니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>개별 제약의 평균 통과율과 모든 제약의 동시 통과율은 다른 지표입니다.</li>
+<li>작은 실패율도 제약마다 누적되면 전체 성공률은 곱으로 급락합니다.</li>
+<li>구조처럼 생성 내내 추적해야 하는 제약이 단순 어휘 제약보다 더 빨리 무너졌습니다.</li>
+<li>생성 전 계획은 임계점을 옮기지 못했고, 자기수정과 다섯 번 재시도도 한두 조건의 여유만 만들었습니다.</li>
+<li>실무에서는 중요한 요구를 단계로 나누고 각 단계에서 결정적으로 검증해야 합니다.</li>
+</ul>
+<h2 id="하나씩-통과해도-전부-통과하는-것은-아닙니다">하나씩 통과해도 전부 통과하는 것은 아닙니다</h2>
+<p><img alt="여러 요구 조건이 각각의 작은 관문은 지나지만 하나로 묶인 출력 경로에서 무너지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DqhCQiGd_Z2wN9VA.webp" srcset=""></p>
+<p>논문이 구분한 두 지표부터 봐야 합니다. <code>marginal CSR</code>은 개별 제약의 평균 통과율입니다. <code>strict CSR</code>은 한 응답에 붙은 모든 제약이 동시에 통과한 비율입니다. 제약이 하나일 때 둘은 같지만, 제약 수가 늘면 둘 사이가 벌어집니다.</p>
+<p>예를 들어 어떤 모델이 여덟 조건을 각각 절반 가까이 지키더라도, 한 응답에서 여덟 개를 전부 지킬 확률은 훨씬 낮습니다. 논문은 이 현상을 특정 제약끼리 유난히 충돌해서 생기는 문제보다, 각 제약의 작은 실패가 곱으로 누적되는 구조로 설명합니다. 평균 쌍별 실패 상관은 약 0.067로 보고됐습니다.</p>
+<p>이 차이는 배포 판단과 맞닿아 있습니다. JSON 형식, 길이, 금지어, 안전 경계, 근거 표기 가운데 하나라도 어기면 실패인 작업에서 평균 점수는 성공을 보장하지 않습니다. 필요한 것은 제약별 점수만이 아니라 all-pass 결과입니다.</p>
+<h2 id="cse는-제약-수를-늘리고-규칙으로-판정했습니다">CSE는 제약 수를 늘리고 규칙으로 판정했습니다</h2>
+<p><img alt="여러 색의 제약 요소를 조합하고 호환성을 거른 뒤 결정적 검사기로 응답을 판정하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BjZvE0nZ_2dYaJe.webp" srcset=""></p>
+<p><code>Constraint Saturation Evaluation</code>, 줄여서 CSE는 절차적으로 제약 조합을 만듭니다. 서로 만족할 수 없는 조합은 compatibility checker에서 버리고, 만족 가능한 조합만 모델에 제시합니다. 응답은 LLM judge가 아니라 제약마다 작성된 결정적 함수로 통과와 실패를 판정합니다.</p>
+<p>초록과 방법 절은 8개 처리 차원, 36개 제약 유형, 4,527개 probe, 15개 모델을 평가했다고 적습니다. 제약 수 <code>k</code>는 1에서 12까지 바뀌며, 초록의 전체 보고값은 369,753 constraint check입니다. 문자 금지와 필수 단어 같은 국소 제약부터 문단 수, 문장 길이, 관계 순서, 자기 단어 수 보고처럼 생성 전체를 추적해야 하는 제약까지 포함합니다.</p>
+<p>결정적 검사는 이 연구의 장점이자 범위 제한입니다. 판정기의 불안정성을 줄이는 대신 coherence, informativeness, tone consistency, factual accuracy처럼 의미 판단이 필요한 조건은 빠졌습니다. CSE는 모든 요구를 동시에 만족하는 conjunction을 측정하며, 순차 연결이나 조건 분기까지 같은 형태로 무너진다고 검증한 것은 아닙니다.</p>
+<h2 id="완만한-하락이-전체-응답에서는-절벽이-됩니다">완만한 하락이 전체 응답에서는 절벽이 됩니다</h2>
+<p><img alt="개별 조건의 완만한 하락과 연결된 조건 하나의 실패로 전체 경로가 끊기는 대비 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.B9KJuD_r_SbjMo.webp" srcset=""></p>
+<p>전체 집계에서 개별 제약 통과율은 <code>72.0% × 0.922^(k-1)</code>에 가깝게 감소했고 held-out 평균절대오차는 0.2%포인트였습니다. 그러나 strict CSR은 각 제약의 성공이 함께 필요하므로 훨씬 빠르게 내려갔습니다. <code>k=8</code>에서 marginal CSR은 40.7%, strict CSR은 5.7%였습니다.</p>
+<p>가장 강한 모델도 7개 제약에서 probe-level 성공률이 50% 아래로 내려갔습니다. 15개 모델 가운데 12개는 3개 이하에서 그 임계점을 지났습니다. 논문의 “5~6개 이후 신뢰성이 무너진다”는 결론은 이 모델 패널과 결정적 제약 집합에서 관찰한 결과입니다. 모든 모델과 모든 실무 prompt의 고정 한계로 넓히면 안 됩니다.</p>
+<p>제약 종류도 같은 속도로 떨어지지 않았습니다. 구조 제약은 어휘 제약보다 제약 하나가 추가될 때 기준 능력을 약 2배 더 잃었습니다. 형식을 한 번 선택하면 끝나는 결정과 달리 문단 수, 문장 길이, 관계 구조는 생성하는 내내 상태를 유지해야 합니다. 저자는 이 차이를 이해하지 못해서라기보다 끝까지 유지하지 못하는 <code>comprehension-maintenance gap</code>으로 분석합니다.</p>
+<h2 id="계획과-재시도가-붕괴를-없애지는-못했습니다">계획과 재시도가 붕괴를 없애지는 못했습니다</h2>
+<p><img alt="카솔이 과부하된 요청을 여러 단계로 나누고 각 처리 지점의 상태를 별도로 확인하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DB2xIpTF_c4Ci4.webp" srcset=""></p>
+<p>연구진은 세 모델에서 생성 전 계획, 사후 자기수정, best-of-5 재시도를 비교했습니다. 계획 scaffold는 compositional half-life를 일관되게 늘리지 못했습니다. 출력 예산이 부족해서 생긴 효과와 분리해도 계획 자체가 임계점을 옮겼다는 근거는 없었습니다.</p>
+<p>자기수정과 재시도는 일부 도움이 됐습니다. 대체로 한두 제약만큼 임계점을 늦췄습니다. 다섯 번 뽑으면 독립 실패를 여러 번 피할 수 있을 것 같지만, 같은 probe는 여러 draw에서도 같은 방식으로 실패하는 경향이 있었습니다. 그래서 실제 이득은 독립 재표본화가 예상하는 값보다 작았습니다.</p>
+<p>저자들은 <code>k=12</code>를 실제 배포의 복제본이 아니라 stress test로 규정합니다. 일반 시스템은 보통 2~6개 고수준 제약에 암묵 규범을 더합니다. 바로 그 현실적인 구간에 전환점이 걸린다는 점이 실무에 중요합니다. 반대로 이 결과만으로 복잡한 작업을 6개 규칙 아래로 만들면 안전하다고 결론내릴 수는 없습니다.</p>
+<h2 id="공개물과-집계의-경계">공개물과 집계의 경계</h2>
+<p>arXiv v1에는 편집 단계의 불일치가 남아 있습니다. 초록과 방법은 36개 제약과 369,753개 검사를 적지만, limitations는 30개 제약을 적습니다. 결과 표는 314,108개 satisfiable constraint check를, verifier audit는 또 다른 부분 집계를 사용합니다. 이 글은 각 숫자를 해당 절의 보고값으로만 두고 하나의 완전한 재현 집계로 합치지 않았습니다.</p>
+<p>공개 상태도 문장끼리 맞지 않습니다. 초록은 probes, verifiers, model outputs, code가 공개됐다고 쓰지만 Appendix A는 출판 시 공개될 예정이라고 적습니다. 2026년 8월 14일 arXiv 메타데이터와 TeX source bundle에서는 공식 artifact URL이나 실행 코드를 찾지 못했습니다. 원문·TeX·메타데이터는 교차 확인했지만, 실험 코드를 독립 실행해 재현했다고 주장하지 않습니다.</p>
+<p>판정기는 빈 code block이나 문장 복사처럼 형식상 조건만 만족하는 우회도 발견했습니다. 이는 검사가 틀렸다는 한 문장으로 끝나지 않습니다. 사양이 허용한 기계적 지름길과 사람이 기대한 유용한 응답이 어긋날 수 있다는 별도 문제입니다. 결정적 검증도 무엇을 성공으로 정의했는지 함께 읽어야 합니다.</p>
+<h2 id="다메카솔의-해석">다메카솔의 해석</h2>
+<p>제가 이 논문에서 가져갈 설계 원칙은 <strong>긴 prompt를 더 정교하게 쓰는 것보다 작업을 나누고 각 경계를 검사하는 것</strong>입니다. 한 호출에 형식, 길이, 안전, 근거, 도구 사용, 톤을 계속 얹지 않겠습니다.</p>
+<p>먼저 중요한 요구를 생성 단계와 검증 단계로 분리합니다. 각 단계에서는 가능한 제약 수를 줄이고, JSON schema·허용값·출처 존재·테스트 결과처럼 프로그램으로 확인할 수 있는 조건을 즉시 검사합니다. 실패한 결과를 다음 단계로 넘기지 않는 fail-closed 경계도 둡니다. 안전 요구는 일반 형식 검사와 분리해 별도 평가에서 다시 확인하겠습니다.</p>
+<p>이 운영 원칙은 다메카솔의 해석입니다. 논문이 모든 에이전트 파이프라인에서 단계 분리가 최적이라고 실험한 것은 아닙니다. 다만 개별 평균 점수가 전체 동시 성공을 가릴 수 있다는 증거는, 중요한 요구를 한 번의 생성에 몰아넣지 말아야 할 충분한 경고입니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Large Language Models Can Follow Instructions, But Not Many at Once: Phase Transitions in Compositional Constraint Satisfaction</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Mariya I. Vasileva</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-08-12 10:57:06 UTC</td>
+</tr>
+<tr>
+<td>arXiv 새 목록</td>
+<td>2026-08-14</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.AI, cs.CL</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>arXiv preprint, ARR May 2026 review 표기; 채택 페이지 미확인</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.12426">논문 초록과 메타데이터 — arXiv:2608.12426</a></li>
+<li><a href="https://arxiv.org/pdf/2608.12426">논문 원문 PDF</a></li>
+<li><a href="https://export.arxiv.org/e-print/2608.12426">공식 arXiv TeX source bundle</a></li>
+<li><a href="/posts/workflow-as-knowledge/">관련 글: AI 에이전트의 판단 근거는 왜 로그만으로 부족할까</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-14</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

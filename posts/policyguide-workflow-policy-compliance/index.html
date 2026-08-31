@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>LLM 에이전트 정책 준수와 PolicyGuide 워크플로 검증 | 다메카솔</title><meta name="description" content="PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/policyguide-workflow-policy-compliance/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트가 정책을 지키려면 마지막 행동보다 절차를 먼저 봐야 합니다"><meta property="og:description" content="PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/policyguide-workflow-policy-compliance/"><meta property="og:image" content="https://blog.damecasol.com/social/policyguide-workflow-policy-compliance.webp"><meta property="og:image:alt" content="성인형 카솔이 최종 변경 게이트 앞에서 이미 건너뛴 절차 경로를 가리키는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트가 정책을 지키려면 마지막 행동보다 절차를 먼저 봐야 합니다","description":"PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다.","datePublished":"2026-08-23T00:00:00.000Z","dateModified":"2026-08-23T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/policyguide-workflow-policy-compliance/","image":["https://blog.damecasol.com/social/policyguide-workflow-policy-compliance.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","AI 안전","LLM","운영 자동화 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="policyguide-workflow-policy-compliance" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-23T00:00:00.000Z">2026년 8월 23일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트가 정책을 지키려면 마지막 행동보다 절차를 먼저 봐야 합니다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.Ct5JZYvl_Z1v6KeB.webp" srcset="/_astro/cover.Ct5JZYvl_Z9I0rQ.webp 640w, /_astro/cover.Ct5JZYvl_ZngvF0.webp 960w, /_astro/cover.Ct5JZYvl_Z1v6KeB.webp 1024w" alt="성인형 카솔이 최종 변경 게이트 앞에서 이미 건너뛴 절차 경로를 가리키는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#마지막-호출을-막아도-앞선-위반은-남는다" data-toc-link="마지막-호출을-막아도-앞선-위반은-남는다" data-analytics-event="toc_click" data-analytics-target="마지막-호출을-막아도-앞선-위반은-남는다">마지막 호출을 막아도 앞선 위반은 남는다</a></li><li class="article-toc__depth-2"><a href="#정책을-그래프로-만들고-상태를-에이전트-밖에-둔다" data-toc-link="정책을-그래프로-만들고-상태를-에이전트-밖에-둔다" data-analytics-event="toc_click" data-analytics-target="정책을-그래프로-만들고-상태를-에이전트-밖에-둔다">정책을 그래프로 만들고 상태를 에이전트 밖에 둔다</a></li><li class="article-toc__depth-2"><a href="#세-도메인에서-반복-성공률이-높아졌다" data-toc-link="세-도메인에서-반복-성공률이-높아졌다" data-analytics-event="toc_click" data-analytics-target="세-도메인에서-반복-성공률이-높아졌다">세 도메인에서 반복 성공률이 높아졌다</a></li><li class="article-toc__depth-2"><a href="#결과-점수는-전체-절차의-보증이-아니다" data-toc-link="결과-점수는-전체-절차의-보증이-아니다" data-analytics-event="toc_click" data-analytics-target="결과-점수는-전체-절차의-보증이-아니다">결과 점수는 전체 절차의 보증이 아니다</a></li><li class="article-toc__depth-2"><a href="#공개-재현의-경계" data-toc-link="공개-재현의-경계" data-analytics-event="toc_click" data-analytics-target="공개-재현의-경계">공개 재현의 경계</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-확률적-안내와-결정적-차단을-나눈다" data-toc-link="다메카솔의-해석-확률적-안내와-결정적-차단을-나눈다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-확률적-안내와-결정적-차단을-나눈다">다메카솔의 해석: 확률적 안내와 결정적 차단을 나눈다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#시스템-프롬프트에-정책을-모두-넣으면-충분한가요" data-toc-link="시스템-프롬프트에-정책을-모두-넣으면-충분한가요" data-analytics-event="toc_click" data-analytics-target="시스템-프롬프트에-정책을-모두-넣으면-충분한가요">시스템 프롬프트에 정책을 모두 넣으면 충분한가요?</a></li><li class="article-toc__depth-3"><a href="#policyguide가-정책-위반을-모두-막았나요" data-toc-link="policyguide가-정책-위반을-모두-막았나요" data-analytics-event="toc_click" data-analytics-target="policyguide가-정책-위반을-모두-막았나요">PolicyGuide가 정책 위반을 모두 막았나요?</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>정책을 어긴 도구 호출만 마지막에 막으면 안전하다고 생각하기 쉽습니다. 문제는 항공권을 바꾸기 직전의 호출이 아니라, 그 앞에서 신원 확인이나 자격 확인을 건너뛴 과정일 수 있습니다. 마지막 호출을 멈춰도 이미 빠진 절차는 되돌아오지 않습니다.</p>
+<p>2026년 8월 20일 arXiv에 제출된 **「PolicyGuide: From Guarding One Action to Guiding the Whole Workflow for Policy-Compliant LLM Agents」**는 이런 행동 단위 가드의 빈틈을 다룹니다. 정책을 워크플로 그래프로 만들고, 요청별 진행 상태를 에이전트 밖에서 보관하며, 매 사용자 턴에 첫 미충족 절차를 안내하는 방식입니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>마지막 변경 호출만 검사하면 앞서 생긴 절차 위반을 고치기에는 너무 늦습니다.</li>
+<li>PolicyGuide는 정책과 도구를 검증된 워크플로로 컴파일하고 요청 상태를 외부 코드에 지속합니다.</li>
+<li>세 영어 고객지원 도메인에서 네 번 연속 성공률인 Pass⁴ 평균은 약 0.42에서 약 0.62로 높아졌습니다.</li>
+<li>이 지표는 최종 결과를 채점하므로 시간 순서 준수에는 별도 평가가 필요합니다.</li>
+<li>검증기 판단은 확률적이고 예외는 fail-open이어서 고위험 행동에는 별도의 결정적 통제가 필요합니다.</li>
+</ul>
+<p><img alt="성인형 카솔이 최종 변경 게이트 앞에서 이미 건너뛴 절차 경로를 가리키는 표지" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/cover.Ct5JZYvl_Z1v6KeB.webp" srcset=""></p>
+<h2 id="마지막-호출을-막아도-앞선-위반은-남는다">마지막 호출을 막아도 앞선 위반은 남는다</h2>
+<p><img alt="요청 토큰이 여러 절차 관문을 건너뛴 뒤 마지막 변경 게이트에서 막히는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.MH1rB5jv_1n2ooT.webp" srcset=""></p>
+<p>행동 단위 가드는 보통 위험한 도구 호출을 허용할지 판단합니다. 예를 들어 항공권 변경 API를 호출하기 전에 사용자가 그 변경을 승인했는지 검사할 수 있습니다. 그러나 정책이 요구한 신원 확인과 운임 자격 확인을 앞에서 빠뜨렸다면 마지막 호출의 허용 여부만으로는 전체 절차를 평가할 수 없습니다.</p>
+<p>논문은 이 차이를 <strong>action-local compliance</strong>와 <strong>workflow-level compliance</strong>로 구분합니다. 전자는 한 행동이 현재 허용되는지 묻고, 후자는 여러 턴에 걸친 의무와 순서가 충족됐는지 묻습니다. 도구 호출 하나가 적법해 보여도 그 호출에 도달한 경로는 정책을 어겼을 수 있습니다.</p>
+<p>이 문제를 해결하려면 에이전트의 대화 기억과 감사 가능한 시스템 상태를 함께 설계해야 합니다. 모델이 절차를 기억하는 것과 시스템이 어느 요청의 어떤 의무가 충족됐는지 보관하는 일은 다릅니다. <a href="/posts/workflow-as-knowledge/">워크플로를 지식으로 바꾸는 설계</a>와 닿아 있지만, PolicyGuide의 초점은 실행 중 정책 준수입니다.</p>
+<h2 id="정책을-그래프로-만들고-상태를-에이전트-밖에-둔다">정책을 그래프로 만들고 상태를 에이전트 밖에 둔다</h2>
+<p><img alt="정책 묶음과 외부 상태 저장소가 워크플로 그래프의 첫 미충족 노드를 찾아 에이전트로 안내를 돌려주는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.LF2rvwer_Z22NoS8.webp" srcset=""></p>
+<p>PolicyGuide는 먼저 원시 정책과 도구 목록을 요청 유형, 공통 절차, 주 그래프와 하위 흐름으로 컴파일합니다. 스키마, 도구 범위, 노드 도달 가능성을 검사한 뒤 도메인별 워크플로 번들을 동결합니다. 이 글의 그림은 정보 흐름을 독자적인 장면으로 재구성했습니다.</p>
+<p>실행 중에는 별도 검증기가 대화 기록, 근거가 된 도구 결과, 코드가 보관한 요청 상태와 워크플로를 읽습니다. 열린 요청마다 저장된 노드에서 순회를 시작하고 첫 미충족 노드에서 멈춥니다. 그다음 에이전트가 해야 할 조치와 교정 안내를 반환합니다.</p>
+<p>상태 지속은 런타임 코드의 몫입니다. 알려지지 않은 노드 ID를 거부하고, 현재 상태가 승인하지 않은 변경 도구는 사용자 턴 구간마다 한 번 가로채 다시 검증합니다. 나머지 절차 행동은 모두 강제 차단하기보다 안내로 유도합니다. 따라서 이 설계는 확률적 가이드와 일부 결정적 검사를 함께 쓰는 하이브리드에 가깝습니다.</p>
+<h2 id="세-도메인에서-반복-성공률이-높아졌다">세 도메인에서 반복 성공률이 높아졌다</h2>
+<p><img alt="항공 소매 통신 세 고객지원 도메인에서 기준 경로보다 네 번의 성공 토큰이 더 안정적으로 이어지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.DrtJ6QU1_Z2sXrGb.webp" srcset=""></p>
+<p>주 평가는 영어 합성 고객지원 벤치마크 τ²-bench의 항공 50개, 소매 114개, 통신 114개 과제를 사용했습니다. 에이전트와 검증기는 GPT-5.4, 사용자 시뮬레이터는 동결 GPT-4.1이었고 각 조건을 네 번 실행했습니다.</p>
+<p>논문이 강조한 Pass⁴는 한 과제를 네 번 모두 성공할 확률을 구해 과제별로 평균한 값입니다. 세 도메인 평균은 가드가 없는 ReAct의 약 0.42에서 PolicyGuide의 약 0.62로 높아졌습니다. 절차 순서 제약이 강한 통신 도메인은 전체 Pass⁴가 0.193에서 0.614로, 허용된 변경 과제 하위 집합은 0.042에서 0.549로 높아졌습니다.</p>
+<p>그래프의 기여를 살핀 진단에서도 방향은 같았습니다. 외부 추적은 유지한 채 그래프 대신 원시 정책을 넣은 PolicyGuide-Raw보다 전체 PolicyGuide가 항공 0.100, 소매 0.150, 통신 0.325 높았습니다. 이 비교는 구성 요소 일부를 살핀 진단 실험입니다.</p>
+<p>저자들이 만든 통신 절차 지표에서는 결과와 순서 규칙을 함께 통과한 과제-실행 쌍이 PolicyGuide 56.2%, ReAct 17.5%, PolicyGuard 13.1%였습니다. 이 수치는 정답 행동에 조건화된 탐색적 규칙이며 두 번째 주석자와의 일치도를 재지 않았습니다.</p>
+<h2 id="결과-점수는-전체-절차의-보증이-아니다">결과 점수는 전체 절차의 보증이 아니다</h2>
+<p><img alt="확률적 검증기 옆에 허용으로 열린 우회로가 남아 고위험 구역으로 이어지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DoBm-am9_seliQ.webp" srcset=""></p>
+<p>Pass⁴의 표준 평가기는 최종 데이터베이스 상태와 에이전트의 자연어 주장을 채점합니다. 중간에 신원 확인이 정확한 순서로 이뤄졌는지 같은 시간적 준수를 모두 검사하지 않습니다. 성능 향상을 곧 완전한 정책 준수로 바꾸어 읽을 수 없는 이유입니다.</p>
+<p>범위도 좁습니다. 세 영어 합성 고객지원 도메인과 동결 사용자 시뮬레이터를 사용했습니다. 소매의 정책 위반 방지 과제는 10개뿐이며, 그 도메인의 ReAct 대비 전체 이득은 통계적으로 유의하지 않았습니다. 적응형 공격이나 실제 사용자 환경의 강건성도 이 실험만으로 확인되지 않습니다.</p>
+<p>검증기는 모델이라 노드 판단이 확률적입니다. 호출 비용은 대화당 약 0.40달러로 보고됐고, 사용자 턴 사이에서 생긴 위반은 무조건적 보장 밖에 있습니다. 예외 처리도 fail-open이라 검증기 오류가 허용으로 넘어갑니다. 고위험 변경이라면 별도의 결정적 권한 검사와 승인 게이트가 필요합니다.</p>
+<h2 id="공개-재현의-경계">공개 재현의 경계</h2>
+<p>저자들은 프롬프트, 워크플로 스키마, 분석 산출물을 공개할 계획이라고 적었습니다. 2026년 8월 23일 수집한 arXiv 원문과 메타데이터에는 접근 가능한 저자 코드·데이터·프로젝트 저장소가 연결돼 있지 않았습니다.</p>
+<p>저는 arXiv v1 PDF, API 메타데이터, 49개 파일의 TeX 원문 묶음을 보존하고 방법·표·한계를 교차 확인했습니다. 실행 가능한 공식 산출물이 없어 시스템을 다시 돌리거나 결과를 독립 재현하지 않았습니다. 이 글은 공개 원문에 대한 근거 검토입니다.</p>
+<h2 id="다메카솔의-해석-확률적-안내와-결정적-차단을-나눈다">다메카솔의 해석: 확률적 안내와 결정적 차단을 나눈다</h2>
+<p><img alt="성인형 카솔이 에이전트 밖의 상태 금고와 결정적 규칙 게이트를 가리키는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.i3zpjb7X_Z1CxDvD.webp" srcset=""></p>
+<p>공개 원문을 운영 설계로 옮긴다면 저는 세 층을 분리하겠습니다.</p>
+<table>
+<thead>
+<tr>
+<th>층</th>
+<th>책임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>절차 상태</td>
+<td>에이전트 기억과 분리해 요청별 충족 노드와 근거를 코드로 지속</td>
+</tr>
+<tr>
+<td>확률적 안내</td>
+<td>정책 그래프를 따라 첫 미충족 절차와 교정 방법을 제안</td>
+</tr>
+<tr>
+<td>결정적 차단</td>
+<td>권한, 금액 한도, 필수 승인처럼 형식화 가능한 규칙을 코드로 거부</td>
+</tr>
+</tbody>
+</table>
+<p>검증기에 전달되는 대화와 도구 결과도 새로운 민감 데이터 경로입니다. 접근 제어, 보존 기간, 감사 로그를 원래 업무 데이터와 같은 수준으로 설계해야 합니다. 이는 논문 결과를 모든 배포에 일반화한 결론이 아니라 다메카솔의 운영 해석입니다.</p>
+<p>배포 전에 종이에 세 상자를 그려 보세요. <code>절차 상태</code>, <code>모델 검증기</code>, <code>결정적 게이트</code>입니다. 검증기가 응답하지 않을 때 어느 변경이 허용되는지까지 연결해 보면, 안내에 맡긴 규칙과 반드시 막아야 할 규칙의 경계가 드러납니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>PolicyGuide: From Guarding One Action to Guiding the Whole Workflow for Policy-Compliant LLM Agents</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Tyler Zhu, Ryan Cheng, Rayan Krishnan, Anoop Deoras, Yang You, Alex Dimakis</td>
+</tr>
+<tr>
+<td>공개 이력</td>
+<td>arXiv v1 제출 2026-08-20 10:13:19 UTC, cs.AI 신규 목록 2026-08-21</td>
+</tr>
+<tr>
+<td>이 글의 분류</td>
+<td>LLM 에이전트 시스템·정책 준수 연구</td>
+</tr>
+<tr>
+<td>공개 코드</td>
+<td>수집 시점에 접근 가능한 저자 저장소 없음</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="시스템-프롬프트에-정책을-모두-넣으면-충분한가요">시스템 프롬프트에 정책을 모두 넣으면 충분한가요?</h3>
+<p>프롬프트는 정책을 알려 줄 수 있지만 요청별 절차 상태를 결정적으로 지속하지는 않습니다. PolicyGuide의 핵심은 동결 워크플로와 코드가 보관한 상태를 별도 검증기가 함께 읽는 구조입니다.</p>
+<h3 id="policyguide가-정책-위반을-모두-막았나요">PolicyGuide가 정책 위반을 모두 막았나요?</h3>
+<p>아닙니다. 주 지표는 최종 결과 중심이고 검증기 판단은 확률적입니다. 논문도 사용자 턴 사이의 빈틈, fail-open 예외, 제한된 도메인과 공격 평가를 한계로 둡니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.19861">Tyler Zhu 외, “PolicyGuide: From Guarding One Action to Guiding the Whole Workflow for Policy-Compliant LLM Agents,” arXiv:2608.19861</a></li>
+<li><a href="https://arxiv.org/pdf/2608.19861">arXiv v1 PDF</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-23</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-agent-rca-trajectory-evidence/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B75aQWMR_9rpy3.webp" srcset="/_astro/cover.B75aQWMR_Z26aLgu.webp 240w, /_astro/cover.B75aQWMR_ZRYJF1.webp 360w, /_astro/cover.B75aQWMR_kbgUs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></div><h3><a href="/posts/llm-agent-rca-trajectory-evidence/" data-analytics-event="related_post_click" data-analytics-target="llm-agent-rca-trajectory-evidence">3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다</a></h3><p>마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

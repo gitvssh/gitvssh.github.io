@@ -1,0 +1,314 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 수학 도형 생성 벤치마크 | 다메카솔</title><meta name="description" content="올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다"><meta property="og:description" content="올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"><meta property="og:image" content="https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.webp"><meta property="og:image:alt" content="성인형 카솔이 같은 풀이 경로에서 갈라진 정확한 기하 구성과 어긋난 구성을 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다","description":"올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다.","datePublished":"2026-08-20T00:00:00.000Z","dateModified":"2026-08-20T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/","image":["https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 모델","멀티모달 AI","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="ai-geometry-diagram-reasoning-gap" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-20T00:00:00.000Z">2026년 8월 20일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CRqvXbZd_ZJoA0J.webp" srcset="/_astro/cover.CRqvXbZd_1uPNVz.webp 640w, /_astro/cover.CRqvXbZd_1hiiIq.webp 960w, /_astro/cover.CRqvXbZd_ZJoA0J.webp 1024w" alt="성인형 카솔이 같은 풀이 경로에서 갈라진 정확한 기하 구성과 어긋난 구성을 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#풀었다와-그렸다-사이" data-toc-link="풀었다와-그렸다-사이" data-analytics-event="toc_click" data-analytics-target="풀었다와-그렸다-사이">‘풀었다’와 ‘그렸다’ 사이</a></li><li class="article-toc__depth-2"><a href="#무엇을-어떻게-시험했나" data-toc-link="무엇을-어떻게-시험했나" data-analytics-event="toc_click" data-analytics-target="무엇을-어떻게-시험했나">무엇을 어떻게 시험했나</a></li><li class="article-toc__depth-2"><a href="#실행-성공은-기하-충실도가-아니었다" data-toc-link="실행-성공은-기하-충실도가-아니었다" data-analytics-event="toc_click" data-analytics-target="실행-성공은-기하-충실도가-아니었다">실행 성공은 기하 충실도가 아니었다</a></li><li class="article-toc__depth-2"><a href="#결과를-읽을-때-지켜야-할-경계" data-toc-link="결과를-읽을-때-지켜야-할-경계" data-analytics-event="toc_click" data-analytics-target="결과를-읽을-때-지켜야-할-경계">결과를 읽을 때 지켜야 할 경계</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-생성-도형은-세-번-검사한다" data-toc-link="다메카솔의-해석-생성-도형은-세-번-검사한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-생성-도형은-세-번-검사한다">다메카솔의 해석: 생성 도형은 세 번 검사한다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#컴파일에-성공하면-도형도-맞는-것-아닌가요" data-toc-link="컴파일에-성공하면-도형도-맞는-것-아닌가요" data-analytics-event="toc_click" data-analytics-target="컴파일에-성공하면-도형도-맞는-것-아닌가요">컴파일에 성공하면 도형도 맞는 것 아닌가요?</a></li><li class="article-toc__depth-3"><a href="#참조-풀이를-주면-왜-그림이-바로-좋아지지-않나요" data-toc-link="참조-풀이를-주면-왜-그림이-바로-좋아지지-않나요" data-analytics-event="toc_click" data-analytics-target="참조-풀이를-주면-왜-그림이-바로-좋아지지-않나요">참조 풀이를 주면 왜 그림이 바로 좋아지지 않나요?</a></li><li class="article-toc__depth-3"><a href="#공개-데이터로-결과를-재현할-수-있나요" data-toc-link="공개-데이터로-결과를-재현할-수-있나요" data-analytics-event="toc_click" data-analytics-target="공개-데이터로-결과를-재현할-수-있나요">공개 데이터로 결과를 재현할 수 있나요?</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>36.14%. 올림피아드 기하 문제를 도형 코드로 바꾸게 했을 때, 실험 전체의 평균 컴파일 성공률입니다. 실행에 성공한 결과도 점의 배치와 선의 관계가 맞는지는 다시 확인해야 했습니다.</p>
+<p>2026년 8월 20일 arXiv의 cs.AI 신규 목록에 나타난 **「Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry」**는 이 간극을 따로 측정합니다. 모델이 답을 구하는 과정과, 문제에 적힌 관계를 충실한 그림으로 구성하는 과정은 같은 능력일까요?</p>
+<p>논문의 답은 조심스러운 경고에 가깝습니다. 공개된 풀이 성적이 높은 모델도 도형 구성에서는 크게 흔들렸고, 참조 풀이를 함께 줘도 렌더된 도형의 충실도는 거의 오르지 않았습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>논문은 텍스트 문제 풀이와 도형 구성을 분리해, 올림피아드 기하 문제의 Asymptote 도형 생성 능력을 평가했습니다.</li>
+<li>저자들이 보고한 전체 수집분은 954문제이고 실제 벤치마크 평가는 어려운 297문제 하위 집합에서 진행됐습니다.</li>
+<li>모델과 조건을 평균한 컴파일 성공률은 36.14%, VLM 비평 점수는 100점 만점에 46.58점이었습니다.</li>
+<li>참조 풀이를 주면 텍스트·코드 겹침은 늘었지만 렌더 도형의 충실도는 거의 좋아지지 않거나 일부 조건에서 낮아졌습니다.</li>
+<li>이 연구는 도형을 한 번씩만 생성했고 VLM 심사에도 한계가 있습니다. 제품에서는 실행, 기하 제약, 시각 의미를 나눠 검사해야 합니다.</li>
+</ul>
+<h2 id="풀었다와-그렸다-사이">‘풀었다’와 ‘그렸다’ 사이</h2>
+<p><img alt="하나의 추론 경로가 풀이 성공과 관계가 어긋난 도형으로 갈라지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DQoA92S__Z1AmH4Y.webp" srcset=""></p>
+<p>기하 문제의 정답을 구하는 모델은 텍스트나 수식으로 관계를 추론합니다. 도형을 그리는 모델은 그 관계를 좌표, 점, 선, 원, 교점으로 배치해야 합니다. 후자에는 문제에 직접 쓰이지 않은 공간 제약까지 일관되게 맞추는 일이 포함됩니다.</p>
+<p>예를 들어 풀이가 “두 선의 교점”을 올바르게 사용해도 생성된 그림에서 그 선들이 만나지 않으면 시각 설명은 틀립니다. 각의 크기나 길이가 축척상 정확할 필요가 없는 도식이라도, 평행·수직·공선·내접 같은 핵심 관계는 보존돼야 합니다.</p>
+<p>저자들은 이 능력을 <strong>diagrammatic reasoning</strong>, 여기서는 <strong>도형적 추론</strong>이라고 부릅니다. 문제의 명시적·암묵적 기하 관계를 만족하는 시각 구성을 만들고 검증하는 능력입니다. 이 정의는 정답 풀이 점수를 곧바로 도형 품질 점수로 쓰지 못하게 합니다.</p>
+<h2 id="무엇을-어떻게-시험했나">무엇을 어떻게 시험했나</h2>
+<p><img alt="문제 카드와 선택적 참조 풀이가 도형 생성 과정을 거쳐 사람의 기준 도형과 비교되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.TcriaAv6_Z1G1J9X.webp" srcset=""></p>
+<p>논문은 사람이 작성한 Asymptote 해설 도형이 있는 자족적 올림피아드 기하 문제 954개를 모았다고 보고합니다. 그중 어려운 297문제 하위 집합을 골라 다섯 모델 계열을 시험했습니다. 각 모델에는 문제만 주는 조건과 참조 풀이까지 주는 조건을 적용했습니다.</p>
+<p>생성 결과는 한 점수로 합치지 않고 여러 층으로 나눴습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 층</th>
+<th>확인하는 것</th>
+<th>놓칠 수 있는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>텍스트·코드 겹침</td>
+<td>참조 설명이나 코드와 표현이 비슷한가</td>
+<td>다른 표현으로 만든 올바른 도형</td>
+</tr>
+<tr>
+<td>컴파일 성공</td>
+<td>Asymptote 코드가 실행되는가</td>
+<td>실행되지만 기하 관계가 틀린 그림</td>
+</tr>
+<tr>
+<td>이미지 유사도</td>
+<td>렌더 결과가 참조 이미지와 시각적으로 가까운가</td>
+<td>동치인 다른 배치와 미세한 관계 오류</td>
+</tr>
+<tr>
+<td>VLM 비평</td>
+<td>시각 모델이 문제 조건과 그림을 함께 보고 평가하는가</td>
+<td>심사 모델이 놓치거나 잘못 판단한 오류</td>
+</tr>
+</tbody>
+</table>
+<p>이 분리는 중요합니다. 프로그램이 실행된다는 사실, 이미지가 비슷해 보인다는 사실, 문제의 기하 관계가 맞는다는 사실은 서로 다른 증거입니다.</p>
+<h2 id="실행-성공은-기하-충실도가-아니었다">실행 성공은 기하 충실도가 아니었다</h2>
+<p><img alt="실행 가능한 코드와 기하 관계가 맞는 도형이 서로 다른 검사 결과를 내는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Ba-oo5MT_ZhMKJy.webp" srcset=""></p>
+<p>모델과 입력 조건을 평균한 Asymptote 컴파일 성공률은 36.14%였습니다. 모델별·조건별 성공률은 20.8%에서 59.3%까지 벌어졌습니다. 코드 생성 단계부터 안정적이지 않았다는 뜻입니다.</p>
+<p>컴파일된 결과의 시각 품질도 높지 않았습니다. 평균 VLM 비평 점수는 100점 만점에 46.58점이었고, 어떤 개별 설정도 53.2점을 넘지 못했습니다. 저자들은 실행 성공이 기하 충실도의 약한 대리 지표라고 해석합니다. 문법적으로 유효한 코드는 시작 조건이지 완료 증거가 아닙니다.</p>
+<p>참조 풀이를 제공한 실험은 더 흥미롭습니다. 모델은 설명의 키워드와 코드 표현을 더 잘 맞췄지만, 렌더 이미지의 유사도와 VLM 비평 같은 시각 충실도 지표는 거의 개선되지 않거나 일부 설정에서 낮아졌습니다. 풀이에 필요한 관계를 읽는 것과 그 관계를 일관된 좌표계에 배치하는 것 사이에 별도 병목이 있다는 신호입니다.</p>
+<h2 id="결과를-읽을-때-지켜야-할-경계">결과를 읽을 때 지켜야 할 경계</h2>
+<p>이 실험을 “수학을 잘 푸는 AI가 그림은 못 그린다”는 직접적인 쌍대 비교로 읽으면 범위를 넘습니다. 논문은 같은 297문제에서 모델의 풀이 정확도를 다시 측정하지 않았습니다. 대신 공개된 AIME 2025 시스템 카드 성적과 이번 도형 생성 결과를 나란히 비교했습니다.</p>
+<p>또한 각 문제·모델·조건에서 도형을 한 번씩만 생성했습니다. 생성의 무작위성을 바꿨을 때 결과가 얼마나 흔들리는지는 측정되지 않았습니다. VLM 심사자는 미묘한 기하 오류를 놓치거나 올바른 변형을 잘못 낮게 평가할 수 있고, 텍스트·코드 겹침 지표는 상투적 표현을 보상할 수 있습니다.</p>
+<p>자료 공개 범위도 구분해야 합니다. 논문은 954문제 전체를 보고하지만, 2026년 8월 20일 제가 보존한 공식 Hugging Face 리비전에는 어려운 하위 집합 297행이 있었습니다. 각 행의 문제, 풀이, Asymptote 코드 필드는 확인할 수 있었지만 전체 954문제와 논문의 정확한 실행 환경은 공개 스냅숏에서 확보하지 못했습니다. 따라서 이번 글은 자료 구조를 감사했을 뿐 전체 벤치마크를 독립 재현했다고 주장하지 않습니다.</p>
+<h2 id="다메카솔의-해석-생성-도형은-세-번-검사한다">다메카솔의 해석: 생성 도형은 세 번 검사한다</h2>
+<p><img alt="성인형 카솔이 실행 성공, 기하 제약, 사람의 시각 검토를 분리한 검증 흐름을 안내하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CG9mCmhR_ZVPNu6.webp" srcset=""></p>
+<p>이 논문을 제품 운영으로 옮기면 생성 도형을 세 층으로 검증할 수 있습니다.</p>
+<ol>
+<li><strong>실행 검사</strong>: 코드나 SVG가 파싱·렌더되는지 확인합니다.</li>
+<li><strong>기하 제약 검사</strong>: 교점, 공선, 평행, 수직, 내접처럼 문제의 핵심 관계를 계산 가능한 규칙으로 검사합니다.</li>
+<li><strong>시각 의미 검사</strong>: 레이블 위치, 겹침, 가독성, 교육적 오해 가능성을 사람이나 독립 심사기가 확인합니다.</li>
+</ol>
+<p>세 검사는 서로를 대신하지 않습니다. 실행 검사를 통과한 틀린 도형도 있고, 참조 이미지와 배치가 달라도 관계는 올바른 도형도 있습니다. 반복 생성의 변동성과 심사기 편향까지 보려면 여러 샘플과 사람 검토를 추가해야 합니다.</p>
+<p>이것은 논문이 입증한 제품 처방이 아니라, 결과를 생성형 교육 자료의 품질 게이트로 바꾼 <strong>다메카솔의 해석</strong>입니다. 다음 도형 생성 작업부터는 “렌더됐는가?”에서 멈추지 않고 “관계가 맞는가?”, “독자가 같은 의미로 읽는가?”를 별도 체크 항목으로 남기겠습니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Hsien Xin Peng, Anthony Kim, Alvin Li, Calvin Supasanya, Shivank Garg, Kevin Zhu</td>
+</tr>
+<tr>
+<td>공개 이력</td>
+<td>arXiv v1 제출 2026-06-23, cs.AI 신규 목록 2026-08-20</td>
+</tr>
+<tr>
+<td>발표 정보</td>
+<td>ICML 2026 AI4MATH Workshop</td>
+</tr>
+<tr>
+<td>이 글의 분류</td>
+<td>경험적 벤치마크 연구</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="컴파일에-성공하면-도형도-맞는-것-아닌가요">컴파일에 성공하면 도형도 맞는 것 아닌가요?</h3>
+<p>컴파일은 코드 문법과 실행 가능성을 확인합니다. 점과 선이 문제의 기하 관계를 만족하는지는 별도 제약 검사와 시각 검토가 필요합니다.</p>
+<h3 id="참조-풀이를-주면-왜-그림이-바로-좋아지지-않나요">참조 풀이를 주면 왜 그림이 바로 좋아지지 않나요?</h3>
+<p>풀이에는 필요한 관계가 담겨 있어도 이를 좌표와 객체로 배치하는 과정이 남습니다. 논문에서도 텍스트·코드 겹침은 늘었지만 렌더 충실도는 거의 개선되지 않았습니다.</p>
+<h3 id="공개-데이터로-결과를-재현할-수-있나요">공개 데이터로 결과를 재현할 수 있나요?</h3>
+<p>공식 저장소의 297행 하위 집합은 감사할 수 있습니다. 현재 공개 스냅숏에는 논문이 보고한 전체 954문제와 정확한 실행 환경이 없어 전체 결과를 독립 재현했다고 말할 수는 없습니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/scidiagramedit-paper-figure-revision/">AI가 과학 도형을 고칠 때, 무엇을 보존해야 할까 — SciDiagramEdit 논문 리뷰</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.18111">Hsien Xin Peng 외, “Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry,” arXiv:2608.18111</a></li>
+<li><a href="https://arxiv.org/html/2608.18111v1">arXiv HTML 본문</a></li>
+<li><a href="https://huggingface.co/datasets/max98765/hard_geometry_problems_with_diagrams">공식 Hugging Face 데이터셋</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-20</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/twin-test-time-world-model/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BOOiPm30_1XEEdO.webp" srcset="/_astro/cover.BOOiPm30_Zywoy8.webp 240w, /_astro/cover.BOOiPm30_DDC2l.webp 360w, /_astro/cover.BOOiPm30_1QODCO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-17T00:00:00.000Z">2026년 8월 17일</time></div><h3><a href="/posts/twin-test-time-world-model/" data-analytics-event="related_post_click" data-analytics-target="twin-test-time-world-model">3분만에 만화로 보는 IT - AI 논문 읽기 | 모르는 게임을 복사해서 푸는 테스트타임 월드 모델</a></h3><p>낯선 게임을 실행 가능한 Python 트윈으로 복사하고 과거 전환을 검증한 뒤 행동하는 Twin의 구조와 성과, 적용 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-compositional-constraint-collapse/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.JUj83uVQ_20uDmr.webp" srcset="/_astro/cover.JUj83uVQ_1yBisp.webp 240w, /_astro/cover.JUj83uVQ_Z2ioNK3.webp 360w, /_astro/cover.JUj83uVQ_Z15dM9z.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-14T00:00:00.000Z">2026년 8월 14일</time></div><h3><a href="/posts/llm-compositional-constraint-collapse/" data-analytics-event="related_post_click" data-analytics-target="llm-compositional-constraint-collapse">3분만에 만화로 보는 IT - AI 논문 읽기 | LLM은 왜 조건이 늘면 한꺼번에 무너질까</a></h3><p>LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/uav3dcrop-appearance-geometry-gap/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Cj3OZTd-_Z17nVym.webp" srcset="/_astro/cover.Cj3OZTd-_Z1XFxUr.webp 240w, /_astro/cover.Cj3OZTd-_ZKuwjX.webp 360w, /_astro/cover.Cj3OZTd-_rFugv.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-11T00:00:00.000Z">2026년 8월 11일</time></div><h3><a href="/posts/uav3dcrop-appearance-geometry-gap/" data-analytics-event="related_post_click" data-analytics-target="uav3dcrop-appearance-geometry-gap">3분만에 만화로 보는 IT - AI 논문 읽기 | 보기 좋은 3D가 정확한 3D는 아닌 이유</a></h3><p>UAV3DCrop에서 외관·깊이·작물 높이·실제 크기 평가의 선두가 갈리는 이유와 3D 재구성 벤치마크의 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

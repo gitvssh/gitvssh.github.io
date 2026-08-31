@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/chatgpt-critical-thinking-rct/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-08-30T00:00:00.000Z</news:publication_date>
+      <news:title>ChatGPT는 답을 다듬고, 인과추론은 아이디어를 넓혔습니다</news:title>
+    </news:news>
+  </url>
+</urlset>

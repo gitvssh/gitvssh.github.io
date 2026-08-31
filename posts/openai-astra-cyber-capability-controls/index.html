@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>OpenAI Astra의 일부 내부 작업 중단: ‘Critical 가능성’을 다루는 방식 | 다메카솔</title><meta name="description" content="OpenAI가 Astra의 Critical 사이버 역량 가능성을 이유로 강화한 내부 통제와 High·Critical 대응 시점의 차이를 설명합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/openai-astra-cyber-capability-controls/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 뉴스 | OpenAI Astra의 일부 내부 작업 중단: ‘Critical 가능성’을 다루는 방식"><meta property="og:description" content="OpenAI가 Astra의 Critical 사이버 역량 가능성을 이유로 강화한 내부 통제와 High·Critical 대응 시점의 차이를 설명합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/openai-astra-cyber-capability-controls/"><meta property="og:image" content="https://blog.damecasol.com/social/openai-astra-cyber-capability-controls.webp"><meta property="og:image:alt" content="성인형 카솔이 강화된 보안 게이트 앞에서 Astra 관련 내부 활동 점검표를 든 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"3분만에 만화로 보는 IT - AI 뉴스 | OpenAI Astra의 일부 내부 작업 중단: ‘Critical 가능성’을 다루는 방식","description":"OpenAI가 Astra의 Critical 사이버 역량 가능성을 이유로 강화한 내부 통제와 High·Critical 대응 시점의 차이를 설명합니다.","datePublished":"2026-08-10T00:00:00.000Z","dateModified":"2026-08-10T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/openai-astra-cyber-capability-controls/","image":["https://blog.damecasol.com/social/openai-astra-cyber-capability-controls.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 뉴스","keywords":["AI 모델","AI 안전","AI 보안"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="openai-astra-cyber-capability-controls" data-content-track="news"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/news/">AI 뉴스</a></nav><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-10T00:00:00.000Z">2026년 8월 10일</time></span></div><h1>3분만에 만화로 보는 IT - AI 뉴스 | OpenAI Astra의 일부 내부 작업 중단: ‘Critical 가능성’을 다루는 방식</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>OpenAI가 Astra의 Critical 사이버 역량 가능성을 이유로 강화한 내부 통제와 High·Critical 대응 시점의 차이를 설명합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CpIdNzNY_2kzPTe.webp" srcset="/_astro/cover.CpIdNzNY_Z11bwro.webp 640w, /_astro/cover.CpIdNzNY_Z1eJ2Ex.webp 960w, /_astro/cover.CpIdNzNY_2kzPTe.webp 1024w" alt="성인형 카솔이 강화된 보안 게이트 앞에서 Astra 관련 내부 활동 점검표를 든 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#발표가-확정한-것과-남겨-둔-것" data-toc-link="발표가-확정한-것과-남겨-둔-것" data-analytics-event="toc_click" data-analytics-target="발표가-확정한-것과-남겨-둔-것">발표가 확정한 것과 남겨 둔 것</a></li><li class="article-toc__depth-2"><a href="#high와-critical은-대응-시점이-다릅니다" data-toc-link="high와-critical은-대응-시점이-다릅니다" data-analytics-event="toc_click" data-analytics-target="high와-critical은-대응-시점이-다릅니다">High와 Critical은 대응 시점이 다릅니다</a></li><li class="article-toc__depth-2"><a href="#7월-사고가-만든-배경" data-toc-link="7월-사고가-만든-배경" data-analytics-event="toc_click" data-analytics-target="7월-사고가-만든-배경">7월 사고가 만든 배경</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석" data-toc-link="다메카솔의-해석" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석">다메카솔의 해석</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>OpenAI는 2026년 8월 7일 Axios 원문 인터뷰에서 차기 모델 Astra가 가장 높은 사이버 위험 문턱에 닿았을 가능성을 배제할 수 없다고 밝혔습니다. 다만 Astra를 <code>Critical</code>로 최종 판정했다는 뜻은 아닙니다. OpenAI가 확인한 조치는 안전 테스트 확대와, 강화된 보안 통제를 아직 충족하지 못한 일부 내부 활동의 중단입니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="발표가-확정한-것과-남겨-둔-것">발표가 확정한 것과 남겨 둔 것</h2>
+<p><img alt="평가 확대와 일부 내부 활동 중단이라는 확인된 조치와 최종 등급·출시일·제품명이라는 미확정 정보를 나눈 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.C-FFR9BP_Z18DHGq.webp" srcset=""></p>
+<p>OpenAI가 Axios에 쓴 표현은 “Critical 사이버 역량을 배제할 수 없다”는 것이었습니다. 내부 평가가 경고 신호를 냈고, 회사가 더 보수적인 운영 가정을 택했다는 뜻입니다. 최종 등급을 이미 확정했다는 말과는 다릅니다.</p>
+<p>현재 확인된 변화는 두 가지입니다. OpenAI는 Astra의 안전 테스트를 확대했고, 강화된 보안 통제를 충족하지 못한 일부 내부 활동을 멈췄습니다. 반면 공개된 인터뷰에는 최종 Capability Report, 일반 공개 일정, 제품명, 출시일이 없습니다. 따라서 Astra를 GPT-6로 단정하거나 임박한 출시 전체가 취소됐다고 확대해서는 안 됩니다.</p>
+<h2 id="high와-critical은-대응-시점이-다릅니다">High와 Critical은 대응 시점이 다릅니다</h2>
+<p><img alt="High는 배포 전 게이트에서, Critical은 개발 중 게이트에서도 보호조치가 필요하다고 카솔이 설명하는 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.80N5z2LY_Z179fdy.webp" srcset=""></p>
+<p>OpenAI의 Preparedness Framework에서 <code>High</code> 사이버 역량은 기존 사이버 작전을 크게 확장시키는 병목을 제거하는 수준입니다. 합리적으로 강화된 표적을 향한 종단간 작전이나 실제 취약점의 발견과 악용을 자동화하는 능력이 예시로 제시됩니다. 이 수준의 모델은 관련 위험을 충분히 낮추기 전 외부에 배포하지 않는 것이 원칙입니다.</p>
+<p><code>Critical</code>은 대응 시점이 더 앞섭니다. Framework는 도구를 쓰는 모델이 여러 강화된 중요 시스템의 zero-day를 사람 없이 개발하거나, 높은 수준의 목표만으로 새로운 종단간 공격 전략을 세우고 실행하는 수준을 예로 듭니다. 개발 중 모델이 이 문턱에 도달하면 외부 배포 계획이 없어도 개발 단계 자체에 보호조치가 필요합니다.</p>
+<p>이번 Astra 조치는 이 차이를 보여 줍니다. 최종 등급이 공개되기 전에 일부 내부 활동부터 강화된 통제 뒤로 옮겼기 때문입니다. 독자가 봐야 할 신호는 “곧 어떤 제품이 나오나”보다 “어떤 개발 활동이 어느 보안 조건 아래에서만 계속되는가”입니다.</p>
+<h2 id="7월-사고가-만든-배경">7월 사고가 만든 배경</h2>
+<p>OpenAI는 7월 21일 Hugging Face와의 공동 사고 보고에서 내부 모델 평가 중 복잡한 공격 경로가 실제 외부 인프라까지 이어진 사건을 공개했습니다. 회사는 그 뒤 평가 환경의 격리, 모니터링, 접근통제와 평가 관행을 강화하겠다고 밝혔습니다. Astra 발표는 이 약속이 차기 모델의 내부 사용 조건에 연결되는 장면으로 읽을 수 있습니다.</p>
+<p>다만 공개 자료만으로 Astra의 모든 평가 결과나 통제 효과를 독립적으로 검증할 수는 없습니다. 최종 등급과 외부 제공 범위는 후속 Capability Report와 Safeguards Report가 나올 때 다시 확인해야 합니다.</p>
+<h2 id="다메카솔의-해석">다메카솔의 해석</h2>
+<p>저는 이번 발표의 핵심을 “위험한 모델이 나왔다”는 한 문장으로 보지 않습니다. 더 중요한 변화는 불확실성을 이유로 개발 환경의 접근 조건을 먼저 높였다는 점입니다. 위험 평가가 완전히 끝날 때까지 아무 조치도 하지 않는 것보다, 강한 가능성이 확인됐을 때 권한과 활동 범위를 줄이는 편이 사고 비용을 낮춥니다.</p>
+<p>앞으로 볼 것은 세 가지입니다. OpenAI가 Astra를 실제로 어느 등급으로 판정하는지, 강화된 통제가 어떤 평가를 통과하는지, 외부 사용에서는 어떤 제한이 붙는지입니다. 그 전까지 <code>Critical</code>은 확정된 제품 설명이 아니라 보수적으로 관리해야 할 평가 가능성입니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://www.axios.com/2026/08/07/openai-astra-model-delay-cybersecurity-risks">Axios — Exclusive: OpenAI slows release of Astra model citing cyber capabilities</a></li>
+<li><a href="https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf">OpenAI — Preparedness Framework Version 2</a></li>
+<li><a href="https://openai.com/index/hugging-face-model-evaluation-security-incident/">OpenAI — OpenAI and Hugging Face partner to address security incident during model evaluation</a></li>
+<li><a href="https://openai.com/index/safety-alignment-long-horizon-models/">OpenAI — Safety and alignment in an era of long-horizon models</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/fable-5-biology-safeguards-update/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B9rGHm4d_42znf.webp" srcset="/_astro/cover.B9rGHm4d_Zshukp.webp 240w, /_astro/cover.B9rGHm4d_JSwg4.webp 360w, /_astro/cover.B9rGHm4d_1X4xQx.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></div><h3><a href="/posts/fable-5-biology-safeguards-update/" data-analytics-event="related_post_click" data-analytics-target="fable-5-biology-safeguards-update">3분만에 만화로 보는 IT - AI 뉴스 | Fable 5 생물학 질문이 덜 막힌다: 안전 분류기의 경계를 좁힌 업데이트</a></h3><p>Anthropic이 Fable 5의 생물학 안전 분류기 오탐을 줄인 방법과 계속 제한되는 전문 연구 범위를 구분합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/gemini-robotics-2-whole-body-collaboration/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BhEcJW3G_ZzVtM.webp" srcset="/_astro/cover.BhEcJW3G_Z8pOsJ.webp 240w, /_astro/cover.BhEcJW3G_14Kc7J.webp 360w, /_astro/cover.BhEcJW3G_2hVdId.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-02T00:00:00.000Z">2026년 8월 2일</time></div><h3><a href="/posts/gemini-robotics-2-whole-body-collaboration/" data-analytics-event="related_post_click" data-analytics-target="gemini-robotics-2-whole-body-collaboration">3분만에 만화로 보는 IT - AI 뉴스 | Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다</a></h3><p>Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/thomson-reuters-thomson-domain-llm/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DV_sku-8_ZleS0y.webp" srcset="/_astro/cover.DV_sku-8_Zt6fv1.webp 240w, /_astro/cover.DV_sku-8_J4L5s.webp 360w, /_astro/cover.DV_sku-8_1WfMFV.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--news">AI 뉴스</span><time datetime="2026-08-25T00:00:00.000Z">2026년 8월 25일</time></div><h3><a href="/posts/thomson-reuters-thomson-domain-llm/" data-analytics-event="related_post_click" data-analytics-target="thomson-reuters-thomson-domain-llm">3분만에 만화로 보는 IT - AI 뉴스 | 톰슨로이터 Thomson 출시: 전문 지식은 검색보다 학습 신호가 됐습니다</a></h3><p>톰슨로이터의 자체 LLM Thomson이 공개 기반 모델, 전문 데이터, 전문가 평가를 어떻게 결합했는지와 CoCounsel 배치·직접 접근·외부 검증의 현재 경계를 분석합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/news/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 뉴스 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계 | 다메카솔</title><meta name="description" content="송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/transaction-acid-commit-rollback/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | 트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계"><meta property="og:description" content="송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/transaction-acid-commit-rollback/"><meta property="og:image" content="https://blog.damecasol.com/social/transaction-acid-commit-rollback.webp"><meta property="og:image:alt" content="두 계좌 사이에 멈춘 송금 토큰을 카솔이 하나의 초록 경계로 가리키는 트랜잭션 ACID 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | 트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계","description":"송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다.","datePublished":"2026-07-25T00:00:00.000Z","dateModified":"2026-07-25T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/transaction-acid-commit-rollback/","image":["https://blog.damecasol.com/social/transaction-acid-commit-rollback.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"데이터베이스","keywords":["트랜잭션","데이터베이스"],"isAccessibleForFree":true,"isPartOf":{"@type":"CreativeWorkSeries","name":"데이터베이스 핵심 원리","position":3}}</script><article class="article" data-analytics-article data-content-id="transaction-acid-commit-rollback" data-content-track="tech_column" data-content-category="database"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/database/">데이터베이스</a><span aria-hidden="true">/</span><a href="/series/database-core/">데이터베이스 핵심 원리</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/database/">데이터베이스</a><a class="series-label" href="/series/database-core/">데이터베이스 핵심 원리 3편</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-25T00:00:00.000Z">2026년 7월 25일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | 트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BAdM6zjO_1crtsi.webp" srcset="/_astro/cover.BAdM6zjO_14Evw2.webp 640w, /_astro/cover.BAdM6zjO_Q70iS.webp 960w, /_astro/cover.BAdM6zjO_1crtsi.webp 1024w" alt="두 계좌 사이에 멈춘 송금 토큰을 카솔이 하나의 초록 경계로 가리키는 트랜잭션 ACID 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-요약" data-toc-link="핵심-요약" data-analytics-event="toc_click" data-analytics-target="핵심-요약">핵심 요약</a></li><li class="article-toc__depth-2"><a href="#트랜잭션은-성공과-실패의-원자적-경계다" data-toc-link="트랜잭션은-성공과-실패의-원자적-경계다" data-analytics-event="toc_click" data-analytics-target="트랜잭션은-성공과-실패의-원자적-경계다">트랜잭션은 성공과 실패의 원자적 경계다</a></li><li class="article-toc__depth-2"><a href="#원자성atomicity과-일관성consistency의-차이" data-toc-link="원자성atomicity과-일관성consistency의-차이" data-analytics-event="toc_click" data-analytics-target="원자성atomicity과-일관성consistency의-차이">원자성(Atomicity)과 일관성(Consistency)의 차이</a></li><li class="article-toc__depth-2"><a href="#트랜잭션만으로는-해결되지-않는-동시성-격리성isolation" data-toc-link="트랜잭션만으로는-해결되지-않는-동시성-격리성isolation" data-analytics-event="toc_click" data-analytics-target="트랜잭션만으로는-해결되지-않는-동시성-격리성isolation">트랜잭션만으로는 해결되지 않는 동시성: 격리성(Isolation)</a></li><li class="article-toc__depth-2"><a href="#전원이-꺼져도-날아가지-않는-이유-지속성durability과-wal" data-toc-link="전원이-꺼져도-날아가지-않는-이유-지속성durability과-wal" data-analytics-event="toc_click" data-analytics-target="전원이-꺼져도-날아가지-않는-이유-지속성durability과-wal">전원이 꺼져도 날아가지 않는 이유: 지속성(Durability)과 WAL</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-백엔드-아키텍처-관점의-트랜잭션-설계" data-toc-link="다메카솔의-해석-백엔드-아키텍처-관점의-트랜잭션-설계" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-백엔드-아키텍처-관점의-트랜잭션-설계">다메카솔의 해석: 백엔드 아키텍처 관점의 트랜잭션 설계</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-db-핵심-원리" data-toc-link="함께-읽을-db-핵심-원리" data-analytics-event="toc_click" data-analytics-target="함께-읽을-db-핵심-원리">함께 읽을 DB 핵심 원리</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>송금 시스템에서 내 통장의 출금 처리는 끝났는데 상대방 통장 입금 직전에 서버가 다운된다면 어떻게 될까요? 내 돈은 사라지고 상대방은 받지 못하는 최악의 금융 사고가 발생합니다.</p>
+<p>데이터베이스 **트랜잭션(Transaction)**은 논리적으로 쪼개질 수 없는 여러 개의 작업을 <strong>“모두 성공하거나, 아니면 하나도 일어나지 않은 것처럼 완전히 되돌리는(All or Nothing)” 하나의 원자적 작업 단위</strong>로 묶어주는 핵심 안전장치입니다.</p>
+<p>이번 글에서는 트랜잭션을 제어하는 <code>COMMIT</code>과 <code>ROLLBACK</code>의 메커니즘, 그리고 트랜잭션의 신뢰성을 지탱하는 <strong>ACID 4대 속성</strong>을 실무 엔지니어의 관점에서 명확하게 짚어보겠습니다.</p>
+<h2 id="핵심-요약">핵심 요약</h2>
+<ul>
+<li>트랜잭션의 본질은 복수의 SQL 연산을 하나의 원자적(All-or-Nothing) 실행 경계로 묶는 것입니다.</li>
+<li>**원자성(Atomicity)**은 전부 반영 또는 전부 취소를 보장하고, **일관성(Consistency)**은 데이터베이스의 무결성 제약과 비즈니스 불변식을 지킵니다.</li>
+<li>트랜잭션을 쓴다고 동시성 문제가 저절로 해결되지는 않습니다. 동시 다발적인 읽기/쓰기 충돌(Lost Update 등)은 <strong>격리성(Isolation)</strong> 수준과 비관적/낙관적 잠금 설계로 해결해야 합니다.</li>
+<li>**지속성(Durability)**은 커밋 성공 후 DB 서버 전원이 불시에 꺼져도 데이터가 보존되는 성질이며, 데이터베이스 엔진은 이를 **WAL(Write-Ahead Logging)**을 통해 디스크에 보장합니다.</li>
+</ul>
+<h2 id="트랜잭션은-성공과-실패의-원자적-경계다">트랜잭션은 성공과 실패의 원자적 경계다</h2>
+<p><img alt="출금만 끝난 송금 흐름을 보고 개발자가 오류를 묻자 카솔이 두 변경을 하나의 경계로 묶는 도입 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.DAHm-aHz_Z1GIQ19.webp" srcset=""></p>
+<p>송금 작업은 반드시 출금과 입금이 하나의 묶음으로 처리되어야 합니다. PostgreSQL과 같은 표준 RDBMS에서는 <code>BEGIN</code>으로 트랜잭션을 열고, 모든 작업이 정상 완료되었을 때 <code>COMMIT</code>으로 디스크에 영구 확정합니다. 만약 도중에 예외가 발생하면 <code>ROLLBACK</code>을 호출해 해당 트랜잭션이 수행한 모든 중간 변경사항을 깨끗이 폐기합니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#D73A49">BEGIN</span><span style="color:#24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">-- 1. 보내는 계좌 출금</span></span>
+<span class="line"><span style="color:#D73A49">UPDATE</span><span style="color:#24292E"> account</span></span>
+<span class="line"><span style="color:#D73A49">SET</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">=</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">-</span><span style="color:#24292E"> :amount</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#24292E"> id </span><span style="color:#D73A49">=</span><span style="color:#24292E"> :from_id;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">-- 2. 받는 계좌 입금</span></span>
+<span class="line"><span style="color:#D73A49">UPDATE</span><span style="color:#24292E"> account</span></span>
+<span class="line"><span style="color:#D73A49">SET</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">=</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">+</span><span style="color:#24292E"> :amount</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#24292E"> id </span><span style="color:#D73A49">=</span><span style="color:#24292E"> :to_id;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49">COMMIT</span><span style="color:#24292E">;</span></span></code></pre>
+<p><img alt="하나의 경계 안에서 출금과 입금이 함께 확정되거나 함께 원래 위치로 돌아가는 트랜잭션 흐름" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.Bpc7vgG6_ZQtjdb.webp" srcset=""></p>
+<p>여기서 주의할 점은 <code>ROLLBACK</code>이 데이터베이스 전체 시점을 과거로 되돌리는 마법이 아니라, **“오직 현재 세션의 트랜잭션이 시도했던 쓰기 연산만 취소하는 명령”**이라는 점입니다. 다른 트랜잭션이 이미 <code>COMMIT</code>한 데이터는 롤백되지 않습니다.</p>
+<h2 id="원자성atomicity과-일관성consistency의-차이">원자성(Atomicity)과 일관성(Consistency)의 차이</h2>
+<p>면접이나 실무에서 가장 많이 혼동하는 개념이 바로 원자성과 일관성입니다.</p>
+<ul>
+<li><strong>원자성 (Atomicity)</strong>: “작업이 반쪽짜리로 남지 않는다.” 100보를 가든 0보를 가든 둘 중 하나여야 한다는 실행 단위의 규칙입니다.</li>
+<li><strong>일관성 (Consistency)</strong>: “데이터베이스가 허용한 규칙(제약조건)을 위반하지 않는다.” 트랜잭션 전후로 시스템이 항상 유효한 상태를 유지해야 한다는 데이터 상태의 규칙입니다.</li>
+</ul>
+<p><img alt="A 계좌에서 100이 빠지고 B 계좌에 90이 들어가 두 갱신은 모두 완료됐지만 합계 규칙 경고가 켜진 비교 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.D0myF03K_ZLWlBK.webp" srcset=""></p>
+<p>예를 들어 A 계좌에서 100원을 차감하고 B 계좌에 90원만 입금하는 버그성 로직이 있다고 가정해 봅시다. 두 <code>UPDATE</code> 쿼리가 끝까지 실행되어 정상 커밋되었다면 <strong>원자성(Atomicity)은 만족</strong>한 것입니다(두 쿼리가 모두 완료되었으므로).</p>
+<p>하지만 “두 계좌 잔액의 총합은 보존되어야 한다”는 비즈니스 불변식은 깨졌으므로 <strong>일관성(Consistency)은 위반</strong>된 상태입니다. 즉, 원자성이 보장된다고 해서 비즈니스 일관성까지 자동으로 지켜지는 것은 아닙니다.</p>
+<h2 id="트랜잭션만으로는-해결되지-않는-동시성-격리성isolation">트랜잭션만으로는 해결되지 않는 동시성: 격리성(Isolation)</h2>
+<p>트랜잭션을 걸었다고 해서 여러 사용자가 동시에 같은 데이터를 수정할 때 생기는 문제가 저절로 해결될까요? 전혀 아닙니다.</p>
+<p>대표적인 예가 **갱신 분실(Lost Update)**입니다. 두 사용자가 동시에 잔액 100원을 조회한 뒤, 각각 50원씩 차감하여 50원으로 <code>UPDATE</code>를 날리면, 늦게 도착한 트랜잭션이 먼저 처리된 트랜잭션의 결과를 덮어써 버립니다. 결국 100원이 빠져나가야 하는데 50원만 차감되는 참사가 일어납니다.</p>
+<p><img alt="두 요청이 같은 잔액 100을 읽고 서로의 결과를 덮어쓰는 장면과 조건 재평가 및 재시도 경로" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.De-FhMbx_ZTaO1H.webp" srcset=""></p>
+<p>동시성 제어를 위해서는 격리 수준(Isolation Level)과 적절한 락(Lock) 기법을 병행해야 합니다:</p>
+<ol>
+<li><strong>원자적 조건부 업데이트 (Atomic Update)</strong>:
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#D73A49">UPDATE</span><span style="color:#24292E"> account</span></span>
+<span class="line"><span style="color:#D73A49">SET</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">=</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">-</span><span style="color:#24292E"> :amount</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#24292E"> id </span><span style="color:#D73A49">=</span><span style="color:#24292E"> :from_id </span><span style="color:#D73A49">AND</span><span style="color:#24292E"> balance </span><span style="color:#D73A49">>=</span><span style="color:#24292E"> :amount;</span></span></code></pre>
+</li>
+<li><strong>비관적 락 (Pessimistic Lock)</strong>: <code>SELECT ... FOR UPDATE</code>로 행을 선점하여 다른 트랜잭션의 접근을 대기시킵니다.</li>
+<li><strong>낙관적 락 (Optimistic Lock)</strong>: <code>version</code> 컬럼을 두고 충돌 시 애플리케이션에서 재시도(Retry) 처리합니다.</li>
+</ol>
+<h2 id="전원이-꺼져도-날아가지-않는-이유-지속성durability과-wal">전원이 꺼져도 날아가지 않는 이유: 지속성(Durability)과 WAL</h2>
+<p><code>COMMIT</code> 응답을 받았다는 것은 데이터가 안전하게 저장되었다는 약속입니다. 하지만 데이터베이스는 매번 무거운 테이블 데이터 파일(Data Page) 전체를 디스크에 즉시 동기화(fsync)하지 않습니다. 그렇게 하면 I/O 병목으로 TPS가 바닥을 치기 때문입니다.</p>
+<p>대신 성능과 안정성을 모두 잡기 위해 <strong>WAL(Write-Ahead Logging)</strong> 방식을 사용합니다.</p>
+<p><img alt="WAL 기록이 데이터 페이지보다 먼저 남고 전원이 꺼진 뒤 REDO 화살표로 데이터 페이지가 복구되는 세 단계 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CJYbGRY0_Zi2D4U.webp" srcset=""></p>
+<ol>
+<li>실제 테이블 데이터 파일에 기록하기 전에, 변경 이력을 가벼운 순차 로그 파일(WAL)에 먼저 기록합니다.</li>
+<li>WAL 로그가 디스크에 완전히 기록(Flush)된 순간 클라이언트에게 <code>COMMIT</code> 성공을 반환합니다.</li>
+<li>불시에 서버 전원이 차단되더라도, 재부팅 시 WAL 로그를 순차 재생(REDO)하여 데이터 파일의 불일치를 완벽하게 복구합니다.</li>
+</ol>
+<h2 id="다메카솔의-해석-백엔드-아키텍처-관점의-트랜잭션-설계">다메카솔의 해석: 백엔드 아키텍처 관점의 트랜잭션 설계</h2>
+<p>시니어 엔지니어로서 결제나 주문 도메인을 설계할 때 트랜잭션은 단순히 <code>@Transactional</code> 어노테이션 하나 붙이고 끝나는 영역이 아닙니다.</p>
+<p>다음 3가지 아키텍처 트레이드오프를 반드시 고려해야 합니다:</p>
+<ol>
+<li><strong>트랜잭션 범위 최소화</strong>: 트랜잭션 내부에 외부 결제 PG사 API 호출이나 메일 발송 같은 네트워크 I/O를 절대 포함하지 마세요. DB 커넥션 고갈(Connection Pool Exhaustion)의 주범이 됩니다.</li>
+<li><strong>명확한 격리성 전략</strong>: 트래픽이 높은 서비스에서는 <code>SERIALIZABLE</code> 같은 무거운 격리 수준 대신 <code>READ COMMITTED</code> 기반에 원자적 쿼리나 낙관적 락을 조합하는 것이 처리량(Throughput) 확보에 유리합니다.</li>
+<li><strong>분산 환경의 한계 인지</strong>: MSA 환경처럼 여러 마이크로서비스로 나뉜 경우 RDBMS의 단일 ACID 트랜잭션을 쓸 수 없습니다. 이때는 Saga 패턴이나 Outbox 패턴, 보상 트랜잭션(Compensating Transaction)을 통해 결과적 일관성(Eventual Consistency)을 확보해야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-db-핵심-원리">함께 읽을 DB 핵심 원리</h2>
+<ul>
+<li><a href="/posts/database-normalization-anomalies/">데이터베이스 정규화와 3대 이상 현상</a>: 데이터 무결성을 위한 스키마 설계 원칙</li>
+<li><a href="/posts/sql-declarative-language/">SQL 선언형 모델과 옵티마이저의 실행 계획</a>: DB 엔진이 인덱스를 선택하는 알고리즘</li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/sql-begin.html">PostgreSQL Documentation — BEGIN &amp; Transactions</a></li>
+<li><a href="https://www.postgresql.org/docs/current/transaction-iso.html">PostgreSQL Documentation — Transaction Isolation</a></li>
+<li><a href="https://www.postgresql.org/docs/16/wal-intro.html">PostgreSQL Documentation — Write-Ahead Logging (WAL)</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><nav class="series-navigation" aria-label="연재 글 이동"><div><a href="/posts/sql-declarative-language/"><span>이전 편</span>SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이</a></div><a class="series-navigation__index" href="/series/database-core/">전체 연재 보기</a><div class="series-navigation__next"><span class="series-navigation__empty">현재 마지막 편입니다</span></div></nav><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/sql-declarative-language/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover-v2.BbVncO3h_Z16EGXi.webp" srcset="/_astro/cover-v2.BbVncO3h_Z1EKSG4.webp 240w, /_astro/cover-v2.BbVncO3h_Z7PpPC.webp 360w, /_astro/cover-v2.BbVncO3h_1p52YO.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-14T00:00:00.000Z">2026년 7월 14일</time></div><h3><a href="/posts/sql-declarative-language/" data-analytics-event="related_post_click" data-analytics-target="sql-declarative-language">3분만에 만화로 보는 IT - 기술 해설 | SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이</a></h3><p>분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/database-normalization-anomalies/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.RxhSdcHH_1KVnqF.webp" srcset="/_astro/cover.RxhSdcHH_Z1xXMrD.webp 240w, /_astro/cover.RxhSdcHH_ZkMKQa.webp 360w, /_astro/cover.RxhSdcHH_RnfJj.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></div><h3><a href="/posts/database-normalization-anomalies/" data-analytics-event="related_post_click" data-analytics-target="database-normalization-anomalies">3분만에 만화로 보는 IT - 기술 해설 | 정규화는 왜 하는가: 중복 제거보다 중요한 세 가지 이상 현상</a></h3><p>데이터베이스 정규화의 본질은 단순 용량 절약이 아닌 데이터 무결성 보장입니다. 주문 도메인 설계를 예시로 3대 이상 현상과 반정규화의 트레이드오프를 짚어봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/restore-rehearsal-false-success/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ce4HOx1k_Ze8KYl.webp" srcset="/_astro/cover.Ce4HOx1k_Z1hTeIV.webp 240w, /_astro/cover.Ce4HOx1k_Z4Id8s.webp 360w, /_astro/cover.Ce4HOx1k_18rNs1.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-10T09:12:49.000Z">2026년 8월 10일</time></div><h3><a href="/posts/restore-rehearsal-false-success/" data-analytics-event="related_post_click" data-analytics-target="restore-rehearsal-false-success">3분만에 만화로 보는 IT - 기술 해설 | 복구 리허설은 성공했는데 목표 시각 이전 기록이 없던 이유</a></h3><p>MySQL 시점 복구 리허설이 성공 로그를 남겼지만 목표 시각 이전 마커가 빠졌습니다. 파이프 왼쪽 실패가 가려진 원인과 마커 대조 관문을 기록합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/database/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 데이터베이스 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

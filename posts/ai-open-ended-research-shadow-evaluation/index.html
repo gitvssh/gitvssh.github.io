@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까 | 다메카솔</title><meta name="description" content="비공개 열린 연구 질문 두 개를 원저자가 평가한 shadow evaluation에서 AI 에이전트가 엔지니어링은 수행했지만 연구 판단과 방향 전환에 실패한 이유를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/ai-open-ended-research-shadow-evaluation/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까"><meta property="og:description" content="비공개 열린 연구 질문 두 개를 원저자가 평가한 shadow evaluation에서 AI 에이전트가 엔지니어링은 수행했지만 연구 판단과 방향 전환에 실패한 이유를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/ai-open-ended-research-shadow-evaluation/"><meta property="og:image" content="https://blog.damecasol.com/social/ai-open-ended-research-shadow-evaluation.webp"><meta property="og:image:alt" content="성인형 카솔이 자동 연구 장비와 답이 봉인된 원형 연구 금고 사이에서 증거 연결을 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까","description":"비공개 열린 연구 질문 두 개를 원저자가 평가한 shadow evaluation에서 AI 에이전트가 엔지니어링은 수행했지만 연구 판단과 방향 전환에 실패한 이유를 살펴봅니다.","datePublished":"2026-07-30T00:00:00.000Z","dateModified":"2026-07-30T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/ai-open-ended-research-shadow-evaluation/","image":["https://blog.damecasol.com/social/ai-open-ended-research-shadow-evaluation.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","LLM","벤치마크","운영 자동화 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="ai-open-ended-research-shadow-evaluation" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-30T00:00:00.000Z">2026년 7월 30일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>비공개 열린 연구 질문 두 개를 원저자가 평가한 shadow evaluation에서 AI 에이전트가 엔지니어링은 수행했지만 연구 판단과 방향 전환에 실패한 이유를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.C-tw5oYV_ZYlI6b.webp" srcset="/_astro/cover.C-tw5oYV_Z1BK2VO.webp 640w, /_astro/cover.C-tw5oYV_Z1Piy9X.webp 960w, /_astro/cover.C-tw5oYV_ZYlI6b.webp 1024w" alt="성인형 카솔이 자동 연구 장비와 답이 봉인된 원형 연구 금고 사이에서 증거 연결을 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#연구실이-돌아가도-질문에는-답하지-못할-수-있다" data-toc-link="연구실이-돌아가도-질문에는-답하지-못할-수-있다" data-analytics-event="toc_click" data-analytics-target="연구실이-돌아가도-질문에는-답하지-못할-수-있다">연구실이 돌아가도 질문에는 답하지 못할 수 있다</a></li><li class="article-toc__depth-2"><a href="#비공개-질문을-그림자처럼-따라갔다" data-toc-link="비공개-질문을-그림자처럼-따라갔다" data-analytics-event="toc_click" data-analytics-target="비공개-질문을-그림자처럼-따라갔다">비공개 질문을 그림자처럼 따라갔다</a></li><li class="article-toc__depth-2"><a href="#두-편-모두-연구-심사-문을-통과하지-못했다" data-toc-link="두-편-모두-연구-심사-문을-통과하지-못했다" data-analytics-event="toc_click" data-analytics-target="두-편-모두-연구-심사-문을-통과하지-못했다">두 편 모두 연구 심사 문을 통과하지 못했다</a></li><li class="article-toc__depth-2"><a href="#첫-가설을-너무-빨리-접고-약한-길에-머물렀다" data-toc-link="첫-가설을-너무-빨리-접고-약한-길에-머물렀다" data-analytics-event="toc_click" data-analytics-target="첫-가설을-너무-빨리-접고-약한-길에-머물렀다">첫 가설을 너무 빨리 접고 약한 길에 머물렀다</a></li><li class="article-toc__depth-2"><a href="#다른-모델과-scaffold도-비슷한-막힘을-보였다" data-toc-link="다른-모델과-scaffold도-비슷한-막힘을-보였다" data-analytics-event="toc_click" data-analytics-target="다른-모델과-scaffold도-비슷한-막힘을-보였다">다른 모델과 scaffold도 비슷한 막힘을 보였다</a></li><li class="article-toc__depth-2"><a href="#두-사례가-연구-자동화-전체를-판정하지는-않는다" data-toc-link="두-사례가-연구-자동화-전체를-판정하지는-않는다" data-analytics-event="toc_click" data-analytics-target="두-사례가-연구-자동화-전체를-판정하지는-않는다">두 사례가 연구 자동화 전체를 판정하지는 않는다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-방향-전환에도-verifier가-필요하다" data-toc-link="다메카솔의-해석-방향-전환에도-verifier가-필요하다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-방향-전환에도-verifier가-필요하다">다메카솔의 해석: 방향 전환에도 verifier가 필요하다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#공개-자료-범위" data-toc-link="공개-자료-범위" data-analytics-event="toc_click" data-analytics-target="공개-자료-범위">공개 자료 범위</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>에이전트가 코드를 짜고 GPU 실험까지 끝냈다면 연구도 상당 부분 끝났다고 보기 쉽습니다. <strong>Can AI agents conduct open-ended AI research? Early evidence from two case studies</strong>의 두 사례에서는 그 판단이 깨졌습니다. 에이전트는 연구 엔지니어링을 수행했지만, 비공개 연구 질문에 실질적인 답을 만들지는 못했습니다.</p>
+<p>연구팀은 이를 <strong>shadow evaluation</strong>이라고 부릅니다. 공개되지 않은 우수 논문의 핵심 질문을 에이전트에게 주고, 정답을 이미 오래 고민한 원저자가 결과를 학회 논문처럼 평가합니다. 이 글은 방법, 두 결과, 반복 실패, robustness 실험, 한계를 나눠 읽습니다.</p>
+<p>글·해설: 다메카솔</p>
+<p><img alt="성인형 카솔이 작동하는 AI 연구 작업장과 아직 잠긴 연구 질문 금고 사이의 끊긴 증거 다리를 살피는 표지" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/cover.C-tw5oYV_ZYlI6b.webp" srcset=""></p>
+<h2 id="연구실이-돌아가도-질문에는-답하지-못할-수-있다">연구실이 돌아가도 질문에는 답하지 못할 수 있다</h2>
+<p><img alt="성인형 카솔이 GPU와 실험 장치와 원고 제작기는 작동하지만 연구 답 신호는 꺼진 장면을 보는 모습" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.nijWABxf_ZbEA3x.webp" srcset=""></p>
+<p>두 에이전트는 문헌을 찾고 코드를 작성하고 GPU 실험을 돌렸습니다. 실제 데이터를 다루고 원고도 완성했습니다. 원저자들은 수백 GPU-hour 규모의 실험을 인간 도움 없이 수행한 엔지니어링 능력과 몇몇 작은 관찰을 긍정적으로 기록했습니다.</p>
+<p>연구 질문을 푼다는 기준은 더 높았습니다. 어떤 가설이 유망한지, 작은 부정적 결과가 정말 연구 질문을 반박하는지, 막힌 방법을 언제 버리고 새 설계로 돌아갈지를 판단해야 합니다. 작동하는 파이프라인은 그 판단을 대신하지 못했습니다.</p>
+<p>이 구분이 이번 논문의 출발점입니다. 자동 채점 가능한 과제는 결과가 맞았는지 바로 검사할 수 있습니다. 열린 연구에서는 성공 기준 자체가 연구 과정 안에서 다듬어집니다.</p>
+<h2 id="비공개-질문을-그림자처럼-따라갔다">비공개 질문을 그림자처럼 따라갔다</h2>
+<p><img alt="두 비공개 연구 질문이 서로 격리된 연구 경로를 지나 원저자 심사 관문으로 이어지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.314h9yri_Z1WnyFt.webp" srcset=""></p>
+<p>연구팀은 당시 비공개였던 NeurIPS 2026 제출 논문 두 편에서 핵심 질문을 하나씩 골랐습니다. 하나는 LLM persona를 weight-space 개입으로 분해하고 조절할 수 있는지, 다른 하나는 TabPFN의 배포 시 정확도 저하를 label 없이 감지할 수 있는지 묻습니다. 에이전트는 원 논문과 결과를 볼 수 없었습니다.</p>
+<p>두 본 실험은 OpenClaw 위 Claude Opus 4.8 extra-high reasoning으로 진행됐습니다. 각 에이전트는 6일, Anthropic API 크레딧 3,000달러, GPU 크레딧, Linux VM과 열린 웹 접근을 받았습니다. 목표는 top-tier AI conference에 낼 만한 논문과 재현 가능한 코드였습니다.</p>
+<p>원저자는 세 단계에 참여했습니다. 질문을 만들고, 충분하다고 본 자원 예산을 정하고, 마지막 결과를 학회 심사처럼 채점했습니다. 연구팀은 성능 상한을 더 잘 끌어내기 위해 중간에 scaffold 버그를 고쳤고, 24시간을 연장했으며, 읽기 어려운 초고를 다시 쓰게 했습니다.</p>
+<h2 id="두-편-모두-연구-심사-문을-통과하지-못했다">두 편 모두 연구 심사 문을 통과하지 못했다</h2>
+<p><img alt="두 연구 경로에서 엔지니어링 장치는 작동하고 원고가 완성되지만 마지막 심사 관문은 닫힌 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.CPWIPJCo_h4JqN.webp" srcset=""></p>
+<p>Personas 결과는 6점 척도에서 2점인 Reject, TabPFN 결과는 1점인 Strong Reject를 받았습니다. 평가 확신도는 각각 5점 척도에서 4점과 5점이었습니다. 원저자들은 데이터와 실험 선택의 근거가 약하고, 증거에서 결론으로 넘어가는 논리가 충분하지 않으며, 핵심을 찾기 어려운 원고라고 평가했습니다.</p>
+<p>작은 성과도 있었습니다. 두 에이전트는 원저자들이 처음 고려했던 방향과 비슷한 후보 가설을 제안했고 실제 실험을 안정적으로 수행했습니다. Personas 사례에서는 좁은 유해 응답 fine-tuning이 더 넓은 misgeneralization으로 이어지지 않았다는 잠재적으로 흥미로운 관찰도 나왔습니다.</p>
+<p>평가 결과의 정확한 표현은 “연구를 전혀 하지 않았다”가 아닙니다. 이번 두 질문에서 top ML conference 수준의 답을 만들 만큼 실질적인 진전을 이루지 못했다는 결론입니다.</p>
+<h2 id="첫-가설을-너무-빨리-접고-약한-길에-머물렀다">첫 가설을 너무 빨리 접고 약한 길에 머물렀다</h2>
+<p><img alt="연구 에이전트가 낮은 기준과 잠긴 갈림길과 피드백 붕대와 남은 자원과 흐트러진 나침반을 지나는 미로" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DJDaDknK_Z1VX6H0.webp" srcset=""></p>
+<p>Personas 에이전트는 열린 탐색에 42시간을 배정했지만 5시간 만에 한 방법으로 모였습니다. 두 에이전트는 가장 야심찬 연구 목표를 처음 10시간 안에 접었고, 이후에는 접근법을 근본적으로 바꾸지 않았습니다. 작은 합성 데이터나 검정력이 낮은 실험의 부정적 결과를 연구 질문 전체의 답처럼 다룬 경우도 있었습니다.</p>
+<p>자기 심사는 문제를 보았습니다. 두 경로에서 합계 15차례 수정이 이어지는 동안 AI 자기 심사는 한 번도 accept를 주지 않았고, 인간 심사가 나중에 지적한 핵심 약점도 상당수 찾았습니다. 에이전트는 그 신호로 전제와 실험 설계를 다시 짜기보다 기존 결과에 단서를 덧붙이는 쪽을 골랐습니다.</p>
+<p>자원 계획도 현실과 어긋났습니다. 24시간 연장을 포함한 종료 시점에 Personas는 3,000달러 중 1,130달러, TabPFN은 1,235달러만 썼습니다. 시간과 비용을 아낀 성과라기보다, 스스로도 reject라고 본 원고를 남긴 채 탐색 기회를 사용하지 못한 결과였습니다.</p>
+<p>연구팀은 반복 패턴을 다섯 가지로 묶었습니다.</p>
+<ul>
+<li>출판 가능한 연구의 기준을 판단하지 못함</li>
+<li>연구 설계 피드백을 새 접근으로 바꾸지 못함</li>
+<li>막힌 경로에서 효과적으로 되돌아가지 못함</li>
+<li>시간·토큰·GPU 자원의 의미를 운영 계획으로 옮기지 못함</li>
+<li>탐색 시간과 심사 주기와 원고 형식에 대한 구체적 지시에서 벗어남</li>
+</ul>
+<h2 id="다른-모델과-scaffold도-비슷한-막힘을-보였다">다른 모델과 scaffold도 비슷한 막힘을 보였다</h2>
+<p><img alt="다른 연구 차량이 연료를 일찍 소진하고 실제 데이터 섬을 찾지만 얇은 원고로 닫힌 심사 문에 도착한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.CLiSqzha_19c50.webp" srcset=""></p>
+<p>연구팀은 TabPFN 질문 하나를 Codex와 GPT-5.6 Sol Ultra로 다시 실행했습니다. 시간과 API 예산은 같았고, Codex의 native scaffold와 multi-agent orchestration을 사용했습니다. 이 반복에서도 검정력이 낮은 실험, 새 기여 부족, 잘못된 그림 형식, 부록 누락이 이어졌습니다.</p>
+<p>예산 실패의 모양은 반대였습니다. GPT-5.6 실험은 3,000달러를 이틀 조금 넘겨 모두 써서 약 100시간을 남겼습니다. 여러 가설을 돌다가 유망한 해법을 확장할 때는 토큰 예산 대부분이 사라진 뒤였습니다.</p>
+<p>긍정적 차이도 남았습니다. 이 경로는 실제 분포 이동 데이터셋을 찾았고, 가설을 미리 등록했으며, 원하는 양성 결과를 만들지 않고 부정적 결과를 보고했습니다. 저자들은 다른 model-scaffold 조합이 거의 같은 실패 양상을 보였다는 점을 robustness 증거로 사용하되, 더 강한 모델과 더 다듬은 scaffold의 영향을 후속 실험으로 남겼습니다.</p>
+<h2 id="두-사례가-연구-자동화-전체를-판정하지는-않는다">두 사례가 연구 자동화 전체를 판정하지는 않는다</h2>
+<p><img alt="성인형 카솔이 두 사례 상자와 작은 표본과 비맹검 심사와 scaffold와 시간과 관점의 경고 렌즈를 저울에 올린 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-06.LezroSLk_Z1sq3wx.webp" srcset=""></p>
+<p>표본은 두 본 사례입니다. open-world evaluation은 긴 경로를 깊게 볼 수 있는 대신 수십·수백 과제를 같은 방식으로 반복하기 어렵습니다. 두 원저자는 자신이 만든 질문을 잘 알았지만, 결과가 AI 작성물이라는 사실도 알고 있었고 자신의 접근을 선호했을 가능성이 있습니다.</p>
+<p>scaffold 문제도 실제로 일어났습니다. OpenClaw의 thinking-block 서명 충돌로 세션이 TabPFN에서 14번, Personas에서 5번 재설정되며 누적 맥락을 잃었습니다. 저자들은 reset 횟수가 크게 다른 두 실험의 최종 품질과 실패 모양이 비슷했다는 이유로 주결론을 바꾸지는 않았습니다. 동시에 vendor scaffold와 더 긴 최적화가 신뢰도를 높일 수 있다고 인정했습니다.</p>
+<p>6일은 대다수 기존 AI R&amp;D 평가보다 길지만 원저자의 실제 연구 기간보다 짧았습니다. 선택한 두 경험적 질문이 AI 연구 전체나 빠른 AI R&amp;D 가속의 핵심 경로를 대표하는지도 열려 있습니다. 완전한 열린 연구 자동화 없이 좁은 자동화만으로도 개발 속도가 크게 오를 수 있습니다.</p>
+<p>연구팀은 관점의 편향도 공개했습니다. 핵심 구성원 일부는 임박한 폭발적 자기개선에 회의적입니다. 관찰한 실패를 창의성·판단 부족으로 부를지, 추론 실패나 인식론적 고착으로 부를지에 대해서도 공저자 합의가 없었습니다. 저는 이 자기 공개가 약점의 삭제가 아니라 결과를 읽을 좌표를 준다고 봅니다.</p>
+<h2 id="다메카솔의-해석-방향-전환에도-verifier가-필요하다">다메카솔의 해석: 방향 전환에도 verifier가 필요하다</h2>
+<p>저라면 긴 에이전트 연구 작업에 네 가지 중간 검사를 둡니다.</p>
+<ol>
+<li><strong>가설 폐기 기준</strong>: 어떤 표본과 검정력에서 무엇이 나오면 가설을 접는지 먼저 적습니다.</li>
+<li><strong>전면 재설계 조건</strong>: 같은 약점이 두 심사에서 반복되면 문구를 고치는 대신 데이터와 방법을 다시 고릅니다.</li>
+<li><strong>피드백 우선순위</strong>: 사소한 형식과 연구 타당성 문제를 한 목록에 섞지 않습니다.</li>
+<li><strong>예산 궤적</strong>: 남은 시간·토큰·비용을 숫자로 보는 데서 끝내지 않고 탐색, 확장, 집필에 배분합니다.</li>
+</ol>
+<p>실행 verifier는 “코드가 돌았는가”를 확인합니다. 연구 verifier는 “이 결과가 질문에 답하는가”와 “지금 경로를 버려야 하는가”를 물어야 합니다. 이번 사례에서 전자는 상당 부분 작동했고 후자가 무너졌습니다.</p>
+<p>제 판단은 분명합니다. AI 연구 자동화의 다음 기준은 더 많은 실험을 빨리 돌리는 속도보다, 약한 증거 앞에서 멈추고 연구 경로를 다시 설계하는 능력이어야 합니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Can AI agents conduct open-ended AI research? Early evidence from two case studies</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Peter Kirgis, Sayash Kapoor, Andrew Schwartz 외 21명</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-07-29 17:57:19 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.AI, cs.CY, cs.LG</td>
+</tr>
+<tr>
+<td>subtype</td>
+<td>case study</td>
+</tr>
+<tr>
+<td>본 실험</td>
+<td>비공개 NeurIPS 2026 연구 질문 2개, 원저자 평가</td>
+</tr>
+</tbody>
+</table>
+<h2 id="공개-자료-범위">공개 자료 범위</h2>
+<p>논문은 전문가 리뷰, 설문, 에이전트 저장소와 로그를 공개한다고 적었습니다. 2026년 7월 30일 확인한 <a href="https://cruxevals.com/">CRUX 공식 홈페이지</a>는 아직 CRUX 2 결과 페이지와 개별 저장소 링크를 노출하지 않았습니다. 논문도 두 사례 중 하나의 상세 로그와 생성 논문은 원 논문이 비공개라 공개하지 않는다고 밝힙니다. 재현 자료가 모두 공개됐다고 가정하지 않았습니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.27191">논문 초록과 메타데이터, arXiv:2607.27191</a></li>
+<li><a href="https://arxiv.org/pdf/2607.27191">논문 원문 PDF</a></li>
+<li><a href="https://cruxevals.com/">저자 공식 CRUX 프로젝트</a></li>
+<li><a href="https://cruxevals.com/research-notes/long-horizon-ai-rd-evals/">실험 전 공식 설명: long-horizon AI R&amp;D evaluations</a></li>
+<li><a href="/posts/llm-agent-skill-regression-tax/">관련 글: 스킬을 더했는데 왜 더 못해질까, Regression Tax가 측정한 것</a></li>
+<li><a href="/posts/gui-agent-environment-state-verification/">관련 글: AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-07-30</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

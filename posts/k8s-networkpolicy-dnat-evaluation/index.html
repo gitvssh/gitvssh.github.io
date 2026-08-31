@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적지를 확인한 기록 | 다메카솔</title><meta name="description" content="쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다."><link rel="canonical" href="https://blog.damecasol.com/posts/k8s-networkpolicy-dnat-evaluation/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적지를 확인한 기록"><meta property="og:description" content="쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다."><meta property="og:url" content="https://blog.damecasol.com/posts/k8s-networkpolicy-dnat-evaluation/"><meta property="og:image" content="https://blog.damecasol.com/social/k8s-networkpolicy-dnat-evaluation.webp"><meta property="og:image:alt" content="카솔이 12회 연결 결과판과 Service VIP가 Endpoint로 갈라지는 경로를 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적지를 확인한 기록","description":"쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다.","datePublished":"2026-07-20T00:00:00.000Z","dateModified":"2026-07-20T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/k8s-networkpolicy-dnat-evaluation/","image":["https://blog.damecasol.com/social/k8s-networkpolicy-dnat-evaluation.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"네트워크","keywords":["Kubernetes","네트워킹"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="k8s-networkpolicy-dnat-evaluation" data-content-track="tech_column" data-content-category="network"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/network/">네트워크</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/network/">네트워크</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-20T00:00:00.000Z">2026년 7월 20일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적지를 확인한 기록</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DGgMJ3Ck_Z21J5jQ.webp" srcset="/_astro/cover.DGgMJ3Ck_ZuK1F5.webp 640w, /_astro/cover.DGgMJ3Ck_ZIiwSe.webp 960w, /_astro/cover.DGgMJ3Ck_Z21J5jQ.webp 1024w" alt="카솔이 12회 연결 결과판과 Service VIP가 Endpoint로 갈라지는 경로를 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#두-번-중-한-번만-실패하는-기괴한-네트워크-장애" data-toc-link="두-번-중-한-번만-실패하는-기괴한-네트워크-장애" data-analytics-event="toc_click" data-analytics-target="두-번-중-한-번만-실패하는-기괴한-네트워크-장애">두 번 중 한 번만 실패하는 기괴한 네트워크 장애</a></li><li class="article-toc__depth-2"><a href="#service-vip는-껍데기일-뿐-iptables-dnat의-실체" data-toc-link="service-vip는-껍데기일-뿐-iptables-dnat의-실체" data-analytics-event="toc_click" data-analytics-target="service-vip는-껍데기일-뿐-iptables-dnat의-실체">Service VIP는 껍데기일 뿐: iptables DNAT의 실체</a></li><li class="article-toc__depth-2"><a href="#connection-refused-3단계-감별법" data-toc-link="connection-refused-3단계-감별법" data-analytics-event="toc_click" data-analytics-target="connection-refused-3단계-감별법">Connection Refused 3단계 감별법</a></li><li class="article-toc__depth-3"><a href="#1단계-엔드포인트-생존-확인" data-toc-link="1단계-엔드포인트-생존-확인" data-analytics-event="toc_click" data-analytics-target="1단계-엔드포인트-생존-확인">1단계: 엔드포인트 생존 확인</a></li><li class="article-toc__depth-3"><a href="#2단계-반복-호출을-통한-패킷-경로-추적" data-toc-link="2단계-반복-호출을-통한-패킷-경로-추적" data-analytics-event="toc_click" data-analytics-target="2단계-반복-호출을-통한-패킷-경로-추적">2단계: 반복 호출을 통한 패킷 경로 추적</a></li><li class="article-toc__depth-3"><a href="#3단계-노드-레벨-방화벽-체인-및-ipset-검증" data-toc-link="3단계-노드-레벨-방화벽-체인-및-ipset-검증" data-analytics-event="toc_click" data-analytics-target="3단계-노드-레벨-방화벽-체인-및-ipset-검증">3단계: 노드 레벨 방화벽 체인 및 ipset 검증</a></li><li class="article-toc__depth-2"><a href="#안전하고-올바른-networkpolicy-작성법" data-toc-link="안전하고-올바른-networkpolicy-작성법" data-analytics-event="toc_click" data-analytics-target="안전하고-올바른-networkpolicy-작성법">안전하고 올바른 NetworkPolicy 작성법</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-1번의-성공에-속지-않는-방어적-엔지니어링" data-toc-link="다메카솔의-해석-1번의-성공에-속지-않는-방어적-엔지니어링" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-1번의-성공에-속지-않는-방어적-엔지니어링">다메카솔의 해석: 1번의 성공에 속지 않는 방어적 엔지니어링</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-네트워크인프라-글" data-toc-link="함께-읽을-네트워크인프라-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-네트워크인프라-글">함께 읽을 네트워크/인프라 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>동일한 파드에서 동일한 쿠버네티스 Service 도메인을 호출했는데, <strong>어떤 때는 정상적으로 연결되고 바로 다음 호출에서는 <code>Connection Refused</code>가 발생</strong>하는 기괴한 현상을 겪어보신 적 있으신가요?</p>
+<p>네트워크 정책(NetworkPolicy) YAML을 아무리 쳐다봐도 Service VIP와 포트는 완벽하게 <code>allow</code> 처리되어 있는데도 말이죠.</p>
+<p>이 문제의 범인은 바로 **“쿠버네티스 iptables의 DNAT(Destination NAT) 주소 변환과 NetworkPolicy 방화벽 규칙 평가의 선후 관계”**에 있었습니다. 방화벽이 검사하는 주소는 우리가 선언한 ’Service 가상 IP(VIP)’가 아니라, **‘DNAT을 거쳐 최종 변환된 실제 파드/노드의 엔드포인트 IP’**였기 때문입니다.</p>
+<p>이번 글에서는 홈랩 k3s 클러스터에서 간헐적 연결 거부 장애를 추적하고 해결했던 실전 트러블슈팅 경험을 공유합니다.</p>
+<h2 id="두-번-중-한-번만-실패하는-기괴한-네트워크-장애">두 번 중 한 번만 실패하는 기괴한 네트워크 장애</h2>
+<p><img alt="첫 연결 성공 뒤 정상이라고 판단했지만 12회 반복에서 성공과 거부가 반반으로 갈린 사고 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.D-w-z3yo_vUBQw.webp" srcset=""></p>
+<p>CI 러너 파드가 사내 이미지 레지스트리 서비스(<code>registry.default.svc</code>)로 이미지를 푸시할 때 간헐적으로 빌드가 깨지는 현상이 발생했습니다.</p>
+<p>테스트 파드에서 반복 호출을 날려보니 충격적인 결과가 나왔습니다:</p>
+<ul>
+<li>12번의 호출 중 **정확히 6번은 성공(200 OK), 6번은 즉시 <code>Connection Refused</code>**로 거부되었습니다.</li>
+</ul>
+<p>단 한 번의 요청 성공만 보고 “네트워크 정책이 잘 뚫렸네” 하고 넘어가기 십상이지만, 뒤에서는 트래픽이 50% 확률로 드롭되고 있었던 것입니다.</p>
+<h2 id="service-vip는-껍데기일-뿐-iptables-dnat의-실체">Service VIP는 껍데기일 뿐: iptables DNAT의 실체</h2>
+<p><img alt="Service VIP로 들어온 패킷이 DNAT로 Endpoint 주소로 바뀐 뒤 kube-router 정책 체인을 지나는 세로 단면도" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.M8RKEhNB_Z1dkqVL.webp" srcset=""></p>
+<p>쿠버네티스의 Service ClusterIP(예: <code>10.43.0.50</code>)는 물리적으로 존재하는 실제 인터페이스가 아닙니다. 리눅스 커널의 iptables(또는 IPVS) 룰에 의해 등록된 가상 IP일 뿐입니다.</p>
+<p>패킷이 Service VIP로 향하면 커널은 다음 과정을 거칩니다:</p>
+<ol>
+<li><strong>DNAT(목적지 주소 변환)</strong>: Service VIP를 백엔드에 매달려 있는 실제 파드 IP 목록(<code>EndpointSlice</code>) 중 하나로 확률적으로 치환합니다. (예: Pod-A <code>10.42.1.15</code> 또는 Pod-B <code>10.42.2.20</code>)</li>
+<li><strong>NetworkPolicy 방화벽 평가</strong>: CNI 플러그인(kube-router/Calico 등)이 패킷을 검사합니다.</li>
+</ol>
+<p>이때 핵심은 **“NetworkPolicy가 패킷을 검사할 때는 이미 목적지 IP가 Service VIP가 아니라 실제 Pod IP로 바뀌어 있다”**는 사실입니다.</p>
+<p>만약 NetworkPolicy에 Service VIP 대역만 열어두고 실제 백엔드 파드 셀렉터(<code>podSelector</code>)나 노드 IP를 열어주지 않았다면, <strong>패킷이 특정 노드나 외부 엔드포인트로 라우팅되는 순간 방화벽에 걸려 <code>Connection Refused(REJECT)</code>로 튕겨 나가게 됩니다.</strong></p>
+<h2 id="connection-refused-3단계-감별법">Connection Refused 3단계 감별법</h2>
+<p><img alt="같은 connection refused를 정책 경로, Endpoint와 앱 상태, 초기 정책 프로그래밍 지연로 나누는 감별 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.litG6h-W_ZP0E14.webp" srcset=""></p>
+<p>쿠버네티스에서 연결 거부 에러가 떴을 때 다음 순서로 원인을 분리해야 합니다:</p>
+<h3 id="1단계-엔드포인트-생존-확인">1단계: 엔드포인트 생존 확인</h3>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">//</span><span style="color:#032F62"> Service에</span><span style="color:#032F62"> 연결된</span><span style="color:#032F62"> 실제</span><span style="color:#032F62"> 백엔드</span><span style="color:#032F62"> IP</span><span style="color:#032F62"> 목록</span><span style="color:#032F62"> 조회</span></span>
+<span class="line"><span style="color:#6F42C1">kubectl</span><span style="color:#032F62"> get</span><span style="color:#032F62"> endpointslice</span><span style="color:#005CC5"> -l</span><span style="color:#032F62"> kubernetes.io/service-name=</span><span style="color:#D73A49">&#x3C;</span><span style="color:#032F62">서비스</span><span style="color:#24292E">명</span><span style="color:#D73A49">></span><span style="color:#005CC5"> -o</span><span style="color:#032F62"> wide</span></span></code></pre>
+<p>백엔드 파드가 준비(<code>Ready</code>) 상태인지, 컨테이너 프로세스가 실제로 해당 포트(<code>targetPort</code>)를 열고 Listen 중인지 확인합니다.</p>
+<h3 id="2단계-반복-호출을-통한-패킷-경로-추적">2단계: 반복 호출을 통한 패킷 경로 추적</h3>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">//</span><span style="color:#032F62"> 출발</span><span style="color:#032F62"> 파드</span><span style="color:#032F62"> 내부에서</span><span style="color:#032F62"> 연속</span><span style="color:#032F62"> 호출</span><span style="color:#032F62"> 테스트</span></span>
+<span class="line"><span style="color:#6F42C1">kubectl</span><span style="color:#032F62"> exec</span><span style="color:#005CC5"> -it</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#032F62">출발파</span><span style="color:#24292E">드</span><span style="color:#D73A49">></span><span style="color:#005CC5"> --</span><span style="color:#032F62"> sh</span><span style="color:#005CC5"> -c</span><span style="color:#005CC5"> \</span></span>
+<span class="line"><span style="color:#032F62">  'for i in $(seq 1 10); do curl -s -o /dev/null -w "%{http_code}\n" http://&#x3C;서비스명>:&#x3C;포트>; done'</span></span></code></pre>
+<p>특정 엔드포인트로 튈 때만 실패하는지 확인합니다.</p>
+<h3 id="3단계-노드-레벨-방화벽-체인-및-ipset-검증">3단계: 노드 레벨 방화벽 체인 및 ipset 검증</h3>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">//</span><span style="color:#032F62"> 노드에</span><span style="color:#032F62"> 직접</span><span style="color:#032F62"> 접속하여</span><span style="color:#032F62"> CNI</span><span style="color:#032F62"> 방화벽</span><span style="color:#032F62"> 룰과</span><span style="color:#032F62"> 차단</span><span style="color:#032F62"> 로그</span><span style="color:#032F62"> 확인</span></span>
+<span class="line"><span style="color:#6F42C1">sudo</span><span style="color:#032F62"> iptables-save</span><span style="color:#005CC5"> -t</span><span style="color:#032F62"> filter</span><span style="color:#D73A49"> |</span><span style="color:#6F42C1"> grep</span><span style="color:#005CC5"> -E</span><span style="color:#032F62"> 'KUBE-ROUTER|KUBE-POD-FW'</span></span>
+<span class="line"><span style="color:#6F42C1">sudo</span><span style="color:#032F62"> ipset</span><span style="color:#032F62"> list</span></span></code></pre>
+<h2 id="안전하고-올바른-networkpolicy-작성법">안전하고 올바른 NetworkPolicy 작성법</h2>
+<p><img alt="카솔이 반복 연결, Endpoint 기록, 노드 규칙 확인, 대상별 허용의 네 단계 카드를 정리하는 마지막 페이지" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.3MYQauDZ_Z4WaT2.webp" srcset=""></p>
+<p>동적으로 IP가 바뀌는 쿠버네티스 환경에서는 절대 파드 IP를 하드코딩해서 정책을 뚫으면 안 됩니다:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left">통신 대상 종류</th>
+<th style="text-align: left">권장하는 정책 표현</th>
+<th style="text-align: left">피해야 할 안티패턴</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left"><strong>클러스터 내부 파드</strong></td>
+<td style="text-align: left"><code>namespaceSelector</code> + <code>podSelector</code> 조합</td>
+<td style="text-align: left">파드 IP를 <code>ipBlock.cidr</code>로 직접 지정</td>
+</tr>
+<tr>
+<td style="text-align: left"><strong>클러스터 외부 / 노드 IP</strong></td>
+<td style="text-align: left">최소화된 서브넷 단위 <code>ipBlock.cidr</code></td>
+<td style="text-align: left">귀찮다고 <code>0.0.0.0/0</code> 전체 허용</td>
+</tr>
+<tr>
+<td style="text-align: left"><strong>Service 포트 매핑</strong></td>
+<td style="text-align: left">컨테이너의 실제 <code>targetPort</code> 기준 매칭</td>
+<td style="text-align: left">Service의 가상 <code>port</code>만 선언</td>
+</tr>
+</tbody>
+</table>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#6A737D">#--- 올바른 NetworkPolicy 작성 예시 ---</span></span>
+<span class="line"><span style="color:#22863A">apiVersion</span><span style="color:#24292E">: </span><span style="color:#032F62">networking.k8s.io/v1</span></span>
+<span class="line"><span style="color:#22863A">kind</span><span style="color:#24292E">: </span><span style="color:#032F62">NetworkPolicy</span></span>
+<span class="line"><span style="color:#22863A">metadata</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">  name</span><span style="color:#24292E">: </span><span style="color:#032F62">allow-to-registry</span></span>
+<span class="line"><span style="color:#22863A">spec</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">  podSelector</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">    matchLabels</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">      app</span><span style="color:#24292E">: </span><span style="color:#032F62">ci-runner</span></span>
+<span class="line"><span style="color:#22863A">  policyTypes</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#24292E">    - </span><span style="color:#032F62">Egress</span></span>
+<span class="line"><span style="color:#22863A">  egress</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#24292E">    - </span><span style="color:#22863A">to</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#24292E">        - </span><span style="color:#22863A">namespaceSelector</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">            matchLabels</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">              kubernetes.io/metadata.name</span><span style="color:#24292E">: </span><span style="color:#032F62">infra</span></span>
+<span class="line"><span style="color:#22863A">          podSelector</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">            matchLabels</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#22863A">              app</span><span style="color:#24292E">: </span><span style="color:#032F62">image-registry</span></span>
+<span class="line"><span style="color:#22863A">      ports</span><span style="color:#24292E">:</span></span>
+<span class="line"><span style="color:#24292E">        - </span><span style="color:#22863A">protocol</span><span style="color:#24292E">: </span><span style="color:#032F62">TCP</span></span>
+<span class="line"><span style="color:#22863A">          port</span><span style="color:#24292E">: </span><span style="color:#005CC5">5000</span></span></code></pre>
+<h2 id="다메카솔의-해석-1번의-성공에-속지-않는-방어적-엔지니어링">다메카솔의 해석: 1번의 성공에 속지 않는 방어적 엔지니어링</h2>
+<p>시니어 엔지니어로서 네트워크 트러블슈팅을 다룰 때 가장 경계해야 할 것은 <strong>“한 번 잘 되니까 정상이다”라는 섣부른 낙관론</strong>입니다.</p>
+<ol>
+<li><strong>엔드포인트 분산에 따른 경로 검증</strong>: 라운드로빈 로드밸런싱 환경에서는 최소 N회 이상의 반복 테스트를 수행하여 모든 백엔드 경로가 균일하게 통과하는지 검증해야 합니다.</li>
+<li><strong>CNI와 iptables의 패킷 수명주기 이해</strong>: 쿠버네티스의 추상화 계층(Service, Ingress) 아래에서 리눅스 커널이 패킷을 어떻게 조작(DNAT, SNAT)하는지 이해해야 신속한 장애 진단이 가능합니다.</li>
+<li><strong>네트워크 정책 적용 후 양방향 검증</strong>: 허용하려던 정상 트래픽이 통과하는지뿐만 아니라, **차단되어야 할 비인가 트래픽이 확실하게 드롭되는지(Negative Test)**까지 확인해야 진정한 보안이 완성됩니다.</li>
+</ol>
+<h2 id="함께-읽을-네트워크인프라-글">함께 읽을 네트워크/인프라 글</h2>
+<ul>
+<li><a href="/posts/dns-bootstrap-loop/">홈랩 쿠버네티스 구축기: CoreDNS 부트스트랩 루프 트러블슈팅</a></li>
+<li><a href="/posts/three-node-etcd-quorum-context/">K3s etcd 쿼럼 원리와 3노드 HA 아키텍처</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">Kubernetes Documentation — Network Policies</a></li>
+<li><a href="https://kubernetes.io/docs/reference/networking/virtual-ips/">Kubernetes Documentation — Virtual IPs and Service Proxies</a></li>
+<li><a href="https://github.com/cloudnativelabs/kube-router">kube-router Official GitHub Repository</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/networkpolicy-negative-test/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.gWCp9_cb_IN4E7.webp" srcset="/_astro/cover.gWCp9_cb_R4PCh.webp 240w, /_astro/cover.gWCp9_cb_25fRdK.webp 360w, /_astro/cover.gWCp9_cb_Z1LKeYH.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-16T00:00:00.000Z">2026년 8월 16일</time></div><h3><a href="/posts/networkpolicy-negative-test/" data-analytics-event="related_post_click" data-analytics-target="networkpolicy-negative-test">3분만에 만화로 보는 IT - 기술 해설 | NetworkPolicy가 Synced였는데, 막히는지는 따로 시험했습니다</a></h3><p>NetworkPolicy 선언이 Synced인 것과 패킷이 실제로 차단되는 것은 다릅니다. 기본 차단, AND·OR 선택자, 집행 계층과 음성 테스트를 기록합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/dns-bootstrap-loop/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BaFdXpO7_1KLBjl.webp" srcset="/_astro/cover.BaFdXpO7_ZIW9bW.webp 240w, /_astro/cover.BaFdXpO7_tdRow.webp 360w, /_astro/cover.BaFdXpO7_1GoT00.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-31T00:00:00.000Z">2026년 7월 31일</time></div><h3><a href="/posts/dns-bootstrap-loop/" data-analytics-event="related_post_click" data-analytics-target="dns-bootstrap-loop">3분만에 만화로 보는 IT - 기술 해설 | CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유</a></h3><p>CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/kubectl-drain-pdb-checklist/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DueXrXpz_Z2wP69C.webp" srcset="/_astro/cover.DueXrXpz_Z3nWmx.webp 240w, /_astro/cover.DueXrXpz_19M4dV.webp 360w, /_astro/cover.DueXrXpz_2mX5Op.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/kubectl-drain-pdb-checklist/" data-analytics-event="related_post_click" data-analytics-target="kubectl-drain-pdb-checklist">3분만에 만화로 보는 IT - 기술 해설 | kubectl drain이 멈췄을 때 PDB를 우회하기 전에 확인할 것</a></h3><p>drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 유예로 나누고 force와 eviction 우회 옵션의 차이를 정리합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/network/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 네트워크 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

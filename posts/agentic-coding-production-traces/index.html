@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 코딩 에이전트 KV 캐시의 진짜 병목 | 다메카솔</title><meta name="description" content="GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/agentic-coding-production-traces/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 에이전트의 진짜 병목은 대화 사이에 생긴다"><meta property="og:description" content="GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/agentic-coding-production-traces/"><meta property="og:image" content="https://blog.damecasol.com/social/agentic-coding-production-traces.webp"><meta property="og:image:alt" content="성인형 카솔이 AI 코어와 도구·실행 환경·저장 자원을 잇는 흐름을 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 에이전트의 진짜 병목은 대화 사이에 생긴다","description":"GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다.","datePublished":"2026-08-06T00:00:00.000Z","dateModified":"2026-08-06T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/agentic-coding-production-traces/","image":["https://blog.damecasol.com/social/agentic-coding-production-traces.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","AI 코딩 도구","AI 인프라","LLM"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="agentic-coding-production-traces" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-06T00:00:00.000Z">2026년 8월 6일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 에이전트의 진짜 병목은 대화 사이에 생긴다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BPLe1CdM_Z2aFg8z.webp" srcset="/_astro/cover.BPLe1CdM_Z2j6Uj5.webp 640w, /_astro/cover.BPLe1CdM_Z2wEqwe.webp 960w, /_astro/cover.BPLe1CdM_Z2aFg8z.webp 1024w" alt="성인형 카솔이 AI 코어와 도구·실행 환경·저장 자원을 잇는 흐름을 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#한-번의-요청은-하나의-호출이-아니다" data-toc-link="한-번의-요청은-하나의-호출이-아니다" data-analytics-event="toc_click" data-analytics-target="한-번의-요청은-하나의-호출이-아니다">한 번의 요청은 하나의 호출이 아니다</a></li><li class="article-toc__depth-2"><a href="#같은-턴-안에서는-캐시가-빠르게-달아올랐다" data-toc-link="같은-턴-안에서는-캐시가-빠르게-달아올랐다" data-analytics-event="toc_click" data-analytics-target="같은-턴-안에서는-캐시가-빠르게-달아올랐다">같은 턴 안에서는 캐시가 빠르게 달아올랐다</a></li><li class="article-toc__depth-2"><a href="#턴-경계와-모델-교체가-연속성을-끊었다" data-toc-link="턴-경계와-모델-교체가-연속성을-끊었다" data-analytics-event="toc_click" data-analytics-target="턴-경계와-모델-교체가-연속성을-끊었다">턴 경계와 모델 교체가 연속성을 끊었다</a></li><li class="article-toc__depth-2"><a href="#컨텍스트-압축은-세션을-살리지만-캐시를-다시-시작시켰다" data-toc-link="컨텍스트-압축은-세션을-살리지만-캐시를-다시-시작시켰다" data-analytics-event="toc_click" data-analytics-target="컨텍스트-압축은-세션을-살리지만-캐시를-다시-시작시켰다">컨텍스트 압축은 세션을 살리지만 캐시를 다시 시작시켰다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-턴-경계를-자원-정책의-신호로-쓴다" data-toc-link="다메카솔의-해석-턴-경계를-자원-정책의-신호로-쓴다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-턴-경계를-자원-정책의-신호로-쓴다">다메카솔의 해석: 턴 경계를 자원 정책의 신호로 쓴다</a></li><li class="article-toc__depth-2"><a href="#품질과-서버-상태는-이-논문만으로-알-수-없다" data-toc-link="품질과-서버-상태는-이-논문만으로-알-수-없다" data-analytics-event="toc_click" data-analytics-target="품질과-서버-상태는-이-논문만으로-알-수-없다">품질과 서버 상태는 이 논문만으로 알 수 없다</a></li><li class="article-toc__depth-2"><a href="#운영-체크리스트" data-toc-link="운영-체크리스트" data-analytics-event="toc_click" data-analytics-target="운영-체크리스트">운영 체크리스트</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>사용자가 한 번 요청하면 코딩 에이전트는 모델을 한 번 부르고 끝나지 않습니다. 모델이 상황을 읽고, 도구를 실행하고, 결과를 다시 읽는 루프가 이어집니다. <strong>Agentic Coding in the Wild: Characterizing GitHub Copilot Traces at Production Scale</strong>는 이 부하를 실험실 벤치마크가 아니라 실제 GitHub Copilot 운영 추적으로 들여다봤습니다.</p>
+<p>핵심은 요청 수가 아니라 세션의 단계입니다. 한 턴 안에서는 같은 접두어를 재사용해 KV 캐시가 빠르게 따뜻해지지만, 사용자가 다시 입력하기 전의 긴 공백과 모델 교체, 컨텍스트 압축은 그 연속성을 끊었습니다. 이 글은 관찰, 캐시 사건, 압축 비용, 자원 운영 의미, 한계를 분리해 읽습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="한-번의-요청은-하나의-호출이-아니다">한 번의 요청은 하나의 호출이 아니다</h2>
+<p><img alt="한 사용자 요청이 AI 코어와 여러 도구 작업대를 반복한 뒤 결과물로 이어지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DCYKYiZI_2inlYO.webp" srcset=""></p>
+<p>논문은 코딩 에이전트 실행을 세션, 턴, 단계의 세 층으로 나눴습니다. 세션은 에이전트 작업의 전체 수명입니다. 턴은 사용자 요청 하나와 그 뒤의 자율 실행 사슬입니다. 단계는 그 안에서 일어나는 개별 모델 호출이나 도구 호출입니다.</p>
+<p>분석 대상은 2026년 6월 첫째 주 미국 여러 지역의 Visual Studio와 VS Code에서 수집한 익명화 텔레메트리입니다. 세션 1,350만 건, 턴 9,510만 건, 사용자 320만 명, 모델 호출 7억6,050만 건, 도구 호출 7억7,470만 건이 포함됐습니다. 모델은 27종 이상, 도구는 45종 이상이었습니다.</p>
+<p>이 숫자는 전 세계 모든 코딩 에이전트를 뜻하지 않습니다. 미국 내 최대 세 시간대의 GitHub Copilot 코딩 에이전트 표본입니다. 저자들은 프롬프트, 파일 내용, 모델 출력, 소스 코드, 도구 인자, 사용자 식별 정보는 수집하지 않았다고 밝혔습니다. 호출 시각, 지속 시간, 토큰 수, 모델·도구 이름, 성공 여부 같은 구조 메타데이터로 실행 흐름을 재구성했습니다.</p>
+<h2 id="같은-턴-안에서는-캐시가-빠르게-달아올랐다">같은 턴 안에서는 캐시가 빠르게 달아올랐다</h2>
+<p><img alt="같은 context ribbon이 반복될수록 AI 코어가 차가운 빛에서 따뜻한 빛으로 바뀌는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BgdYioFc_Z1QGXCC.webp" srcset=""></p>
+<p>KV 캐시는 이전 토큰에서 계산한 중간 상태를 재사용합니다. 코딩 에이전트의 한 턴에서는 시스템 프롬프트, 이전 대화, 도구 결과가 다음 호출의 긴 접두어로 반복됩니다. 같은 접두어가 남으면 매번 처음부터 계산할 필요가 줄어듭니다.</p>
+<p>논문에서 평균 캐시 적중률은 한 턴의 첫 호출 약 45%에서 두 번째 호출 약 86%로 올랐습니다. 세 번째 이후에는 약 92~94%에 머물렀습니다. 중앙값만 보면 전체 호출의 캐시 적중률은 98%로 높았지만, 첫 호출 같은 cold start가 섞인 양봉 분포였습니다.</p>
+<p>따라서 한 턴 안의 다음 호출이 곧 올 가능성이 높을 때는 캐시를 성급히 내리는 정책이 손해가 될 수 있습니다. 논문이 관찰한 턴 안 KV 캐시 유휴 시간 중앙값은 1.2초였습니다. 컨테이너 유휴 시간도 5.8초였습니다.</p>
+<h2 id="턴-경계와-모델-교체가-연속성을-끊었다">턴 경계와 모델 교체가 연속성을 끊었다</h2>
+<p><img alt="따뜻한 작업 흐름이 조용한 간격과 다른 모델 코어를 건너며 차가워지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.w8htBuY9_ZvdXds.webp" srcset=""></p>
+<p>같은 모델을 유지해도 턴 경계에서는 평균 캐시 적중률이 26%포인트 낮아졌습니다. 사용자가 결과를 읽고 다음 요청을 생각하는 동안 캐시가 오래 사용되지 않아 서빙 시스템에서 밀려난 것으로 논문은 해석했습니다. 유휴 시간이 2분을 넘기 시작하면 분포가 넓어지고, 2~10분 구간에서는 중앙값도 크게 떨어졌습니다.</p>
+<p>모델 교체는 더 강한 사건이었습니다. 교체 뒤 평균 캐시 적중률은 8%였고, 이전 호출 대비 평균 67%포인트 하락했습니다. 모델마다 토크나이저나 내부 구조가 달라 기존 캐시를 그대로 이어 쓰기 어렵기 때문입니다.</p>
+<p>턴을 가로지르는 유휴 시간은 턴 안과 규모가 달랐습니다. 논문이 계산한 중앙값은 컨테이너 243초, KV 캐시 172초였습니다. 별도로 사용자 입력 사이의 대기 시간 중앙값은 25.2분이었습니다. 턴 경계가 자원 회수 후보를 찾는 자연스러운 신호가 된다는 근거입니다.</p>
+<h2 id="컨텍스트-압축은-세션을-살리지만-캐시를-다시-시작시켰다">컨텍스트 압축은 세션을 살리지만 캐시를 다시 시작시켰다</h2>
+<p>긴 코딩 작업에서는 컨텍스트가 모델 한도에 가까워집니다. 에이전트는 오래된 기록을 버리거나 요약해 세션을 이어 갑니다. 기능적으로는 필요한 압축이지만, 이전 프롬프트 접두어 자체가 바뀌므로 캐시에는 큰 사건입니다.</p>
+<p>컨텍스트 압축은 전체 세션의 7.8%에서 나타났습니다. 그러나 이 세션들이 전체 토큰의 44.2%, 모델 호출의 37.1%, 도구 호출의 38.9%를 차지했습니다. 압축은 가벼운 세션에 고르게 나타난 것이 아니라 가장 긴 작업에 집중됐습니다.</p>
+<p>한 번의 압축은 중앙값 기준 프롬프트 토큰의 72.8%를 줄였습니다. 첫 호출 뒤 캐시 적중률도 중앙값 66.1%포인트 떨어졌습니다. 압축 호출 자체는 중앙값 기준 해당 턴 실행 시간의 약 22%를 썼습니다. 긴 입력을 읽는 prefill과 요약을 생성하는 decode가 모두 턴의 핵심 경로에 놓였기 때문입니다.</p>
+<p>이 결과가 “압축하지 말라”는 뜻은 아닙니다. 압축 없이 컨텍스트 한도를 넘으면 작업을 이어 갈 수 없습니다. 논문이 제시한 시스템 질문은 압축 시점을 어떻게 고르고, 이전 접두어 일부를 보존하며, cache-cold 비용을 어떻게 줄일지입니다.</p>
+<h2 id="다메카솔의-해석-턴-경계를-자원-정책의-신호로-쓴다">다메카솔의 해석: 턴 경계를 자원 정책의 신호로 쓴다</h2>
+<p><img alt="성인형 카솔이 따뜻한 active loop와 차가운 idle storage 사이에서 캐시 자원 이동 시점을 판단하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.BFTsFqsa_1XWBAE.webp" srcset=""></p>
+<p>저라면 모든 모델 호출에 같은 보존 시간을 적용하지 않겠습니다. 한 턴 안에서는 다음 호출이 거의 바로 오므로 KV 캐시와 도구 실행 환경을 따뜻하게 유지합니다. 턴이 끝나면 예상 유휴 시간과 상태 복구 비용을 비교해 GPU 캐시를 DRAM이나 디스크로 내리거나, 컨테이너를 hibernate할지 결정합니다.</p>
+<p>논문도 턴 경계마다 유휴 시간을 예측하는 경량 모델을 실험했습니다. 첫 주 15만 세션으로 학습하고 다음 주 5만 세션으로 평가했습니다. 60초보다 긴 유휴 구간을 맞히는 ROC-AUC는 0.73이었고, 시간 구간별 정확도가 낮아져도 전체 유휴 시간의 86~90%를 포착했습니다.</p>
+<p>다만 이 결과는 곧바로 운영 절감액이 아닙니다. 실제 offload, hibernate, keep-alive를 적용한 온라인 실험이 아니라 언제 자원을 회수할 만한지를 예측한 평가입니다. 복구 지연, GPU 메모리 압력, 배치 효율, 비용 변화는 별도로 검증해야 합니다.</p>
+<h2 id="품질과-서버-상태는-이-논문만으로-알-수-없다">품질과 서버 상태는 이 논문만으로 알 수 없다</h2>
+<p>가장 중요한 한계는 품질 신호가 없다는 점입니다. 프롬프트와 응답 내용을 수집하지 않았으므로 자원을 많이 쓴 세션이 실제로 어려운 문제를 해결했는지, 반복 실패에 빠졌는지 연결할 수 없습니다. 효율을 줄였는데 과제 성공률도 낮아진다면 좋은 정책이라고 말할 수 없습니다.</p>
+<p>추적도 클라이언트 측입니다. GPU 활용률, 큐 깊이, 배치 크기, 서버 메모리 압력은 직접 관찰하지 않았습니다. 캐시가 왜 밀려났는지에 대한 일부 설명은 클라이언트가 본 지연과 적중률 패턴에 기반한 시스템 해석입니다.</p>
+<p>범위는 미국 내 GitHub Copilot, 2026년 6월 첫째 주입니다. 저자들은 1월부터 6월까지 주요 패턴이 일관됐다고 썼지만, 도구·모델·자율성은 빠르게 바뀝니다. 다른 제품과 지역, 앞으로의 부하에 그대로 일반화하면 안 됩니다. arXiv와 TeX 소스에는 공식 코드나 공개 원시 추적 데이터 링크도 없습니다.</p>
+<h2 id="운영-체크리스트">운영 체크리스트</h2>
+<ol>
+<li>한 요청이 아니라 세션·턴·단계 단위로 텔레메트리를 구분하는가.</li>
+<li>같은 턴 안의 cache-hot 경로와 턴 사이의 idle 경로에 다른 정책을 쓰는가.</li>
+<li>모델 교체와 컨텍스트 압축을 캐시 수명주기 사건으로 기록하는가.</li>
+<li>자원 절감과 과제 성공·재시도·사용자 대기 시간을 함께 측정하는가.</li>
+<li>offload 뒤 복구 지연이 서비스 목표를 넘지 않는지 온라인으로 검증하는가.</li>
+</ol>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Agentic Coding in the Wild: Characterizing GitHub Copilot Traces at Production Scale</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Banruo Liu, Haoran Qiu, Íñigo Goiri, Rodrigo Fonseca, Ricardo Bianchini, Esha Choukse</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-07-30 20:51:51 UTC</td>
+</tr>
+<tr>
+<td>arXiv 새 목록</td>
+<td>2026-08-04 cs.AI</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.AI, cs.LG</td>
+</tr>
+<tr>
+<td>subtype</td>
+<td>empirical</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.00101">논문 초록과 메타데이터, arXiv:2608.00101</a></li>
+<li><a href="https://arxiv.org/pdf/2608.00101">논문 원문 PDF</a></li>
+<li><a href="/posts/copilot-security-api-study/">관련 글: AI 코딩 도우미는 보안 API도 안전하게 쓸까</a></li>
+<li><a href="/posts/agentfootprint-storage-benchmark/">관련 글: AI 에이전트는 로컬 디스크를 얼마나 쓰게 될까</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-06</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

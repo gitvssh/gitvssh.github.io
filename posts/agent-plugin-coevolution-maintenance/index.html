@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 에이전트 플러그인 유지보수 연구 | 다메카솔</title><meta name="description" content="Claude Code 플러그인 8,351개의 변경 기록을 통해 자연어 지침과 스크립트를 함께 유지보수해야 하는 이유를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/agent-plugin-coevolution-maintenance/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 플러그인의 문서가 코드처럼 바뀐 이유"><meta property="og:description" content="Claude Code 플러그인 8,351개의 변경 기록을 통해 자연어 지침과 스크립트를 함께 유지보수해야 하는 이유를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/agent-plugin-coevolution-maintenance/"><meta property="og:image" content="https://blog.damecasol.com/social/agent-plugin-coevolution-maintenance.webp"><meta property="og:image:alt" content="성인형 카솔이 연결된 자연어 지침 리본과 플러그인 장치를 들고 있는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 플러그인의 문서가 코드처럼 바뀐 이유","description":"Claude Code 플러그인 8,351개의 변경 기록을 통해 자연어 지침과 스크립트를 함께 유지보수해야 하는 이유를 살펴봅니다.","datePublished":"2026-08-31T00:00:00.000Z","dateModified":"2026-08-31T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/agent-plugin-coevolution-maintenance/","image":["https://blog.damecasol.com/social/agent-plugin-coevolution-maintenance.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","플러그인","소프트웨어 유지보수","자연어 지침"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="agent-plugin-coevolution-maintenance" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-31T00:00:00.000Z">2026년 8월 31일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트 플러그인의 문서가 코드처럼 바뀐 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>Claude Code 플러그인 8,351개의 변경 기록을 통해 자연어 지침과 스크립트를 함께 유지보수해야 하는 이유를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DcD6tC5P_1PAxQs.webp" srcset="/_astro/cover.DcD6tC5P_gSA91.webp 640w, /_astro/cover.DcD6tC5P_3l4UR.webp 960w, /_astro/cover.DcD6tC5P_1PAxQs.webp 1024w" alt="성인형 카솔이 연결된 자연어 지침 리본과 플러그인 장치를 들고 있는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#스크립트만-고치면-예전-경로가-남는다" data-toc-link="스크립트만-고치면-예전-경로가-남는다" data-analytics-event="toc_click" data-analytics-target="스크립트만-고치면-예전-경로가-남는다">스크립트만 고치면 예전 경로가 남는다</a></li><li class="article-toc__depth-2"><a href="#실제-마켓플레이스의-변경-기록을-모았다" data-toc-link="실제-마켓플레이스의-변경-기록을-모았다" data-analytics-event="toc_click" data-analytics-target="실제-마켓플레이스의-변경-기록을-모았다">실제 마켓플레이스의 변경 기록을 모았다</a></li><li class="article-toc__depth-2"><a href="#ai가-읽는-markdown은-일반-문서와-달랐다" data-toc-link="ai가-읽는-markdown은-일반-문서와-달랐다" data-analytics-event="toc_click" data-analytics-target="ai가-읽는-markdown은-일반-문서와-달랐다">AI가 읽는 Markdown은 일반 문서와 달랐다</a></li><li class="article-toc__depth-2"><a href="#스크립트와-지침은-같은-변경에서-만났다" data-toc-link="스크립트와-지침은-같은-변경에서-만났다" data-analytics-event="toc_click" data-analytics-target="스크립트와-지침은-같은-변경에서-만났다">스크립트와 지침은 같은 변경에서 만났다</a></li><li class="article-toc__depth-2"><a href="#한-생태계의-짧은-스냅샷이다" data-toc-link="한-생태계의-짧은-스냅샷이다" data-analytics-event="toc_click" data-analytics-target="한-생태계의-짧은-스냅샷이다">한 생태계의 짧은 스냅샷이다</a></li><li class="article-toc__depth-2"><a href="#공개-저장소의-표까지만-대조했다" data-toc-link="공개-저장소의-표까지만-대조했다" data-analytics-event="toc_click" data-analytics-target="공개-저장소의-표까지만-대조했다">공개 저장소의 표까지만 대조했다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-코드와-지침을-한-쌍으로-검사한다" data-toc-link="다메카솔의-해석-코드와-지침을-한-쌍으로-검사한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-코드와-지침을-한-쌍으로-검사한다">다메카솔의 해석: 코드와 지침을 한 쌍으로 검사한다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#markdown을-코드와-똑같이-취급해야-하나요" data-toc-link="markdown을-코드와-똑같이-취급해야-하나요" data-analytics-event="toc_click" data-analytics-target="markdown을-코드와-똑같이-취급해야-하나요">Markdown을 코드와 똑같이 취급해야 하나요?</a></li><li class="article-toc__depth-3"><a href="#78면-모든-스크립트-변경이-지침-변경을-요구하나요" data-toc-link="78면-모든-스크립트-변경이-지침-변경을-요구하나요" data-analytics-event="toc_click" data-analytics-target="78면-모든-스크립트-변경이-지침-변경을-요구하나요">78%면 모든 스크립트 변경이 지침 변경을 요구하나요?</a></li><li class="article-toc__depth-3"><a href="#다른-에이전트-플러그인에도-그대로-적용되나요" data-toc-link="다른-에이전트-플러그인에도-그대로-적용되나요" data-analytics-event="toc_click" data-analytics-target="다른-에이전트-플러그인에도-그대로-적용되나요">다른 에이전트 플러그인에도 그대로 적용되나요?</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>문서로 기록된 커밋 10개 가운데 8개는 실제로 기능을 더하거나 고친 변경이었습니다. **「On the Maintenance and Co-evolution of Agent Plugins」**는 Claude Code 플러그인 마켓플레이스의 저장소 1,926개와 커밋 77,773개를 분석해, AI가 읽는 자연어 지침이 어떻게 유지보수되는지 추적한 연구입니다.</p>
+<p>결론은 실무와 가깝습니다. 에이전트용 Markdown은 사람만 읽는 설명서가 아니라 실행 시점의 행동을 구성합니다. 스크립트의 호출법·경로·출력 계약이 달라지면 지침도 같은 변경 단위에서 확인해야 합니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>저자들은 2026년 4월 Claude Code 플러그인 마켓플레이스를 수집해 저장소 1,926개, 마켓플레이스 항목 2,018개, 유효 플러그인 8,351개를 분석했습니다.</li>
+<li>플러그인 관련 커밋 77,773개를 다시 분류하자 <code>docs</code> 비중은 10.3%에서 1.7%로 줄었고 <code>feat</code>는 39.6%를 차지했습니다.</li>
+<li>같은 <code>skills/</code> 디렉터리에서 스크립트와 Markdown이 함께 바뀐 사람 라벨 표본 64건 중 50건은 기능적으로 연결돼 있었습니다.</li>
+<li>이 자료는 수집 당시 저장소 나이 중앙값이 80일인 한 생태계의 스냅샷입니다. 다른 에이전트 플랫폼에서 같은 패턴이 나오는지는 후속 검증이 필요합니다.</li>
+<li>공식 재현 저장소의 일부 데이터와 출력 표는 대조했지만, 빠진 원시 입력과 캐시 때문에 전체 분석을 독립 재현하지는 못했습니다.</li>
+</ul>
+<h2 id="스크립트만-고치면-예전-경로가-남는다">스크립트만 고치면 예전 경로가 남는다</h2>
+<p><img alt="새 스크립트 장치와 맞지 않는 예전 지침 경로를 에이전트 토큰이 따라가는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.D7ld3JSR_Z1kku02.webp" srcset=""></p>
+<p>플러그인은 실행 코드만으로 동작하지 않습니다. Skill·Command·Agent 같은 자연어 파일이 도구를 언제, 어떤 인자로, 어느 경로에서 호출할지 정합니다. 저자들은 이 조합이 반복해서 고쳐지는 소프트웨어인지, 한 번 쓰고 방치되는 산출물인지 물었습니다.</p>
+<p>문제는 변경의 비대칭입니다. 스크립트에 새 플래그를 넣고 <code>SKILL.md</code>의 호출 예를 그대로 두면, 구현은 새 상태인데 에이전트는 낡은 경로를 읽습니다. 파일 형식이 Markdown이라는 이유만으로 이 변경을 일반 문서 작업으로 분류하면 실제 동작 변화가 가려집니다.</p>
+<h2 id="실제-마켓플레이스의-변경-기록을-모았다">실제 마켓플레이스의 변경 기록을 모았다</h2>
+<p><img alt="여러 저장소 상자가 두 단계 여과 장치를 지나 지침 리본과 스크립트 기어, 설정 블록으로 정리되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BE_PBoWm_Z2tATou.webp" srcset=""></p>
+<p>수집 파이프라인은 GitHub Code Search에서 <code>.claude-plugin/marketplace.json</code>을 찾는 데서 시작합니다. 저자들은 저장소 이름으로 중복을 제거하고 별 10개 이상인 저장소를 남긴 뒤, 로컬 경로로 해석되는 플러그인만 분석했습니다. 그 결과 2,018개 마켓플레이스 항목에서 유효 플러그인 8,351개가 남았습니다.</p>
+<p>커밋 분석 단위는 플러그인 구성요소 파일을 한 개 이상 건드린 변경입니다. 이 기준으로 3,948명의 작성자가 만든 커밋 77,773개를 모았습니다. 소프트웨어 엔지니어링 용도는 저자 분류에서 전체 플러그인의 61.3%였고, 둘 이상의 구성요소 유형을 담은 플러그인은 34.4%였습니다.</p>
+<p>활동량도 빠르게 늘었습니다. 공식 출시 직후인 2025년 10월에는 월간 플러그인 관련 커밋이 2,923개였고, 2026년 3월에는 25,618개였습니다. 논문이 말한 8.8배 성장은 이 여섯 달 구간을 가리킵니다.</p>
+<h2 id="ai가-읽는-markdown은-일반-문서와-달랐다">AI가 읽는 Markdown은 일반 문서와 달랐다</h2>
+<p><img alt="평범한 서류로 보이던 지침 조각이 기계에 들어가 출력 경로를 바꾸는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BfDawHhx_ZQRJBj.webp" srcset=""></p>
+<p>저자들은 먼저 커밋 메시지 규칙으로 51,141개를 분류하고, 규칙에 맞지 않는 26,632개는 GPT-5-mini로 분류했습니다. 그다음 <code>docs</code>, <code>ci</code>, <code>style</code>로 적힌 변경의 diff를 읽어 실제 작업 성격을 다시 판정했습니다.</p>
+<p>재분류는 표면과 기능의 차이를 드러냈습니다. 원래 <code>docs</code>였던 커밋 8,007개 중 80%가 <code>feat</code>나 <code>fix</code>로 이동했고, 최종 <code>docs</code> 비중은 10.3%에서 1.7%로 내려갔습니다. AI가 런타임에 읽는 지침을 추가하거나 고친 작업은 행동을 바꾸기 때문입니다.</p>
+<p>전체 분포에서 <code>feat</code>는 39.6%, <code>chore</code>는 21.0%였습니다. 논문이 인용한 전통 오픈소스의 <code>feat</code> 17.2%와 비교하면 새 기능 중심의 성격이 강했습니다. 이 비교는 같은 저장소를 맞춰 본 대조 실험이 아니라 선행 연구의 기준선이라는 점도 함께 읽어야 합니다.</p>
+<p>공동 작성자 표식을 찾는 휴리스틱에서는 전체 커밋의 34.9%가 Claude 공동 작성으로 잡혔습니다. 사람이 AI 결과를 직접 commit하면 표식이 남지 않으므로, 저자들은 이 값을 실제 AI 관여의 하한으로 해석했습니다.</p>
+<h2 id="스크립트와-지침은-같은-변경에서-만났다">스크립트와 지침은 같은 변경에서 만났다</h2>
+<p><img alt="스크립트 장치의 입출력 위치가 바뀌자 연결된 지침 리본도 새 위치로 맞춰지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.FfUrIjsb_Z2deKRg.webp" srcset=""></p>
+<p>구성요소 전체를 보면 모든 파일이 한 덩어리로 움직이지는 않았습니다. 우연 기대보다 자주 함께 바뀐 구성요소 쌍은 Agents와 Commands였고 lift는 1.40이었습니다. Skills가 다른 구성요소와 자주 함께 등장한 현상은 Skills 자체가 널리 쓰인 영향도 받았습니다.</p>
+<p>같은 <code>skills/</code> 디렉터리 안으로 들어가면 다른 모습이 나옵니다. Python·Shell 스크립트와 Markdown의 공동 변경은 우연 기대보다 자주 나타났습니다. 저자 두 명이 pull request 64건을 읽어 보니 50건, 78%에서 스크립트 변경과 지침 변경이 기능적으로 연결돼 있었습니다.</p>
+<p>연결의 이유는 네 갈래였습니다. 새 플래그나 명령을 더한 인터페이스 변경, 출력이나 검증을 바꾼 내부 로직 변경, 모델 이름·환경 변수·버전의 동기화, 파일 경로와 설정 형식의 재구성입니다. 64건의 사람 라벨과 GPT-5-mini 판정 사이 Cohen의 카파는 0.62였고, 저자들은 남은 259건에도 같은 분류기를 적용했습니다.</p>
+<h2 id="한-생태계의-짧은-스냅샷이다">한 생태계의 짧은 스냅샷이다</h2>
+<p><img alt="하나의 젊은 플러그인 생태계만 유리 돔 안에서 관찰되고 다른 생태계는 밖에 남은 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.CmFUFMeE_18oe7g.webp" srcset=""></p>
+<p>이 결과의 시간 범위는 2026년 4월입니다. 수집 시점 저장소 나이 중앙값은 80일이었고, 생태계가 빠르게 커지는 초기 구간이었습니다. 지금의 유지보수 비율이나 장기 생존 패턴까지 같은 값으로 이어진다고 볼 근거는 아직 없습니다.</p>
+<p>플랫폼 범위도 좁습니다. 연구진은 Claude Code용 플러그인을 조사했습니다. Cursor, Copilot, Gemini, Codex처럼 지침 구조와 배포 방식이 다른 생태계에서 커밋 의미와 공동 변경이 반복되는지는 시험하지 않았습니다.</p>
+<p>분류 과정에는 모델 판단이 들어갑니다. 논문은 사람 표본으로 일치도를 점검했지만 GPT-5-mini와 Qwen 기반 분류는 프롬프트와 모델 버전에 민감할 수 있습니다. 공동 작성자 탐지도 표식이 남은 commit만 잡습니다.</p>
+<h2 id="공개-저장소의-표까지만-대조했다">공개 저장소의 표까지만 대조했다</h2>
+<p>저는 arXiv PDF와 TeX, 공식 저장소의 고정 commit <code>7b50b30f3cc92ced5b1ec525b0317c3282555a05</code>를 보존했습니다. 공개 CSV에서 마켓플레이스 2,018행과 플러그인 8,351행을 확인했고, 공개 JSON도 플러그인 레코드 8,351개를 담았습니다. 분류 요약에는 전체 커밋 77,773개, 규칙 분류 51,141개, LLM 분류 26,632개가 기록돼 있었습니다.</p>
+<p>Script-Markdown 표도 파일끼리 맞았습니다. 사람 라벨 CSV는 64건이었고, 공개 JSONL의 남은 259건을 세면 인터페이스 87건, 내부 로직 68건, 값·버전 33건, 저장소 구조 24건, 비연결 47건으로 배포된 Table 8과 일치했습니다.</p>
+<p>여기까지는 공개 산출물의 일관성 검사입니다. 저장소 README가 언급한 대형 mined input과 <code>ccs_labels.jsonl</code>, <code>relabeled.jsonl</code>, <code>plugin_registry.json</code>, <code>pr_plugin_records.jsonl</code>은 고정 commit에 없었습니다. GitHub 재수집과 hosted-model 분류를 다시 수행하지 않았으므로 RQ2·RQ3 전체를 독립 재현했다는 뜻은 아닙니다.</p>
+<h2 id="다메카솔의-해석-코드와-지침을-한-쌍으로-검사한다">다메카솔의 해석: 코드와 지침을 한 쌍으로 검사한다</h2>
+<p><img alt="성인형 카솔이 스크립트 장치와 지침 경로가 함께 맞아야 열리는 배포 관문을 가리키는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-06.DJYTnGXp_c6liC.webp" srcset=""></p>
+<p>제가 이 연구에서 가져갈 판단은 간단합니다. 에이전트용 자연어 지침을 문서 디렉터리에 있다는 이유로 비실행 산출물처럼 다루면, 리뷰와 테스트가 동작 변화의 절반만 보게 됩니다. <a href="/posts/workflow-as-knowledge/">워크플로 자체를 판단 근거로 보존해야 한다는 연구</a>와 이어서 읽으면, 지침 파일도 실행 경로의 일부라는 점이 더 선명해집니다.</p>
+<p>실무에서는 세 군데를 묶어 보겠습니다. 첫째, 스크립트의 플래그·경로·출력 필드가 바뀐 pull request는 연결된 지침 파일을 함께 검토합니다. 둘째, 지침에 적힌 호출 예를 작은 contract test로 실행해 경로와 인자가 살아 있는지 확인합니다. 셋째, 모델 이름·환경 변수·스키마 값은 가능하면 한 정의에서 생성해 수동 동기화 지점을 줄입니다.</p>
+<p>자연어 의미 검토는 사람에게 남습니다. 문장이 더 매끄러워졌어도 트리거 조건이나 금지 규칙이 달라지면 행동 변경입니다. diff 리뷰에서 “문서만 바뀌었다”보다 “에이전트가 무엇을 다르게 하게 되는가”를 먼저 묻는 편이 안전합니다.</p>
+<p>이 짝 검증은 논문이 직접 시험한 개입이 아닙니다. 관찰된 결합을 운영 규칙으로 옮긴 다메카솔의 해석입니다. 효과를 말하려면 실제 플러그인 저장소에서 stale instruction defect와 회귀율을 따로 측정해야 합니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>On the Maintenance and Co-evolution of Agent Plugins: An Empirical Study of Claude Code Plugin Marketplaces</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Ahmed Hereiz, Yingzhe Lyu, Hao Li, Bram Adams, Ahmed E. Hassan</td>
+</tr>
+<tr>
+<td>공개</td>
+<td>arXiv v1, 2026-08-28, under review</td>
+</tr>
+<tr>
+<td>데이터 시점</td>
+<td>2026년 4월</td>
+</tr>
+<tr>
+<td>공식 저장소</td>
+<td><a href="https://github.com/SAILResearch/agentic_plugin_marketplace/tree/7b50b30f3cc92ced5b1ec525b0317c3282555a05">SAILResearch/agentic_plugin_marketplace</a></td>
+</tr>
+<tr>
+<td>이 글의 확인 범위</td>
+<td>PDF·TeX·고정 저장소 보존, 공개 CSV·JSON·출력 표 일관성 검사</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="markdown을-코드와-똑같이-취급해야-하나요">Markdown을 코드와 똑같이 취급해야 하나요?</h3>
+<p>파일 형식이 같다는 뜻은 아닙니다. 에이전트가 런타임에 읽는 지침은 호출 조건과 절차를 바꾸므로 행동 영향도에 맞춰 리뷰하자는 뜻입니다. 사람용 README의 설명 수정과 Skill의 실행 규칙 수정은 같은 <code>docs</code> 라벨로 묶기 어렵습니다.</p>
+<h3 id="78면-모든-스크립트-변경이-지침-변경을-요구하나요">78%면 모든 스크립트 변경이 지침 변경을 요구하나요?</h3>
+<p>78%는 스크립트와 Markdown이 이미 함께 바뀐 사람 라벨 표본 64건 가운데 기능적으로 연결된 50건의 비율입니다. 모든 스크립트 변경을 분모로 삼은 값이 아닙니다. 어떤 변경이 지침 동기화를 요구하는지 판단하는 단서로 읽어야 합니다.</p>
+<h3 id="다른-에이전트-플러그인에도-그대로-적용되나요">다른 에이전트 플러그인에도 그대로 적용되나요?</h3>
+<p>현재 논문은 Claude Code 플러그인 마켓플레이스만 분석했습니다. 다른 플랫폼에도 자연어 우선 산출물이 있지만 디렉터리 구조, 배포 방식, 작성자 표식이 다릅니다. 같은 분석을 반복하기 전에는 일반화보다 점검 가설로 두는 편이 정확합니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/workflow-as-knowledge/">AI 에이전트의 판단 근거를 작업 흐름으로 추적한 연구</a></li>
+<li><a href="/posts/tool-specifications-agent-safety/">도구 명세로 AI 에이전트를 안전하게 쓰는 방법</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.28497">Ahmed Hereiz 외, “On the Maintenance and Co-evolution of Agent Plugins,” arXiv:2608.28497</a></li>
+<li><a href="https://arxiv.org/pdf/2608.28497v1">공식 PDF v1</a></li>
+<li><a href="https://github.com/SAILResearch/agentic_plugin_marketplace/tree/7b50b30f3cc92ced5b1ec525b0317c3282555a05">공식 재현 저장소, commit 7b50b30</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
+논문 표와 그림은 복제하지 않았고, 공개 재현 산출물의 확인 범위를 본문에 구분했습니다.</p>
+<p>Updated: 2026-08-31</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

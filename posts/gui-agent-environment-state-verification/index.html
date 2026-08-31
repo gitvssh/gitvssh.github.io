@@ -1,0 +1,284 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까 | 다메카솔</title><meta name="description" content="GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/gui-agent-environment-state-verification/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까"><meta property="og:description" content="GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/gui-agent-environment-state-verification/"><meta property="og:image" content="https://blog.damecasol.com/social/gui-agent-environment-state-verification.webp"><meta property="og:image:alt" content="성인형 카솔이 완료처럼 보이는 모니터와 파일·설정·앱 상태가 담긴 증거 서랍 사이의 끊긴 연결을 점검하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까","description":"GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다.","datePublished":"2026-07-29T00:00:00.000Z","dateModified":"2026-07-29T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/gui-agent-environment-state-verification/","image":["https://blog.damecasol.com/social/gui-agent-environment-state-verification.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","멀티모달 AI","벤치마크","운영 자동화 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="gui-agent-environment-state-verification" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-29T00:00:00.000Z">2026년 7월 29일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CgIuvfWn_yrnbi.webp" srcset="/_astro/cover.CgIuvfWn_2crvl7.webp 640w, /_astro/cover.CgIuvfWn_1XT07X.webp 960w, /_astro/cover.CgIuvfWn_yrnbi.webp 1024w" alt="성인형 카솔이 완료처럼 보이는 모니터와 파일·설정·앱 상태가 담긴 증거 서랍 사이의 끊긴 연결을 점검하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#화면이-멀쩡해도-저장은-실패할-수-있다" data-toc-link="화면이-멀쩡해도-저장은-실패할-수-있다" data-analytics-event="toc_click" data-analytics-target="화면이-멀쩡해도-저장은-실패할-수-있다">화면이 멀쩡해도 저장은 실패할 수 있다</a></li><li class="article-toc__depth-2"><a href="#완료-조건을-먼저-쪼갠다" data-toc-link="완료-조건을-먼저-쪼갠다" data-analytics-event="toc_click" data-analytics-target="완료-조건을-먼저-쪼갠다">완료 조건을 먼저 쪼갠다</a></li><li class="article-toc__depth-2"><a href="#증거는-세-군데에-흩어진다" data-toc-link="증거는-세-군데에-흩어진다" data-analytics-event="toc_click" data-analytics-target="증거는-세-군데에-흩어진다">증거는 세 군데에 흩어진다</a></li><li class="article-toc__depth-2"><a href="#벤치마크는-실제로-본-상태에-맞춰-판정했다" data-toc-link="벤치마크는-실제로-본-상태에-맞춰-판정했다" data-analytics-event="toc_click" data-analytics-target="벤치마크는-실제로-본-상태에-맞춰-판정했다">벤치마크는 실제로 본 상태에 맞춰 판정했다</a></li><li class="article-toc__depth-2"><a href="#상호작용보다-검증-구조가-중요했다" data-toc-link="상호작용보다-검증-구조가-중요했다" data-analytics-event="toc_click" data-analytics-target="상호작용보다-검증-구조가-중요했다">상호작용보다 검증 구조가 중요했다</a></li><li class="article-toc__depth-2"><a href="#학습-보상으로-쓸-수-있는지-확인했다" data-toc-link="학습-보상으로-쓸-수-있는지-확인했다" data-analytics-event="toc_click" data-analytics-target="학습-보상으로-쓸-수-있는지-확인했다">학습 보상으로 쓸 수 있는지 확인했다</a></li><li class="article-toc__depth-2"><a href="#조건이-틀리면-증거가-있어도-오판한다" data-toc-link="조건이-틀리면-증거가-있어도-오판한다" data-analytics-event="toc_click" data-analytics-target="조건이-틀리면-증거가-있어도-오판한다">조건이 틀리면 증거가 있어도 오판한다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-완료-보고를-상태-증거로-바꾼다" data-toc-link="다메카솔의-해석-완료-보고를-상태-증거로-바꾼다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-완료-보고를-상태-증거로-바꾼다">다메카솔의 해석: 완료 보고를 상태 증거로 바꾼다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>완료 화면은 완료 증거가 아닙니다. <strong>Interactive Reward Agent: GUI Task Evaluation via Environment-State Verification</strong>는 GUI AI 에이전트가 일을 끝냈는지 판단할 때 최종 스크린샷만 보지 말고, 저장된 파일·지속 설정·애플리케이션 상태를 직접 확인하자고 제안합니다.</p>
+<p>저자들이 만든 Interactive Reward Agent(IRA)는 작업 지시를 완료 조건으로 먼저 나눕니다. 그다음 시스템, 애플리케이션, GUI 도구 가운데 조건에 맞는 수단을 골라 실제 최종 상태에서 증거를 모읍니다. 이 글은 그 구조와 벤치마크 결과, 비용, 남은 오류를 분리해 읽습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="화면이-멀쩡해도-저장은-실패할-수-있다">화면이 멀쩡해도 저장은 실패할 수 있다</h2>
+<p><img alt="완료처럼 보이는 화면 아래에서 빈 파일 선반과 초기화된 설정 스위치를 성인형 카솔이 확인하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.B7SY1xVC_Z2bdRyW.webp" srcset=""></p>
+<p>최종 스크린샷은 그 순간 보이는 픽셀을 증명합니다. 파일이 지정한 경로에 저장됐는지, 설정이 재시작 뒤에도 남는지, 다른 애플리케이션에 결과가 전달됐는지는 별도 상태입니다. 화면이 최신 상태가 아닐 수도 있습니다.</p>
+<p>논문의 스프레드시트 사례에서는 명령줄로 값이 바뀌었지만 화면이 갱신되지 않았습니다. 화면만 본 평가기는 실패로 판단했고, IRA는 파일을 열어 저장된 값을 확인했습니다. VLC 사례에서는 현재 창의 모양만으로 설정의 지속성을 알 수 없어서 config 값을 읽었습니다.</p>
+<p>이 차이는 실행 능력과 평가 능력을 갈라 놓습니다. 에이전트가 정답 행동을 했더라도 평가기가 증거를 못 보면 보상이 틀어지고, 틀린 행동을 그럴듯한 화면으로 마치면 거짓 성공이 됩니다.</p>
+<h2 id="완료-조건을-먼저-쪼갠다">완료 조건을 먼저 쪼갠다</h2>
+<p><img alt="하나의 작업 토큰이 세 완료 조건으로 갈라지고 시스템·애플리케이션·GUI 도구를 거쳐 증거와 판정으로 이어지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.Bxh33cb3_Z2eNBkD.webp" srcset=""></p>
+<p>IRA의 첫 단계는 바로 성공 여부를 맞히는 일이 아닙니다. 작업 지시와 초기·최종 화면을 읽어 반드시 만족해야 할 조건을 먼저 제안합니다. 예를 들어 “프레젠테이션을 이미지로 내보내 바탕화면에 저장하라”는 지시라면 출력 파일의 존재, 형식, 내용이 조건이 됩니다.</p>
+<p>각 조건에는 독립적인 verification loop가 붙습니다. IRA는 지금 가진 증거를 보고 다음 도구를 고르고, 관찰 결과가 부족하면 다른 증거원을 찾습니다. 파일과 명령 출력은 시스템 도구, 문서 내부 구조는 애플리케이션 도구, 눈에 보이는 상태는 GUI 도구로 확인합니다.</p>
+<p>논문은 조건별로 명시적 환경 상태 증거가 모였을 때만 성공을 줍니다. 만족한 조건의 비율이 scalar reward가 되고, 실험의 이진 평가는 그 값이 0.8을 넘을 때 성공으로 분류했습니다. 이 threshold는 시스템 구조의 보편 법칙이 아니라 이번 평가 프로토콜의 선택입니다.</p>
+<h2 id="증거는-세-군데에-흩어진다">증거는 세 군데에 흩어진다</h2>
+<p><img alt="보이는 화면, 숨은 설정 장치, 저장된 파일 금고를 서로 다른 검사 도구가 확인하는 세 구역 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.C62DPf-s_Z21a0bX.webp" srcset=""></p>
+<p>저자들은 GUI-RewardBench의 증거 유형을 세 갈래로 나눴습니다. visible state는 화면에서 직접 확인할 수 있습니다. hidden state는 환경 설정, 기본 앱, preference file처럼 UI 뒤에 남습니다. artifact verification은 문서, 스프레드시트, 프레젠테이션, 이미지, PDF 같은 산출물의 실제 내용을 읽어야 합니다.</p>
+<p>321개 trajectory 가운데 artifact verification이 192개로 가장 많았습니다. hidden state는 89개, visible state는 40개였습니다. 즉 이 벤치마크의 다수 과제는 마지막 화면 한 장만으로 결론을 내리기 어렵도록 구성됐습니다.</p>
+<p>도구를 많이 주면 문제가 저절로 풀리는 것도 아닙니다. 어떤 조건에 어느 증거원이 가장 결정적인지 골라야 합니다. GUI를 헤매다가 상태를 못 찾은 일을 곧바로 task failure로 바꾸면, 관찰 실패와 실행 실패가 섞입니다.</p>
+<h2 id="벤치마크는-실제로-본-상태에-맞춰-판정했다">벤치마크는 실제로 본 상태에 맞춰 판정했다</h2>
+<p><img alt="여러 데스크톱 작업 궤적이 세 번의 재생 관문을 지나 안정된 상태만 최종 검사기에 도달하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.ndirTHCs_2iIAYO.webp" srcset=""></p>
+<p>연구진은 327개 후보 trajectory를 여러 가상 머신에서 세 번씩 재생했습니다. 최종 상태가 불안정한 6개를 제외하고 321개를 남겼으며, 범위는 10개 Ubuntu 데스크톱 애플리케이션 범주입니다. 짧은 작업부터 80단계를 넘는 작업까지 포함합니다.</p>
+<p>평가기는 같은 작업 지시와 같은 recorded trajectory를 받았습니다. live replay에는 UI drift, 비동기 애플리케이션 동작, 네트워크 변동, evaluator interaction이 끼어들 수 있습니다. 그래서 연구진은 각 평가가 끝난 뒤 task-specific script를 실행해 그 평가기가 실제로 본 최종 상태의 ground-truth label을 다시 계산했습니다.</p>
+<p>이 설계는 현실적인 흔들림을 지우지 않고 비교 기준을 맞춥니다. 반면 Ubuntu 환경과 선택한 앱·도구에 집중하므로 다른 운영체제나 기업용 소프트웨어까지 같은 결과를 보장하지는 않습니다.</p>
+<h2 id="상호작용보다-검증-구조가-중요했다">상호작용보다 검증 구조가 중요했다</h2>
+<p><img alt="고정 화면만 보는 평가기, 여러 창을 헤매는 평가기, 완료 조건에 따라 파일과 설정 증거를 고르는 평가기를 비교한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.DpMAZrP__ZSWBgu.webp" srcset=""></p>
+<p>가장 강한 passive baseline인 DistRL은 GUI-RewardBench에서 정확도 78.8%, F1 76.7%를 기록했습니다. GPT-5.5 기반 IRA는 정확도 86.9%, F1 84.9%였습니다. 같은 backbone을 맞춘 비교에서 정확도 차이는 6.2~9.1 percentage point였습니다.</p>
+<p>두 GPT 기반 IRA는 평균 약 3.3 verification step을 썼습니다. 대신 token 사용량은 passive VLM보다 컸고 분포의 꼬리도 길었습니다. 추가 비용은 파일 내용, 저장된 설정, 애플리케이션 상태처럼 정적인 화면에서 복구할 수 없는 증거를 얻는 데 쓰였습니다.</p>
+<p>ablation이 더 중요한 경계를 보여 줍니다. GUI interaction만 허용했을 때 Qwen3.6 평가기의 precision은 올랐지만 recall은 크게 떨어졌습니다. 완료 조건을 먼저 정의하고 도구 선택을 구조화한 IRA는 세 backbone 모두에서 precision-recall trade-off를 개선했습니다. 접근 권한보다 탐색 순서와 판정 기준이 함께 필요했다는 결과입니다.</p>
+<h2 id="학습-보상으로-쓸-수-있는지-확인했다">학습 보상으로 쓸 수 있는지 확인했다</h2>
+<p>저자들은 검증 결과를 평가에서 끝내지 않고 GUI agent의 reinforcement learning reward로 사용했습니다. 같은 OSWorld task에서 ground-truth script reward로 학습한 설정의 success rate는 34.9%, IRA reward를 쓴 설정은 34.0%였습니다. 자동 생성 task와 IRA reward를 결합한 설정은 33.5%였습니다.</p>
+<p>사람과의 비교도 별도로 진행했습니다. 자동 생성한 855개 지시 중 100개를 뽑아 GPT-5.5 기반 IRA 판정과 human annotation을 비교했을 때 observed agreement는 94.0%, Cohen’s kappa는 0.84였습니다. 이 표본은 아홉 애플리케이션 범주에서 나왔고, Chrome 표본은 한 class만 있어 kappa를 계산할 수 없었습니다.</p>
+<p>두 결과는 “사람이나 script를 완전히 대체했다”는 증거가 아닙니다. 동일한 연구 환경 안에서 IRA reward가 script reward에 가까운 downstream result를 냈고, 제한된 표본에서 사람 판정과 높은 agreement를 보였다는 뜻입니다.</p>
+<h2 id="조건이-틀리면-증거가-있어도-오판한다">조건이 틀리면 증거가 있어도 오판한다</h2>
+<p><img alt="성인형 카솔이 파일·설정·앱 상태 증거를 점검하고 뒤의 미저장 산출물과 지나치게 문자적인 색 조건을 경고하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-06.CJP7gK8l_mpDox.webp" srcset=""></p>
+<p>IRA의 대표 오류는 증거 부족보다 completion condition 정렬에서 나타났습니다. 보호 기능의 세부 등급을 잘못 잡거나, 기능적으로 어두운 테마를 이름 그대로 해석해 실패로 보거나, 이미지를 뒤집은 흔적만 확인하고 저장 여부를 놓쳤습니다.</p>
+<p>interactive evaluator가 조사 과정에서 환경을 바꿀 수도 있습니다. 논문은 read-only 도구와 GUI·명령 실행을 구분하지만, 후자는 새 state transition을 만들 수 있습니다. 긴 token tail과 도구 호출 비용도 운영 예산에 넣어야 합니다.</p>
+<p>공식 저장소는 2026년 7월 29일 확인한 commit <code>a67e756929d45a776a03aa11e589b8c077de9c97</code>에서 IRA 구현과 321개 benchmark JSON을 공개했습니다. README는 raw replay cache, 대형 output, debug report, experiment result directory를 제외했다고 밝힙니다. 저장소에는 아직 license가 선언되지 않았으므로 코드를 재사용할 때 권한을 추정해서는 안 됩니다.</p>
+<h2 id="다메카솔의-해석-완료-보고를-상태-증거로-바꾼다">다메카솔의 해석: 완료 보고를 상태 증거로 바꾼다</h2>
+<p>저라면 자동화 완료 조건부터 세 줄로 씁니다.</p>
+<ol>
+<li><strong>무엇이 참이어야 하나</strong>: 파일 존재, 저장된 설정값, 레코드 상태처럼 결과를 원자 조건으로 나눕니다.</li>
+<li><strong>어디서 확인할 수 있나</strong>: 화면, 파일, API, 데이터베이스, 설정 저장소 가운데 가장 결정적인 증거원을 붙입니다.</li>
+<li><strong>확인하지 못했을 때 무엇이라 부르나</strong>: 실행 실패와 관찰 실패를 분리해 기록합니다.</li>
+</ol>
+<p>스크린샷은 여전히 유용합니다. 레이아웃, 보이는 오류, 사용자가 마주할 화면을 확인하는 데 강합니다. 지속성과 산출물 정확성까지 한 장이 대신 증명한다고 기대하는 순간 문제가 생깁니다.</p>
+<p>이 논문이 남긴 실무 질문은 단순합니다. 에이전트가 “끝났습니다”라고 말했을 때, 그 문장이 가리키는 상태를 다시 찾을 수 있는가. 자동화의 신뢰성은 답변의 자신감보다 그 증거 경로에서 시작합니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Interactive Reward Agent: GUI Task Evaluation via Environment-State Verification</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Chenrui Shi 외 7명</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-07-28 16:01:38 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.AI</td>
+</tr>
+<tr>
+<td>벤치마크</td>
+<td>321 stable GUI trajectories, 10 Ubuntu desktop categories</td>
+</tr>
+<tr>
+<td>공식 저장소</td>
+<td>Kendrick-Stein/InteractiveRewardAgent-OfficialRepo, commit a67e7569…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.25904">논문 초록과 메타데이터, arXiv:2607.25904</a></li>
+<li><a href="https://arxiv.org/pdf/2607.25904">논문 원문 PDF</a></li>
+<li><a href="https://arxiv.org/html/2607.25904v1">arXiv HTML 원문</a></li>
+<li><a href="https://kendrick-stein.github.io/InteractiveRewardAgent-OfficialRepo/">저자 공식 프로젝트 페이지</a></li>
+<li><a href="https://github.com/Kendrick-Stein/InteractiveRewardAgent-OfficialRepo">공식 코드·벤치마크 저장소</a></li>
+<li><a href="/posts/tactile-computer-use-agents/">관련 글: 컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-07-29</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-agent-rca-trajectory-evidence/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B75aQWMR_9rpy3.webp" srcset="/_astro/cover.B75aQWMR_Z26aLgu.webp 240w, /_astro/cover.B75aQWMR_ZRYJF1.webp 360w, /_astro/cover.B75aQWMR_kbgUs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></div><h3><a href="/posts/llm-agent-rca-trajectory-evidence/" data-analytics-event="related_post_click" data-analytics-target="llm-agent-rca-trajectory-evidence">3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다</a></h3><p>마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/visual-tool-use-causal-audit/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CMg6Nj-N_Z1lyLxU.webp" srcset="/_astro/cover.CMg6Nj-N_ZP5Hpt.webp 240w, /_astro/cover.CMg6Nj-N_n5jb0.webp 360w, /_astro/cover.CMg6Nj-N_1AgkLt.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></div><h3><a href="/posts/visual-tool-use-causal-audit/" data-analytics-event="related_post_click" data-analytics-target="visual-tool-use-causal-audit">3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 화면을 확대했다고 정말 더 잘 본 걸까</a></h3><p>시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

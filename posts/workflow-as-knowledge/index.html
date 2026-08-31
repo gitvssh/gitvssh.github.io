@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 에이전트의 판단 근거, 로그만으로 부족한 이유: &#39;Workflow as Knowledge&#39; 논문 리뷰 | 다메카솔</title><meta name="description" content="AI 에이전트가 내린 의사결정의 근거를 며칠 뒤 추적하려면 왜 텍스트 로그만으로 불가능할까요? 결정론적 연산(derive)과 확률적 LLM 추론(infer)을 분리하고 지식 계보(Lineage)를 영구 자산화하는 의미 지속성(Semantic Persistence) 아키텍처를 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/workflow-as-knowledge/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 판단 근거, 로그만으로 부족한 이유: 'Workflow as Knowledge' 논문 리뷰"><meta property="og:description" content="AI 에이전트가 내린 의사결정의 근거를 며칠 뒤 추적하려면 왜 텍스트 로그만으로 불가능할까요? 결정론적 연산(derive)과 확률적 LLM 추론(infer)을 분리하고 지식 계보(Lineage)를 영구 자산화하는 의미 지속성(Semantic Persistence) 아키텍처를 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/workflow-as-knowledge/"><meta property="og:image" content="https://blog.damecasol.com/social/workflow-as-knowledge.webp"><meta property="og:image:alt" content="카솔이 흩어진 LLM 실행 기록과 연결된 지식 객체 지도를 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 판단 근거, 로그만으로 부족한 이유: 'Workflow as Knowledge' 논문 리뷰","description":"AI 에이전트가 내린 의사결정의 근거를 며칠 뒤 추적하려면 왜 텍스트 로그만으로 불가능할까요? 결정론적 연산(derive)과 확률적 LLM 추론(infer)을 분리하고 지식 계보(Lineage)를 영구 자산화하는 의미 지속성(Semantic Persistence) 아키텍처를 분석합니다.","datePublished":"2026-07-14T00:00:00.000Z","dateModified":"2026-07-15T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/workflow-as-knowledge/","image":["https://blog.damecasol.com/social/workflow-as-knowledge.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","LLM","운영 자동화 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="workflow-as-knowledge" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-14T00:00:00.000Z">2026년 7월 14일</time></span><span>수정 <time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 판단 근거, 로그만으로 부족한 이유: &#39;Workflow as Knowledge&#39; 논문 리뷰</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI 에이전트가 내린 의사결정의 근거를 며칠 뒤 추적하려면 왜 텍스트 로그만으로 불가능할까요? 결정론적 연산(derive)과 확률적 LLM 추론(infer)을 분리하고 지식 계보(Lineage)를 영구 자산화하는 의미 지속성(Semantic Persistence) 아키텍처를 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DB_wsmFD_Ic36f.webp" srcset="/_astro/cover.DB_wsmFD_Z1So5UH.webp 640w, /_astro/cover.DB_wsmFD_Z26VB8Q.webp 960w, /_astro/cover.DB_wsmFD_Ic36f.webp 1024w" alt="카솔이 흩어진 LLM 실행 기록과 연결된 지식 객체 지도를 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#실행-지속성-vs-의미-지속성-왜-로그-덤프만으로-안-되는가" data-toc-link="실행-지속성-vs-의미-지속성-왜-로그-덤프만으로-안-되는가" data-analytics-event="toc_click" data-analytics-target="실행-지속성-vs-의미-지속성-왜-로그-덤프만으로-안-되는가">실행 지속성 vs 의미 지속성: 왜 로그 덤프만으로 안 되는가?</a></li><li class="article-toc__depth-2"><a href="#핵심-원칙-derive결정론적-계산와-infer확률적-추론의-엄격한-분리" data-toc-link="핵심-원칙-derive결정론적-계산와-infer확률적-추론의-엄격한-분리" data-analytics-event="toc_click" data-analytics-target="핵심-원칙-derive결정론적-계산와-infer확률적-추론의-엄격한-분리">핵심 원칙: derive(결정론적 계산)와 infer(확률적 추론)의 엄격한 분리</a></li><li class="article-toc__depth-2"><a href="#워크플로우를-지식-객체로-영구-자산화하는-6대-요소" data-toc-link="워크플로우를-지식-객체로-영구-자산화하는-6대-요소" data-analytics-event="toc_click" data-analytics-target="워크플로우를-지식-객체로-영구-자산화하는-6대-요소">워크플로우를 지식 객체로 영구 자산화하는 6대 요소</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-에이전트-시스템을-위한-데이터-리니지lineage-설계" data-toc-link="다메카솔의-해석-에이전트-시스템을-위한-데이터-리니지lineage-설계" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-에이전트-시스템을-위한-데이터-리니지lineage-설계">다메카솔의 해석: 에이전트 시스템을 위한 ‘데이터 리니지(Lineage)’ 설계</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-시스템-글" data-toc-link="함께-읽을-ai-시스템-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>AI 에이전트가 수십 번의 API 도구 호출과 팀원의 중간 승인을 거쳐 복잡한 비즈니스 결정을 내렸습니다.</p>
+<p>그런데 일주일 뒤 장애가 발생하거나 감사가 들어와 **“에이전트가 도대체 어떤 문맥(Context)을 보고 왜 이런 결정을 내렸으며, 당시 담당자는 무엇을 승인한 것인가?”**를 역추적하려 할 때, CloudWatch나 데이터독 로그 창을 열어보면 수만 줄의 비구조화된 텍스트 덤프만 남아 있어 아연실색하게 됩니다.</p>
+<p>이 문제의 본질은 **“기존 시스템들이 단순히 프로세스를 복구하기 위한 ’실행 지속성(Execution Persistence)’만 저장하고, 결정의 인과관계를 설명하는 ’의미 지속성(Semantic Persistence)’을 저장하지 않았기 때문”**입니다.</p>
+<p>최근 발표된 포지션 논문 **「Workflow as Knowledge: Semantic Persistence for LLM-Mediated Workflows」**는 AI 워크플로우를 단순한 일회성 실행 스크립트가 아니라, **“정의, 실행 인스턴스, LLM 판단, 입력 맥락, 승인 이력이 유기적으로 연결된 지식 그래프(Knowledge Graph) 객체로 다루자”**는 매우 깊이 있는 엔지니어링 패러다임을 제안합니다.</p>
+<h2 id="실행-지속성-vs-의미-지속성-왜-로그-덤프만으로-안-되는가">실행 지속성 vs 의미 지속성: 왜 로그 덤프만으로 안 되는가?</h2>
+<p><img alt="체크포인트에서 실행을 재개하는 실행 지속성과 판단 맥락과 의존관계를 다시 묻는 의미 지속성을 비교한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02-v2.D9JNnBur_Z1zyMWM.webp" srcset=""></p>
+<p>백엔드 아키텍처 관점에서 두 지속성(Persistence)은 명확히 구분되어야 합니다:</p>
+<ol>
+<li><strong>실행 지속성 (Execution Persistence)</strong>
+<ul>
+<li>목적: 장애 발생 시 중단된 위치부터 작업을 재개(Resume)하기 위함</li>
+<li>데이터: 컨테이너 메모리 덤프, Celery/Airflow 태스크 큐, 단순 체크포인트</li>
+</ul>
+</li>
+<li><strong>의미 지속성 (Semantic Persistence)</strong>
+<ul>
+<li>목적: 사후에 **“왜 그런 판단을 내렸고 무엇에 의존했는가?”**를 질의(Query)하고 감사하기 위함</li>
+<li>데이터: 판단 시점에 모델이 바라본 입력 스냅샷, 사람 승인 권한, 인과적 의존관계 그래프</li>
+</ul>
+</li>
+</ol>
+<h2 id="핵심-원칙-derive결정론적-계산와-infer확률적-추론의-엄격한-분리">핵심 원칙: <code>derive</code>(결정론적 계산)와 <code>infer</code>(확률적 추론)의 엄격한 분리</h2>
+<p><img alt="같은 입력이 검증 가능한 derive 계산과 맥락을 둔 infer 모델 판단으로 갈라지고 실행기 정책이 행동을 통제하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.BbqlHy8q_13Grkz.webp" srcset=""></p>
+<p>이 논문에서 제안하는 가장 실용적인 아키텍처 원칙은 워크플로우 내의 모든 액션을 다음 두 가지로 명확히 분리하는 것입니다:</p>
+<ul>
+<li><strong><code>derive</code> (결정론적 연산)</strong>:
+<ul>
+<li>정규식 파싱, 스키마 유효성 검증, 단위 테스트, 비즈니스 룰 계산처럼 <strong>“동일한 입력에 대해 항상 100% 동일한 결과가 보장되는 순수 함수형 로직”</strong></li>
+</ul>
+</li>
+<li><strong><code>infer</code> (확률적 LLM 추론)</strong>:
+<ul>
+<li>텍스트 요약, 의도 분류, 비정형 데이터 의미 해석처럼 <strong>“선언된 맥락 안에서 모델이 확률적으로 생성하는 비결정론적 판단”</strong></li>
+</ul>
+</li>
+</ul>
+<p>워크플로우 엔진은 <code>infer</code> 단계를 호출할 때 당시 주입된 프롬프트와 문서 스냅샷을 1급 지식 객체로 캡슐화하고, 모델이 함부로 외부 시스템 쓰기(Write)를 실행하지 못하도록 샌드박스 정책으로 감싸야 합니다.</p>
+<h2 id="워크플로우를-지식-객체로-영구-자산화하는-6대-요소">워크플로우를 지식 객체로 영구 자산화하는 6대 요소</h2>
+<p><img alt="워크플로 정의에서 실행 인스턴스가 만들어지고 맥락, 추론, 승인, 의존관계 기록이 연결되는 객체 모델" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03-v2.EtBj54GG_1XgpFz.webp" srcset=""></p>
+<p><img alt="실행 기록과 의미 기록의 차이를 다메카솔이 새로 구성한 객체 관계 도식" loading="lazy" decoding="async" width="960" height="1280" src="/_astro/workflow-as-knowledge-map.CyCdn1XJ_1JTK4c.webp" srcset=""></p>
+<p>논문이 제시하는 의미 지속성 모델은 6가지 지식 엔티티를 연결합니다:</p>
+<ol>
+<li><strong>워크플로우 정의 (Definition)</strong>: 적용된 정책과 버전</li>
+<li><strong>실행 인스턴스 (Instance)</strong>: 실제 실행 트레이스</li>
+<li><strong>컨텍스트 스냅샷 (Context Snapshot)</strong>: 판단 당시 모델이 본 정확한 자료</li>
+<li><strong>추론 기록 (Inference Record)</strong>: LLM의 중간 추론 및 신뢰도</li>
+<li><strong>승인 기록 (Approval Record)</strong>: 승인권자의 역할 및 허용 범위</li>
+<li><strong>의존관계 (Dependency Lineage)</strong>: 전제가 바뀌었을 때 재계산해야 할 다운스트림 목록</li>
+</ol>
+<h2 id="다메카솔의-해석-에이전트-시스템을-위한-데이터-리니지lineage-설계">다메카솔의 해석: 에이전트 시스템을 위한 ‘데이터 리니지(Lineage)’ 설계</h2>
+<p>시니어 백엔드 및 AI 아키텍트로서 이 논문이 주는 핵심 실무 지침은 명확합니다:</p>
+<ol>
+<li><strong>로그와 의사결정 메타데이터의 분리</strong>: 로그 수집기(Stdout)에 모든 것을 흘려보내지 말고, 중요한 비즈니스 의사결정은 이벤트 기반의 구조화된 데이터(JSON Schema/RDBMS)로 영구 저장하세요.</li>
+<li><strong>지식 계보(Lineage) 추적성 확보</strong>: “사용자에게 이 가격 할인이 적용된 이유”를 묻는다면, 어떤 LLM 프롬프트 버전과 어떤 데이터 소스에 의해 계산되었는지 1클릭으로 역추적할 수 있는 그래프 인덱스를 구축해야 합니다.</li>
+<li><strong>승인과 숙의의 분리</strong>: 단순한 “OK 클릭” 로그만 남기지 말고, 어떤 옵션들 사이에서 고민하고 선택했는지의 근거(Rationale)를 남겨야 조직의 집단 지성이 축적됩니다.</li>
+</ol>
+<h2 id="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</h2>
+<ul>
+<li><a href="/posts/agentfootprint-storage-benchmark/">AI 에이전트의 숨은 저장 발자국과 복원력 평가</a></li>
+<li><a href="/posts/openai-presence-agent-operations/">OpenAI Presence: 기업용 에이전트 운영 통제 루프</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.08740">Workflow as Knowledge: Semantic Persistence for LLM-Mediated Workflows, arXiv:2607.08740</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-agent-rca-trajectory-evidence/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B75aQWMR_9rpy3.webp" srcset="/_astro/cover.B75aQWMR_Z26aLgu.webp 240w, /_astro/cover.B75aQWMR_ZRYJF1.webp 360w, /_astro/cover.B75aQWMR_kbgUs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></div><h3><a href="/posts/llm-agent-rca-trajectory-evidence/" data-analytics-event="related_post_click" data-analytics-target="llm-agent-rca-trajectory-evidence">3분만에 만화로 보는 IT - AI 논문 읽기 | LLM 에이전트가 장애 원인을 맞혀도 진단이 틀릴 수 있습니다</a></h3><p>마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/policyguide-workflow-policy-compliance/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ct5JZYvl_Z1v6KeB.webp" srcset="/_astro/cover.Ct5JZYvl_1VHaDU.webp 240w, /_astro/cover.Ct5JZYvl_Z1UiVyx.webp 360w, /_astro/cover.Ct5JZYvl_ZH7TX4.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-23T00:00:00.000Z">2026년 8월 23일</time></div><h3><a href="/posts/policyguide-workflow-policy-compliance/" data-analytics-event="related_post_click" data-analytics-target="policyguide-workflow-policy-compliance">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트가 정책을 지키려면 마지막 행동보다 절차를 먼저 봐야 합니다</a></h3><p>PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

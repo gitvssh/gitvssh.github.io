@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증 연구 | 다메카솔</title><meta name="description" content="AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/copilot-security-api-study/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증 연구"><meta property="og:description" content="AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/copilot-security-api-study/"><meta property="og:image" content="https://blog.damecasol.com/social/copilot-security-api-study.webp"><meta property="og:image:alt" content="카솔이 기능 통과 게이트와 보안 검토 게이트 사이에서 두 결과를 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증 연구","description":"AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다.","datePublished":"2026-07-15T00:00:00.000Z","dateModified":"2026-07-15T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/copilot-security-api-study/","image":["https://blog.damecasol.com/social/copilot-security-api-study.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 코딩 도구","AI 보안","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="copilot-security-api-study" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증 연구</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CFLnoY4S_bInfD.webp" srcset="/_astro/cover.CFLnoY4S_1QH1g4.webp 640w, /_astro/cover.CFLnoY4S_1D9v2U.webp 960w, /_astro/cover.CFLnoY4S_bInfD.webp 1024w" alt="카솔이 기능 통과 게이트와 보안 검토 게이트 사이에서 두 결과를 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#기능-통과happy-path는-보안-안전을-보증하지-않는다" data-toc-link="기능-통과happy-path는-보안-안전을-보증하지-않는다" data-analytics-event="toc_click" data-analytics-target="기능-통과happy-path는-보안-안전을-보증하지-않는다">기능 통과(Happy Path)는 보안 안전을 보증하지 않는다</a></li><li class="article-toc__depth-2"><a href="#44명의-전문-개발자를-대상으로-한-정밀-실험" data-toc-link="44명의-전문-개발자를-대상으로-한-정밀-실험" data-analytics-event="toc_click" data-analytics-target="44명의-전문-개발자를-대상으로-한-정밀-실험">44명의 전문 개발자를 대상으로 한 정밀 실험</a></li><li class="article-toc__depth-3"><a href="#1-기능적-생산성-ai의-압도적인-승리" data-toc-link="1-기능적-생산성-ai의-압도적인-승리" data-analytics-event="toc_click" data-analytics-target="1-기능적-생산성-ai의-압도적인-승리">1. 기능적 생산성: AI의 압도적인 승리</a></li><li class="article-toc__depth-3"><a href="#2-보안-무결성-충격적인-전원-탈락" data-toc-link="2-보안-무결성-충격적인-전원-탈락" data-analytics-event="toc_click" data-analytics-target="2-보안-무결성-충격적인-전원-탈락">2. 보안 무결성: 충격적인 전원 탈락</a></li><li class="article-toc__depth-2"><a href="#더-무서운-점-개발자의-근거-없는-자신감" data-toc-link="더-무서운-점-개발자의-근거-없는-자신감" data-analytics-event="toc_click" data-analytics-target="더-무서운-점-개발자의-근거-없는-자신감">더 무서운 점: 개발자의 근거 없는 자신감</a></li><li class="article-toc__depth-2"><a href="#보안도-신경-써줘라고-다시-물어보면-고쳐질까" data-toc-link="보안도-신경-써줘라고-다시-물어보면-고쳐질까" data-analytics-event="toc_click" data-analytics-target="보안도-신경-써줘라고-다시-물어보면-고쳐질까">“보안도 신경 써줘”라고 다시 물어보면 고쳐질까?</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-실무-팀을-위한-3단계-보안-가드레일" data-toc-link="다메카솔의-해석-실무-팀을-위한-3단계-보안-가드레일" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-실무-팀을-위한-3단계-보안-가드레일">다메카솔의 해석: 실무 팀을 위한 3단계 보안 가드레일</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai보안-글" data-toc-link="함께-읽을-ai보안-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai보안-글">함께 읽을 AI/보안 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>GitHub Copilot이나 Claude Code에게 “Google OAuth 2.0 로그인 연동 코드 짜줘”라고 부탁하면 10초 만에 그럴듯한 코드를 뽑아줍니다. 실제로 로컬에서 실행해 보면 구글 로그인 창이 잘 뜨고 사용자 토큰도 정상적으로 받아옵니다.</p>
+<p>그렇다면 이 코드는 프로덕션 환경에 바로 배포해도 될 만큼 **‘보안적으로도 안전’**할까요?</p>
+<p>최근 발표된 실증 연구 논문 <strong>Understanding the Impact of AI Code Assistants on Security API Usage</strong>는 44명의 현업 전문 개발자를 대상으로 이를 정밀 측정했습니다.</p>
+<p>연구 결과는 매우 명확합니다: <strong>“AI 코딩 도구는 복잡한 보안 API의 기능 완성 속도를 2배 이상 높여주지만, 정작 CSRF를 막는 <code>state</code> 파라미터나 PKCE 검증 같은 핵심 보안 방어선은 100% 누락되어 있었다.”</strong></p>
+<p>이번 글에서는 AI가 생성한 보안 코드의 치명적인 맹점과, 실무 개발팀이 갖춰야 할 코드 리뷰 가드레일을 정리합니다.</p>
+<h2 id="기능-통과happy-path는-보안-안전을-보증하지-않는다">기능 통과(Happy Path)는 보안 안전을 보증하지 않는다</h2>
+<p><img alt="기능 테스트는 통과했지만 보안 검증은 아직이라는 사실을 카솔이 설명하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.BAKjrYqT_Z10B6Rg.webp" srcset=""></p>
+<p>보안 API(TLS/SSL 인증서 검증, OAuth 인증, 암호화 모듈)의 가장 무서운 점은 **“보안 규칙을 심각하게 위반해도 겉으로는 로그인이 아주 잘 된다는 점”**입니다.</p>
+<ul>
+<li>인증서 검증(<code>TrustManager</code>)을 통째로 패스하는 더미 코드를 넣어도 통신은 잘 됩니다 (중간자 공격에 100% 노출).</li>
+<li>OAuth 인증 시 CSRF 방어용 <code>state</code> 토큰이나 PKCE 검증을 생략해도 로그인은 정상 완료됩니다 (계정 탈취 공격에 노출).</li>
+</ul>
+<p>즉, 유닛 테스트와 기능 테스트가 모두 <code>PASS</code>를 띄우더라도 보안 관점에서는 치명적인 백도어가 열려 있을 수 있습니다.</p>
+<h2 id="44명의-전문-개발자를-대상으로-한-정밀-실험">44명의 전문 개발자를 대상으로 한 정밀 실험</h2>
+<p><img alt="전문 개발자들이 AI 사용과 미사용 조건을 교차해 경험하고 기능과 보안을 따로 평가받는 연구 설계" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DTbdmxxd_ZQL8fj.webp" srcset=""></p>
+<p>연구진은 1년 이상의 Java 실무 경력을 가진 전문 개발자 44명을 모집하여, Java TLS 통신(JSSE)과 Google OAuth 2.0 연동 과제를 수행하도록 했습니다.</p>
+<h3 id="1-기능적-생산성-ai의-압도적인-승리">1. 기능적 생산성: AI의 압도적인 승리</h3>
+<p><img alt="단순 과제에서는 두 조건이 모두 도착하고 복잡한 권한 과제에서는 AI 보조 경로가 기능 완성을 돕는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B3s989vI_1OGD4M.webp" srcset=""></p>
+<ul>
+<li><strong>OAuth 기능 완성률</strong>: Copilot 사용군 <strong>91%</strong> vs 미사용군 <strong>45%</strong> (2배 이상 성공)</li>
+<li><strong>작업 소요 시간</strong>: Copilot 사용군 <strong>23분</strong> vs 미사용군 <strong>62분</strong> (시간 60% 단축)</li>
+</ul>
+<p>복잡한 보일러플레이트 코드와 API 스펙 문서를 일일이 뒤적일 필요가 없었기에, 기능 구현 속도에서는 Copilot의 기여가 압도적이었습니다.</p>
+<h3 id="2-보안-무결성-충격적인-전원-탈락">2. 보안 무결성: 충격적인 전원 탈락</h3>
+<p><img alt="완성된 두 코드가 같은 보안 검사대에 들어가지만 인증, 호스트, 권한 흐름의 누락과 닫힌 보안 게이트 앞에 멈추는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BGTe50Nt_Z27JQT0.webp" srcset=""></p>
+<p>하지만 작성된 코드들을 보안 표준 체크리스트로 정밀 감사한 결과는 충격적이었습니다:</p>
+<ul>
+<li><strong>두 그룹을 통틀어 보안 표준을 100% 충족한 안전한 구현은 ’단 한 건’도 없었습니다.</strong></li>
+<li>Copilot이 추천한 코드 대부분이 <code>state</code> 파라미터 검증 누락, 토큰 교환 시 리디렉션 URI 위조 방지 미흡 등 전형적인 보안 오용(Misuse) 패턴을 그대로 담고 있었습니다.</li>
+</ul>
+<h2 id="더-무서운-점-개발자의-근거-없는-자신감">더 무서운 점: 개발자의 근거 없는 자신감</h2>
+<p><img alt="개발자가 기능 요구만 입력하고 자신의 코드를 안전하다고 생각하지만 실제 검토에서 경고를 발견하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.H9DRTR1U_ZH6aEt.webp" srcset=""></p>
+<p>실험 참가자들은 “보안성도 평가 대상”이라는 사실을 사전에 고지받았음에도 불구하고:</p>
+<ul>
+<li>Copilot에게 명시적으로 “보안 취약점이나 PKCE 설정을 고려해 달라”고 프롬프팅한 개발자는 <strong>44명 중 단 2명</strong>에 불과했습니다.</li>
+<li>과제를 마친 후 대다수의 개발자가 <strong>“내 코드는 보안적으로 매우 안전하다”고 오판</strong>했습니다.</li>
+</ul>
+<p>AI가 순식간에 에러 없는 매끄러운 코드를 만들어주다 보니, 개발자가 비판적인 코드 리뷰를 생략하고 인지적 안도감(Cognitive Ease)에 빠져버린 것입니다.</p>
+<h2 id="보안도-신경-써줘라고-다시-물어보면-고쳐질까">“보안도 신경 써줘”라고 다시 물어보면 고쳐질까?</h2>
+<p><img alt="보안 재검토 뒤 일부 경고는 사라지지만 복잡한 권한 흐름 경고가 남고 카솔이 세 단계 검증을 제안하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.BqXMBZN5_ZN6j2P.webp" srcset=""></p>
+<p>연구진이 사후 실험으로 Copilot에게 “이 코드의 보안 모범 사례를 다시 검토해줘”라고 추가 질문(Re-prompting)을 던져보았습니다.</p>
+<p>그 결과 단순한 인증서 검증 누락 같은 쉬운 문제는 일부 수정되었지만, <strong>OAuth의 다단계 상태 검증(<code>state</code>, <code>nonce</code>, PKCE) 같은 복잡한 프로토콜 레벨의 취약점은 여전히 감지하지 못하고 방치</strong>되었습니다.</p>
+<h2 id="다메카솔의-해석-실무-팀을-위한-3단계-보안-가드레일">다메카솔의 해석: 실무 팀을 위한 3단계 보안 가드레일</h2>
+<p>AI 코딩 도구를 금지하는 것은 올바른 해결책이 아닙니다. 2배 이상의 생산성 혁신을 누리되, <strong>보안 검증의 책임을 시스템적으로 분리하는 파이프라인</strong>을 갖추어야 합니다.</p>
+<p>실무 개발팀에 다음 3가지 원칙을 제안합니다:</p>
+<ol>
+<li><strong>프롬프트에 보안 요구사항 명시</strong>: “로그인 API 짜줘” 대신 “OAuth 2.0 Authorization Code Grant flow로 구현하되, CSRF 방어용 <code>state</code> 검증과 PKCE(<code>code_verifier</code>/<code>code_challenge</code>)를 필수로 포함해줘”처럼 방어 규격을 직접 지정하세요.</li>
+<li><strong>기능 테스트와 보안 SAST 검사의 분리</strong>: CI 파이프라인에 SonarQube, Snyk, Semgrep 같은 정적 분석 도구를 필수 게이트로 걸어두어 하드코딩된 시크릿이나 안전하지 않은 암호화 API 호출을 자동 차단해야 합니다.</li>
+<li><strong>AI의 자기 검토 맹신 금지</strong>: 보안 영역만큼은 AI의 “안전합니다”라는 대답을 믿지 말고, 공식 RFC 문서의 보안 체크리스트를 기반으로 시니어 엔지니어의 피어 리뷰(Peer Review)를 거쳐야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-ai보안-글">함께 읽을 AI/보안 글</h2>
+<ul>
+<li><a href="/posts/orca-ai-coding-agent-workspaces/">AI 코딩 에이전트 작업 공간 격리(Orca)와 보안 가드레일</a></li>
+<li><a href="/posts/llm-agent-skill-regression-tax/">LLM 에이전트 스킬 주입과 회귀(Regression Tax) 방어 전략</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.11348">Understanding the Impact of AI Code Assistants on Security API Usage, arXiv:2607.11348 (RAID 2026)</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-open-ended-bug-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_Z1NP7s2.webp 240w, /_astro/cover.DAIoUA9I_ZAE5Qy.webp 360w, /_astro/cover.DAIoUA9I_BvUIU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></div><h3><a href="/posts/llm-open-ended-bug-discovery/" data-analytics-event="related_post_click" data-analytics-target="llm-open-ended-bug-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 정답을 모른 채 버그를 찾는 AI 에이전트 평가</a></h3><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/station-autonomous-math-discovery/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BoE0RVgK_1SLYCq.webp" srcset="/_astro/cover.BoE0RVgK_2nq2QI.webp 240w, /_astro/cover.BoE0RVgK_Z1tA4lJ.webp 360w, /_astro/cover.BoE0RVgK_Zgp2Kg.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/station-autonomous-math-discovery/" data-analytics-event="related_post_click" data-analytics-target="station-autonomous-math-discovery">3분만에 만화로 보는 IT - AI 논문 읽기 | 여러 AI 에이전트가 수학적 발견을 쌓은 방법</a></h3><p>Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
