@@ -3,8 +3,8 @@ title: "replica 1은 같은 뜻이 아니었습니다: Vault PDB 앞에서 멈�
 description: "단일 Vault를 보호한 PDB의 중단 예산 0에서 kubectl drain이 멈춘 사건과 애플리케이션·스토리지 복제를 따로 설계한 기록입니다."
 searchTitle: "Kubernetes drain이 PDB maxUnavailable 0에서 멈춘 이유"
 slug: "replica-layer-pdb-drain"
-publishedAt: 2026-08-31
-updatedAt: 2026-08-31
+publishedAt: 2026-09-06
+updatedAt: 2026-09-06
 track: tech_column
 subtype: case_study
 category: development_episode
@@ -32,7 +32,7 @@ cover: "./cover.webp"
 coverAlt: "남성 카솔이 멈춘 노드 점검 레버와 복제 계층을 살피는 표지"
 sourceUrl: "urn:internal:homelab-k8s:pdb-drain-2026-07-14"
 featured: false
-draft: true
+draft: false
 ---
 
 글·해설: 다메카솔

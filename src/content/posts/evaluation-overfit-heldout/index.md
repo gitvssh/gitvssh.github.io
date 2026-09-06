@@ -3,8 +3,8 @@ title: "F1 0.997은 무엇을 측정한 숫자였나"
 description: "같은 평가 표본에 규칙을 맞춰 얻은 F1 0.997을 조정에 쓰지 않은 표본과 검색 누출 통제 실험으로 다시 읽었습니다. SafeLease 실험기 1편입니다."
 searchTitle: "평가셋 과적합: F1 0.997과 held-out 0.696"
 slug: "evaluation-overfit-heldout"
-publishedAt: 2026-08-30
-updatedAt: 2026-08-30
+publishedAt: 2026-09-06
+updatedAt: 2026-09-06
 track: tech_column
 subtype: case_study
 category: development_episode
@@ -30,7 +30,7 @@ cover: "./cover.webp"
 coverAlt: "거의 만점인 성적표 아래에서 문제지와 채점용 펜을 같은 손이 쥐고 있음을 남성 카솔이 알아보는 표지"
 sourceUrl: "urn:internal:portfolio:projects:safelease"
 featured: false
-draft: true
+draft: false
 ---
 글·해설: 다메카솔
 
