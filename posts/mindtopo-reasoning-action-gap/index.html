@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>길을 알아보는 AI는 파이프도 연결할까 | 다메카솔</title><meta name="description" content="MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다."><link rel="canonical" href="https://blog.damecasol.com/posts/mindtopo-reasoning-action-gap/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | 길을 알아보는 AI는 파이프도 연결할까"><meta property="og:description" content="MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/mindtopo-reasoning-action-gap/"><meta property="og:image" content="https://blog.damecasol.com/social/mindtopo-reasoning-action-gap.webp"><meta property="og:image:alt" content="카솔이 연결이 끊긴 파이프 조각을 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | 길을 알아보는 AI는 파이프도 연결할까","description":"MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다.","datePublished":"2026-09-11T00:00:00.000Z","dateModified":"2026-09-11T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/mindtopo-reasoning-action-gap/","image":["https://blog.damecasol.com/social/mindtopo-reasoning-action-gap.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["AI 에이전트","멀티모달 AI","벤치마크"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="mindtopo-reasoning-action-gap" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-09-11T00:00:00.000Z">2026년 9월 11일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | 길을 알아보는 AI는 파이프도 연결할까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.D0Rs1RAY_ZuHef2.webp" srcset="/_astro/cover.D0Rs1RAY_ZBKlUj.webp 640w, /_astro/cover.D0Rs1RAY_ZPiR8s.webp 960w, /_astro/cover.D0Rs1RAY_ZuHef2.webp 1024w" alt="카솔이 연결이 끊긴 파이프 조각을 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#휘어도-이어진-고리-돌려야-이어지는-파이프" data-toc-link="휘어도-이어진-고리-돌려야-이어지는-파이프" data-analytics-event="toc_click" data-analytics-target="휘어도-이어진-고리-돌려야-이어지는-파이프">휘어도 이어진 고리, 돌려야 이어지는 파이프</a></li><li class="article-toc__depth-2"><a href="#답을-고르는-시험에서-행동을-실행하는-시험으로" data-toc-link="답을-고르는-시험에서-행동을-실행하는-시험으로" data-analytics-event="toc_click" data-analytics-target="답을-고르는-시험에서-행동을-실행하는-시험으로">답을 고르는 시험에서 행동을 실행하는 시험으로</a></li><li class="article-toc__depth-2"><a href="#평균-점수와-파이프의-빈틈을-함께-읽기" data-toc-link="평균-점수와-파이프의-빈틈을-함께-읽기" data-analytics-event="toc_click" data-analytics-target="평균-점수와-파이프의-빈틈을-함께-읽기">평균 점수와 파이프의 빈틈을 함께 읽기</a></li><li class="article-toc__depth-2"><a href="#공식-페이지와-원문이-다를-때의-기준" data-toc-link="공식-페이지와-원문이-다를-때의-기준" data-analytics-event="toc_click" data-analytics-target="공식-페이지와-원문이-다를-때의-기준">공식 페이지와 원문이 다를 때의 기준</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-완료-조건을-환경-쪽에-두겠습니다" data-toc-link="다메카솔의-해석-완료-조건을-환경-쪽에-두겠습니다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-완료-조건을-환경-쪽에-두겠습니다">다메카솔의 해석: 완료 조건을 환경 쪽에 두겠습니다</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p><strong>MindTopo에서 평가한 멀티모달 모델은 그림 속 관계를 답하는 과제보다, 직접 행동해서 목표를 만드는 과제에서 낮은 평균 점수를 받았습니다.</strong> 연결된 길을 알아보는 능력이 행동 계획에도 그대로 이어질 것이라는 기대를 점검한 결과입니다. 저자들은 미로·파이프·구슬·매듭처럼 구조가 눈에 보이는 문제로 두 능력을 나눠 살폈습니다. 개발자가 읽을 때도 답변의 그럴듯함과 실행의 성공을 구분해 볼 만합니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li>MindTopo v1은 연속성·분리·순서·둘러쌈·매듭에 관한 13종, 11,030개 사례를 담고 있습니다.</li>
+<li>정적 추론에서는 관계를 답하고, 행동 계획에서는 환경이 정한 목표 조건을 만족해야 성공합니다.</li>
+<li>정적 과제와 계획 과제는 같은 성질로 묶되 장면은 따로 만들었습니다. 점수 차이에는 과제 구성과 난도 차이도 관여합니다.</li>
+<li>성능 수치는 2026년 9월 10일 제출된 논문 v1에 고정했습니다. 공식 소개 페이지에는 다른 수치가 남아 있습니다.</li>
+<li>공식 코드와 데이터의 공개 상태를 직접 확인했습니다. 아래 모델 점수는 저자 보고이며 전체 평가를 재실행한 결과와 구별합니다.</li>
+</ul>
+<h2 id="휘어도-이어진-고리-돌려야-이어지는-파이프">휘어도 이어진 고리, 돌려야 이어지는 파이프</h2>
+<p><img alt="휘어진 고리와 연결이 끊긴 파이프를 비교하며 질문하는 카솔" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.CUIMkwYX_Z1k0Kew.webp" srcset=""></p>
+<p>둥근 고리를 옆으로 늘려도 끊어진 곳이 생기지는 않습니다. 모양은 달라도 연결은 유지됩니다. 논문에서 다루는 위상적 관계는 이처럼 길이·각도보다 무엇과 무엇이 이어지고, 어떤 경계가 안과 밖을 나누는지에 초점을 둡니다. 자르거나 이어 붙이거나 한 부분을 다른 부분에 통과시키지 않는 변형이라는 조건이 붙습니다.</p>
+<p>연구팀은 이 관점을 다섯 성질로 나눴습니다. <strong>연속성</strong>은 길이 끊김 없이 이어지는지, <strong>분리</strong>는 부분들을 나눌 수 있는지, <strong>순서</strong>는 줄을 따라 어떤 순서로 놓였는지 묻습니다. <strong>둘러쌈</strong>은 경계 안팎과 구멍을, <strong>매듭</strong>은 꼬임과 고리의 연결을 살핍니다. 모든 공간 능력을 대표하는 목록으로 받아들이기에는 범위가 제한적입니다.</p>
+<p>만화의 고리와 작업대는 이 질문을 쉽게 보이기 위해 새로 그린 예시입니다. 파이프의 두께와 색은 설명을 돕는 장치이며, 실제 평가 화면이나 공개된 개별 문제를 복제한 그림은 아닙니다. 논문의 문제 설정은 <a href="https://arxiv.org/html/2609.11900v1#S2">v1 2.1~2.2절</a>에 제시돼 있습니다.</p>
+<h2 id="답을-고르는-시험에서-행동을-실행하는-시험으로">답을 고르는 시험에서 행동을 실행하는 시험으로</h2>
+<p><img alt="따로 만든 미로 판단 과제와 파이프 회전 과제를 위아래로 보여 주는 설명" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.C0mvUJw2_LBOFM.webp" srcset=""></p>
+<p>길이 이어졌다는 판단을 실제 연결 작업으로 옮기면 무엇을 채점해야 할까요? 미로 추론 과제에서는 주어진 점에서 도달 가능한 점을 답합니다. Pipe 계획 과제에서는 조각을 90도씩 돌려 모든 활성 파이프가 시작점에 연결되도록 해야 합니다. 하나의 빈틈도 결과에 영향을 줍니다.</p>
+<p>정적 질문의 숫자·선택형 답은 정답과 정확히 일치해야 하고, 순서 없는 목록은 집합으로 비교합니다. 본문 계획 평가에서는 모델이 관측을 받아 행동을 고르면 시뮬레이터가 상태를 갱신합니다. 정해진 행동 횟수 안에 과제별 목표 조건에 도달해야 한 회차의 성공으로 집계합니다. 자연어로 완료했다고 말하는 것과는 판정 근거가 다릅니다.</p>
+<p>두 과제군은 동일한 장면을 번갈아 보여 준 실험이 아닙니다. 저자들은 같은 위상 성질을 중심으로 과제를 묶고 각 생성기로 장면을 따로 만들었습니다. 따라서 추론과 계획의 평균 차이는 평가에서 드러난 차이로 읽어야 합니다. 행동 자체, 상태 표현, 난도, 필요한 행동 길이 가운데 무엇이 얼마만큼 원인인지 분리하려면 추가 대조 실험이 필요합니다.</p>
+<p>이 관점은 <a href="/posts/jarvisgui-cross-device-state/">JarvisGUI의 기기 간 작업 완료 평가</a>와도 연결됩니다. 앞선 연구가 파일 전달과 후속 작업의 의존성을 시험했다면, MindTopo는 연결 관계를 만들어야 하는 공간 과제로 실행 능력을 살핍니다.</p>
+<h2 id="평균-점수와-파이프의-빈틈을-함께-읽기">평균 점수와 파이프의 빈틈을 함께 읽기</h2>
+<p><img alt="일부만 연결된 파이프와 전부 연결된 파이프를 비교하는 결과 해설" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.B2K10MIX_1qTM9r.webp" srcset=""></p>
+<p>Pipe에서 가장 높은 모델 성공률도 50.50%였습니다. 모든 조각을 연결하는 과제에서 절반 가까운 시도가 목표에 도달하지 못한 셈입니다. 이 수치는 논문 v1이 비교한 멀티모달 모델 14개 가운데 GPT-5.6-Sol의 결과이며, 실제 배관 작업이나 로봇 성공률로 확장해서 읽기에는 실험 조건이 다릅니다.</p>
+<table>
+<thead>
+<tr>
+<th>논문 v1의 평가 대상</th>
+<th style="text-align: right">정적 추론 과제평균</th>
+<th style="text-align: right">행동 계획 과제평균</th>
+<th style="text-align: right">Pipe 성공률</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT-5.6-Sol</td>
+<td style="text-align: right">66.83%</td>
+<td style="text-align: right">52.75%</td>
+<td style="text-align: right">50.50%</td>
+</tr>
+<tr>
+<td>GPT-5.5</td>
+<td style="text-align: right">53.77%</td>
+<td style="text-align: right">24.33%</td>
+<td style="text-align: right">2.17%</td>
+</tr>
+<tr>
+<td>Gemini-3.1-Pro</td>
+<td style="text-align: right">52.24%</td>
+<td style="text-align: right">19.23%</td>
+<td style="text-align: right">5.50%</td>
+</tr>
+</tbody>
+</table>
+<p>출처는 <a href="https://arxiv.org/html/2609.11900v1#S3.S2">논문 v1 Table 1과 3.2절</a>입니다. 정적 추론은 8종, 행동 계획은 5종의 <strong>과제별 점수를 같은 비중으로 평균</strong>했습니다. 모든 사례를 한데 모은 정답률과 구분해야 합니다. 계획 과제의 사례 수는 종류마다 600개이며, 본문 평가의 디코딩 온도는 0입니다.</p>
+<p>GPT-5.6-Sol의 13종 전체 과제평균은 61.42%, 인간 관측 평균은 97.87%였습니다. 전문 평가자 5명이 전체 11,030개 중 11,008개를 평가했고, 사례당 완료된 평가는 하나였습니다. 모든 사람이 모든 문제를 풀었다거나 인간 전체의 능력을 측정했다고 해석하면 표본의 범위를 벗어납니다.</p>
+<p>학습을 추가한 실험에서도 격차가 남았습니다. Qwen3-VL-2B-Instruct에 지도 미세조정과 강화학습을 순서대로 적용하자 선택된 추론 5종의 평균은 14.24%에서 51.53%로, 계획 4종은 0.20%에서 6.33%로 올랐습니다. 여기서는 초기 관측에서 전체 행동열을 예측해 실행했습니다. 앞의 본문 계획 평가와 실행 방식이 달라 두 표의 수치를 직접 이어 비교할 때 주의가 필요합니다.</p>
+<p>성공 조건 자체도 들여다봐야 합니다. Untangle은 화면에 투영된 줄의 교차를 없애는 과제로, 삼차원 매듭의 종류를 보존하는 문제와 구별됩니다. 전체 장면은 절차적으로 생성됐으며 실제 사진의 다양한 배경과 조명은 범위 밖입니다. 저자들이 함께 살핀 생성 영상에서도 그럴듯한 끝 장면과 유효한 상태 전이를 구분해야 하는 문제가 관찰됐습니다. 선택된 영상 모델과 제한된 검수 표본에서 얻은 결과입니다.</p>
+<h2 id="공식-페이지와-원문이-다를-때의-기준">공식 페이지와 원문이 다를 때의 기준</h2>
+<p>공식 소개 페이지에는 확인 시점에 사례 11,016개, 모델 11개, 최고 점수 54.1%가 표시돼 있었습니다. v1 PDF의 11,030개, 14개, 61.42%와 다릅니다. 이 글은 <strong>논문 v1의 연구 결과와 소개 페이지의 표시 상태를 분리</strong>했으며, 숫자가 바뀐 원인은 공개 자료만으로 확정하지 않았습니다.</p>
+<p>공개 여부도 링크까지 따라가 확인했습니다. 소개 페이지의 코드·데이터에는 공개 예정 표시가 남았지만, PDF가 연결하는 <a href="https://github.com/mll-lab-nu/MindTopo/tree/96ac4d15a706c43b31fb60ada7902c604cb857c1">GitHub 저장소</a>와 <a href="https://huggingface.co/datasets/MLL-Lab/MindTopo/tree/312ae92494ff1f17d7b1eb340ea77ccadb9a3cba">Hugging Face 데이터</a>는 공개 상태였습니다. 저장소는 정적 질문, 상호작용 계획, 이미지 생성 결합, 저장된 영상 평가의 실행 경로를 제공합니다.</p>
+<p>이번 검토에서는 버전을 고정한 원문과 코드, 데이터 메타데이터를 보존하고 Pipe의 완료 조건을 대조했습니다. 저장소 README는 실행 로그를 배포에서 제외한다고 명시합니다. 모델 API 호출과 전체 벤치마크 재실행은 수행하지 않았으므로, 성능표를 독립 재현했다고 주장할 근거는 없습니다.</p>
+<h2 id="다메카솔의-해석-완료-조건을-환경-쪽에-두겠습니다">다메카솔의 해석: 완료 조건을 환경 쪽에 두겠습니다</h2>
+<p><img alt="카솔이 실제로 연결된 파이프의 끝을 확인하며 마무리하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DW5jmo4F_ZokABc.webp" srcset=""></p>
+<p>저는 이런 에이전트 평가를 만들 때 설명의 정답률과 실행 성공률을 별도 지표로 관리하겠습니다. 답이 맞아도 도구에 전달한 행동이 유효한지, 목표 상태에 실제로 도달했는지는 다른 증거가 필요하기 때문입니다. Pipe라면 연결 여부를 그래프 탐색으로 확인하고, 파일 작업이라면 목적지의 파일 내용과 필수 속성을 검사하는 식입니다.</p>
+<p>평가 기준은 모델이 고칠 수 없는 환경 쪽에 두는 편이 타당하다고 봅니다. 모델의 자체 설명을 그대로 승인 근거로 쓰면 잘못 이해한 목표와 그 목표를 만족했다는 주장이 함께 통과할 수 있습니다. <a href="/posts/execcritic-independent-tests/">ExecCritic의 테스트 작성·수정 역할 분리</a>와 닿는 지점입니다. 이 설계는 완료 판정의 근거를 명확히 하지만, 관측 오류를 자동으로 해결해 주지는 않습니다.</p>
+<p>대신 비용이 생깁니다. 과제마다 목표 판정기를 만들어야 하고, 모호한 요구사항은 검사가 가능한 조건으로 정리해야 합니다. 판정기 자체의 회귀 테스트도 필요합니다. 여기까지는 공개 연구를 바탕으로 한 제 설계 판단이며, MindTopo가 운영 시스템에서 이 구성을 검증한 결과로 읽어서는 안 됩니다.</p>
+<p>다음으로 궁금한 것은 상태를 정확한 구조 데이터로 주고 행동 길이까지 맞췄을 때 남는 격차입니다. 그 차이를 좁혀 보면, 더 잘 보는 모델이 필요한지 더 나은 계획 방식이 필요한지 한층 분명해질 것입니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li>Ge 외, <a href="https://arxiv.org/abs/2609.11900v1">MindTopo: Can Foundation Models Reason in Topological Space? v1</a>, 2026-09-10 제출. 프리프린트.</li>
+<li><a href="https://arxiv.org/pdf/2609.11900v1">논문 PDF</a>, 2절의 과제 설계, Table 1·2, 3.2~3.5절의 결과, 5절의 한계, 부록 B의 평가 조건.</li>
+<li><a href="https://mind-topo.github.io/">공식 프로젝트 페이지</a>, 2026-09-11 확인. 수치와 공개 예정 표시가 PDF 및 직접 링크 상태와 다름.</li>
+<li><a href="https://github.com/mll-lab-nu/MindTopo/tree/96ac4d15a706c43b31fb60ada7902c604cb857c1">공식 코드 96ac4d15</a>, <a href="https://huggingface.co/datasets/MLL-Lab/MindTopo/tree/312ae92494ff1f17d7b1eb340ea77ccadb9a3cba">공식 데이터 312ae924</a>, 2026-09-11 확인.</li>
+</ul>
+<p>Updated: 2026-09-11</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/jarvisgui-cross-device-state/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CC92een1_KWn0f.webp" srcset="/_astro/cover.CC92een1_Z1zVMsu.webp 240w, /_astro/cover.CC92een1_ZmKKR1.webp 360w, /_astro/cover.CC92een1_PpfIs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-10T00:00:00.000Z">2026년 9월 10일</time></div><h3><a href="/posts/jarvisgui-cross-device-state/" data-analytics-event="related_post_click" data-analytics-target="jarvisgui-cross-device-state">3분만에 만화로 보는 IT - AI 논문 읽기 | 휴대폰과 PC를 오가는 AI, 파일은 정말 도착했을까</a></h3><p>JarvisGUI 논문이 기기 간 GUI 작업을 연결하고 완료를 평가한 방법, 낮은 전체 성공률의 실험 조건과 실제 파일 상태 확인의 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/visual-tool-use-causal-audit/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CMg6Nj-N_Z1lyLxU.webp" srcset="/_astro/cover.CMg6Nj-N_ZP5Hpt.webp 240w, /_astro/cover.CMg6Nj-N_n5jb0.webp 360w, /_astro/cover.CMg6Nj-N_1AgkLt.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></div><h3><a href="/posts/visual-tool-use-causal-audit/" data-analytics-event="related_post_click" data-analytics-target="visual-tool-use-causal-audit">3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 화면을 확대했다고 정말 더 잘 본 걸까</a></h3><p>시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/gui-agent-environment-state-verification/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CgIuvfWn_yrnbi.webp" srcset="/_astro/cover.CgIuvfWn_ZLjrm3.webp 240w, /_astro/cover.CgIuvfWn_qQzeq.webp 360w, /_astro/cover.CgIuvfWn_1E2AOT.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-07-29T00:00:00.000Z">2026년 7월 29일</time></div><h3><a href="/posts/gui-agent-environment-state-verification/" data-analytics-event="related_post_click" data-analytics-target="gui-agent-environment-state-verification">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까</a></h3><p>GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

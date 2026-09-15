@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI가 코드를 다 쓰기 전에 컴파일러가 오류를 잡는 법: Generative Compilation | 다메카솔</title><meta name="description" content="AI가 수백 줄의 코드를 다 생성할 때까지 기다렸다가 컴파일하면 첫 줄의 타입 오류 때문에 전체가 망가집니다. 미완성 코드를 임시 봉합(Sealor)하여 생성 루프 도중에 컴파일러 피드백을 주는 Generative Compilation 기술을 분석합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/generative-compilation/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 코드를 다 쓰기 전에 컴파일러가 오류를 잡는 법: Generative Compilation"><meta property="og:description" content="AI가 수백 줄의 코드를 다 생성할 때까지 기다렸다가 컴파일하면 첫 줄의 타입 오류 때문에 전체가 망가집니다. 미완성 코드를 임시 봉합(Sealor)하여 생성 루프 도중에 컴파일러 피드백을 주는 Generative Compilation 기술을 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/generative-compilation/"><meta property="og:image" content="https://blog.damecasol.com/social/generative-compilation.webp"><meta property="og:image:alt" content="카솔이 추상 코드 흐름 한가운데 놓인 컴파일러 검사대를 가리키는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 코드를 다 쓰기 전에 컴파일러가 오류를 잡는 법: Generative Compilation","description":"AI가 수백 줄의 코드를 다 생성할 때까지 기다렸다가 컴파일하면 첫 줄의 타입 오류 때문에 전체가 망가집니다. 미완성 코드를 임시 봉합(Sealor)하여 생성 루프 도중에 컴파일러 피드백을 주는 Generative Compilation 기술을 분석합니다.","datePublished":"2026-07-16T00:00:00.000Z","dateModified":"2026-07-16T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/generative-compilation/","image":["https://blog.damecasol.com/social/generative-compilation.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["컴파일러","프로그래밍 언어","AI 코딩 도구"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="generative-compilation" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-16T00:00:00.000Z">2026년 7월 16일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI가 코드를 다 쓰기 전에 컴파일러가 오류를 잡는 법: Generative Compilation</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI가 수백 줄의 코드를 다 생성할 때까지 기다렸다가 컴파일하면 첫 줄의 타입 오류 때문에 전체가 망가집니다. 미완성 코드를 임시 봉합(Sealor)하여 생성 루프 도중에 컴파일러 피드백을 주는 Generative Compilation 기술을 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.8CHZwoG8_ZwBdqE.webp" srcset="/_astro/cover.8CHZwoG8_Z1KQPqD.webp 640w, /_astro/cover.8CHZwoG8_Z1YplDM.webp 960w, /_astro/cover.8CHZwoG8_ZwBdqE.webp 1024w" alt="카솔이 추상 코드 흐름 한가운데 놓인 컴파일러 검사대를 가리키는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#생성-후-컴파일post-hoc의-치명적인-지연-문제" data-toc-link="생성-후-컴파일post-hoc의-치명적인-지연-문제" data-analytics-event="toc_click" data-analytics-target="생성-후-컴파일post-hoc의-치명적인-지연-문제">생성 후 컴파일(Post-hoc)의 치명적인 지연 문제</a></li><li class="article-toc__depth-2"><a href="#해결책-미완성-코드를-컴파일러에-넣는-sealor봉합기의-마법" data-toc-link="해결책-미완성-코드를-컴파일러에-넣는-sealor봉합기의-마법" data-analytics-event="toc_click" data-analytics-target="해결책-미완성-코드를-컴파일러에-넣는-sealor봉합기의-마법">해결책: 미완성 코드를 컴파일러에 넣는 ’Sealor(봉합기)’의 마법</a></li><li class="article-toc__depth-2"><a href="#생성형-컴파일generative-compilation의-5단계-루프" data-toc-link="생성형-컴파일generative-compilation의-5단계-루프" data-analytics-event="toc_click" data-analytics-target="생성형-컴파일generative-compilation의-5단계-루프">생성형 컴파일(Generative Compilation)의 5단계 루프</a></li><li class="article-toc__depth-2"><a href="#rust-벤치마크-실험-결과" data-toc-link="rust-벤치마크-실험-결과" data-analytics-event="toc_click" data-analytics-target="rust-벤치마크-실험-결과">Rust 벤치마크 실험 결과</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-컴파일러는-최종-채점관이-아닌-실시간-가드레일이어야-한다" data-toc-link="다메카솔의-해석-컴파일러는-최종-채점관이-아닌-실시간-가드레일이어야-한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-컴파일러는-최종-채점관이-아닌-실시간-가드레일이어야-한다">다메카솔의 해석: 컴파일러는 ’최종 채점관’이 아닌 ’실시간 가드레일’이어야 한다</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-코딩-글" data-toc-link="함께-읽을-ai-코딩-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-코딩-글">함께 읽을 AI 코딩 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>AI 코딩 에이전트에게 복잡한 Rust나 C++ 알고리즘 작성을 맡겼을 때, 수백 줄의 코드가 스트리밍되는 것을 끝까지 기다렸다가 <code>cargo check</code>를 돌려본 경험이 있으실 겁니다.</p>
+<p>그리고 돌아오는 것은 **“5번째 줄에서 발생한 소유권(Borrow Checker) 및 타입 불일치 오류 때문에, 그 뒤에 작성된 80줄의 코드가 연쇄적으로 망가져 컴파일 에러가 20개 넘게 폭증하는 대참사”**입니다.</p>
+<p>결국 AI는 수십 초 동안 헛수고를 한 셈이고, 수정한답시고 전체 코드를 처음부터 다시 생성하느라 토큰과 시간을 낭비합니다.</p>
+<p>최근 발표된 논문 <strong>Generative Compilation: On-the-Fly Compiler Feedback as AI Generates Code</strong>는 이 문제를 해결하기 위해 <strong>“AI가 코드를 스트리밍으로 작성하는 도중에, 미완성 코드를 실시간으로 컴파일러에 던져 조기에 오류를 바로잡는” 획기적인 온더플라이(On-the-fly) 검증 기술</strong>을 제안했습니다.</p>
+<h2 id="생성-후-컴파일post-hoc의-치명적인-지연-문제">생성 후 컴파일(Post-hoc)의 치명적인 지연 문제</h2>
+<p><img alt="코드 중간의 작은 오류가 뒤 블록으로 번지고 카솔이 흐름을 무너뜨리는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.DtziCgrY_Z2js2wg.webp" srcset=""></p>
+<p>현재 대부분의 코딩 도구는 **“코드 생성 완료 ➡️ 파일 저장 ➡️ 컴파일러 실행 ➡️ 에러 메시지를 프롬프트에 담아 재생성”**이라는 사후 루프(Post-hoc loop)를 돕니다.</p>
+<p>이 방식의 문제는 <strong>피드백의 시점이 너무 늦다</strong>는 것입니다:</p>
+<ul>
+<li>초반부의 사소한 타입 가정(Type Assumption) 하나가 틀어지면, 그 뒤에 생성되는 모든 함수 호출과 변수 선언이 잘못된 전제 위에 쌓여 오류의 눈덩이(Error Snowball)를 만듭니다.</li>
+<li>에러가 난 시점과 원인 위치 사이의 거리가 너무 멀어져, AI 모델조차 어디서부터 손을 대야 할지 헷갈려합니다.</li>
+</ul>
+<h2 id="해결책-미완성-코드를-컴파일러에-넣는-sealor봉합기의-마법">해결책: 미완성 코드를 컴파일러에 넣는 ’Sealor(봉합기)’의 마법</h2>
+<p><img alt="열린 부분 코드가 봉합 링을 거쳐 닫힌 코드가 되고 rustc 진단을 받는 세 단계 다이어그램" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.qwBwZdMG_ZLvLwn.webp" srcset=""></p>
+<p>“아직 닫히지도 않은 중괄호 <code>{</code>와 미완성 함수를 컴파일러(<code>rustc</code>)에 넣으면 당연히 문법 에러(Syntax Error)가 날 텐데, 어떻게 중간 검사를 할 수 있을까?”</p>
+<p>연구진은 <strong>Sealor</strong>라는 가벼운 AST 변환기를 고안했습니다:</p>
+<ol>
+<li><strong>임시 구문 닫기</strong>: 아직 닫히지 않은 제어문과 블록에 가상의 닫는 괄호 <code>}</code>를 자동 보충</li>
+<li><strong>플레이스홀더(Placeholder) 주입</strong>: 아직 생성되지 않은 함수의 리턴값이나 변수 자리에 타입 추론을 방해하지 않는 특수 구문(<code>todo!()</code>, <code>unimplemented!()</code>)을 임시 주입</li>
+<li><strong>표준 컴파일러 검증</strong>: 완성된 형태의 ’봉합된 코드(Sealed Program)’를 실제 <code>rustc</code>에 넘겨, <strong>이미 작성된 앞부분 코드의 타입 안정성과 빌림 검사(Borrow Check)만 정확히 검증</strong></li>
+</ol>
+<h2 id="생성형-컴파일generative-compilation의-5단계-루프">생성형 컴파일(Generative Compilation)의 5단계 루프</h2>
+<p><img alt="생성, 봉합과 검사, 진단, 수정이 원형으로 이어지는 생성형 컴파일 루프" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Bb9pX4ED_28HJKS.webp" srcset=""></p>
+<ol>
+<li>AI 모델이 코드를 한 줄씩 토큰 스트리밍</li>
+<li>백그라운드 워커가 현재까지 작성된 프리픽스(Prefix) 코드를 Sealor로 봉합</li>
+<li><code>rustc</code>가 실시간으로 타입/소유권 검증 수행</li>
+<li><strong>되돌릴 수 없는 치명적 타입 오류가 감지되면 즉시 생성을 중단(Break)하고 오류 위치로 되감기(Rewind)</strong></li>
+<li>컴파일러의 에러 메시지를 즉각 주입하여 올바른 방향으로 이어서 생성</li>
+</ol>
+<h2 id="rust-벤치마크-실험-결과">Rust 벤치마크 실험 결과</h2>
+<p><img alt="생성 후 피드백의 큰 오류 눈덩이와 중간 피드백의 작은 오류 묶음, 기능 완주 경로를 비교한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.Bpy8PwiL_Z25Y2W3.webp" srcset=""></p>
+<p>7개 최신 LLM을 대상으로 고난도 Rust 코드 변환 및 API 마이그레이션 과제를 평가한 결과:</p>
+<ul>
+<li><strong>컴파일 에러율</strong>: 기존 사후 컴파일 방식(20.7%) 대비 <strong>13.1%로 대폭 감소</strong></li>
+<li><strong>단일 에러당 진단 수</strong>: 평균 13.8개에서 <strong>5.5개로 감소</strong> (연쇄 파생 오류 제거)</li>
+<li><strong>오류 감지 시점</strong>: 전체 코드의 평균 33% 지점에서 조기 발견하여, <strong>나머지 67%의 불필요한 토큰 낭비를 원천 차단</strong></li>
+</ul>
+<h2 id="다메카솔의-해석-컴파일러는-최종-채점관이-아닌-실시간-가드레일이어야-한다">다메카솔의 해석: 컴파일러는 ’최종 채점관’이 아닌 ’실시간 가드레일’이어야 한다</h2>
+<p>시니어 엔지니어링 관점에서 이 논문은 컴파일러와 정적 분석 도구(Linter)의 역할을 새롭게 정의합니다.</p>
+<ol>
+<li><strong>조기 실패(Fail-Fast)의 힘</strong>: 에이전트 시스템을 구축할 때 모든 작업이 끝난 뒤에 유닛 테스트를 돌리는 것보다, 중간 단계마다 정적 분석 가드레일을 걸어주는 것이 훨씬 저렴하고 정확합니다.</li>
+<li><strong>도메인 특화 린터와의 결합</strong>: Rust의 <code>rustc</code>뿐만 아니라, TypeScript, Python의 <code>mypy</code>/<code>ruff</code> 등도 부분 코드 파싱 기법을 결합하여 실시간 에이전트 생성 루프에 통합할 수 있습니다.</li>
+<li><strong>정적 검증과 의미 검증의 조화</strong>: 컴파일러가 문법과 타입을 100% 보증해주더라도, 비즈니스 요구사항과 보안 검증은 별도의 E2E 테스트와 리뷰를 통해 최종 검증해야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-ai-코딩-글">함께 읽을 AI 코딩 글</h2>
+<ul>
+<li><a href="/posts/claude-opus-5-github-copilot/">Claude Opus 5와 GitHub Copilot 지원 분석</a></li>
+<li><a href="/posts/copilot-security-api-study/">Copilot 보안 API 실증 연구와 검증 가드레일</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.13921">Generative Compilation: On-the-Fly Compiler Feedback as AI Generates Code, arXiv:2607.13921</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/trie-automata-large-enum-decoding/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D4vUdug2_Z2jTrdD.webp" srcset="/_astro/cover.D4vUdug2_1g4BFn.webp 240w, /_astro/cover.D4vUdug2_2tfDgQ.webp 360w, /_astro/cover.D4vUdug2_Z1nKsVB.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-15T00:00:00.000Z">2026년 8월 15일</time></div><h3><a href="/posts/trie-automata-large-enum-decoding/" data-analytics-event="related_post_click" data-analytics-target="trie-automata-large-enum-decoding">3분만에 만화로 보는 IT - AI 논문 읽기 | 수천 개 선택지를 빠르게 제한하는 트라이 디코딩</a></h3><p>큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/agentic-coding-production-traces/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BPLe1CdM_Z2aFg8z.webp" srcset="/_astro/cover.BPLe1CdM_ZcFJcj.webp 240w, /_astro/cover.BPLe1CdM_10uhoa.webp 360w, /_astro/cover.BPLe1CdM_2dFiYD.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-06T00:00:00.000Z">2026년 8월 6일</time></div><h3><a href="/posts/agentic-coding-production-traces/" data-analytics-event="related_post_click" data-analytics-target="agentic-coding-production-traces">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 에이전트의 진짜 병목은 대화 사이에 생긴다</a></h3><p>GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/copilot-security-api-study/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CFLnoY4S_bInfD.webp" srcset="/_astro/cover.CFLnoY4S_Z173Vr6.webp 240w, /_astro/cover.CFLnoY4S_6759n.webp 360w, /_astro/cover.CFLnoY4S_1ji6JQ.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></div><h3><a href="/posts/copilot-security-api-study/" data-analytics-event="related_post_click" data-analytics-target="copilot-security-api-study">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증 연구</a></h3><p>AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

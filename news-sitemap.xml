@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/claude-code-weekly-limit-baseline/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-15T00:00:00.000Z</news:publication_date>
+      <news:title>Claude Code 주간 한도 변경: 25% 늘었는데 왜 줄었을까</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.damecasol.com/posts/anthropic-embedded-evaluators-pacing/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-14T00:00:00.000Z</news:publication_date>
+      <news:title>Anthropic의 외부 평가팀 약속: AI 개발 속도를 누가 확인할까</news:title>
+    </news:news>
+  </url>
+</urlset>

@@ -1,0 +1,297 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>SQL은 왜 선언형 언어인가? 실행 계획과 인덱스 튜닝 원리 | 다메카솔</title><meta name="description" content="분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/sql-declarative-language/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이"><meta property="og:description" content="분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/sql-declarative-language/"><meta property="og:image" content="https://blog.damecasol.com/social/sql-declarative-language.webp"><meta property="og:image:alt" content="카솔이 SQL 결과 카드와 여러 실행 경로를 비교하며 SQL의 선언형 성격을 소개하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이","description":"분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다.","datePublished":"2026-07-14T00:00:00.000Z","dateModified":"2026-07-15T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/sql-declarative-language/","image":["https://blog.damecasol.com/social/sql-declarative-language.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"데이터베이스","keywords":["SQL","데이터베이스"],"isAccessibleForFree":true,"isPartOf":{"@type":"CreativeWorkSeries","name":"데이터베이스 핵심 원리","position":1}}</script><article class="article" data-analytics-article data-content-id="sql-declarative-language" data-content-track="tech_column" data-content-category="database"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/database/">데이터베이스</a><span aria-hidden="true">/</span><a href="/series/database-core/">데이터베이스 핵심 원리</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/database/">데이터베이스</a><a class="series-label" href="/series/database-core/">데이터베이스 핵심 원리 1편</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-14T00:00:00.000Z">2026년 7월 14일</time></span><span>수정 <time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | SQL은 왜 선언형 언어인가: 원하는 결과와 실행 계획의 차이</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover-v2.BbVncO3h_Z16EGXi.webp" srcset="/_astro/cover-v2.BbVncO3h_Z2fX4Ql.webp 640w, /_astro/cover-v2.BbVncO3h_ZspmIB.webp 960w, /_astro/cover-v2.BbVncO3h_Z16EGXi.webp 1024w" alt="카솔이 SQL 결과 카드와 여러 실행 경로를 비교하며 SQL의 선언형 성격을 소개하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-요약" data-toc-link="핵심-요약" data-analytics-event="toc_click" data-analytics-target="핵심-요약">핵심 요약</a></li><li class="article-toc__depth-2"><a href="#개발자가-선언하는-것-vs-dbms가-결정하는-것" data-toc-link="개발자가-선언하는-것-vs-dbms가-결정하는-것" data-analytics-event="toc_click" data-analytics-target="개발자가-선언하는-것-vs-dbms가-결정하는-것">개발자가 선언하는 것 vs DBMS가 결정하는 것</a></li><li class="article-toc__depth-2"><a href="#옵티마이저가-실행-계획을-세우는-내부-과정" data-toc-link="옵티마이저가-실행-계획을-세우는-내부-과정" data-analytics-event="toc_click" data-analytics-target="옵티마이저가-실행-계획을-세우는-내부-과정">옵티마이저가 실행 계획을 세우는 내부 과정</a></li><li class="article-toc__depth-2"><a href="#인덱스가-있는데도-왜-풀-테이블-스캔을-탈까" data-toc-link="인덱스가-있는데도-왜-풀-테이블-스캔을-탈까" data-analytics-event="toc_click" data-analytics-target="인덱스가-있는데도-왜-풀-테이블-스캔을-탈까">인덱스가 있는데도 왜 풀 테이블 스캔을 탈까?</a></li><li class="article-toc__depth-2"><a href="#복합-인덱스로-필터와-정렬을-한-방에-해결하기" data-toc-link="복합-인덱스로-필터와-정렬을-한-방에-해결하기" data-analytics-event="toc_click" data-analytics-target="복합-인덱스로-필터와-정렬을-한-방에-해결하기">복합 인덱스로 필터와 정렬을 한 방에 해결하기</a></li><li class="article-toc__depth-2"><a href="#explain으로-실행-계획-뜯어보기" data-toc-link="explain으로-실행-계획-뜯어보기" data-analytics-event="toc_click" data-analytics-target="explain으로-실행-계획-뜯어보기">EXPLAIN으로 실행 계획 뜯어보기</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-선언형-추상화-뒤에-숨은-엔지니어링의-본질" data-toc-link="다메카솔의-해석-선언형-추상화-뒤에-숨은-엔지니어링의-본질" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-선언형-추상화-뒤에-숨은-엔지니어링의-본질">다메카솔의 해석: 선언형 추상화 뒤에 숨은 엔지니어링의 본질</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-db-핵심-원리" data-toc-link="함께-읽을-db-핵심-원리" data-analytics-event="toc_click" data-analytics-target="함께-읽을-db-핵심-원리">함께 읽을 DB 핵심 원리</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>분명히 테이블에 인덱스를 걸어두었는데 쿼리 속도는 여전히 느리고, <code>EXPLAIN</code>으로 실행 계획을 뜯어보니 인덱스를 완전히 무시한 채 수천만 건의 테이블 전체를 풀 스캔(Seq Scan)하고 있던 경험이 있으신가요?</p>
+<p>“내가 인덱스를 만들어 줬는데 DB 엔진이 왜 내 명령을 무시하지?“라고 생각하기 쉽습니다. 하지만 <strong>SQL은 애초에 절차적 지시(Imperative Command)를 내리는 언어가 아닙니다.</strong></p>
+<p>SQL이 **선언형 언어(Declarative Language)**라는 것은, <strong>개발자는 ’어떤 데이터(What)’가 필요한지만 선언하고, 그 데이터를 실제로 ‘어떻게(How)’ 가져올지는 데이터베이스의 옵티마이저(Optimizer)가 비용 기반으로 결정한다는 뜻</strong>입니다.</p>
+<p>이번 글에서는 옵티마이저가 실행 계획을 선택하는 메커니즘과, 인덱스가 무시되는 이유, 그리고 필터와 정렬을 동시에 해결하는 복합 인덱스 설계법을 살펴보겠습니다.</p>
+<h2 id="핵심-요약">핵심 요약</h2>
+<ul>
+<li>SQL 작성자는 필요한 데이터의 조건(<code>WHERE</code>), 정렬(<code>ORDER BY</code>), 개수(<code>LIMIT</code>) 등 **논리적 요구사항(What)**을 기술합니다.</li>
+<li>DBMS 옵티마이저는 데이터 통계와 카디널리티를 계산하여 풀 스캔, 인덱스 스캔, 해시 조인 등 **물리적 실행 계획(How)**을 스스로 선택합니다.</li>
+<li>인덱스가 존재하더라도 조회 조건에 매칭되는 데이터 비율이 전체의 일정 수준 이상이면, 랜덤 I/O 비용 때문에 옵티마이저는 풀 테이블 스캔을 선택합니다.</li>
+<li>선언형 언어라고 해서 성능이 자동으로 보장되는 것은 아닙니다. 쿼리 패턴에 맞는 복합 인덱스를 설계하고 <code>EXPLAIN</code>을 통해 실제 실행 계획을 검증하는 엔지니어링이 필수적입니다.</li>
+</ul>
+<h2 id="개발자가-선언하는-것-vs-dbms가-결정하는-것">개발자가 선언하는 것 vs DBMS가 결정하는 것</h2>
+<p><img alt="인덱스를 만들어도 느린 쿼리 앞에서 개발자가 질문을 얻고 카솔이 학습 경로를 여는 도입 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00-v2.BNjoMUrL_ZEANbx.webp" srcset=""></p>
+<p>우리가 평소에 작성하는 전형적인 페이징 쿼리를 예로 들어 보겠습니다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#D73A49">SELECT</span><span style="color:#D73A49"> *</span></span>
+<span class="line"><span style="color:#D73A49">FROM</span><span style="color:#24292E"> orders</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#24292E"> member_id </span><span style="color:#D73A49">=</span><span style="color:#005CC5"> 10</span></span>
+<span class="line"><span style="color:#D73A49">ORDER BY</span><span style="color:#24292E"> created_at </span><span style="color:#D73A49">DESC</span></span>
+<span class="line"><span style="color:#D73A49">LIMIT</span><span style="color:#005CC5"> 10</span><span style="color:#24292E">;</span></span></code></pre>
+<p><img alt="SELECT 문에서 개발자가 선언하는 결과 조건과 DBMS가 선택하는 물리 실행 경로를 분리한 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01-v3.B3dpwqB-_NpJhW.webp" srcset=""></p>
+<p>이 짧은 쿼리문 안에서 개발자가 명시한 것은 오직 ’결과의 형태’뿐입니다:</p>
+<ul>
+<li><code>FROM orders</code>: 주문 테이블에서 데이터를 가져온다.</li>
+<li><code>WHERE member_id = 10</code>: 10번 회원의 주문만 필터링한다.</li>
+<li><code>ORDER BY created_at DESC</code>: 최신순으로 정렬한다.</li>
+<li><code>LIMIT 10</code>: 상위 10개만 반환한다.</li>
+</ul>
+<p>여기에는 “디스크의 몇 번 블록부터 읽어라”, “B-tree 인덱스 루트 노드부터 탐색해라” 같은 구체적인 물리 실행 절차가 일체 없습니다. 자바나 C++처럼 절차를 하나하나 명령하는 것이 아니라, <strong>“내가 원하는 최종 데이터셋은 이것이다”라고 목적지만 선언</strong>한 것입니다.</p>
+<h2 id="옵티마이저가-실행-계획을-세우는-내부-과정">옵티마이저가 실행 계획을 세우는 내부 과정</h2>
+<p><img alt="SQL이 파싱, 재작성, 최적화, 실행 단계를 거쳐 실행 계획으로 변환되는 흐름" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02-v4.5gxHHcop_Z14Nb27.webp" srcset=""></p>
+<p>SQL이 DBMS에 전달되면 옵티마이저는 다음 4단계를 거쳐 가장 저렴한(Cost-efficient) 실행 계획을 수립합니다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>SQL 입력 ➡️ 구문 파싱(Parse) ➡️ 쿼리 재작성(Rewrite) ➡️ 비용 최적화(Optimize) ➡️ 실행(Execute)</span></span></code></pre>
+<p>옵티마이저는 내부적으로 수많은 경로 후보군을 시뮬레이션합니다:</p>
+<ul>
+<li>테이블 전체를 순차적으로 긁어오는 비용 (Sequential Scan)</li>
+<li>인덱스를 탄 뒤 실제 테이블 블록을 찾아가는 랜덤 I/O 비용 (Index Scan)</li>
+<li>메모리에서 정렬을 수행하는 비용 (Sort Node)</li>
+<li><code>LIMIT</code> 조건을 만나 중간에 스캔을 멈출 수 있는 조기 종료 가능성</li>
+</ul>
+<p>옵티마이저는 수집된 **테이블 통계 정보(행 수, 컬럼별 고유값 분포, 카디널리티)**를 바탕으로 각 경로의 예상 I/O 비용을 계산하고, 가장 총비용이 낮은 1개의 실행 계획을 선택합니다.</p>
+<h2 id="인덱스가-있는데도-왜-풀-테이블-스캔을-탈까">인덱스가 있는데도 왜 풀 테이블 스캔을 탈까?</h2>
+<p><img alt="조건에 맞는 행의 수에 따라 인덱스 스캔과 순차 스캔의 비용 판단이 달라지는 비교 만화" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03-v3.DjAVbpaM_ZpDXwi.webp" srcset=""></p>
+<p>가장 흔한 오해 중 하나는 “인덱스를 걸었으니 당연히 인덱스를 타야 한다”는 생각입니다.</p>
+<p>예를 들어 주문 상태가 결제 완료(<code>status = 'PAID'</code>)인 데이터를 조회한다고 해봅시다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#D73A49">SELECT</span><span style="color:#D73A49"> *</span></span>
+<span class="line"><span style="color:#D73A49">FROM</span><span style="color:#24292E"> orders</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#D73A49"> status</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> 'PAID'</span><span style="color:#24292E">;</span></span></code></pre>
+<ul>
+<li>만약 전체 100만 건 중 <code>PAID</code> 데이터가 **100건(0.01%)**에 불과하다면?<br>
+👉 인덱스를 통해 100건의 위치만 콕 집어 디스크를 읽는 **인덱스 스캔(Index Scan)**이 압도적으로 빠릅니다.</li>
+<li>만약 전체 100만 건 중 <code>PAID</code> 데이터가 **90만 건(90%)**이라면?<br>
+👉 인덱스를 읽고 다시 테이블 본문 블록을 90만 번 찾아가는 <strong>랜덤 액세스(Random I/O)</strong> 오버헤드가 디스크를 처음부터 끝까지 한 번에 연속으로 읽는 **순차 I/O(Sequential Scan)**보다 훨씬 비쌉니다.</li>
+</ul>
+<p>따라서 옵티마이저는 인덱스가 분명히 존재함에도 불구하고 <strong>풀 테이블 스캔을 선택하는 것이 더 똑똑한 판단</strong>이라고 결정하는 것입니다. 즉, 인덱스는 “무조건적인 실행 명령”이 아니라 “옵티마이저가 검토할 수 있는 여러 선택지 중 하나”일 뿐입니다.</p>
+<h2 id="복합-인덱스로-필터와-정렬을-한-방에-해결하기">복합 인덱스로 필터와 정렬을 한 방에 해결하기</h2>
+<p><img alt="member_id와 created_at 복합 인덱스로 필터, 정렬, LIMIT을 처리하는 흐름" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04-v4.Bt1Do7ce_unn6X.webp" srcset=""></p>
+<p>쿼리 구조와 인덱스의 컬럼 순서가 완벽히 맞아떨어지면, 불필요한 디스크 I/O와 정렬(Sort) 연산을 획기적으로 줄일 수 있습니다.</p>
+<p>앞서 살펴본 최근 주문 10개 조회 쿼리에 대해 다음 복합 인덱스를 구성한다고 가정해 보겠습니다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#D73A49">CREATE</span><span style="color:#D73A49"> INDEX</span><span style="color:#6F42C1"> idx_orders_member_created</span></span>
+<span class="line"><span style="color:#D73A49">ON</span><span style="color:#24292E"> orders (member_id, created_at </span><span style="color:#D73A49">DESC</span><span style="color:#24292E">);</span></span></code></pre>
+<p>이 인덱스를 생성하면 3가지 거대한 최적화가 동시에 일어납니다:</p>
+<ol>
+<li><strong>필터링 최소화</strong>: 선두 컬럼인 <code>member_id = 10</code>에 해당하는 B-tree 구간으로 단번에 점프합니다.</li>
+<li><strong>별도 Sort 제거</strong>: 이미 B-tree 리프 노드에 <code>created_at DESC</code> 순서로 정렬되어 있으므로, 쿼리 엔진이 메모리나 디스크에 임시 공간을 잡고 <code>Sort</code> 연산을 돌릴 필요가 없습니다.</li>
+<li><strong>조기 종료 (Early Exit)</strong>: 인덱스를 위에서부터 딱 10개만 읽고 즉시 쿼리 실행을 멈춥니다(<code>LIMIT 10</code>).</li>
+</ol>
+<h2 id="explain으로-실행-계획-뜯어보기">EXPLAIN으로 실행 계획 뜯어보기</h2>
+<p>PostgreSQL이나 MySQL에서는 <code>EXPLAIN</code> 명령어를 통해 옵티마이저가 선택한 실행 계획을 육안으로 확인할 수 있습니다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#24292E">EXPLAIN</span></span>
+<span class="line"><span style="color:#D73A49">SELECT</span><span style="color:#D73A49"> *</span></span>
+<span class="line"><span style="color:#D73A49">FROM</span><span style="color:#24292E"> orders</span></span>
+<span class="line"><span style="color:#D73A49">WHERE</span><span style="color:#24292E"> member_id </span><span style="color:#D73A49">=</span><span style="color:#005CC5"> 10</span></span>
+<span class="line"><span style="color:#D73A49">ORDER BY</span><span style="color:#24292E"> created_at </span><span style="color:#D73A49">DESC</span></span>
+<span class="line"><span style="color:#D73A49">LIMIT</span><span style="color:#005CC5"> 10</span><span style="color:#24292E">;</span></span></code></pre>
+<p>복합 인덱스가 의도대로 잘 동작한다면 다음과 같은 실행 계획이 출력됩니다:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Limit  (cost=0.43..12.10 rows=10 width=64)</span></span>
+<span class="line"><span>  ->  Index Scan using idx_orders_member_created on orders</span></span>
+<span class="line"><span>        (cost=0.43..116.90 rows=100 width=64)</span></span>
+<span class="line"><span>        Index Cond: (member_id = 10)</span></span></code></pre>
+<p>여기서 주목해야 할 핵심 포인트는 두 가지입니다:</p>
+<ul>
+<li><strong><code>Sort</code> 노드가 사라졌는가?</strong>: 인덱스의 정렬 순서를 활용해 불필요한 CPU 정렬 연산을 건너뛰었음을 뜻합니다.</li>
+<li><strong><code>Limit</code>이 최상단에 걸려 있는가?</strong>: 10건을 채우는 즉시 스캔을 중단하여 I/O를 최소화했음을 뜻합니다.</li>
+</ul>
+<h2 id="다메카솔의-해석-선언형-추상화-뒤에-숨은-엔지니어링의-본질">다메카솔의 해석: 선언형 추상화 뒤에 숨은 엔지니어링의 본질</h2>
+<p>SQL의 선언형 모델은 개발자를 복잡한 디스크 블록 관리와 알고리즘 구현의 고통에서 해방시켜 주었습니다. 하지만 <strong>추상화가 잘 되어 있다고 해서 그 아래의 물리적 비용까지 사라지는 것은 아닙니다.</strong></p>
+<p>시니어 백엔드 개발자로서 쿼리 성능을 다룰 때 다음 3가지를 명심해야 합니다:</p>
+<ol>
+<li><strong>카디널리티와 데이터 분포 고려</strong>: 단순히 <code>WHERE</code> 절에 들어간다고 인덱스를 다 거는 것이 아니라, 고유값 비율(선택도)이 높은 컬럼을 복합 인덱스의 선두에 배치해야 합니다.</li>
+<li><strong>테이블 통계(Statistics)의 최신성 관리</strong>: 대규모 데이터 이관이나 야간 배치 작업 직후에는 옵티마이저의 카디널리티 추정이 빗나가 엉뚱한 풀 스캔을 탈 수 있습니다. 주기적인 <code>ANALYZE</code>로 통계를 최신화해야 합니다.</li>
+<li><strong>프로덕션 쿼리는 반드시 실행 계획으로 검증</strong>: 로컬 환경에서 10건짜리 더미 데이터로 테스트하면 무조건 풀 스캔이 뜹니다. 데이터가 수백만 건 이상 쌓인 스테이징 환경에서 <code>EXPLAIN ANALYZE</code>로 실제 I/O 비용과 병목 지점을 확인해야 합니다.</li>
+</ol>
+<h2 id="함께-읽을-db-핵심-원리">함께 읽을 DB 핵심 원리</h2>
+<ul>
+<li><a href="/posts/database-normalization-anomalies/">데이터베이스 정규화와 3대 이상 현상</a>: 올바른 엔티티 분리와 데이터 무결성</li>
+<li><a href="/posts/transaction-acid-commit-rollback/">트랜잭션 ACID와 Commit/Rollback의 내부 동작</a>: 동시성 제어와 WAL 로그</li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/using-explain.html">PostgreSQL Documentation — Using EXPLAIN</a></li>
+<li><a href="https://www.postgresql.org/docs/current/indexes-ordering.html">PostgreSQL Documentation — Indexes and ORDER BY</a></li>
+<li><a href="https://www.postgresql.org/docs/current/indexes-multicolumn.html">PostgreSQL Documentation — Multicolumn Indexes</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><nav class="series-navigation" aria-label="연재 글 이동"><div><span class="series-navigation__empty">첫 편입니다</span></div><a class="series-navigation__index" href="/series/database-core/">전체 연재 보기</a><div class="series-navigation__next"><a href="/posts/transaction-acid-commit-rollback/"><span>다음 편</span>트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계</a></div></nav><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/transaction-acid-commit-rollback/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BAdM6zjO_1crtsi.webp" srcset="/_astro/cover.BAdM6zjO_Z1T6rb8.webp 240w, /_astro/cover.BAdM6zjO_ZFUpzE.webp 360w, /_astro/cover.BAdM6zjO_wfB0O.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-25T00:00:00.000Z">2026년 7월 25일</time></div><h3><a href="/posts/transaction-acid-commit-rollback/" data-analytics-event="related_post_click" data-analytics-target="transaction-acid-commit-rollback">3분만에 만화로 보는 IT - 기술 해설 | 트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경계</a></h3><p>송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/database-normalization-anomalies/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.RxhSdcHH_1KVnqF.webp" srcset="/_astro/cover.RxhSdcHH_Z1xXMrD.webp 240w, /_astro/cover.RxhSdcHH_ZkMKQa.webp 360w, /_astro/cover.RxhSdcHH_RnfJj.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-15T00:00:00.000Z">2026년 7월 15일</time></div><h3><a href="/posts/database-normalization-anomalies/" data-analytics-event="related_post_click" data-analytics-target="database-normalization-anomalies">3분만에 만화로 보는 IT - 기술 해설 | 정규화는 왜 하는가: 중복 제거보다 중요한 세 가지 이상 현상</a></h3><p>데이터베이스 정규화의 본질은 단순 용량 절약이 아닌 데이터 무결성 보장입니다. 주문 도메인 설계를 예시로 3대 이상 현상과 반정규화의 트레이드오프를 짚어봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/restore-rehearsal-false-success/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ce4HOx1k_Ze8KYl.webp" srcset="/_astro/cover.Ce4HOx1k_Z1hTeIV.webp 240w, /_astro/cover.Ce4HOx1k_Z4Id8s.webp 360w, /_astro/cover.Ce4HOx1k_18rNs1.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-10T09:12:49.000Z">2026년 8월 10일</time></div><h3><a href="/posts/restore-rehearsal-false-success/" data-analytics-event="related_post_click" data-analytics-target="restore-rehearsal-false-success">3분만에 만화로 보는 IT - 기술 해설 | 복구 리허설은 성공했는데 목표 시각 이전 기록이 없던 이유</a></h3><p>MySQL 시점 복구 리허설이 성공 로그를 남겼지만 목표 시각 이전 마커가 빠졌습니다. 파이프 왼쪽 실패가 가려진 원인과 마커 대조 관문을 기록합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/database/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 데이터베이스 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
