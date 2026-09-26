@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>애플리케이션 복제와 스토리지 복제 차이 | 다메카솔</title><meta name="description" content="서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/application-storage-replication-layers/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션 복제와 스토리지 복제는 무엇이 다른가"><meta property="og:description" content="서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/application-storage-replication-layers/"><meta property="og:image" content="https://blog.damecasol.com/social/application-storage-replication-layers.webp"><meta property="og:image:alt" content="남성 카솔이 애플리케이션 복제 층과 스토리지 복제 층을 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션 복제와 스토리지 복제는 무엇이 다른가","description":"서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다.","datePublished":"2026-08-24T00:00:00.000Z","dateModified":"2026-08-24T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/application-storage-replication-layers/","image":["https://blog.damecasol.com/social/application-storage-replication-layers.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"인프라·운영","keywords":["Kubernetes","스토리지","고가용성"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="application-storage-replication-layers" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션 복제와 스토리지 복제는 무엇이 다른가</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.B1SZGeCL_od21D.webp" srcset="/_astro/cover.B1SZGeCL_ZU04fH.webp 640w, /_astro/cover.B1SZGeCL_Z18xzsQ.webp 960w, /_astro/cover.B1SZGeCL_od21D.webp 1024w" alt="남성 카솔이 애플리케이션 복제 층과 스토리지 복제 층을 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#위층은-서비스를-아래층은-볼륨을-복제합니다" data-toc-link="위층은-서비스를-아래층은-볼륨을-복제합니다" data-analytics-event="toc_click" data-analytics-target="위층은-서비스를-아래층은-볼륨을-복제합니다">위층은 서비스를, 아래층은 볼륨을 복제합니다</a></li><li class="article-toc__depth-2"><a href="#3-곱하기-3은-비용도-늘립니다" data-toc-link="3-곱하기-3은-비용도-늘립니다" data-analytics-event="toc_click" data-analytics-target="3-곱하기-3은-비용도-늘립니다">3 곱하기 3은 비용도 늘립니다</a></li><li class="article-toc__depth-2"><a href="#워크로드마다-답이-달라집니다" data-toc-link="워크로드마다-답이-달라집니다" data-analytics-event="toc_click" data-analytics-target="워크로드마다-답이-달라집니다">워크로드마다 답이 달라집니다</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-글" data-toc-link="함께-읽을-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-글">함께 읽을 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>글·해설: 다메카솔</p>
+<p>결론부터 말하면 두 복제는 같은 데이터를 여러 곳에 둔다는 점만 닮았습니다. 애플리케이션 복제는 서비스 인스턴스가 데이터의 상태와 역할을 나눠 맡고, 스토리지 복제는 한 볼륨의 블록 사본을 여러 디스크나 노드에 둡니다. 복구 주체가 다르므로 replica 수를 한 숫자로 묶으면 판단이 흐려집니다.</p>
+<p><img alt="남성 카솔이 애플리케이션 복제 층과 스토리지 복제 층을 분리해 살피는 표지" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/cover.B1SZGeCL_od21D.webp" srcset=""></p>
+<h2 id="위층은-서비스를-아래층은-볼륨을-복제합니다">위층은 서비스를, 아래층은 볼륨을 복제합니다</h2>
+<p>CloudNativePG를 예로 들면 PostgreSQL 인스턴스가 여러 개이고, 기본 인스턴스에서 대기 인스턴스로 WAL이 전달됩니다. 어느 인스턴스가 쓰기를 받을지와 장애 때 누구를 승격할지는 PostgreSQL과 오퍼레이터가 결정합니다. 공식 문서는 이를 Kubernetes에서의 애플리케이션 계층 복제로 설명합니다.</p>
+<p>Longhorn의 단위는 볼륨입니다. 각 볼륨 엔진이 여러 노드의 replica에 쓰기를 동기 반영하고, 건강한 replica가 원하는 수보다 적어지면 다시 만듭니다. 이 계층은 PostgreSQL의 기본 인스턴스가 누구인지 모릅니다. PVC가 읽고 쓸 블록 장치를 유지하는 데 집중합니다.</p>
+<p><img alt="서비스 인스턴스가 복제되는 위층과 볼륨 블록이 복제되는 아래층을 나눈 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.BmwTQDlM_KNK6n.webp" srcset=""></p>
+<p>차이는 장애 질문을 바꾸면 더 선명해집니다.</p>
+<table>
+<thead>
+<tr>
+<th>실패</th>
+<th>먼저 반응하는 계층</th>
+<th>확인할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>프로세스 종료</td>
+<td>워크로드 컨트롤러·애플리케이션</td>
+<td>새 Pod와 역할 승계</td>
+</tr>
+<tr>
+<td>데이터베이스 기본 인스턴스 장애</td>
+<td>데이터베이스 복제 계층</td>
+<td>대기 인스턴스의 일관성과 승격</td>
+</tr>
+<tr>
+<td>볼륨 replica 또는 디스크 장애</td>
+<td>스토리지 계층</td>
+<td>남은 건강한 replica와 rebuild</td>
+</tr>
+<tr>
+<td>노드 전체 장애</td>
+<td>두 계층 모두 가능</td>
+<td>파드 재배치, 볼륨 접근성, 실패 도메인</td>
+</tr>
+</tbody>
+</table>
+<p>노드 장애처럼 경계가 겹치는 사건도 있습니다. 이때는 두 복제가 맡는 범위를 따로 봐야 합니다. 새 파드가 다른 노드에서 뜬 뒤에도 데이터베이스 역할 승계가 늦어질 수 있고, 애플리케이션 멤버가 살아 있는 동안 볼륨 접근이 대기할 수도 있습니다.</p>
+<h2 id="3-곱하기-3은-비용도-늘립니다">3 곱하기 3은 비용도 늘립니다</h2>
+<p>애플리케이션 인스턴스가 3개이고 각 인스턴스의 볼륨 replica가 3개라면 물리 데이터 경로는 최대 9개가 됩니다. 큰 숫자도 요구 조건에 따라 유효한 선택입니다. 얻는 장애 허용 범위와 지불하는 비용을 따로 계산해야 합니다.</p>
+<p>복제된 쓰기는 네트워크를 지나고, 디스크 대역폭과 용량을 사용하며, 장애 뒤에는 rebuild 트래픽을 만듭니다. 소규모 클러스터에서는 이 비용이 같은 몇 개 노드에 겹칩니다. 같은 실패 도메인에 모인 사본은 공통 장애를 함께 맞습니다.</p>
+<p><img alt="세 애플리케이션 사본이 각자 세 볼륨 사본으로 갈라져 아홉 경로가 되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.Duplwn_C_2lWUK2.webp" srcset=""></p>
+<p>Longhorn 문서의 N-1 표현도 범위를 붙여 읽어야 합니다. replica가 N개이고 최소 한 개가 건강하다면 최대 N-1 replica 실패를 견딜 수 있다는 뜻입니다. 서비스의 쓰기 역할, 데이터베이스 일관성, 백업 복구까지 보장한다는 문장은 아닙니다.</p>
+<h2 id="워크로드마다-답이-달라집니다">워크로드마다 답이 달라집니다</h2>
+<p>제 홈랩에서는 2026년 7월 재구축 때 복제 정책을 네 갈래로 나눴습니다. 자체 물리 복제를 하는 CloudNativePG는 애플리케이션 인스턴스 3개와 Longhorn replica 1을 택했습니다. 단일 인스턴스로 운용한 SeaweedFS 데이터는 볼륨 계층이 복구를 맡도록 Longhorn replica 3을 뒀습니다. Vault는 3멤버 Raft가 복제를 맡아 볼륨 replica를 1로 두었고, 관측 데이터는 일부를 다시 만들 수 있다는 판단 아래 2를 골랐습니다.</p>
+<p>이 값은 당시 조건에 맞춘 사례입니다. 장비 수, 디스크 배치, 복구 목표와 백업 경로가 다르면 답도 달라집니다. 여기서 가져갈 것은 숫자보다 질문 순서입니다.</p>
+<ol>
+<li>이 애플리케이션은 스스로 데이터를 복제하는가.</li>
+<li>장애 때 어느 사본을 정본으로 고르는가.</li>
+<li>노드와 디스크 중 어느 실패를 견뎌야 하는가.</li>
+<li>복제가 모두 실패했을 때 어디에서 복원하는가.</li>
+<li>쓰기 지연, 네트워크, 용량 비용을 감당할 수 있는가.</li>
+</ol>
+<p><img alt="남성 카솔이 복구 주체와 실패 도메인과 복원 경로의 세 점검판을 확인하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BahL-H9M_ZYWYgs.webp" srcset=""></p>
+<p>제가 가장 먼저 적는 항목은 「복구를 누가 맡는가」입니다. 답이 데이터베이스라면 애플리케이션 replica부터 검증하고, 답이 볼륨 시스템이라면 노드 분산과 rebuild를 봅니다. 둘 다 필요하다면 겹친 비용이 어떤 별도 실패를 막는지 설명할 수 있어야 합니다.</p>
+<p>replica 수는 안전 점수가 아닙니다. 어느 계층이 어떤 실패를 받아 낼지 적어 놓은 설계 값입니다.</p>
+<h2 id="함께-읽을-글">함께 읽을 글</h2>
+<ul>
+<li><a href="/posts/replica-layer-pdb-drain/">replica 1은 같은 뜻이 아니었습니다: Vault PDB 앞에서 멈춘 drain</a>: 이 구분이 홈랩 점검 사건에서 필요했던 이유를 다룹니다.</li>
+<li><a href="/posts/poddisruptionbudget-zero-eviction/">PodDisruptionBudget는 무엇을 보장하나: maxUnavailable 0의 의미</a>: 데이터 복제와 별개인 계획 중단 예산을 설명합니다.</li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://cloudnative-pg.io/docs/current/replication/">CloudNativePG: Replication</a></li>
+<li><a href="https://longhorn.io/docs/1.12.0/concepts/">Longhorn 1.12: Architecture and Concepts</a></li>
+<li>개인 인프라 ADR-033·ADR-034, 2026-07-13~16</li>
+</ul>
+<p>공식 문서는 2026년 8월 9일 다시 확인했습니다. 홈랩 수치는 한 사례이며 보편 권장값이 아닙니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·문서 도표 등 외부 이미지 자산 사용은 0건입니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/kubectl-drain-pdb-checklist/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DueXrXpz_Z2wP69C.webp" srcset="/_astro/cover.DueXrXpz_Z3nWmx.webp 240w, /_astro/cover.DueXrXpz_19M4dV.webp 360w, /_astro/cover.DueXrXpz_2mX5Op.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/kubectl-drain-pdb-checklist/" data-analytics-event="related_post_click" data-analytics-target="kubectl-drain-pdb-checklist">3분만에 만화로 보는 IT - 기술 해설 | kubectl drain이 멈췄을 때 PDB를 우회하기 전에 확인할 것</a></h3><p>drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 유예로 나누고 force와 eviction 우회 옵션의 차이를 정리합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/poddisruptionbudget-zero-eviction/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.8oHU_3-O_Z1VKDBE.webp" srcset="/_astro/cover.8oHU_3-O_Z11gjOO.webp 240w, /_astro/cover.8oHU_3-O_bTGKE.webp 360w, /_astro/cover.8oHU_3-O_1p5Im8.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-25T00:00:00.000Z">2026년 8월 25일</time></div><h3><a href="/posts/poddisruptionbudget-zero-eviction/" data-analytics-event="related_post_click" data-analytics-target="poddisruptionbudget-zero-eviction">3분만에 만화로 보는 IT - 기술 해설 | PodDisruptionBudget는 무엇을 보장하나: maxUnavailable 0의 의미</a></h3><p>PDB가 자발적 eviction의 중단 예산을 어떻게 제한하는지, disruptionsAllowed 0과 비자발적 장애의 경계를 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/etcd-quorum-odd-members/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Dus3jeH7_2vxE0n.webp" srcset="/_astro/cover.Dus3jeH7_UzOMN.webp 240w, /_astro/cover.Dus3jeH7_28KQoh.webp 360w, /_astro/cover.Dus3jeH7_Z1IffOb.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-07-27T00:00:00.000Z">2026년 7월 27일</time></div><h3><a href="/posts/etcd-quorum-odd-members/" data-analytics-event="related_post_click" data-analytics-target="etcd-quorum-odd-members">3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산</a></h3><p>과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

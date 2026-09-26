@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/copilot-home-code-autopilot-rollout/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-26T00:00:00.000Z</news:publication_date>
+      <news:title>Copilot Home·Code·Autopilot 발표: 사용 시점과 운영 조건</news:title>
+    </news:news>
+  </url>
+</urlset>

@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>AI는 자기 코드를 어떻게 알아볼까 | 다메카솔</title><meta name="description" content="Style, Not Self 논문으로 AI의 코드 작성자 판별이 길이와 주석에 얼마나 기대는지 살펴봅니다. 공개 판정 기록 재집계와 4장 만화로 정규화 효과와 익명화의 한계를 구분합니다."><link rel="canonical" href="https://blog.damecasol.com/posts/style-not-self-code-attribution/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - AI 논문 읽기 | AI는 자기 코드를 어떻게 알아볼까"><meta property="og:description" content="Style, Not Self 논문으로 AI의 코드 작성자 판별이 길이와 주석에 얼마나 기대는지 살펴봅니다. 공개 판정 기록 재집계와 4장 만화로 정규화 효과와 익명화의 한계를 구분합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/style-not-self-code-attribution/"><meta property="og:image" content="https://blog.damecasol.com/social/style-not-self-code-attribution.webp"><meta property="og:image:alt" content="긴 리본과 짧은 리본을 살펴보며 코드 작성자 판별을 궁금해하는 카솔"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - AI 논문 읽기 | AI는 자기 코드를 어떻게 알아볼까","description":"Style, Not Self 논문으로 AI의 코드 작성자 판별이 길이와 주석에 얼마나 기대는지 살펴봅니다. 공개 판정 기록 재집계와 4장 만화로 정규화 효과와 익명화의 한계를 구분합니다.","datePublished":"2026-09-26T00:00:00.000Z","dateModified":"2026-09-26T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/style-not-self-code-attribution/","image":["https://blog.damecasol.com/social/style-not-self-code-attribution.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"AI 논문 읽기","keywords":["LLM","AI 코딩 도구","벤치마크","AI 안전"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="style-not-self-code-attribution" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-09-26T00:00:00.000Z">2026년 9월 26일</time></span></div><h1>3분만에 만화로 보는 IT - AI 논문 읽기 | AI는 자기 코드를 어떻게 알아볼까</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>Style, Not Self 논문으로 AI의 코드 작성자 판별이 길이와 주석에 얼마나 기대는지 살펴봅니다. 공개 판정 기록 재집계와 4장 만화로 정규화 효과와 익명화의 한계를 구분합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.B7kjiPSl_1fzVpR.webp" srcset="/_astro/cover.B7kjiPSl_2nNOr8.webp 640w, /_astro/cover.B7kjiPSl_2agjdY.webp 960w, /_astro/cover.B7kjiPSl_1fzVpR.webp 1024w" alt="긴 리본과 짧은 리본을 살펴보며 코드 작성자 판별을 궁금해하는 카솔" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#같은-문제에-더-단순한-판정기를-세워-봅니다" data-toc-link="같은-문제에-더-단순한-판정기를-세워-봅니다" data-analytics-event="toc_click" data-analytics-target="같은-문제에-더-단순한-판정기를-세워-봅니다">같은 문제에 더 단순한 판정기를 세워 봅니다</a></li><li class="article-toc__depth-2"><a href="#주석과-이름을-정리하면-무엇이-바뀔까요" data-toc-link="주석과-이름을-정리하면-무엇이-바뀔까요" data-analytics-event="toc_click" data-analytics-target="주석과-이름을-정리하면-무엇이-바뀔까요">주석과 이름을 정리하면 무엇이 바뀔까요</a></li><li class="article-toc__depth-2"><a href="#늘-같은-대답으로도-정답률은-올라갑니다" data-toc-link="늘-같은-대답으로도-정답률은-올라갑니다" data-analytics-event="toc_click" data-analytics-target="늘-같은-대답으로도-정답률은-올라갑니다">늘 같은 대답으로도 정답률은 올라갑니다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-작성-이력과-품질-증거를-따로-보관합니다" data-toc-link="다메카솔의-해석-작성-이력과-품질-증거를-따로-보관합니다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-작성-이력과-품질-증거를-따로-보관합니다">다메카솔의 해석: 작성 이력과 품질 증거를 따로 보관합니다</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p><strong>코드 작성자를 잘 맞히는 AI도 코드 길이와 주석에 기대고 있을 수 있습니다.</strong> 코드 리뷰나 평가를 모델에 맡긴다면 꽤 신경 쓰이는 결과입니다. 「Style, Not Self」의 저자들은 추가 학습 없이 작성자를 묻는 실험에서, 모델의 정답률을 단순한 길이 비교 규칙과 대조했습니다. 표면 단서를 정리한 뒤에는 여러 판별 결과가 우연 수준에 가까워졌지만, 학습한 분류기는 남은 흔적을 여전히 읽었습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="같은-문제에-더-단순한-판정기를-세워-봅니다">같은 문제에 더 단순한 판정기를 세워 봅니다</h2>
+<p><img alt="같은 길이 차이를 가진 리본 쌍을 두 방식으로 비교하는 비유" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.CvkFXFI8_ZHMq5B.webp" srcset=""></p>
+<p>GPT-5가 자기 코드와 Grok 4 Fast의 코드를 구분한 정확도는 81.9%였습니다. 숫자만 보면 자기 흔적을 꽤 잘 알아보는 것 같습니다. 그런데 같은 항목에서 **긴 코드를 고르는 규칙은 97.5%**를 기록했습니다. 모델이 무엇을 읽었는지부터 다시 물어야 하는 대목입니다.</p>
+<p>이 비교는 MBPP의 유효한 코드 238쌍에 한정됩니다. 빈 코드와 구분할 수 없는 동일 코드, 정해진 형식으로 답하지 않은 판정을 제외했으며, 정답은 각각 195개와 232개였습니다. 그림의 긴 리본과 짧은 리본은 코드의 길이 차이를 설명하는 비유이고 실제 측정 비율을 그린 도표는 아닙니다. <a href="https://arxiv.org/html/2609.30048v1#S4.SS2">원문 4.2절·표 3</a></p>
+<p>저자들은 자기 코드 고르기, 코드 하나가 자기 것인지 답하기, 특정 모델의 코드 찾기, 작성자를 가리고 품질 평가하기를 나눠 시험했습니다. 주요 모델은 GPT-5, Claude Haiku 4.5, Gemini 2.5 Flash, Grok 4 Fast, DeepSeek-V3-0324입니다. MBPP 257문제, HumanEval 164문제, DS-1000의 Pandas 부분집합 150문제를 사용했고, 쌍 비교는 MBPP에서 수행했습니다. 특정 작성자 판별에는 별도의 생성 모델도 추가했습니다.</p>
+<p>평가에서 저는 이 단순한 대조군이 특히 유용하다고 봅니다. 복잡한 판정기가 높은 점수를 받아도 길이나 문서화 여부만으로 같은 결과를 얻는다면, 점수가 곧바로 원하는 능력을 뜻하지는 않으니까요. 여기서 가장 잘 맞는 규칙은 같은 자료를 보고 고른 것이므로, 별도 시험 자료에서 검증한 최적 규칙으로 받아들여서는 안 됩니다.</p>
+<h2 id="주석과-이름을-정리하면-무엇이-바뀔까요">주석과 이름을 정리하면 무엇이 바뀔까요</h2>
+<p><img alt="주석과 이름을 뜻하는 리본 장식을 덜어도 속 구조가 남는 비유" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BlAB2lpZ_LDgOY.webp" srcset=""></p>
+<p>이번에는 코드의 겉모습을 바꿉니다. 저자들은 구문 구조를 다루는 AST 기반 정규화로 주석·문서 문자열·타입 힌트를 제거하고 지역 이름을 바꿨습니다. 연구에 사용한 MBPP 시험에서는 주요 5개 모델의 개별 항목 통과 여부가 그대로 유지됐습니다. 리본의 장식을 떼는 장면은 이 처리를 재작화한 것입니다. <a href="https://arxiv.org/html/2609.30048v1#S4.SS5">3.4절·4.5절</a></p>
+<table>
+<thead>
+<tr>
+<th>GPT-5 대 Grok 4 Fast의 MBPP 코드</th>
+<th style="text-align: right">원본</th>
+<th style="text-align: right">정규화 후</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>분석에 포함한 판정</td>
+<td style="text-align: right">238쌍</td>
+<td style="text-align: right">210쌍</td>
+</tr>
+<tr>
+<td>GPT-5 자기 코드 판별</td>
+<td style="text-align: right">195/238, 81.9%</td>
+<td style="text-align: right">95/210, 45.2%</td>
+</tr>
+<tr>
+<td>긴 코드를 고르는 규칙</td>
+<td style="text-align: right">232/238, 97.5%</td>
+<td style="text-align: right">179/210, 85.2%</td>
+</tr>
+</tbody>
+</table>
+<p>정규화 뒤 모델의 점수는 크게 내려갔습니다. 동시에 길이 규칙은 여전히 잘 맞혔다는 점이 흥미롭습니다. 저자들은 GPT-5가 길이 자체보다 길이와 함께 나타나는 문서화 단서에 기대었을 가능성을 제시합니다. 이 설명은 결과에 대한 해석이며, 모델 내부의 판단 과정을 직접 관찰한 결과와는 구분해야 합니다.</p>
+<p><strong>두 열의 분모가 다릅니다.</strong> 정규화 후 동일해진 27쌍을 제외했고 요청 실패로 판정 하나가 빠졌습니다. 빈 코드와 응답 형식 제외도 적용했으므로, 같은 238개 항목의 정답 여부만 앞뒤로 바꿔 센 표가 아닙니다. 제가 공개 기록에서 다시 집계한 범위는 위 두 행의 정답 수와 길이 규칙입니다. 모델을 다시 호출하거나 생성 코드의 테스트를 재실행하지는 않았습니다.</p>
+<p>더 넓은 12개 정규화 재평가 중 10개는 43.6~57.8%였고, 여러 비교에 따른 우연한 발견을 줄이는 Holm 보정 뒤 유의하지 않았습니다. 나머지 두 결과는 남아 있는 길이 차이를 따라 우연 수준보다 낮았습니다. 통계적으로 유의하지 않았다는 결과는 작은 효과까지 사라졌다는 증명과는 다릅니다. 논문도 넓은 신뢰구간을 한계로 남깁니다.</p>
+<h2 id="늘-같은-대답으로도-정답률은-올라갑니다">늘 같은 대답으로도 정답률은 올라갑니다</h2>
+<p>코드 하나만 보여 주는 시험에서는 응답 습관도 살펴야 합니다. 자기 코드는 대략 3분의 1이고 다른 모델의 코드는 3분의 2이므로, 단순히 계속 “내 코드가 아니다”라고 답하는 규칙의 명목 정답률도 66.7%입니다. 이때 필요한 지표는 자기 코드를 인정한 비율과 남의 코드를 부인한 비율을 같은 무게로 평균한 <strong>균형 정확도</strong>입니다.</p>
+<p>저자들이 보고한 15개 모델·문제군 조합의 균형 정확도는 49.4~58.2%였습니다. 보정 뒤에도 Grok의 두 조합은 유의했으므로, 전부 무작위라고 뭉뚱그릴 결과는 아닙니다. 일반 정답률만 나열하면 잘 알아보는 모델과 자주 부인하는 모델을 혼동하기 쉽다는 것이 이 비교의 요점입니다. <a href="https://arxiv.org/html/2609.30048v1#S4.SS3">4.3절·표 12</a></p>
+<p>문항을 쓰는 순서도 점수를 바꿨습니다. 초기 실험에서는 모델 이름을 나열한 순서와 코드 순서가 맞물려 86~99%가 나왔고, 저자들은 이 결과를 정식 작성자 판별 비교에서 제외했습니다. 수정한 프롬프트는 이름 순서를 코드 위치와 독립적으로 무작위화했습니다. 제가 평가 문항을 검수한다면 정답이 내용 밖의 순서에 새어 있는지도 함께 확인하겠습니다.</p>
+<h2 id="다메카솔의-해석-작성-이력과-품질-증거를-따로-보관합니다">다메카솔의 해석: 작성 이력과 품질 증거를 따로 보관합니다</h2>
+<p><img alt="돋보기 아래 남은 직조 무늬를 보며 판별과 품질 검사를 구분하는 카솔" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.DU4h3Kk6_ZoMHoJ.webp" srcset=""></p>
+<p>장식을 덜어낸 뒤에도 코드에는 작성 모델을 구분할 흔적이 남았습니다. 저자들이 학습한 문자 패턴 분류기는 정규화된 여러 모델 쌍을 구분했고, 일부 쌍에는 길이 차이도 남았습니다. 따라서 정규화는 이번 제로샷 판정기가 사용한 단서를 줄이는 처리로 이해하는 편이 정확합니다. 완전한 익명화나 감시 모델의 안전성까지 확보한 결과는 아닙니다.</p>
+<p>저는 코드 리뷰 시스템에서 <strong>작성 이력은 생성 시점의 기록으로, 품질은 실행과 검토의 증거로 남기겠습니다.</strong> 모델에게 작성자를 추측하게 해서 그 결과로 신뢰도를 올리면, 주석을 많이 쓰는 스타일을 품질이나 책임의 증거로 잘못 사용할 위험이 있기 때문입니다. 모델 버전·입력·산출물 식별자를 기록하고, 테스트 결과와 검토 의견은 별도 항목으로 연결하면 판단 근거를 되짚기도 쉬워집니다. 이는 이 연구를 바탕으로 한 운영 설계 제안입니다.</p>
+<p>판정기를 시험할 때에는 코드 위치와 이름 순서를 바꾸고, 정규화 전후의 유효 항목 수도 함께 보관하겠습니다. 문서 문자열을 지운 코드만 운영에 쓰자는 권고는 아닙니다. 실제 코드에서는 문서와 이름이 유지보수에 필요하며, 변환이 동작을 보존하는지도 따로 확인해야 합니다. 품질 평가를 더 살펴보려면 <a href="/posts/execcritic-independent-tests/">ExecCritic의 독립 테스트 생성 연구</a>가 이어집니다. 작성자를 맞히는 문제와 오류를 잡는 문제의 차이를 비교해 볼 수 있습니다.</p>
+<p>이번 결과가 다루는 범위는 선택한 모델과 프롬프트, 짧은 Python 코드의 추가 학습 없는 판별입니다. 주요 평가기에는 소형·고속 모델이 많고, 원래 실험과 후속 실험은 2026년 3월과 9월에 나뉘었습니다. OpenRouter의 제공자는 고정하지 않았으며 기본 추론 설정을 사용했습니다. 의도적으로 넣은 신호나 추가 학습한 감시자, 다른 언어와 큰 저장소에 대한 결론은 별도 실험이 필요합니다.</p>
+<p>다음 판정기를 붙이기 전에, 같은 자료에서 “긴 코드를 고른다”는 규칙이 몇 점을 받는지부터 확인해 보겠습니다. 간단한 대조군 하나가 높은 점수의 의미를 바꿔 놓을 수 있습니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li>Ehsan Barkhordar, Surendrabikram Thapa, <a href="https://arxiv.org/abs/2609.30048v1">Style, Not Self v1</a>, 2026년 9월 24일 제출. 프리프린트이며 학회 채택을 확인한 글은 아닙니다.</li>
+<li><a href="https://arxiv.org/pdf/2609.30048v1">원문 PDF</a>, 연구 설계 3절, 결과 4절, 논의 5절, 표 3·10·12·16과 부록 B를 대조했습니다.</li>
+<li><a href="https://github.com/ebarkhordar/llm-collusion/tree/df25bd3797583e836a10288caaf3037a083d8270">저자 공식 코드·원시 판정 기록</a>. 위 표의 공개 판정 기록만 별도 재집계했습니다. 전체 표 생성 프로그램은 로컬 의존성 부족으로 완료하지 못했고, 모델 실험이나 전체 벤치마크를 독립 재현한 것은 아닙니다.</li>
+</ul>
+<p>자료 확인·업데이트: 2026년 9월 26일.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
+만화의 리본과 도구는 설명을 위해 만든 비유이며 논문의 그림을 복제하지 않았습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/llm-authoritative-evidence-action-gate/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BqxtDYmG_lmapa.webp" srcset="/_astro/cover.BqxtDYmG_ZhI1kH.webp 240w, /_astro/cover.BqxtDYmG_Us0fL.webp 360w, /_astro/cover.BqxtDYmG_28D1Qf.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-30T00:00:00.000Z">2026년 8월 30일</time></div><h3><a href="/posts/llm-authoritative-evidence-action-gate/" data-analytics-event="related_post_click" data-analytics-target="llm-authoritative-evidence-action-gate">3분만에 만화로 보는 IT - AI 논문 읽기 | 그럴듯한 대시보드가 AI의 행동 판단을 바꾼 실험</a></h3><p>가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/activation-steering-side-effect-forecasting/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DEBXeLHk_1AUVzi.webp" srcset="/_astro/cover.DEBXeLHk_2wQiMk.webp 240w, /_astro/cover.DEBXeLHk_Z1k9Nq8.webp 360w, /_astro/cover.DEBXeLHk_Z6XLOE.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-13T00:00:00.000Z">2026년 8월 13일</time></div><h3><a href="/posts/activation-steering-side-effect-forecasting/" data-analytics-event="related_post_click" data-analytics-target="activation-steering-side-effect-forecasting">3분만에 만화로 보는 IT - AI 논문 읽기 | AI 행동 하나를 조정하면 다른 행동도 흔들리는 이유</a></h3><p>Activation steering이 목표 밖 행동에 비대칭 부작용을 만드는 이유와 조정 전 예측의 역할·한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/evopathbench-capability-checkpoints/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.C0ol6gcf_1OOfRL.webp" srcset="/_astro/cover.C0ol6gcf_1IgFAV.webp 240w, /_astro/cover.C0ol6gcf_Z28JqBw.webp 360w, /_astro/cover.C0ol6gcf_ZUyp13.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-22T00:00:00.000Z">2026년 9월 22일</time></div><h3><a href="/posts/evopathbench-capability-checkpoints/" data-analytics-event="related_post_click" data-analytics-target="evopathbench-capability-checkpoints">3분만에 만화로 보는 IT - AI 논문 읽기 | 에이전트 메모리, 업데이트마다 실력을 다시 재야 한다</a></h3><p>EvoPathBench 논문으로 AI 에이전트의 메모리와 스킬 갱신을 평가하는 방법을 읽습니다. 일반화·기존 능력 유지·규칙 수정을 나누고, 공개 데이터 검증과 연구 한계를 만화로 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

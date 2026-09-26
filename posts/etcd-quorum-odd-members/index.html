@@ -1,0 +1,365 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><title>etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산 | 다메카솔</title><meta name="description" content="과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다."><link rel="canonical" href="https://blog.damecasol.com/posts/etcd-quorum-odd-members/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산"><meta property="og:description" content="과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다."><meta property="og:url" content="https://blog.damecasol.com/posts/etcd-quorum-odd-members/"><meta property="og:image" content="https://blog.damecasol.com/social/etcd-quorum-odd-members.webp"><meta property="og:image:alt" content="남성 카솔이 홀수와 짝수의 투표 관문을 비교하며 과반이 남는 구성을 찾는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/webp"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/_astro/BaseLayout.rnqRf3ZB.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산","description":"과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다.","datePublished":"2026-07-27T00:00:00.000Z","dateModified":"2026-07-28T00:00:00.000Z","inLanguage":"ko-KR","mainEntityOfPage":"https://blog.damecasol.com/posts/etcd-quorum-odd-members/","image":["https://blog.damecasol.com/social/etcd-quorum-odd-members.webp"],"author":{"@type":"Person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/"},"articleSection":"인프라·운영","keywords":["etcd","고가용성","K3s","Kubernetes"],"isAccessibleForFree":true}</script><article class="article" data-analytics-article data-content-id="etcd-quorum-odd-members" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-27T00:00:00.000Z">2026년 7월 27일</time></span><span>수정 <time datetime="2026-07-28T00:00:00.000Z">2026년 7월 28일</time></span></div><h1>3분만에 만화로 보는 IT - 기술 해설 | etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장애 허용 계산</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.Dus3jeH7_2vxE0n.webp" srcset="/_astro/cover.Dus3jeH7_Z1aPliX.webp 640w, /_astro/cover.Dus3jeH7_Z1onQw7.webp 960w, /_astro/cover.Dus3jeH7_2vxE0n.webp 1024w" alt="남성 카솔이 홀수와 짝수의 투표 관문을 비교하며 과반이 남는 구성을 찾는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#먼저-답부터-계산합니다" data-toc-link="먼저-답부터-계산합니다" data-analytics-event="toc_click" data-analytics-target="먼저-답부터-계산합니다">먼저 답부터 계산합니다</a></li><li class="article-toc__depth-2"><a href="#쿼럼은-살아-있는-서버-수보다-엄격합니다" data-toc-link="쿼럼은-살아-있는-서버-수보다-엄격합니다" data-analytics-event="toc_click" data-analytics-target="쿼럼은-살아-있는-서버-수보다-엄격합니다">쿼럼은 ‘살아 있는 서버 수’보다 엄격합니다</a></li><li class="article-toc__depth-2"><a href="#2멤버가-1멤버보다-ha가-아닌-이유" data-toc-link="2멤버가-1멤버보다-ha가-아닌-이유" data-analytics-event="toc_click" data-analytics-target="2멤버가-1멤버보다-ha가-아닌-이유">2멤버가 1멤버보다 HA가 아닌 이유</a></li><li class="article-toc__depth-2"><a href="#네트워크가-둘로-갈라지면-어느-쪽이-살아남나" data-toc-link="네트워크가-둘로-갈라지면-어느-쪽이-살아남나" data-analytics-event="toc_click" data-analytics-target="네트워크가-둘로-갈라지면-어느-쪽이-살아남나">네트워크가 둘로 갈라지면 어느 쪽이 살아남나</a></li><li class="article-toc__depth-2"><a href="#노드를-추가하기-전에-다시-계산해야-합니다" data-toc-link="노드를-추가하기-전에-다시-계산해야-합니다" data-analytics-event="toc_click" data-analytics-target="노드를-추가하기-전에-다시-계산해야-합니다">노드를 추가하기 전에 다시 계산해야 합니다</a></li><li class="article-toc__depth-2"><a href="#3멤버-etcd가-해결하지-않는-것" data-toc-link="3멤버-etcd가-해결하지-않는-것" data-analytics-event="toc_click" data-analytics-target="3멤버-etcd가-해결하지-않는-것">3멤버 etcd가 해결하지 않는 것</a></li><li class="article-toc__depth-2"><a href="#내-클러스터를-계산하는-표" data-toc-link="내-클러스터를-계산하는-표" data-analytics-event="toc_click" data-analytics-target="내-클러스터를-계산하는-표">내 클러스터를 계산하는 표</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#4멤버-etcd는-잘못된-구성인가요" data-toc-link="4멤버-etcd는-잘못된-구성인가요" data-analytics-event="toc_click" data-analytics-target="4멤버-etcd는-잘못된-구성인가요">4멤버 etcd는 잘못된 구성인가요?</a></li><li class="article-toc__depth-3"><a href="#쿼럼이-있으면-백업은-필요-없나요" data-toc-link="쿼럼이-있으면-백업은-필요-없나요" data-analytics-event="toc_click" data-analytics-target="쿼럼이-있으면-백업은-필요-없나요">쿼럼이 있으면 백업은 필요 없나요?</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>새 홈랩의 k3s 제어면을 구성할 때 두 대와 세 대를 비교했습니다. 두 대도 한 대보다 안전해 보였지만, 두 장비가 모두 etcd 투표 멤버라면 한 대가 멈춘 뒤 새 상태를 결정할 수 없습니다.</p>
+<p>제가 세 대를 고른 이유도 이 한 칸의 차이였습니다.</p>
+<p>세 번째 멤버가 들어와야 과반 계산상 한 대 장애 뒤에도 제어면 합의를 이어 갈 조건이 생겼습니다. 장비 수를 정할 때는 “홀수가 좋다”는 문장보다 현재 투표 멤버 수의 과반과 장애 허용 수를 먼저 계산해야 합니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="먼저-답부터-계산합니다">먼저 답부터 계산합니다</h2>
+<ul>
+<li>과반 = <code>floor(멤버 수 / 2) + 1</code></li>
+<li>장애 허용 수 = <code>멤버 수 - 과반</code></li>
+</ul>
+<p>예를 들어 5멤버의 과반은 <code>floor(5/2)+1</code>, 즉 3입니다. 다섯 대 중 두 대가 사라져도 세 대가 남아 과반을 유지합니다.</p>
+<h2 id="쿼럼은-살아-있는-서버-수보다-엄격합니다">쿼럼은 ‘살아 있는 서버 수’보다 엄격합니다</h2>
+<p><img alt="전체 멤버에서 절반보다 하나 많은 표가 모여야 결정 관문이 열리는 과반 계산 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.3OyidN6x_DN3ON.webp" srcset=""></p>
+<p>etcd는 Kubernetes의 원하는 상태를 저장하는 일관된 key-value store입니다. 여러 멤버가 있을 때 새 상태를 확정하려면 투표 멤버의 과반이 동의해야 합니다.</p>
+<p>한 멤버가 혼자 다른 값을 확정하지 못하게 막는 대신, 과반이 없는 상황에서는 새 쓰기를 진행하지 않는 쪽을 택합니다.</p>
+<p>이 원칙 때문에 “프로세스가 살아 있다”와 “클러스터가 결정을 계속한다”는 다른 상태입니다. 두 멤버 중 하나만 살아 있어도 etcd 프로세스 자체는 실행될 수 있지만, 2멤버 구성의 과반 2를 만들 수 없으므로 새 상태를 확정할 수 없습니다.</p>
+<p>과반 계산은 정수 나눗셈으로 생각하면 쉽습니다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right">투표 멤버 수</th>
+<th style="text-align: right">필요한 과반</th>
+<th style="text-align: right">장애 허용 수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right">1</td>
+<td style="text-align: right">1</td>
+<td style="text-align: right">0</td>
+</tr>
+<tr>
+<td style="text-align: right">2</td>
+<td style="text-align: right">2</td>
+<td style="text-align: right">0</td>
+</tr>
+<tr>
+<td style="text-align: right">3</td>
+<td style="text-align: right">2</td>
+<td style="text-align: right">1</td>
+</tr>
+<tr>
+<td style="text-align: right">4</td>
+<td style="text-align: right">3</td>
+<td style="text-align: right">1</td>
+</tr>
+<tr>
+<td style="text-align: right">5</td>
+<td style="text-align: right">3</td>
+<td style="text-align: right">2</td>
+</tr>
+<tr>
+<td style="text-align: right">6</td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">2</td>
+</tr>
+<tr>
+<td style="text-align: right">7</td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">3</td>
+</tr>
+</tbody>
+</table>
+<p>표에서 중요한 변화는 1→2, 3→4, 5→6에서 장애 허용 수가 늘지 않는다는 점입니다. 바로 앞의 홀수 구성과 같은 수의 장애만 견디면서 투표 멤버와 필요한 과반은 늘어납니다.</p>
+<h2 id="2멤버가-1멤버보다-ha가-아닌-이유">2멤버가 1멤버보다 HA가 아닌 이유</h2>
+<p><img alt="1·2·3·4·5멤버의 과반과 장애 허용 수가 계단처럼 바뀌며 짝수 추가에서는 내결함성이 그대로인 비교 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.DdXUfxJE_y0OFG.webp" srcset=""></p>
+<p>1멤버는 그 한 대가 살아 있어야 합니다. 2멤버도 두 대가 모두 살아 있어야 합니다. 둘 모두 장애 허용 수는 0입니다.</p>
+<p>이 계산이 성립하는 범위는 두 노드가 모두 투표 멤버일 때까지입니다. 다음을 먼저 구분해야 합니다.</p>
+<ul>
+<li>두 노드가 모두 embedded etcd 투표 멤버인가?</li>
+<li>control plane은 외부 datastore를 사용하는가?</li>
+<li>한 대는 server이고 다른 한 대는 agent인가?</li>
+<li>애플리케이션 replica 두 개를 말하는가?</li>
+</ul>
+<p>이 글의 계산은 <strong>etcd 투표 멤버</strong>에만 적용됩니다. K3s agent를 열 대 추가해도 embedded etcd 투표 수는 그대로입니다. 반대로 server 역할을 분리했다면 모든 server가 etcd 멤버인 것도 아닐 수 있습니다.</p>
+<p>3멤버와 4멤버도 비교해 보겠습니다. 3멤버는 과반 2, 장애 허용 1입니다. 네 번째 멤버를 추가하면 과반은 3으로 올라가지만 장애 허용은 여전히 1입니다. 네 번째 장비는 용량이나 다른 역할에 도움을 주고, etcd의 장애 허용 수는 그대로 1에 머뭅니다.</p>
+<p>다섯 번째 멤버가 들어와야 과반 3을 유지하면서 두 대 장애를 허용할 수 있습니다. 그래서 etcd는 일반적으로 홀수 멤버 수를 권장합니다.</p>
+<h2 id="네트워크가-둘로-갈라지면-어느-쪽이-살아남나">네트워크가 둘로 갈라지면 어느 쪽이 살아남나</h2>
+<p><img alt="세 멤버가 둘과 하나로 분리됐을 때 과반 쪽만 결정을 계속하고 소수 쪽은 대기하는 네트워크 분할 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.rzbwyRrb_Z6lF0O.webp" srcset=""></p>
+<p>세 멤버가 네트워크 분할로 <code>2 대 1</code>로 갈라졌다고 가정하겠습니다. 두 멤버가 서로 통신할 수 있는 쪽은 과반을 만들 수 있으므로 결정을 계속합니다. 혼자 남은 멤버는 살아 있어도 새 상태를 확정하지 못합니다.</p>
+<p>양쪽이 동시에 서로 다른 상태를 확정하지 않도록 하는 것이 합의의 목적입니다. 가용성을 일부 포기해서 일관성을 지키는 선택입니다. 네트워크가 회복되면 소수 쪽 멤버는 과반이 확정한 상태를 다시 따라갑니다.</p>
+<p>이때 물리적 배치가 중요해집니다. 세 멤버가 서로 다른 미니PC에 있어도 같은 멀티탭이나 스위치에 묶여 있다면 한 번의 장애로 과반을 잃을 수 있습니다. 반대로 멀리 떨어진 네트워크에 무작정 분산하면 멤버 간 지연이 커져 합의 요청과 leader election이 불안정해질 수 있습니다.</p>
+<p>좋은 장애 도메인은 “멀리 떨어져 있음”이 아니라 다음 두 조건의 균형입니다.</p>
+<ol>
+<li>한 번의 전원·장비·네트워크 장애가 과반을 함께 없애지 않습니다.</li>
+<li>정상 상태에서 과반이 안정적인 지연 안에 서로 응답할 수 있습니다.</li>
+</ol>
+<h2 id="노드를-추가하기-전에-다시-계산해야-합니다">노드를 추가하기 전에 다시 계산해야 합니다</h2>
+<p>etcd의 멤버 변경도 합의가 필요한 쓰기입니다. 이미 과반을 잃은 뒤에는 정상적인 멤버 추가로 쉽게 복구할 수 없습니다. 3멤버 중 한 대가 고장 난 상태에서 새 멤버부터 더해 4멤버 구성으로 만들면, 새 과반이 3으로 올라가 남아 있던 두 멤버만으로 진행할 수 없는 위험이 생깁니다.</p>
+<p>etcd는 이런 위험을 줄이기 위해 재구성 안전장치를 제공합니다. v3.6의 <code>strict-reconfig-check</code>는 시작된 멤버 수가 새 구성의 과반보다 적어질 요청을 거부하도록 설계됐습니다. 그러나 안전장치가 운영 계획을 대신하지는 않습니다.</p>
+<p>K3s의 embedded etcd는 배포판이 멤버 수명주기를 관리합니다. 인터넷의 일반 <code>etcdctl member add/remove</code> 예시를 바로 실행하기보다 현재 K3s 버전의 노드 제거·재가입·snapshot 복구 절차를 따라야 합니다. 이 글은 직접 멤버를 조작하는 명령을 제공하지 않습니다.</p>
+<p>멤버를 바꾸기 전에는 다음 순서를 문서로 확인합니다.</p>
+<ol>
+<li>현재 etcd 역할을 가진 server와 health를 확인합니다.</li>
+<li>변경 전 멤버 수, 과반, 장애 허용 수를 적습니다.</li>
+<li>고장 멤버를 교체하는지, 정상 멤버를 확장하는지 구분합니다.</li>
+<li>한 번에 한 멤버만 변경하고 다시 health를 확인합니다.</li>
+<li>변경 후 멤버 수와 물리 장애 도메인을 다시 적습니다.</li>
+<li>해당 K3s 버전에서 복구할 수 있는 snapshot과 절차를 확인합니다.</li>
+</ol>
+<h2 id="3멤버-etcd가-해결하지-않는-것">3멤버 etcd가 해결하지 않는 것</h2>
+<p>3멤버 embedded etcd는 한 대 장애 뒤에도 Kubernetes 제어면 상태를 합의하기 위한 조건입니다. 다음 문제까지 자동으로 해결하지 않습니다.</p>
+<ul>
+<li>API server에 도달하는 고정 주소와 load balancer</li>
+<li>애플리케이션 replica와 Pod 배치</li>
+<li>데이터베이스의 복제와 장애 조치</li>
+<li>Longhorn 같은 스토리지 계층의 replica</li>
+<li>같은 전원·스위치·디스크 풀 장애</li>
+<li>잘못된 삭제와 데이터 손상에서 돌아갈 백업</li>
+</ul>
+<p>etcd replica는 Kubernetes 상태를 현재 시점에 유지하기 위한 합의 구성입니다. snapshot과 백업은 과거 상태로 복구하기 위한 별도 계층입니다. 쿼럼이 살아 있어도 잘못된 삭제는 정상적으로 합의돼 모든 멤버에 반영될 수 있습니다.</p>
+<h2 id="내-클러스터를-계산하는-표">내 클러스터를 계산하는 표</h2>
+<p><img alt="남성 카솔이 etcd 멤버, 과반, 장애 도메인, 변경 계획을 한 장의 체크리스트로 정리하는 마무리 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.Cuxmcccx_1X4eU1.webp" srcset=""></p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>내 환경의 답</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>datastore는 embedded etcd인가, 외부 DB인가?</td>
+<td></td>
+</tr>
+<tr>
+<td>실제 etcd 투표 멤버는 몇 개인가?</td>
+<td></td>
+</tr>
+<tr>
+<td>필요한 과반은 몇 개인가?</td>
+<td></td>
+</tr>
+<tr>
+<td>동시에 몇 멤버 장애를 허용하는가?</td>
+<td></td>
+</tr>
+<tr>
+<td>멤버들이 공유하는 전원·스위치·스토리지는 무엇인가?</td>
+<td></td>
+</tr>
+<tr>
+<td>한 장애 도메인이 사라지면 과반이 남는가?</td>
+<td></td>
+</tr>
+<tr>
+<td>다음 멤버 변경 전후의 과반은 어떻게 바뀌는가?</td>
+<td></td>
+</tr>
+<tr>
+<td>snapshot과 복구 절차를 실제로 시험했는가?</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>이 표에서 “Kubernetes 노드 수”를 그대로 적지 마세요. <code>etcd</code> 역할을 가진 투표 멤버만 세야 합니다. 계산이 끝난 뒤에야 세 대가 필요한지, 다섯 대가 필요한지, 외부 datastore가 더 맞는지 판단할 수 있습니다.</p>
+<p>제 홈랩의 목표는 한 대가 멈춘 뒤에도 embedded etcd 제어면이 합의를 이어 가는 것이었습니다. 그래서 투표 멤버 두 대가 아니라 세 대를 선택했습니다. 네 대로 늘려도 장애 허용 수는 그대로 1이므로, 장비 수보다 데이터스토어 역할과 허용할 장애 수를 먼저 적는 것이 판단 기준이 됐습니다.</p>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="4멤버-etcd는-잘못된-구성인가요">4멤버 etcd는 잘못된 구성인가요?</h3>
+<p>동작할 수 있지만 3멤버와 장애 허용 수가 1로 같습니다. 네 번째 멤버가 주는 다른 운영 가치와 추가 지연·관리 비용을 비교해야 합니다. 내결함성만 목표라면 바로 다음 홀수 구성까지 계산하는 편이 낫습니다.</p>
+<h3 id="쿼럼이-있으면-백업은-필요-없나요">쿼럼이 있으면 백업은 필요 없나요?</h3>
+<p>필요합니다. 쿼럼은 현재 상태의 일관성과 진행을 위한 장치이고, 백업은 삭제·손상·운영 실수 뒤 과거 상태를 복구하기 위한 장치입니다.</p>
+<p>이 개념이 실제 운영 판단으로 이어진 장면은 <a href="/posts/three-node-etcd-quorum-context/">홈랩 쿠버네티스 구축기 2편: 3노드여야 하는 이유, 그리고 빈 결과의 함정</a>에서 확인할 수 있습니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://docs.k3s.io/datastore/ha-embedded">K3s: High Availability Embedded etcd</a></li>
+<li><a href="https://docs.k3s.io/datastore">K3s: Cluster Datastore</a></li>
+<li><a href="https://docs.k3s.io/installation/server-roles">K3s: Managing Server Roles</a></li>
+<li><a href="https://etcd.io/docs/v3.2/faq/">etcd FAQ: failure tolerance</a></li>
+<li><a href="https://etcd.io/docs/v3.6/op-guide/configuration/">etcd v3.6: Configuration options</a></li>
+<li><a href="https://etcd.io/docs/v3.5/op-guide/runtime-reconf-design/">etcd: Design of runtime reconfiguration</a></li>
+</ul>
+<p>기술 설명은 2026년 7월 25일 확인한 공식 문서를 기준으로 작성했습니다. K3s와 etcd 버전에 따라 멤버 관리·복구 절차가 달라질 수 있으므로 실제 변경 전 해당 버전 문서를 확인해야 합니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·제품 화면·문서 도표 등 외부 이미지 자산은 사용하지 않았습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/kubectl-drain-pdb-checklist/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DueXrXpz_Z2wP69C.webp" srcset="/_astro/cover.DueXrXpz_Z3nWmx.webp 240w, /_astro/cover.DueXrXpz_19M4dV.webp 360w, /_astro/cover.DueXrXpz_2mX5Op.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-26T00:00:00.000Z">2026년 8월 26일</time></div><h3><a href="/posts/kubectl-drain-pdb-checklist/" data-analytics-event="related_post_click" data-analytics-target="kubectl-drain-pdb-checklist">3분만에 만화로 보는 IT - 기술 해설 | kubectl drain이 멈췄을 때 PDB를 우회하기 전에 확인할 것</a></h3><p>drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 유예로 나누고 force와 eviction 우회 옵션의 차이를 정리합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/poddisruptionbudget-zero-eviction/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.8oHU_3-O_Z1VKDBE.webp" srcset="/_astro/cover.8oHU_3-O_Z11gjOO.webp 240w, /_astro/cover.8oHU_3-O_bTGKE.webp 360w, /_astro/cover.8oHU_3-O_1p5Im8.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-25T00:00:00.000Z">2026년 8월 25일</time></div><h3><a href="/posts/poddisruptionbudget-zero-eviction/" data-analytics-event="related_post_click" data-analytics-target="poddisruptionbudget-zero-eviction">3분만에 만화로 보는 IT - 기술 해설 | PodDisruptionBudget는 무엇을 보장하나: maxUnavailable 0의 의미</a></h3><p>PDB가 자발적 eviction의 중단 예산을 어떻게 제한하는지, disruptionsAllowed 0과 비자발적 장애의 경계를 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/application-storage-replication-layers/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B1SZGeCL_od21D.webp" srcset="/_astro/cover.B1SZGeCL_1bq6Q4.webp 240w, /_astro/cover.B1SZGeCL_2oB8rx.webp 360w, /_astro/cover.B1SZGeCL_Z1soXKU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><time datetime="2026-08-24T00:00:00.000Z">2026년 8월 24일</time></div><h3><a href="/posts/application-storage-replication-layers/" data-analytics-event="related_post_click" data-analytics-target="application-storage-replication-layers">3분만에 만화로 보는 IT - 기술 해설 | 애플리케이션 복제와 스토리지 복제는 무엇이 다른가</a></h3><p>서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a><span aria-hidden="true">/</span><button class="analytics-settings-button" type="button" data-analytics-settings hidden>분석 설정</button></p></div></footer><section class="analytics-consent" data-analytics-consent-banner aria-label="방문 분석 설정" hidden><div class="analytics-consent__inner"><p>더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은 이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며, 동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.</p><div class="analytics-consent__actions"><button type="button" data-analytics-consent="denied">필수 항목만</button><button type="button" class="analytics-consent__accept" data-analytics-consent="granted">분석 허용</button></div></div></section><script>(function(){const measurementId = "G-VMXJ86JKJ4";
+const cloudflareToken = "b8ffc3b842164e5990cbebb0f510cd58";
+
+        (() => {
+          const storageKey = 'gitvssh.analytics-consent.v2';
+          const banner = document.querySelector('[data-analytics-consent-banner]');
+          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
+          let analyticsLoaded = false;
+
+          function readConsent() {
+            try {
+              return window.localStorage.getItem(storageKey);
+            } catch {
+              return null;
+            }
+          }
+
+          function writeConsent(value) {
+            try {
+              window.localStorage.setItem(storageKey, value);
+            } catch {
+              // The current page still honors the choice when storage is unavailable.
+            }
+          }
+
+          function clearAnalyticsCookies() {
+            for (const item of document.cookie.split(';')) {
+              const name = item.split('=')[0]?.trim();
+              if (!name?.startsWith('_ga')) continue;
+              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
+            }
+          }
+
+          function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            if (measurementId) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                window.dataLayer.push(arguments);
+              };
+              window.gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+              });
+              window.gtag('consent', 'update', { analytics_storage: 'granted' });
+              window.gtag('js', new Date());
+              window.gtag('config', measurementId);
+
+              const googleScript = document.createElement('script');
+              googleScript.async = true;
+              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+              document.head.append(googleScript);
+            }
+
+            if (cloudflareToken) {
+              const cloudflareScript = document.createElement('script');
+              cloudflareScript.type = 'module';
+              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
+              document.head.append(cloudflareScript);
+            }
+
+            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
+          }
+
+          function sendEvent(name, parameters = {}) {
+            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+            window.gtag('event', name, parameters);
+          }
+
+          window.blogAnalytics = { event: sendEvent };
+
+          function applyConsent(value) {
+            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
+            writeConsent(value);
+            banner.hidden = true;
+            if (value === 'granted') {
+              loadAnalytics();
+              return;
+            }
+            if (typeof window.gtag === 'function') {
+              window.gtag('consent', 'update', { analytics_storage: 'denied' });
+            }
+            clearAnalyticsCookies();
+            if (reloadAfterDeny) {
+              window.location.reload();
+            }
+          }
+
+          for (const button of settingsButtons) {
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              banner.hidden = false;
+              banner.querySelector('button')?.focus();
+            });
+          }
+
+          banner.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-analytics-consent]');
+            if (!button) return;
+            applyConsent(button.dataset.analyticsConsent);
+          });
+
+          if (readConsent() === 'granted') {
+            loadAnalytics();
+          } else if (readConsent() !== 'denied') {
+            banner.hidden = false;
+          }
+
+          document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-analytics-event]');
+            if (trigger) {
+              sendEvent(trigger.dataset.analyticsEvent, {
+                target: trigger.dataset.analyticsTarget || 'unknown',
+              });
+              return;
+            }
+
+            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
+            if (!contextualPostLink) return;
+            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+            sendEvent('related_post_click', {
+              target: segments.at(-1) || 'contextual_post',
+            });
+          });
+
+          const article = document.querySelector('[data-analytics-article]');
+          if (!article) return;
+
+          const context = {
+            content_id: article.dataset.contentId,
+            content_track: article.dataset.contentTrack,
+            content_category: article.dataset.contentCategory,
+          };
+          let timeReached = false;
+          let depthReached = false;
+          let engagedSent = false;
+          let completeReached = false;
+          let completeSent = false;
+
+          function tryEngagedRead() {
+            if (!timeReached || !depthReached || engagedSent) return;
+            if (readConsent() !== 'granted') return;
+            engagedSent = true;
+            sendEvent('engaged_read', context);
+          }
+
+          function tryArticleComplete() {
+            if (!completeReached || completeSent) return;
+            if (readConsent() !== 'granted') return;
+            completeSent = true;
+            sendEvent('article_complete', context);
+          }
+
+          function measureDepth() {
+            const articleTop = article.getBoundingClientRect().top + window.scrollY;
+            const viewed = window.scrollY + window.innerHeight - articleTop;
+            depthReached = viewed / article.offsetHeight >= 0.5;
+            tryEngagedRead();
+          }
+
+          window.setTimeout(() => {
+            timeReached = true;
+            tryEngagedRead();
+          }, 30000);
+          window.addEventListener('scroll', measureDepth, { passive: true });
+          window.addEventListener('resize', measureDepth);
+          document.addEventListener('blog:analytics-ready', () => {
+            tryEngagedRead();
+            tryArticleComplete();
+          });
+          measureDepth();
+
+          const completionTarget = article.querySelector('[data-analytics-complete]');
+          if (completionTarget && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                completeReached = true;
+                tryArticleComplete();
+                observer.disconnect();
+              },
+              { threshold: 0.35 },
+            );
+            observer.observe(completionTarget);
+          }
+        })();
+      })();</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
