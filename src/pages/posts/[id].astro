@@ -5,7 +5,9 @@ import ArticleToc from '../../components/ArticleToc.astro';
 import OfficialResourceCards from '../../components/OfficialResourceCards.astro';
 import RelatedPostCard from '../../components/RelatedPostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, getPostDisplayTitle, getRelatedPosts, SITE_NAME, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { formatDate, getPostDisplayTitle, getRelatedPosts, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { breadcrumbSchema, organizationSchema, personSchema, type BreadcrumbItem } from '../../lib/schema';
+import { AUTHOR_NAME, SOCIAL_IMAGE_HEIGHT, SOCIAL_IMAGE_WIDTH, socialImagePathForPost } from '../../lib/site';
 import { getPublishedTopics, getTopicsForPost, type PublishedTopic } from '../../lib/topics';
 
 export async function getStaticPaths() {
@@ -51,41 +53,51 @@ const showToc = tocHeadings.filter(({ depth }) => depth === 2).length >= 5;
 const track = TRACKS[post.data.track];
 const category = post.data.category ? TECH_CATEGORIES[post.data.category] : undefined;
 const displayTitle = getPostDisplayTitle(post.data);
-const searchTitle = `${post.data.searchTitle ?? post.data.title} | 다메카솔`;
-const canonical = new URL(`/posts/${post.id}/`, Astro.site);
-const socialImage = `/social/${post.id}.webp`;
+const searchTitle = `${post.data.searchTitle ?? post.data.title} | ${AUTHOR_NAME}`;
+const postPath = `/posts/${post.id}/`;
+const canonical = new URL(postPath, Astro.site);
+const socialImage = socialImagePathForPost(post.id);
 const socialImageUrl = new URL(socialImage, Astro.site);
+const coverUrl = new URL(post.data.cover.src, Astro.site);
+const wordCount = post.body ? post.body.replace(/[#*_>`\[\]()!-]/g, ' ').split(/\s+/).filter(Boolean).length : undefined;
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': post.data.track === 'news' ? 'NewsArticle' : 'BlogPosting',
+  '@id': canonical.href,
   headline: displayTitle,
+  name: displayTitle,
   description: post.data.description,
   datePublished: post.data.publishedAt.toISOString(),
   dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
   inLanguage: 'ko-KR',
-  mainEntityOfPage: canonical.href,
-  image: [socialImageUrl.href],
-  author: {
-    '@type': 'Person',
-    name: '다메카솔',
-    url: new URL('/about/', Astro.site).href,
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: SITE_NAME,
-    url: new URL('/', Astro.site).href,
-  },
+  url: canonical.href,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical.href },
+  // 16:9 social crop first, then the full portrait cover so Google has two aspect ratios.
+  image: [socialImageUrl.href, coverUrl.href],
+  thumbnailUrl: socialImageUrl.href,
+  author: personSchema(Astro.site),
+  publisher: organizationSchema(Astro.site),
   articleSection: category?.label ?? track.label,
-  keywords: post.data.tags,
+  keywords: post.data.tags.join(', '),
   isAccessibleForFree: true,
-  ...(post.data.series && {
-    isPartOf: {
-      '@type': 'CreativeWorkSeries',
-      name: post.data.series.title,
-      position: post.data.series.order,
-    },
-  }),
+  isPartOf: post.data.series
+    ? {
+        '@type': 'CreativeWorkSeries',
+        name: post.data.series.title,
+        url: new URL(`/series/${post.data.series.slug}/`, Astro.site).href,
+        position: post.data.series.order,
+      }
+    : { '@id': `${new URL('/', Astro.site).href}#website` },
+  ...(wordCount && { wordCount }),
+  ...(post.data.sourceUrl?.startsWith('https://') && { citation: post.data.sourceUrl }),
 };
+const breadcrumbs: BreadcrumbItem[] = [
+  { name: '홈', path: '/' },
+  { name: track.label, path: `/tracks/${post.data.track}/` },
+];
+if (category) breadcrumbs.push({ name: category.label, path: `/categories/${post.data.category}/` });
+if (post.data.series) breadcrumbs.push({ name: post.data.series.title, path: `/series/${post.data.series.slug}/` });
+breadcrumbs.push({ name: displayTitle, path: postPath });
 const archiveHref = category ? `/categories/${post.data.category}/` : `/tracks/${post.data.track}/`;
 const archiveLabel = category ? `${category.label} 글 더 보기` : `${track.label} 글 더 보기`;
 const hasUpdatedDate =
@@ -98,12 +110,19 @@ const hasUpdatedDate =
   description={post.data.description}
   image={socialImage}
   imageAlt={post.data.coverAlt}
-  imageWidth={1280}
-  imageHeight={720}
+  imageWidth={SOCIAL_IMAGE_WIDTH}
+  imageHeight={SOCIAL_IMAGE_HEIGHT}
   type="article"
   completeTitle
+  jsonLd={[articleSchema, breadcrumbSchema(breadcrumbs, Astro.site)]}
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <Fragment slot="head">
+    <meta property="article:published_time" content={post.data.publishedAt.toISOString()} />
+    <meta property="article:modified_time" content={(post.data.updatedAt ?? post.data.publishedAt).toISOString()} />
+    <meta property="article:author" content={new URL('/about/', Astro.site)} />
+    <meta property="article:section" content={category?.label ?? track.label} />
+    {post.data.tags.map((tag) => <meta property="article:tag" content={tag} />)}
+  </Fragment>
   <article
     class="article"
     data-analytics-article
@@ -121,7 +140,7 @@ const hasUpdatedDate =
         <span class={`track-label track-label--${post.data.track}`}>{track.label}</span>
         {category && <a class="category-label" href={`/categories/${post.data.category}/`}>{category.label}</a>}
         {post.data.series && <a class="series-label" href={`/series/${post.data.series.slug}/`}>{post.data.series.title} {post.data.series.order}편</a>}
-        <a class="author-link" href="/about/">글·해설: 다메카솔</a>
+        <a class="author-link" href="/about/" rel="author">글·해설: {AUTHOR_NAME}</a>
         <span>발행 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
         {hasUpdatedDate && <span>수정 <time datetime={post.data.updatedAt?.toISOString()}>{formatDate(post.data.updatedAt!)}</time></span>}
       </div>
@@ -150,6 +169,7 @@ const hasUpdatedDate =
         sizes="(min-width: 920px) 760px, 92vw"
         format="webp"
         loading="eager"
+        fetchpriority="high"
       />
     </figure>
 

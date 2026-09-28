@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import PostCard from '../../components/PostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortPosts, TECH_CATEGORIES } from '../../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/schema';
 import { getPublishedSeries, type PublishedSeries } from '../../lib/series';
 
 export async function getStaticPaths() {
@@ -21,9 +22,23 @@ interface Props {
 const { series } = Astro.props;
 const category = TECH_CATEGORIES[series.category];
 const posts: CollectionEntry<'posts'>[] = series.posts;
+const path = `/series/${series.slug}/`;
 ---
 
-<BaseLayout title={series.title} description={series.description}>
+<BaseLayout
+  title={`${series.title} 연재`}
+  description={`${series.description} 총 ${posts.length}편, 1편부터 순서대로 읽을 수 있습니다.`}
+  jsonLd={[
+    breadcrumbSchema(
+      [{ name: '홈', path: '/' }, { name: '연재', path: '/series/' }, { name: category.label, path: `/categories/${series.category}/` }, { name: series.title, path }],
+      Astro.site,
+    ),
+    collectionPageSchema(
+      { name: series.title, description: series.description, path, postPaths: posts.map((post) => `/posts/${post.id}/`) },
+      Astro.site,
+    ),
+  ]}
+>
   <div class="shell listing-page">
     <nav class="breadcrumb" aria-label="현재 위치">
       <a href="/">홈</a><span aria-hidden="true">/</span><a href="/series/">연재</a>

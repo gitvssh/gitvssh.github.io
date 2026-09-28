@@ -7,6 +7,7 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from '../../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/schema';
 import { getPublishedSeries } from '../../lib/series';
 
 export function getStaticPaths() {
@@ -25,10 +26,29 @@ const posts = sortPosts(
 const seriesEntries = getPublishedSeries(
   await getCollection('posts', ({ data }) => !data.draft),
 ).filter((series) => series.category === categoryKey);
+const path = `/categories/${categoryKey}/`;
+const title = `${category.label} 기술 해설 모음`;
 ---
 
-<BaseLayout title={category.label} description={category.description}>
+<BaseLayout
+  title={title}
+  description={`${category.description} ${category.label} 관련 글 ${posts.length}편과 연재 ${seriesEntries.length}개를 모았습니다.`}
+  noindex={posts.length === 0}
+  jsonLd={[
+    breadcrumbSchema(
+      [{ name: '홈', path: '/' }, { name: '기술 해설', path: '/tracks/tech_column/' }, { name: category.label, path }],
+      Astro.site,
+    ),
+    collectionPageSchema(
+      { name: title, description: category.description, path, postPaths: posts.map((post) => `/posts/${post.id}/`) },
+      Astro.site,
+    ),
+  ]}
+>
   <div class="shell listing-page">
+    <nav class="breadcrumb" aria-label="현재 위치">
+      <a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a>
+    </nav>
     <header class="listing-header">
       <p class="eyebrow">TOPIC CATEGORY</p>
       <h1>{category.label}</h1>

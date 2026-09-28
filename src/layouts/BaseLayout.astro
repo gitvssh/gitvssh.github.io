@@ -3,7 +3,17 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import Analytics from '../components/Analytics.astro';
 import MermaidDiagrams from '../components/MermaidDiagrams.astro';
-import { SITE_NAME } from '../lib/content';
+import { serializeJsonLd, type JsonLd } from '../lib/schema';
+import {
+  AUTHOR_NAME,
+  DEFAULT_SOCIAL_IMAGE_PATH,
+  GOOGLE_SITE_VERIFICATION,
+  NAVER_SITE_VERIFICATION,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SOCIAL_IMAGE_HEIGHT,
+  SOCIAL_IMAGE_WIDTH,
+} from '../lib/site';
 import '../styles/global.css';
 
 interface Props {
@@ -17,43 +27,58 @@ interface Props {
   type?: 'website' | 'article';
   noindex?: boolean;
   completeTitle?: boolean;
+  /** Path to canonicalise instead of the current URL (rarely needed). */
+  canonicalPath?: string;
+  /** Structured data blocks rendered in <head>. */
+  jsonLd?: JsonLd | JsonLd[];
 }
 
 const {
   title,
-  description = 'AI 논문 읽기, AI 뉴스, 기술 해설과 AI 활용을 만화와 정확한 한국어 글로 설명합니다.',
-  image,
-  imageAlt,
-  imageWidth,
-  imageHeight,
+  description = SITE_DESCRIPTION,
+  image = DEFAULT_SOCIAL_IMAGE_PATH,
+  imageAlt = `${SITE_NAME} — ${AUTHOR_NAME}의 AI·기술 만화 블로그`,
+  imageWidth = SOCIAL_IMAGE_WIDTH,
+  imageHeight = SOCIAL_IMAGE_HEIGHT,
   socialTitle,
   type = 'website',
   noindex = false,
   completeTitle = false,
+  canonicalPath,
+  jsonLd,
 } = Astro.props;
 
 const pageTitle = title ? (completeTitle ? title : `${title} | ${SITE_NAME}`) : SITE_NAME;
-const openGraphTitle = socialTitle ?? pageTitle;
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = image ? new URL(image, Astro.site) : undefined;
+const openGraphTitle = socialTitle ?? title ?? SITE_NAME;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.site);
+const socialImageType = image.endsWith('.jpg') || image.endsWith('.jpeg')
+  ? 'image/jpeg'
+  : image.endsWith('.png')
+    ? 'image/png'
+    : 'image/webp';
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
 <!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk" />
+    {GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />}
+    {NAVER_SITE_VERIFICATION && <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />}
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={AUTHOR_NAME} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={new URL('rss.xml', Astro.site)} />
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#173f2a" />
     <meta
       name="robots"
-      content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
+      content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}
     />
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE_NAME} />
@@ -61,12 +86,19 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <meta property="og:title" content={openGraphTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {socialImage && <meta property="og:image" content={socialImage} />}
-    {socialImage && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
-    {socialImage && imageWidth && <meta property="og:image:width" content={String(imageWidth)} />}
-    {socialImage && imageHeight && <meta property="og:image:height" content={String(imageHeight)} />}
-    {socialImage && <meta property="og:image:type" content="image/webp" />}
-    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:secure_url" content={socialImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:image:width" content={String(imageWidth)} />
+    <meta property="og:image:height" content={String(imageHeight)} />
+    <meta property="og:image:type" content={socialImageType} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={openGraphTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    {schemas.map((schema) => <script is:inline type="application/ld+json" set:html={serializeJsonLd(schema)} />)}
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">본문으로 이동</a>

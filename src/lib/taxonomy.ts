@@ -1,24 +1,20 @@
-export const SITE_NAME = '3분만에 만화로 보는 IT';
+export { SITE_NAME } from './site';
 
 export const TRACKS = {
   news: {
     label: 'AI 뉴스',
-    titlePrefix: `${SITE_NAME} - AI 뉴스`,
     description: 'AI 분야의 공식 발표와 현재 확인 가능한 사실을 빠르게 정리합니다.',
   },
   paper: {
     label: 'AI 논문 읽기',
-    titlePrefix: `${SITE_NAME} - AI 논문 읽기`,
     description: 'AI 논문의 근거와 해석을 구분해 핵심 주장을 읽습니다.',
   },
   tech_column: {
     label: '기술 해설',
-    titlePrefix: `${SITE_NAME} - 기술 해설`,
     description: 'AI와 개발을 둘러싼 개념, 조건, 오해와 예외를 설명합니다.',
   },
   practice: {
     label: 'AI 활용',
-    titlePrefix: `${SITE_NAME} - AI 활용`,
     description: 'AI 도구를 실제 문제에 적용하고 검증한 활용법을 다룹니다.',
   },
 } as const;
@@ -104,10 +100,11 @@ export const TECH_CATEGORIES: Record<
 
 interface TitleData {
   title: string;
-  track: Track;
-  category?: TechCategory | undefined;
 }
 
+// The reader-facing title is the post title alone. The track/category context is shown as a
+// badge next to it; prefixing it into every <h1>, og:title, and headline diluted the searchable
+// title with 20+ identical characters across all posts.
 export function getPostDisplayTitle(data: TitleData) {
-  return `${TRACKS[data.track].titlePrefix} | ${data.title}`;
+  return data.title;
 }

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortPosts, TECH_CATEGORIES } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
 import { getPublishedSeries } from '../../lib/series';
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
@@ -12,6 +13,7 @@ const episodeCount = series.reduce((total, entry) => total + entry.posts.length,
 <BaseLayout
   title="연재 모아보기"
   description="여러 편으로 이어지는 연재를 한곳에 모았습니다. 관심 있는 연재를 골라 1편부터 순서대로 읽습니다."
+  jsonLd={breadcrumbSchema([{ name: '홈', path: '/' }, { name: '연재', path: '/series/' }], Astro.site)}
 >
   <div class="shell listing-page">
     <header class="listing-header">

@@ -5,15 +5,32 @@ import PostCard from '../components/PostCard.astro';
 import TopicNavigation from '../components/TopicNavigation.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_NAME, sortPosts, sortUpdatedPosts, TECH_CATEGORIES, TRACKS } from '../lib/content';
+import { webSiteSchema } from '../lib/schema';
+import { SITE_DESCRIPTION, SITE_TAGLINE } from '../lib/site';
 import { getPublishedTopics } from '../lib/topics';
+
+// Full cards for the newest posts, a compact list for the rest: every post stays one click
+// from the home page for crawlers, without 120+ image cards in the DOM.
+const HOME_CARD_COUNT = 24;
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 const [featured, ...rest] = posts;
+const cardPosts = rest.slice(0, HOME_CARD_COUNT);
+const olderPosts = rest.slice(HOME_CARD_COUNT);
 const recentlyUpdated = sortUpdatedPosts(posts).slice(0, 3);
 const topics = getPublishedTopics(posts);
+const publishedCategories = Object.entries(TECH_CATEGORIES).filter(([key]) =>
+  posts.some((post) => post.data.category === key),
+);
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={`${SITE_NAME} | ${SITE_TAGLINE}`}
+  socialTitle={SITE_NAME}
+  description={SITE_DESCRIPTION}
+  completeTitle
+  jsonLd={webSiteSchema(Astro.site)}
+>
   <section class="masthead">
     <div class="shell masthead__inner">
       <p class="eyebrow">3 MINUTES · IT COMICS</p>
@@ -60,7 +77,7 @@ const topics = getPublishedTopics(posts);
       </div>
       <div class="category-index__grid">
         {
-          Object.entries(TECH_CATEGORIES).map(([key, category]) => (
+          publishedCategories.map(([key, category]) => (
             <a
               class="category-index__item"
               style={`--category-accent: var(--${category.tone})`}
@@ -75,12 +92,25 @@ const topics = getPublishedTopics(posts);
     </section>
 
     {
-      rest.length > 0 && (
+      cardPosts.length > 0 && (
         <section class="latest" aria-labelledby="latest-heading">
           <div class="section-heading">
-            <h2 id="latest-heading">모든 글</h2>
+            <h2 id="latest-heading">최신 글</h2>
+            <a class="section-heading__link" href="/archives/">전체 아카이브 →</a>
           </div>
-          <div class="post-list">{rest.map((post) => <PostCard post={post} />)}</div>
+          <div class="post-list">{cardPosts.map((post) => <PostCard post={post} />)}</div>
+        </section>
+      )
+    }
+
+    {
+      olderPosts.length > 0 && (
+        <section class="older-posts" aria-labelledby="older-heading">
+          <div class="section-heading">
+            <h2 id="older-heading">이전 글</h2>
+            <span>{olderPosts.length}개의 글</span>
+          </div>
+          <CompactPostList posts={olderPosts} />
         </section>
       )
     }

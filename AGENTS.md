@@ -29,6 +29,18 @@ Every post uses exactly one primary track:
 - `news`
 - `tech_column`
 
+## SEO Invariants
+
+- Site identity (`SITE_ORIGIN`, `SITE_NAME`, description, author, social image
+  defaults, verification tokens) is defined once in `src/lib/site.ts`.
+- Post `<h1>`, `og:title` and JSON-LD `headline` are the post title alone. Do
+  not reintroduce a site or track prefix into them.
+- Every page has a canonical URL, an Open Graph image (post social card or
+  `public/social-default.jpg`) and JSON-LD. Empty listing pages are `noindex`
+  and excluded from `sitemap.xml`.
+- Analytics go only through `src/lib/analytics.ts` (`window.zaraz.track`). No
+  vendor tag or measurement ID enters the repository.
+
 ## Required Checks
 
 Run both commands before publication:
@@ -72,10 +84,10 @@ certificate for the custom domain, so the edge terminates TLS with the zone
 certificate instead. Two things follow. GitHub will not issue its own
 certificate while the record is proxied, so **do not set the record back to
 DNS-only** expecting HTTPS to keep working — that reverts to the broken state.
-And because traffic now passes through Cloudflare, Zaraz is available, which is
-how the section 4.2 analytics requirement should eventually be met; the GA
-measurement ID is still compiled into the site today, which that policy
-forbids.
+And because traffic now passes through Cloudflare, Zaraz is available and is the
+analytics path (section 4.2): the site calls `window.zaraz.track` through
+`src/lib/analytics.ts` and holds no measurement ID. GA4, the measurement ID and
+the consent gate are configured in the Cloudflare Zaraz console.
 
 Status and history live in `homelab-gitops`
 `.ai/projects/arc-blog-onboarding/` (`CHARTER.md`, `RUNBOOK-phase2.md`).

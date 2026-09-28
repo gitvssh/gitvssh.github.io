@@ -1,231 +1,78 @@
 ---
-const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim() ?? '';
-const cloudflareToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim() ?? '';
-const analyticsEnabled = Boolean(measurementId || cloudflareToken);
-
-if (measurementId && !/^G-[A-Z0-9]+$/.test(measurementId)) {
-  throw new Error('PUBLIC_GA_MEASUREMENT_ID must use the GA4 G-XXXXXXXX format.');
-}
-
-if (cloudflareToken && !/^[A-F0-9]{32}$/i.test(cloudflareToken)) {
-  throw new Error('PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN must be a 32-character token.');
-}
+// Reading-behaviour events forwarded through the Zaraz transport (src/lib/analytics.ts).
+// No vendor script, no measurement ID, no consent UI: Cloudflare Zaraz injects itself at the
+// edge and enforces consent before any tool runs. This component only decides *when* an event
+// is worth sending.
 ---
 
-{
-  analyticsEnabled && (
-    <>
-      <section
-        class="analytics-consent"
-        data-analytics-consent-banner
-        aria-label="방문 분석 설정"
-        hidden
-      >
-        <div class="analytics-consent__inner">
-          <p>
-            더 나은 콘텐츠와 사이트 이용 환경을 제공하기 위해 방문 페이지, 유입 경로, 글 읽기 흐름 같은
-            이용 데이터를 수집합니다. 이름이나 이메일처럼 개인을 직접 식별하는 정보는 수집하지 않으며,
-            동의한 경우에만 사이트 개선을 위한 분석을 시작합니다.
-          </p>
-          <div class="analytics-consent__actions">
-            <button type="button" data-analytics-consent="denied">필수 항목만</button>
-            <button type="button" class="analytics-consent__accept" data-analytics-consent="granted">
-              분석 허용
-            </button>
-          </div>
-        </div>
-      </section>
+<script>
+  import { dispatchAnalyticsEvent } from '../lib/analytics';
 
-      <script is:inline define:vars={{ measurementId, cloudflareToken }}>
-        (() => {
-          const storageKey = 'gitvssh.analytics-consent.v2';
-          const banner = document.querySelector('[data-analytics-consent-banner]');
-          const settingsButtons = document.querySelectorAll('[data-analytics-settings]');
-          let analyticsLoaded = false;
+  window.blogAnalytics = { event: dispatchAnalyticsEvent };
 
-          function readConsent() {
-            try {
-              return window.localStorage.getItem(storageKey);
-            } catch {
-              return null;
-            }
-          }
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
 
-          function writeConsent(value) {
-            try {
-              window.localStorage.setItem(storageKey, value);
-            } catch {
-              // The current page still honors the choice when storage is unavailable.
-            }
-          }
+    const trigger = target.closest<HTMLElement>('[data-analytics-event]');
+    if (trigger?.dataset.analyticsEvent) {
+      dispatchAnalyticsEvent(trigger.dataset.analyticsEvent, {
+        target: trigger.dataset.analyticsTarget || 'unknown',
+      });
+      return;
+    }
 
-          function clearAnalyticsCookies() {
-            for (const item of document.cookie.split(';')) {
-              const name = item.split('=')[0]?.trim();
-              if (!name?.startsWith('_ga')) continue;
-              document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
-              document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${location.hostname}; SameSite=Lax`;
-            }
-          }
+    const contextualPostLink = target.closest<HTMLAnchorElement>('.prose a[href^="/posts/"]');
+    if (!contextualPostLink) return;
+    const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
+    dispatchAnalyticsEvent('related_post_click', { target: segments.at(-1) || 'contextual_post' });
+  });
 
-          function loadAnalytics() {
-            if (analyticsLoaded) return;
-            analyticsLoaded = true;
-            if (measurementId) {
-              window.dataLayer = window.dataLayer || [];
-              window.gtag = window.gtag || function () {
-                window.dataLayer.push(arguments);
-              };
-              window.gtag('consent', 'default', {
-                analytics_storage: 'denied',
-                ad_storage: 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied',
-              });
-              window.gtag('consent', 'update', { analytics_storage: 'granted' });
-              window.gtag('js', new Date());
-              window.gtag('config', measurementId);
+  const article = document.querySelector<HTMLElement>('[data-analytics-article]');
+  if (article) {
+    const context = {
+      content_id: article.dataset.contentId,
+      content_track: article.dataset.contentTrack,
+      content_category: article.dataset.contentCategory,
+    };
+    let timeReached = false;
+    let depthReached = false;
+    let engagedSent = false;
+    let completeSent = false;
 
-              const googleScript = document.createElement('script');
-              googleScript.async = true;
-              googleScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-              document.head.append(googleScript);
-            }
+    const tryEngagedRead = () => {
+      if (!timeReached || !depthReached || engagedSent) return;
+      engagedSent = true;
+      dispatchAnalyticsEvent('engaged_read', context);
+    };
 
-            if (cloudflareToken) {
-              const cloudflareScript = document.createElement('script');
-              cloudflareScript.type = 'module';
-              cloudflareScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-              cloudflareScript.dataset.cfBeacon = JSON.stringify({ token: cloudflareToken });
-              document.head.append(cloudflareScript);
-            }
+    const measureDepth = () => {
+      const articleTop = article.getBoundingClientRect().top + window.scrollY;
+      const viewed = window.scrollY + window.innerHeight - articleTop;
+      depthReached = viewed / article.offsetHeight >= 0.5;
+      tryEngagedRead();
+    };
 
-            document.dispatchEvent(new CustomEvent('blog:analytics-ready'));
-          }
+    window.setTimeout(() => {
+      timeReached = true;
+      tryEngagedRead();
+    }, 30000);
+    window.addEventListener('scroll', measureDepth, { passive: true });
+    window.addEventListener('resize', measureDepth);
+    measureDepth();
 
-          function sendEvent(name, parameters = {}) {
-            if (readConsent() !== 'granted' || typeof window.gtag !== 'function') return;
-            window.gtag('event', name, parameters);
-          }
-
-          window.blogAnalytics = { event: sendEvent };
-
-          function applyConsent(value) {
-            const reloadAfterDeny = value === 'denied' && analyticsLoaded;
-            writeConsent(value);
-            banner.hidden = true;
-            if (value === 'granted') {
-              loadAnalytics();
-              return;
-            }
-            if (typeof window.gtag === 'function') {
-              window.gtag('consent', 'update', { analytics_storage: 'denied' });
-            }
-            clearAnalyticsCookies();
-            if (reloadAfterDeny) {
-              window.location.reload();
-            }
-          }
-
-          for (const button of settingsButtons) {
-            button.hidden = false;
-            button.addEventListener('click', () => {
-              banner.hidden = false;
-              banner.querySelector('button')?.focus();
-            });
-          }
-
-          banner.addEventListener('click', (event) => {
-            const button = event.target.closest('[data-analytics-consent]');
-            if (!button) return;
-            applyConsent(button.dataset.analyticsConsent);
-          });
-
-          if (readConsent() === 'granted') {
-            loadAnalytics();
-          } else if (readConsent() !== 'denied') {
-            banner.hidden = false;
-          }
-
-          document.addEventListener('click', (event) => {
-            const trigger = event.target.closest('[data-analytics-event]');
-            if (trigger) {
-              sendEvent(trigger.dataset.analyticsEvent, {
-                target: trigger.dataset.analyticsTarget || 'unknown',
-              });
-              return;
-            }
-
-            const contextualPostLink = event.target.closest('.prose a[href^="/posts/"]');
-            if (!contextualPostLink) return;
-            const segments = new URL(contextualPostLink.href).pathname.split('/').filter(Boolean);
-            sendEvent('related_post_click', {
-              target: segments.at(-1) || 'contextual_post',
-            });
-          });
-
-          const article = document.querySelector('[data-analytics-article]');
-          if (!article) return;
-
-          const context = {
-            content_id: article.dataset.contentId,
-            content_track: article.dataset.contentTrack,
-            content_category: article.dataset.contentCategory,
-          };
-          let timeReached = false;
-          let depthReached = false;
-          let engagedSent = false;
-          let completeReached = false;
-          let completeSent = false;
-
-          function tryEngagedRead() {
-            if (!timeReached || !depthReached || engagedSent) return;
-            if (readConsent() !== 'granted') return;
-            engagedSent = true;
-            sendEvent('engaged_read', context);
-          }
-
-          function tryArticleComplete() {
-            if (!completeReached || completeSent) return;
-            if (readConsent() !== 'granted') return;
-            completeSent = true;
-            sendEvent('article_complete', context);
-          }
-
-          function measureDepth() {
-            const articleTop = article.getBoundingClientRect().top + window.scrollY;
-            const viewed = window.scrollY + window.innerHeight - articleTop;
-            depthReached = viewed / article.offsetHeight >= 0.5;
-            tryEngagedRead();
-          }
-
-          window.setTimeout(() => {
-            timeReached = true;
-            tryEngagedRead();
-          }, 30000);
-          window.addEventListener('scroll', measureDepth, { passive: true });
-          window.addEventListener('resize', measureDepth);
-          document.addEventListener('blog:analytics-ready', () => {
-            tryEngagedRead();
-            tryArticleComplete();
-          });
-          measureDepth();
-
-          const completionTarget = article.querySelector('[data-analytics-complete]');
-          if (completionTarget && 'IntersectionObserver' in window) {
-            const observer = new IntersectionObserver(
-              (entries) => {
-                if (!entries.some((entry) => entry.isIntersecting)) return;
-                completeReached = true;
-                tryArticleComplete();
-                observer.disconnect();
-              },
-              { threshold: 0.35 },
-            );
-            observer.observe(completionTarget);
-          }
-        })();
-      </script>
-    </>
-  )
-}
+    const completionTarget = article.querySelector('[data-analytics-complete]');
+    if (completionTarget && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (completeSent || !entries.some((entry) => entry.isIntersecting)) return;
+          completeSent = true;
+          dispatchAnalyticsEvent('article_complete', context);
+          observer.disconnect();
+        },
+        { threshold: 0.35 },
+      );
+      observer.observe(completionTarget);
+    }
+  }
+</script>

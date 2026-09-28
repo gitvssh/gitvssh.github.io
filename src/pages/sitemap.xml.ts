@@ -46,22 +46,20 @@ export const GET: APIRoute = async ({ site }) => {
     entries.push({ path: `/posts/${post.id}/`, lastmod: postLastmod(post) });
   }
 
+  // Listing pages with no post yet render as noindex and stay out of the sitemap, so the
+  // sitemap never advertises an empty page.
   for (const track of Object.keys(TRACKS)) {
-    entries.push({
-      path: `/tracks/${track}/`,
-      lastmod: latestPostDate(posts.filter((post) => post.data.track === track)),
-    });
+    const trackPosts = posts.filter((post) => post.data.track === track);
+    if (trackPosts.length === 0) continue;
+    entries.push({ path: `/tracks/${track}/`, lastmod: latestPostDate(trackPosts) });
   }
 
   for (const category of Object.keys(TECH_CATEGORIES)) {
-    entries.push({
-      path: `/categories/${category}/`,
-      lastmod: latestPostDate(
-        posts.filter(
-          (post) => post.data.track === 'tech_column' && post.data.category === category,
-        ),
-      ),
-    });
+    const categoryPosts = posts.filter(
+      (post) => post.data.track === 'tech_column' && post.data.category === category,
+    );
+    if (categoryPosts.length === 0) continue;
+    entries.push({ path: `/categories/${category}/`, lastmod: latestPostDate(categoryPosts) });
   }
 
   const publishedSeries = getPublishedSeries(posts);

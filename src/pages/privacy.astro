@@ -10,23 +10,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p class="eyebrow">PRIVACY</p>
     <h1>방문 분석 및 개인정보</h1>
     <p>
-      이 블로그는 콘텐츠와 유입 채널을 개선하기 위해 Cloudflare Web Analytics와 Google
-      Analytics 4를 선택적으로 사용합니다. 방문자가 분석을 허용하기 전에는 두 서비스의
-      분석 스크립트를 불러오지 않습니다.
+      이 블로그는 콘텐츠와 유입 채널을 개선하기 위해 방문 분석을 선택적으로 사용합니다. 분석 도구는
+      사이트 코드가 직접 불러오지 않고, 이 사이트를 서비스하는 Cloudflare의 Zaraz가 방문자의 동의를
+      확인한 뒤에만 실행합니다. 동의하기 전에는 분석 목적의 스크립트가 실행되지 않으며, 분석용
+      식별자도 발급되지 않습니다.
     </p>
 
     <h2>수집하는 정보</h2>
     <p>
-      허용 후에는 방문 페이지, 유입 캠페인, 글 읽기 진행과 내부 링크 클릭 같은 이용 이벤트를
-      수집할 수 있습니다. Cloudflare에서는 페이지 방문과 웹 성능에 관한 기본 통계를,
-      Google Analytics에서는 유입 경로와 콘텐츠 이용 이벤트를 확인합니다. 이름, 이메일,
-      계정 ID나 자유 입력문 같은 개인 식별 정보는 사용자 정의 이벤트로 전송하지 않습니다.
+      동의 후에는 방문 페이지, 유입 경로, 글 읽기 진행과 내부 링크 클릭 같은 이용 이벤트를 Google
+      Analytics 4로 집계할 수 있습니다. 이벤트에는 글의 주소 식별자와 분류만 담기며, 이름, 이메일,
+      계정 ID나 자유 입력문 같은 개인 식별 정보는 전송하지 않습니다.
     </p>
 
-    <h2>선택 저장과 변경</h2>
+    <h2>선택 변경</h2>
     <p>
-      분석 선택은 현재 브라우저의 로컬 저장소에 보관됩니다. 페이지 하단의
-      <strong>분석 설정</strong>에서 선택을 다시 열고 분석을 중단할 수 있습니다.
+      동의 여부는 Cloudflare Zaraz의 동의 관리 화면에서 언제든 다시 선택할 수 있습니다. 동의를 철회하면
+      이후 페이지에서 분석 도구가 실행되지 않습니다.
     </p>
 
     <h2>외부 서비스</h2>
@@ -34,7 +34,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       Cloudflare와 Google의 데이터 처리 방식은 각각
       <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare 개인정보처리방침</a>과
       <a href="https://policies.google.com/privacy">Google 개인정보처리방침</a>에서 확인할 수
-      있습니다. 광고 저장과 광고 개인화는 이 블로그의 Analytics 설정에서 비활성화합니다.
+      있습니다. 광고 저장과 광고 개인화는 사용하지 않습니다.
     </p>
   </article>
 </BaseLayout>

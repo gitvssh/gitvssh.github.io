@@ -66,23 +66,43 @@ Details and history: `homelab-gitops` `.ai/projects/arc-blog-onboarding/`.
 
 ## Analytics
 
-GA4 is disabled unless `PUBLIC_GA_MEASUREMENT_ID` is available at build time.
-For a local verification, set it only in the current shell:
+GA4 is connected through **Cloudflare Zaraz**, not through code (homelab policy
+§4.2). The repository holds no measurement ID and loads no vendor tag. Templates
+call the thin transport in `src/lib/analytics.ts`, which forwards to
+`window.zaraz.track(event, properties)` and is a silent no-op when Zaraz is not
+on the page. Zaraz owns the GA4 connection, the measurement ID, and the consent
+gate (analytics purpose denied by default).
 
-```powershell
-$env:PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
-pnpm dev
-```
+Console steps (outside this repository): enable Zaraz on `blog.damecasol.com`,
+add the GA4 tool with the measurement ID, assign it to a consent purpose that is
+denied by default, and map `zaraz.track` events to GA4 events. Until that is
+done no analytics data is collected.
 
-```bash
-PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX pnpm dev
-```
+Event dictionary (enforced by `ANALYTICS_EVENTS` in `src/lib/analytics.ts`;
+any other event name or property is dropped before sending):
 
-For GitHub Pages, create the repository variable `GA_MEASUREMENT_ID`. The
-workflow maps it to the Astro public build variable. The measurement ID is not
-a credential; OAuth tokens and service-account material must never enter this
-repository. When no ID is configured, no GA script or consent banner is
-rendered.
+| Event                 | Allowed properties                              | Purpose                                   |
+| --------------------- | ----------------------------------------------- | ----------------------------------------- |
+| `engaged_read`        | `content_id`, `content_track`, `content_category` | 30 s on page and 50 % of the article seen |
+| `article_complete`    | `content_id`, `content_track`, `content_category` | Article footer reached                    |
+| `related_post_click`  | `target` (post slug or archive label)           | Internal navigation from an article       |
+| `toc_click`           | `target` (heading id)                           | Table-of-contents use                     |
+| `brand_profile_click` | `target`                                        | Creator profile link                      |
+
+Suggested GA4 key event: `article_complete`. String values are limited to
+letters, digits, `_` and `-` (max 120 chars), so URLs, e-mail addresses, phone
+numbers and free text can never leave the page.
+
+## SEO
+
+Site identity lives in `src/lib/site.ts` (`SITE_ORIGIN`, `SITE_NAME`,
+`SITE_DESCRIPTION`, author, default social image, verification tokens).
+`BaseLayout` emits canonical, Open Graph, Twitter card and JSON-LD for every
+page; `src/lib/schema.ts` builds the `WebSite`, `Organization`, `BreadcrumbList`
+and `CollectionPage` blocks, and `src/pages/posts/[id].astro` the
+`BlogPosting`/`NewsArticle`. `pnpm build` renders `dist/social/<slug>.jpg`
+(1280×720) for each post; `public/social-default.jpg` covers every other page.
+Listing pages with no post render `noindex` and are left out of `sitemap.xml`.
 
 ## Content
 

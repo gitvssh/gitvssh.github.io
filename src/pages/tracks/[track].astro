@@ -2,7 +2,8 @@
 import { getCollection } from 'astro:content';
 import PostCard from '../../components/PostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { sortPosts, TECH_CATEGORIES, TRACKS, type Track } from '../../lib/content';
+import { SITE_NAME, sortPosts, TECH_CATEGORIES, TRACKS, type Track } from '../../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/schema';
 
 export function getStaticPaths() {
   return Object.keys(TRACKS).map((track) => ({ params: { track } }));
@@ -13,9 +14,22 @@ const track = TRACKS[trackKey];
 const posts = sortPosts(
   await getCollection('posts', ({ data }) => !data.draft && data.track === trackKey),
 );
+const path = `/tracks/${trackKey}/`;
+const title = `${track.label} 만화 모음`;
 ---
 
-<BaseLayout title={track.label} description={track.description}>
+<BaseLayout
+  title={title}
+  description={`${track.description} ${SITE_NAME}의 ${track.label} 글 ${posts.length}편을 최신순으로 모았습니다.`}
+  noindex={posts.length === 0}
+  jsonLd={[
+    breadcrumbSchema([{ name: '홈', path: '/' }, { name: track.label, path }], Astro.site),
+    collectionPageSchema(
+      { name: title, description: track.description, path, postPaths: posts.map((post) => `/posts/${post.id}/`) },
+      Astro.site,
+    ),
+  ]}
+>
   <div class="shell listing-page">
     <header class="listing-header">
       <p class="eyebrow">CONTENT TRACK</p>
@@ -30,7 +44,9 @@ const posts = sortPosts(
             <h2 id="category-directory-heading">핵심 카테고리</h2>
           </div>
           <div class="category-index__grid">
-            {Object.entries(TECH_CATEGORIES).map(([key, category]) => (
+            {Object.entries(TECH_CATEGORIES)
+              .filter(([key]) => posts.some((post) => post.data.category === key))
+              .map(([key, category]) => (
               <a
                 class="category-index__item"
                 style={`--category-accent: var(--${category.tone})`}

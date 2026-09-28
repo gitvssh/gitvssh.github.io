@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import RelatedPostCard from '../components/RelatedPostCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortPosts } from '../lib/content';
+import { breadcrumbSchema, personSchema } from '../lib/schema';
+import { SITE_NAME } from '../lib/site';
 
 const posts = sortPosts(await getCollection('posts', ({ data }) => !data.draft));
 const representativePosts = ['tech_column', 'paper', 'news']
@@ -10,7 +12,19 @@ const representativePosts = ['tech_column', 'paper', 'news']
   .filter((post) => post !== undefined);
 ---
 
-<BaseLayout title="소개" description="다메카솔의 AI 논문 읽기, AI 뉴스, 기술 해설과 AI 활용을 소개합니다.">
+<BaseLayout
+  title="소개 — 다메카솔"
+  description={`${SITE_NAME}를 만드는 다메카솔을 소개합니다. AI 논문 읽기, AI 뉴스, 기술 해설과 AI 활용을 만화와 글로 설명하는 이유와 다루는 글의 종류를 안내합니다.`}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ProfilePage',
+      url: new URL('/about/', Astro.site).href,
+      mainEntity: { ...personSchema(Astro.site), description: '복잡한 AI·개발 이슈를 읽기 쉬운 글과 그림으로 정리하는 기술 블로거' },
+    },
+    breadcrumbSchema([{ name: '홈', path: '/' }, { name: '소개', path: '/about/' }], Astro.site),
+  ]}
+>
   <div class="shell shell--article standalone-page">
     <p class="eyebrow">ABOUT</p>
     <h1>어려운 기술을 더 쉽게 전달합니다</h1>

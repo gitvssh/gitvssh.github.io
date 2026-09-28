@@ -4,6 +4,7 @@ import PostCard from '../../components/PostCard.astro';
 import TopicNavigation from '../../components/TopicNavigation.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortPosts } from '../../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/schema';
 import {
   getPublishedTopics,
   getTopicPosts,
@@ -31,9 +32,22 @@ interface Props {
 }
 
 const { topic, topics, posts } = Astro.props;
+const path = `/topics/${topic.slug}/`;
+const title = `${topic.label} 글 모음`;
 ---
 
-<BaseLayout title={`${topic.label} 글 모음`} description={topic.description}>
+<BaseLayout
+  title={title}
+  description={`${topic.description} 관련 글 ${posts.length}편.`}
+  noindex={posts.length === 0}
+  jsonLd={[
+    breadcrumbSchema([{ name: '홈', path: '/' }, { name: topic.label, path }], Astro.site),
+    collectionPageSchema(
+      { name: title, description: topic.description, path, postPaths: posts.map((post) => `/posts/${post.id}/`) },
+      Astro.site,
+    ),
+  ]}
+>
   <div class="shell discovery-layout discovery-layout--listing">
     <section class="listing-page discovery-layout__main">
       <header class="listing-header">
