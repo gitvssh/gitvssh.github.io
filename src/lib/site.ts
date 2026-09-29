@@ -25,4 +25,4 @@ export function socialImagePathForPost(postId: string) {
 // Google's token is already live; Naver Search Advisor issues its own once the site is
 // registered there — paste it here and it renders as <meta name="naver-site-verification">.
 export const GOOGLE_SITE_VERIFICATION = 'UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk';
-export const NAVER_SITE_VERIFICATION = '';
+export const NAVER_SITE_VERIFICATION = 'a1ec3d6f7d666a6c0116a2e5af7f3039298c429a';
