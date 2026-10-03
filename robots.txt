@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://blog.damecasol.com/sitemap.xml
+Sitemap: https://blog.damecasol.com/news-sitemap.xml

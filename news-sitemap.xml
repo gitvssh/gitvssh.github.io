@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/google-gboard-verifiable-federated-learning/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-03T00:00:00.000Z</news:publication_date>
+      <news:title>Gboard 연합학습, 서버로 옮긴 계산을 검증하는 법</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.damecasol.com/posts/mai-streaming-transcript-final-boundary/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-02T00:00:00.000Z</news:publication_date>
+      <news:title>MAI 실시간 음성 인식: 임시 자막과 확정 결과를 나누는 법</news:title>
+    </news:news>
+  </url>
+</urlset>
