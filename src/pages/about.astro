@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import DevelopmentSeries from '../components/DevelopmentSeries.astro';
 import RelatedPostCard from '../components/RelatedPostCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortPosts } from '../lib/content';
@@ -60,6 +61,8 @@ const representativePosts = ['tech_column', 'paper', 'news']
         카솔은 다메카솔의 반복 등장 캐릭터입니다. 표지와 본문에서 독자의 질문을 대신하고, 복잡한 구조나 상태 변화를 따라갈 수 있도록 안내합니다.
       </p>
     </div>
+
+    <DevelopmentSeries posts={posts} />
 
     {
       representativePosts.length > 0 && (
