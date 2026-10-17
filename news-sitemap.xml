@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/claude-ecdsa-curve-seed-origins/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-17T00:00:00.000Z</news:publication_date>
+      <news:title>Claude가 찾은 ECDSA 시드의 기원: 공개 숫자가 만들어진 경로</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.damecasol.com/posts/github-ai-scan-advisory-merge-boundary/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-16T00:00:00.000Z</news:publication_date>
+      <news:title>GitHub AI Scan 정식 출시: 탐지 결과가 병합을 막지는 않습니다</news:title>
+    </news:news>
+  </url>
+</urlset>
