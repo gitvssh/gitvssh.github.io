@@ -3,7 +3,7 @@ title: "Copilot Home·Code·Autopilot 발표: 사용 시점과 운영 조건"
 description: "Copilot Home·Code·Autopilot의 제공 계획, Managed Runtime 공개 프리뷰와 사내 앱 운영 조건을 공식 발표로 확인했습니다."
 slug: "copilot-home-code-autopilot-rollout"
 publishedAt: "2026-09-26"
-updatedAt: "2026-09-26"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "release_announcement"
 tags: ["AI 에이전트", "AI 코딩 도구", "AI 안전"]

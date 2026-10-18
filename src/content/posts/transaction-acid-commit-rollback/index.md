@@ -3,7 +3,7 @@ title: "트랜잭션은 무엇을 보장하는가: ACID와 커밋·롤백의 경
 description: "송금과 주문 결제에서 트랜잭션이 보장하는 경계는 어디까지일까요? ACID 4대 속성과 커밋·롤백, 그리고 WAL 로그와 동시성 제어의 내부 동작 원리를 정리합니다."
 slug: "transaction-acid-commit-rollback"
 publishedAt: 2026-07-25
-updatedAt: 2026-07-25
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: mechanism
 category: database

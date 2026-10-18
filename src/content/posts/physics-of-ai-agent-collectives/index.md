@@ -4,7 +4,7 @@ searchTitle: "멀티 에이전트 집단행동과 통계역학"
 description: "1만 개가 넘는 LLM 에이전트 집단에서 무관심·양극화·합의가 나타난 이유와, 같은 소통이 정답과 편향을 함께 모으는 경계를 살펴봅니다."
 slug: "physics-of-ai-agent-collectives"
 publishedAt: 2026-08-18
-updatedAt: 2026-08-18
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

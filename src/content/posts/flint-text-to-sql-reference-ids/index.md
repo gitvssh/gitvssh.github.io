@@ -3,7 +3,7 @@ title: "AI가 만든 SQL, 실행은 됐는데 답이 틀리는 이유"
 description: "FLINT 논문으로 자연어 SQL의 참조값 연결, 실행 성공과 의미 정확도의 차이, 평가 조건을 살펴봅니다."
 slug: "flint-text-to-sql-reference-ids"
 publishedAt: "2026-10-05"
-updatedAt: "2026-10-05"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["SQL", "데이터베이스", "AI 에이전트", "벤치마크"]

@@ -4,7 +4,7 @@ searchTitle: "한국 공공 API 에이전트 멀티스텝 호출 연구"
 description: "KOPA-Bench와 EDGE 연구를 통해 공공 API 에이전트가 선행 키와 페이지네이션에서 실패하는 이유를 살펴봅니다."
 slug: "korean-public-api-tool-chains"
 publishedAt: 2026-09-07
-updatedAt: 2026-09-07
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

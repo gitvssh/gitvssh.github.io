@@ -3,7 +3,7 @@ title: "Gemini Robotics 2, 로봇의 전신과 팀워크를 함께 제어한다"
 description: "Google DeepMind의 Gemini Robotics 2 발표에서 상위 추론·동작 제어·온디바이스 실행의 역할, 공개 범위, 물리 안전 경계를 구분합니다."
 slug: "gemini-robotics-2-whole-body-collaboration"
 publishedAt: 2026-08-02
-updatedAt: 2026-08-02
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

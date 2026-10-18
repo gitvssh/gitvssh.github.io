@@ -3,7 +3,7 @@ title: "AI가 같은 점수를 주면 공정할까: 같은 기준과 다른 출�
 description: "같은 선발 비율과 잘못 탈락한 비율의 차이를 교육과 채용의 가상 장면으로 살피고, 기회균등의 철학적 관점에서 평가 이유와 수정 절차를 묻습니다."
 slug: "ai-fairness-equal-treatment"
 publishedAt: "2026-10-06T07:59:44+09:00"
-updatedAt: "2026-10-06T07:59:44+09:00"
+updatedAt: "2026-10-18"
 track: "tech_column"
 subtype: "opinion"
 category: "ai_philosophy"

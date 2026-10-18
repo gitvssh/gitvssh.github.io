@@ -4,7 +4,7 @@ searchTitle: "데이터베이스 정규화란? 삽입·갱신·삭제 이상으�
 description: "데이터베이스 정규화의 본질은 단순 용량 절약이 아닌 데이터 무결성 보장입니다. 주문 도메인 설계를 예시로 3대 이상 현상과 반정규화의 트레이드오프를 짚어봅니다."
 slug: "database-normalization-anomalies"
 publishedAt: 2026-07-15
-updatedAt: 2026-07-17
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: concept
 category: database

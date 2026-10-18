@@ -4,7 +4,7 @@ searchTitle: "AI 실험 에이전트 물리 잔차, OPERA 논문은 점수 착�
 description: "OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다."
 slug: "autonomous-optical-experiment-physical-feedback"
 publishedAt: 2026-08-09
-updatedAt: 2026-08-09
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

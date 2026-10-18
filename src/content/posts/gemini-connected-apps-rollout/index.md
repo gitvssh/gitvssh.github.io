@@ -3,7 +3,7 @@ title: "Gemini Connected Apps 확대: 발표와 실제 사용 가능 범위는 �
 description: "Google이 발표한 Gemini Connected Apps 확대와 앱마다 다른 계정·지역·언어·기기·모드 조건을 구분합니다."
 slug: "gemini-connected-apps-rollout"
 publishedAt: 2026-08-13
-updatedAt: 2026-08-13
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

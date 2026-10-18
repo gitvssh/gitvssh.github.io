@@ -4,7 +4,7 @@ description: "drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 �
 searchTitle: "kubectl drain 멈춤 PDB 확인 순서"
 slug: "kubectl-drain-pdb-checklist"
 publishedAt: 2026-08-26
-updatedAt: 2026-08-26
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: how_to
 category: infrastructure

@@ -3,7 +3,7 @@ title: "ChatGPT for Teens 출시: 자동 적용되는 보호와 학습 기능"
 description: "ChatGPT for Teens의 자동 계정 분기, 학습 기능, 기본 보호, 부모 제어, 성인 오분류 복구를 서로 구분해 설명합니다."
 slug: "chatgpt-for-teens-launch"
 publishedAt: 2026-08-19
-updatedAt: 2026-08-19
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

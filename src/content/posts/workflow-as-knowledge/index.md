@@ -3,7 +3,7 @@ title: "AI 에이전트의 판단 근거, 로그만으로 부족한 이유: 'Wor
 description: "AI 에이전트가 내린 의사결정의 근거를 며칠 뒤 추적하려면 왜 텍스트 로그만으로 불가능할까요? 결정론적 연산(derive)과 확률적 LLM 추론(infer)을 분리하고 지식 계보(Lineage)를 영구 자산화하는 의미 지속성(Semantic Persistence) 아키텍처를 분석합니다."
 slug: "workflow-as-knowledge"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-15
+updatedAt: "2026-10-18"
 track: paper
 subtype: position
 tags:

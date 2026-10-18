@@ -4,7 +4,7 @@ searchTitle: "AI 자기 개선 측정 오류와 영가설 대조군"
 description: "동결 대조군에서도 생기는 문제별 학습과 손실을 측정하고, measured null·exact test로 AI 자기 개선 주장을 감사하는 방법을 살펴봅니다."
 slug: "phantom-gains-measured-null"
 publishedAt: 2026-08-22
-updatedAt: 2026-08-22
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

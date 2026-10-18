@@ -3,7 +3,7 @@ title: "GPT-5.6 Sol Ultrafast 프리뷰: 속도 발표와 실제 접근 범위"
 description: "OpenAI가 공개한 GPT-5.6 Sol Ultrafast의 공급사 최대 속도, 제한 프리뷰 접근 범위, 실제 지연 측정 항목을 구분합니다."
 slug: "openai-gpt-5-6-sol-ultrafast-preview"
 publishedAt: 2026-08-14
-updatedAt: 2026-08-14
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

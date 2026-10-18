@@ -4,7 +4,7 @@ searchTitle: "AI 친구와 인간관계, 철학으로 따져 본 관계의 조�
 description: "늦은 밤 AI에게 위로받은 경험은 실재하지만, 그것을 '진정한 우정'이라 부를 수 있을까요? 아리스토텔레스의 친애론과 마르틴 부버의 관계 철학, 그리고 플랫폼 비즈니스 구조를 통해 AI 관계의 조건을 짚어봅니다."
 slug: "ai-companion-friendship-philosophy"
 publishedAt: 2026-07-26
-updatedAt: 2026-07-26
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

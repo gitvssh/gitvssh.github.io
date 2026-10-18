@@ -3,7 +3,7 @@ title: "AI 검증, 테스트한 점 밖까지 확인하려면"
 description: "NNV3의 집합 기반 신경망 검증을 읽으며 가중치·영상·그래프 확장, 확률적 보장 조건, unknown 판정의 의미를 살펴봅니다."
 slug: "nnv3-verification-boundaries"
 publishedAt: "2026-09-27"
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 안전", "벤치마크", "멀티모달 AI"]

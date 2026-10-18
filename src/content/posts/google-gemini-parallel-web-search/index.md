@@ -3,7 +3,7 @@ title: "Gemini 에이전트에 Parallel 웹 검색 추가: 실무 도입 시 확
 description: "Gemini Enterprise Agent Platform에 Parallel Web Search가 네이티브 그라운딩 옵션으로 추가되었습니다. 최신 웹 검색 연동 아키텍처와 Zero Data Retention(ZDR) 데이터 보안, 그리고 3중 과금 구조를 분석합니다."
 slug: "google-gemini-parallel-web-search"
 publishedAt: 2026-07-17
-updatedAt: 2026-07-17
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

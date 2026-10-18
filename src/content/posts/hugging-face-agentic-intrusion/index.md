@@ -3,7 +3,7 @@ title: "허깅페이스 AI 에이전트 침입, 토큰 교체와 활동 점검�
 description: "허깅페이스 인프라 침해 사고 분석: 악성 데이터셋을 통한 원격 코드 실행(RCE)과 자율 AI 에이전트를 활용한 내부 권한 상승/측면 이동 메커니즘, 그리고 개발자가 즉시 취해야 할 보안 조치를 정리합니다."
 slug: "hugging-face-agentic-intrusion"
 publishedAt: 2026-07-19
-updatedAt: 2026-07-20
+updatedAt: "2026-10-18"
 track: news
 subtype: incident_security
 tags:

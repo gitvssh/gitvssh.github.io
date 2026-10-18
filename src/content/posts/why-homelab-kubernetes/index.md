@@ -3,7 +3,7 @@ title: "RAM은 32GB인데 Airflow DAG가 계속 실패한 이유"
 description: "RAM 32GB가 남는데도 Airflow DAG는 계속 실패했습니다. 자원 총량과 병목, 애플리케이션 오류와 의존 서비스 가용성을 분리해 홈랩에 Kubernetes를 세우기까지의 기록입니다."
 slug: "why-homelab-kubernetes"
 publishedAt: 2026-07-18
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

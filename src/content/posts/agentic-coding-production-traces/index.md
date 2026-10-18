@@ -4,7 +4,7 @@ searchTitle: "AI 코딩 에이전트 KV 캐시의 진짜 병목"
 description: "GitHub Copilot 운영 추적에서 드러난 코딩 에이전트의 턴 구조, KV 캐시 단절, 유휴 시간과 인프라 운영 의미를 살펴봅니다."
 slug: "agentic-coding-production-traces"
 publishedAt: 2026-08-06
-updatedAt: 2026-08-06
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

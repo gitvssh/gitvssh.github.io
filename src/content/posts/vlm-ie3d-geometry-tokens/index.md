@@ -3,7 +3,7 @@ title: "사진만 보고 3D를 읽는 두 지도: VLM-IE3D의 공간 기하 토�
 description: "VLM이 사진 속 객체는 맞히면서 두 물체 사이의 물리적 거리는 왜 자꾸 틀릴까요? 전역 배치를 읽는 암시적 기하(IGT)와 깊이맵을 읽는 명시적 기하(EGT)를 결합한 VLM-IE3D 공간 추론 아키텍처를 분석합니다."
 slug: "vlm-ie3d-geometry-tokens"
 publishedAt: 2026-07-26
-updatedAt: 2026-07-26
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

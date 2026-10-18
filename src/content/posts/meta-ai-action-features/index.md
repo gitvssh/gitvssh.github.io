@@ -3,7 +3,7 @@ title: "Meta AI가 이메일·캘린더를 연결해 반복 작업을 맡는다"
 description: "Meta AI가 단순 챗봇을 넘어 이메일, 캘린더 등 서드파티 앱과 연동되어 일정을 조율하고 반복 업무를 자율 처리하는 에이전트로 진화했습니다. 지원 기능과 보안/권한 경계를 분석합니다."
 slug: "meta-ai-action-features"
 publishedAt: 2026-07-26
-updatedAt: 2026-07-26
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

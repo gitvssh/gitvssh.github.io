@@ -3,7 +3,7 @@ title: "애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝�
 description: "애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."
 slug: "state-service-uptime-design"
 publishedAt: 2026-07-22
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: how_to
 category: infrastructure

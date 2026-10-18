@@ -4,7 +4,7 @@ searchTitle: "AI에게 생각을 맡기면 덜 생각하게 될까"
 description: "AI에게 초안 작성과 요약을 맡기면 인간의 비판적 사고력은 퇴화할까요? 플라톤의 글쓰기 비판(파이드로스)과 인지과학의 '인지적 오프로딩', 앤디 클라크의 '확장된 마음' 이론을 통해 지적 주도권을 지키는 방법을 살펴봅니다."
 slug: "ai-thinking-cognitive-offloading-philosophy"
 publishedAt: 2026-07-28
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

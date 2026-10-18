@@ -3,7 +3,7 @@ title: "AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까"
 description: "비공개 열린 연구 질문 두 개를 원저자가 평가한 shadow evaluation에서 AI 에이전트가 엔지니어링은 수행했지만 연구 판단과 방향 전환에 실패한 이유를 살펴봅니다."
 slug: "ai-open-ended-research-shadow-evaluation"
 publishedAt: 2026-07-30
-updatedAt: 2026-07-30
+updatedAt: "2026-10-18"
 track: paper
 subtype: case_study
 tags:

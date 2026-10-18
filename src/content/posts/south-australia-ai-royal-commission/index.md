@@ -3,7 +3,7 @@ title: "남호주 AI 왕립위원회: 규제를 정한 게 아니라 조사부�
 description: "남호주가 발표한 AI 왕립위원회의 조사 권한과 아직 확정되지 않은 범위·위원·정책 결론을 구분합니다."
 slug: "south-australia-ai-royal-commission"
 publishedAt: 2026-08-11
-updatedAt: 2026-08-11
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

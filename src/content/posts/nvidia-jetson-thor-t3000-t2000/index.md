@@ -3,7 +3,7 @@ title: "Jetson T3000·T2000 발표: 지금 가능한 것과 2027년에 나오는
 description: "NVIDIA가 차세대 피지컬 AI 및 로보틱스용 엣지 모듈인 Jetson Thor T3000(32GB)과 T2000(16GB)을 발표했습니다. 하드웨어 스펙 비교와 에뮬레이션 일정, 엣지 AI 도입 전략을 분석합니다."
 slug: "nvidia-jetson-thor-t3000-t2000"
 publishedAt: 2026-07-16
-updatedAt: 2026-07-16
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

@@ -4,7 +4,7 @@ searchTitle: "AI 시대 노동의 의미는 무엇일까"
 description: "AI가 반복 업무와 코딩을 대신하는 시대, 인간의 노동은 어떤 가치를 지닐까요? 마르크스의 '노동 소외론'과 한나 아렌트의 '노동·작업·행위(Vita Activa)' 개념을 통해 AI 시대 일의 의미와 주체성을 재정의합니다."
 slug: "ai-work-meaning-alienation-action"
 publishedAt: 2026-07-29
-updatedAt: 2026-07-29
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

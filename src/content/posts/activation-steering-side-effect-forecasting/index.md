@@ -4,7 +4,7 @@ searchTitle: "Activation steering 부작용은 예측할 수 있을까"
 description: "Activation steering이 목표 밖 행동에 비대칭 부작용을 만드는 이유와 조정 전 예측의 역할·한계를 살펴봅니다."
 slug: "activation-steering-side-effect-forecasting"
 publishedAt: 2026-08-13
-updatedAt: 2026-08-13
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

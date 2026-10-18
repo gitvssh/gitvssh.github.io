@@ -3,7 +3,7 @@ title: "Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적�
 description: "쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다."
 slug: "k8s-networkpolicy-dnat-evaluation"
 publishedAt: 2026-07-20
-updatedAt: 2026-07-20
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: network

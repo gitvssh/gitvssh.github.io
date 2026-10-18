@@ -4,7 +4,7 @@ searchTitle: "AI 생성물은 내 작품일까"
 description: "AI 보조 결과물의 소유감, 저작권 보호, 저자성을 구분하고 의도·통제·수정·책임으로 내 기여를 설명하는 기준을 살펴봅니다."
 slug: "ai-assisted-authorship-ownership"
 publishedAt: 2026-08-27T08:02:09+09:00
-updatedAt: 2026-08-27T08:02:09+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

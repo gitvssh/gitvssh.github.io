@@ -3,7 +3,7 @@ title: "AI가 코드를 다 쓰기 전에 컴파일러가 오류를 잡는 법: 
 description: "AI가 수백 줄의 코드를 다 생성할 때까지 기다렸다가 컴파일하면 첫 줄의 타입 오류 때문에 전체가 망가집니다. 미완성 코드를 임시 봉합(Sealor)하여 생성 루프 도중에 컴파일러 피드백을 주는 Generative Compilation 기술을 분석합니다."
 slug: "generative-compilation"
 publishedAt: 2026-07-16
-updatedAt: 2026-07-16
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

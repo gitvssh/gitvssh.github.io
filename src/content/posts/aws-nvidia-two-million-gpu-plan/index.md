@@ -4,7 +4,7 @@ searchTitle: "AWS NVIDIA GPU 200만 장 확대 계획과 가용성"
 description: "AWS와 NVIDIA의 GPU 200만 장 확대 발표를 현재 제공 항목, 2027~2028년 계획, 실제 도입 전 확인할 운영 조건으로 나눠 분석합니다."
 slug: "aws-nvidia-two-million-gpu-plan"
 publishedAt: 2026-08-27
-updatedAt: 2026-08-27
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

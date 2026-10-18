@@ -3,7 +3,7 @@ title: "AI 기억, 다시 쓴 흔적을 따라 고르면"
 description: "ContextRender가 도구 결과의 재사용 흔적으로 AI 에이전트의 문맥을 고르는 방법, 원문 보존과 재선택, 성능·비용 비교의 조건을 읽습니다."
 slug: "contextrender-execution-reuse"
 publishedAt: "2026-09-30"
-updatedAt: "2026-09-30"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "LLM", "벤치마크"]

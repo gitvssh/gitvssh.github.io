@@ -4,7 +4,7 @@ searchTitle: "KnowSim과 AI 설명의 정보 보정"
 description: "KnowSim이 사용자의 지식 상태와 인지 과부하를 턴마다 추적하는 방법, 인간-AI 대화 검증, 지식 수준별 모델 차이와 인간 연구의 경계를 살펴봅니다."
 slug: "knowsim-information-calibration"
 publishedAt: 2026-08-19
-updatedAt: 2026-08-19
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

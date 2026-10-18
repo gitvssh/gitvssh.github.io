@@ -3,7 +3,7 @@ title: "HydraFusion 업데이트: AI가 버린 초안도 파일에는 남습니�
 description: "GitHub HydraFusion의 단계별 추론과 병렬 검토, Max의 연구 프리뷰 조건을 정리합니다. 초안을 버린 뒤에도 남는 파일 변경과 커밋 전 확인할 범위를 살펴봅니다."
 slug: "copilot-hydrafusion-review-workspace"
 publishedAt: "2026-10-15"
-updatedAt: "2026-10-16"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 코딩 도구", "AI 에이전트"]

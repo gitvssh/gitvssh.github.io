@@ -3,7 +3,7 @@ title: "EU AI 투명성 규칙, 챗봇과 생성 콘텐츠에 무엇을 요구�
 description: "EU AI Act 제50조 투명성 의무 분석: AI 시스템 개발사(Provider)와 서비스 운영사(Deployer)가 각각 준수해야 할 상호작용 사전 고지, 기계 판독 워터마크, 그리고 UI 라벨링 엔지니어링 가이드라인을 정리합니다."
 slug: "eu-ai-act-transparency-guidelines"
 publishedAt: 2026-07-21
-updatedAt: 2026-07-21
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

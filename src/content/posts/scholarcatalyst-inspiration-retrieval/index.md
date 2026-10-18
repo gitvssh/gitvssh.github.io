@@ -3,7 +3,7 @@ title: "AI 논문 검색, 비슷한 주제만 찾으면 놓치는 것"
 description: "ScholarCatalyst의 저자 판단 기반 평가로 연구에 도움이 되는 논문 검색과 후보 누락의 한계를 읽습니다."
 slug: "scholarcatalyst-inspiration-retrieval"
 publishedAt: "2026-10-04"
-updatedAt: "2026-10-04"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["논문 검색", "벤치마크", "RAG"]

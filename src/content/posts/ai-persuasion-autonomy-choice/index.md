@@ -4,7 +4,7 @@ searchTitle: "AI 설득은 조언일까 조작일까"
 description: "개인화된 AI의 설득 앞에서 자율성을 지키는 조건을 연구, 칸트의 자기입법, 다크 패턴 사례와 네 가지 점검법으로 살펴봅니다."
 slug: "ai-persuasion-autonomy-choice"
 publishedAt: 2026-08-22T11:04:58+09:00
-updatedAt: 2026-08-22T11:04:58+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

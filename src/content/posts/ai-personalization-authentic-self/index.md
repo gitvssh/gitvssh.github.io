@@ -4,7 +4,7 @@ searchTitle: "맞춤형 AI는 나를 더 나답게 만들까"
 description: "AI의 개인화된 답이 정체성을 발견하는지 되먹임 속에서 형성하는지, 푸코의 자기 실천과 기술적 매개를 통해 살펴봅니다."
 slug: "ai-personalization-authentic-self"
 publishedAt: 2026-08-04
-updatedAt: 2026-08-06
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

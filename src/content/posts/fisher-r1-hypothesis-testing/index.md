@@ -4,7 +4,7 @@ searchTitle: "Fisher-R1 가설검정 AI, 코드 실행과 통계 결론이 다�
 description: "Fisher-R1과 P-Bench가 AI 통계 에이전트의 방법 선택, p값, 결론을 따로 평가하는 방식과 재현성 경계를 살펴봅니다."
 slug: "fisher-r1-hypothesis-testing"
 publishedAt: 2026-08-10
-updatedAt: 2026-08-10
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

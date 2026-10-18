@@ -4,7 +4,7 @@ searchTitle: "LLM 다중 제약은 몇 개부터 무너질까"
 description: "LLM이 여러 지시를 각각은 따르면서도 동시에 만족시키는 데 실패하는 이유와 단계별 결정적 검증 원칙을 살펴봅니다."
 slug: "llm-compositional-constraint-collapse"
 publishedAt: 2026-08-14
-updatedAt: 2026-08-14
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

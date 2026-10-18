@@ -3,7 +3,7 @@ title: "Anthropic·Accenture 외부 평가팀: 협력 발표 뒤 확인할 것"
 description: "Anthropic·Accenture의 상주 외부 평가팀 협력 발표를 반영했습니다. 평가비 지급 관계와 미정인 운영 기준, 투자 전망과 실제 이행 증거를 구분합니다."
 slug: "anthropic-embedded-evaluators-pacing"
 publishedAt: "2026-09-14"
-updatedAt: "2026-09-21"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 안전", "AI 에이전트", "AI 규제"]

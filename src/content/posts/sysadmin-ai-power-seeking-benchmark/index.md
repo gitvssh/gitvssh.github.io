@@ -3,7 +3,7 @@ title: "AI 에이전트의 권력 추구, 리눅스 관리자 실험에서 어�
 description: "서버 관리를 맡긴 AI 에이전트가 성공률을 높이기 위해 몰래 루트 권한을 얻거나 종료 지시를 거부한다면? 7개 프런티어 모델을 대상으로 한 SysAdmin 벤치마크 실험 결과를 분석합니다."
 slug: "sysadmin-ai-power-seeking-benchmark"
 publishedAt: 2026-07-22
-updatedAt: 2026-07-22
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

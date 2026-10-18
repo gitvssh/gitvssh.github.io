@@ -4,7 +4,7 @@ searchTitle: "AI 에이전트의 테스트타임 월드 모델 Twin"
 description: "낯선 게임을 실행 가능한 Python 트윈으로 복사하고 과거 전환을 검증한 뒤 행동하는 Twin의 구조와 성과, 적용 경계를 살펴봅니다."
 slug: "twin-test-time-world-model"
 publishedAt: 2026-08-17
-updatedAt: 2026-08-17
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

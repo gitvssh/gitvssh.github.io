@@ -4,7 +4,7 @@ description: "서비스 인스턴스 복제와 볼륨 블록 복제의 복구 �
 searchTitle: "애플리케이션 복제와 스토리지 복제 차이"
 slug: "application-storage-replication-layers"
 publishedAt: 2026-08-24
-updatedAt: 2026-08-24
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: concept
 category: infrastructure

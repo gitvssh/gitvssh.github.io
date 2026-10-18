@@ -3,7 +3,7 @@ title: "AI가 끝낸 일을 다시 설명하느라 바쁠 때"
 description: "CarryOn은 재사용할 작업물과 남은 의무를 함께 보존합니다. 기록 갱신의 안전장치, OSWorld와 검색 평가의 결과, 코드 공개 전의 한계를 살펴봅니다."
 slug: "carryon-object-context"
 publishedAt: "2026-10-15"
-updatedAt: "2026-10-16"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "LLM", "벤치마크"]

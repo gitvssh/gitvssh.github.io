@@ -4,7 +4,7 @@ searchTitle: "AI 영상 생성 평가 기준, VideoArgus는 어떻게 증거를 
 description: "VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다."
 slug: "videoargus-evidence-video-evaluation"
 publishedAt: 2026-08-07
-updatedAt: 2026-08-07
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

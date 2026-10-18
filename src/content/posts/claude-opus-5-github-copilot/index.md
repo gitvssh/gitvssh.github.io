@@ -3,7 +3,7 @@ title: "Claude Opus 5, GitHub Copilot에서 누가 쓸 수 있나: 지원 요금
 description: "GitHub Copilot에 Claude Opus 5가 공식 탑재되었습니다. 지원 요금제(Pro+, Max, Enterprise)와 조직 관리자 설정, 프롬프트 캐싱 토큰 비용 구조와 적합한 실무 워크로드를 분석합니다."
 slug: claude-opus-5-github-copilot
 publishedAt: 2026-07-25
-updatedAt: 2026-07-25
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

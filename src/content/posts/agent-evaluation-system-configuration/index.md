@@ -3,7 +3,7 @@ title: "AI 에이전트 평가, 모델 이름 옆에 설정을 적어야 하는 
 description: "정보·시간·검증 도구를 바꾼 과학 과제 실험으로 AI 에이전트 평가의 설정 효과와 반복 실행의 한계를 읽습니다."
 slug: "agent-evaluation-system-configuration"
 publishedAt: "2026-10-03"
-updatedAt: "2026-10-03"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "벤치마크", "LLM"]

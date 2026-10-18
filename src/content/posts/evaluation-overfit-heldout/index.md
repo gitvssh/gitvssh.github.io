@@ -4,7 +4,7 @@ description: "같은 평가 표본에 규칙을 맞춰 얻은 F1 0.997을 조정
 searchTitle: "평가셋 과적합: F1 0.997과 held-out 0.696"
 slug: "evaluation-overfit-heldout"
 publishedAt: 2026-09-06
-updatedAt: 2026-09-06
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

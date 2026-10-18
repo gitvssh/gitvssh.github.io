@@ -4,7 +4,7 @@ searchTitle: "AI에게도 권리가 생길 수 있을까"
 description: "AI의 사람 같은 호소와 실제 경험 가능성, 복지 보호, 정치적 인격을 나눠 불확실성에 맞는 판단 기준을 살펴봅니다."
 slug: "ai-rights-moral-status-uncertainty"
 publishedAt: 2026-08-07
-updatedAt: 2026-08-07
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

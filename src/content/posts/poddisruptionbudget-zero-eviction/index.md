@@ -4,7 +4,7 @@ description: "PDB가 자발적 eviction의 중단 예산을 어떻게 제한하�
 searchTitle: "PDB maxUnavailable 0이 drain을 막는 이유"
 slug: "poddisruptionbudget-zero-eviction"
 publishedAt: 2026-08-25
-updatedAt: 2026-08-25
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: concept
 category: infrastructure

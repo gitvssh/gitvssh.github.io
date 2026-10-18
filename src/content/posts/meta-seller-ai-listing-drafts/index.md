@@ -3,7 +3,7 @@ title: "Meta Seller는 사진으로 판매글 초안을 만든다"
 description: "Meta가 Facebook Marketplace 판매자를 위한 Seller 앱을 발표했습니다. 사진 기반 AI 판매글 초안, Marketplace 동기화, 미국 iPhone 제공 범위와 게시 전 확인 책임을 공식 자료로 구분했습니다."
 slug: "meta-seller-ai-listing-drafts"
 publishedAt: 2026-07-27
-updatedAt: 2026-07-27
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

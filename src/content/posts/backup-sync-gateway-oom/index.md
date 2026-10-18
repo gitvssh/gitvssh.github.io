@@ -4,7 +4,7 @@ description: "약 90GB 백업 동기화 중 공유 S3 게이트웨이가 열두 
 searchTitle: "S3 게이트웨이 OOMKilled: 백업 동시성과 객체 대조"
 slug: "backup-sync-gateway-oom"
 publishedAt: 2026-08-23
-updatedAt: 2026-08-23
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

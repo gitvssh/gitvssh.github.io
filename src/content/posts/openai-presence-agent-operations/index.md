@@ -3,7 +3,7 @@ title: "OpenAI Presence 공개: 엔터프라이즈 AI 에이전트를 위한 운
 description: "OpenAI가 기업용 음성/채팅 에이전트 플랫폼 'OpenAI Presence'를 공개했습니다. 업무별 최소 권한 격리, 고위험 액션의 사람 승인 및 상담원 이관(Human Handoff), 그리고 지속적 회귀 평가 파이프라인을 분석합니다."
 slug: "openai-presence-agent-operations"
 publishedAt: 2026-07-23
-updatedAt: 2026-07-23
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

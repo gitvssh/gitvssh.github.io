@@ -3,7 +3,7 @@ title: "OpenAI Agents API 공개 베타: 실행은 맡기고 작업 환경은 �
 description: "OpenAI Agents API 공개 베타에서 관리형 실행과 샌드박스 선택이 어떻게 나뉘는지 살피고, 파일 준비와 외부 네트워크 설정의 범위를 정리합니다."
 slug: "openai-agents-api-managed-harness"
 publishedAt: "2026-09-13"
-updatedAt: "2026-09-13"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 에이전트", "AI 인프라", "운영 자동화 안전"]

@@ -3,7 +3,7 @@ title: "3노드여야 하는 이유, 그리고 빈 결과의 함정"
 description: "미니PC 세 대로 k3s embedded etcd 구성을 세운 뒤 빈 kubectl 출력을 만났습니다. 쿼럼 계산의 범위와, 자동화가 엉뚱한 클러스터에서 자격을 꺼내기 직전에 멈춘 사건을 다룬 홈랩 구축기 2편입니다."
 slug: "three-node-etcd-quorum-context"
 publishedAt: 2026-07-25
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

@@ -3,7 +3,7 @@ title: "ChatGPT 통합 검색 업데이트: 대화·프로젝트·파일을 한�
 description: "ChatGPT에 과거 대화, 프로젝트, 업로드된 문서 및 생성 이미지를 단일 검색창에서 빠르게 찾아주는 '통합 검색(Unified Search)'이 공식 출시되었습니다. 지원 기능과 활용 팁을 정리합니다."
 slug: "chatgpt-unified-content-search"
 publishedAt: 2026-07-15
-updatedAt: 2026-07-15
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

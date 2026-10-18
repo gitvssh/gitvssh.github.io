@@ -4,7 +4,7 @@ searchTitle: "LLM 에이전트 정책 준수와 PolicyGuide 워크플로 검증"
 description: "PolicyGuide가 정책을 워크플로 그래프로 만들고 외부 상태를 추적하는 방식, 반복 성공률과 fail-open 한계를 함께 살펴봅니다."
 slug: "policyguide-workflow-policy-compliance"
 publishedAt: 2026-08-23
-updatedAt: 2026-08-23
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

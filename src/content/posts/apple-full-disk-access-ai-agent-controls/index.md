@@ -3,7 +3,7 @@ title: "Apple, AI 에이전트 시대의 전체 디스크 접근 통제 강화 �
 description: "Apple이 AI 에이전트의 데이터 접근 위험을 언급하며 macOS 전체 디스크 접근 통제 강화를 예고했습니다. 현재 권한 범위와 향후 계획을 구분합니다."
 slug: "apple-full-disk-access-ai-agent-controls"
 publishedAt: "2026-10-04"
-updatedAt: "2026-10-04"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 에이전트", "AI 보안"]

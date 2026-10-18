@@ -3,7 +3,7 @@ title: "etcd 쿼럼은 왜 홀수 노드가 필요한가: 1·2·3·5멤버 장�
 description: "과반은 floor(n/2)+1, 장애 허용 수는 n에서 과반을 뺀 값입니다. 1·2·3·4·5멤버를 직접 계산해 홀수 구성이 유리한 이유와 멤버를 추가·교체할 때 생기는 위험을 짚습니다."
 slug: "etcd-quorum-odd-members"
 publishedAt: 2026-07-27
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: how_to
 category: infrastructure

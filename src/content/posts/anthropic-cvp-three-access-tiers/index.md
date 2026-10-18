@@ -3,7 +3,7 @@ title: "Anthropic CVP 확대: 보안 업무에 따라 달라지는 Claude 접근
 description: "Claude CVP의 방어·레드팀·특수 접근 등급과 개인·조직의 신청 범위를 정리합니다. 승인 뒤 작업공간 적용과 데이터 보존 조건도 함께 살펴봅니다."
 slug: "anthropic-cvp-three-access-tiers"
 publishedAt: "2026-10-07"
-updatedAt: "2026-10-07"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "release_announcement"
 tags: ["AI 보안", "AI 모델", "AI 안전"]

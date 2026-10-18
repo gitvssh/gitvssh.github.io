@@ -3,7 +3,7 @@ title: "로봇이 긴 작업 기록을 가중치에 기억하는 법: RoboTTT �
 description: "로봇이 복잡한 부품 조립을 할 때 왜 과거에 했던 단계를 잊어버리고 엉뚱한 행동을 반복할까요? 긴 영상 이력을 무한정 쌓지 않고, 추론 시점의 고속 가중치(Fast Weights)로 압축하는 RoboTTT 아키텍처를 분석합니다."
 slug: "robottt-long-context-policies"
 publishedAt: 2026-07-19
-updatedAt: 2026-07-21
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

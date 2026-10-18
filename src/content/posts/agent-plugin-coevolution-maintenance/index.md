@@ -4,7 +4,7 @@ searchTitle: "AI 에이전트 플러그인 유지보수 연구"
 description: "Claude Code 플러그인 8,351개의 변경 기록을 통해 자연어 지침과 스크립트를 함께 유지보수해야 하는 이유를 살펴봅니다."
 slug: "agent-plugin-coevolution-maintenance"
 publishedAt: 2026-08-31
-updatedAt: 2026-08-31
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

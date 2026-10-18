@@ -3,7 +3,7 @@ title: "Grok 4.6가 GitHub Copilot에 합류했습니다: 모델 선택과 조�
 description: "Grok 4.6의 GitHub Copilot 합류 소식과 모델 선택기, 조직 권한, Chat과 인라인 제안의 설정 경계를 구분합니다."
 slug: "grok-4-6-github-copilot-availability"
 publishedAt: 2026-08-15
-updatedAt: 2026-08-15
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

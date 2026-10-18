@@ -3,7 +3,7 @@ title: "톰슨로이터 Thomson 출시: 전문 지식은 검색보다 학습 신
 description: "톰슨로이터의 자체 LLM Thomson이 공개 기반 모델, 전문 데이터, 전문가 평가를 어떻게 결합했는지와 CoCounsel 배치·직접 접근·외부 검증의 현재 경계를 분석합니다."
 slug: "thomson-reuters-thomson-domain-llm"
 publishedAt: 2026-08-25
-updatedAt: 2026-08-25
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

@@ -3,7 +3,7 @@ title: "Claude computer use GA: 화면 조작·스킬·파일을 한 루프에 �
 description: "Claude computer use, browser use, Skills API, Files API의 역할과 실행·데이터·승인 경계를 구분해 설명합니다."
 slug: "claude-computer-use-skills-files-ga"
 publishedAt: 2026-08-21
-updatedAt: 2026-08-21
+updatedAt: "2026-10-18"
 track: news
 subtype: release_announcement
 tags:

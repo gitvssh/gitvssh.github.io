@@ -4,7 +4,7 @@ searchTitle: "LLM 행동 보정과 가짜 증거 패널 실험"
 description: "가짜 증거 패널이 LLM 에이전트의 행동 문턱을 움직인 실험과 knowability·승인 관문의 설계 의미를 살펴봅니다."
 slug: "llm-authoritative-evidence-action-gate"
 publishedAt: 2026-08-30
-updatedAt: 2026-08-30
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

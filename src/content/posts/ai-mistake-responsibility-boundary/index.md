@@ -4,7 +4,7 @@ searchTitle: "AI 실수 책임은 누구에게 있을까"
 description: "AI 오류가 사고로 이어졌을 때 통제권, 위험을 알 기회, 맡은 역할, 복구 권한으로 사용자·조직·제공자의 책임을 나누는 기준을 살펴봅니다."
 slug: "ai-mistake-responsibility-boundary"
 publishedAt: 2026-08-23T11:41:28+09:00
-updatedAt: 2026-08-23T11:41:28+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

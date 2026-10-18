@@ -3,7 +3,7 @@ title: "OpenAI가 공개한 GPT-Live 실시간 구조: 말하기와 깊은 추�
 description: "OpenAI GPT-Live가 오디오의 실시간 경로와 검색·추론·도구 호출의 비동기 경로를 어떻게 분리했는지 정리합니다."
 slug: "openai-gpt-live-realtime-architecture"
 publishedAt: 2026-08-04
-updatedAt: 2026-08-04
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

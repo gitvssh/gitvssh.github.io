@@ -4,7 +4,7 @@ searchTitle: "AI에게 예의를 지켜야 할까"
 description: "AI에게 예의를 지킬 이유를 감정, 습관, 관찰자, 긴급성으로 나눠 아리스토텔레스의 습관론과 연구 근거로 살펴봅니다."
 slug: "ai-politeness-human-habit"
 publishedAt: 2026-08-13T03:18:01+09:00
-updatedAt: 2026-08-13T03:18:01+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

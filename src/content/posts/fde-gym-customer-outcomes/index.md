@@ -3,7 +3,7 @@ title: "AI가 기능은 만들었는데, 고객의 일은 왜 그대로일까"
 description: "FDE-Gym은 숨은 업무 조건을 찾고 기존 시스템을 고친 뒤 고객 성과까지 평가합니다. 평균 점수와 해결률의 차이, 질문 비용, 모의 환경의 한계를 살펴봅니다."
 slug: "fde-gym-customer-outcomes"
 publishedAt: "2026-10-16"
-updatedAt: "2026-10-16"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "LLM", "벤치마크"]

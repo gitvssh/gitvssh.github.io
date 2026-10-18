@@ -3,7 +3,7 @@ title: "kubectl은 어느 클러스터를 보고 있는가: 빈 출력 전에 �
 description: "kubectl이 오류 없이 빈 결과를 냈다고 해서 대상 클러스터가 맞는 것은 아닙니다. kubeconfig가 병합되는 순서를 짚고, 자격 추출이나 쓰기 전에 API server와 예상 노드 지문까지 확인하는 절차를 만듭니다."
 slug: "kubectl-context-cluster-fingerprint"
 publishedAt: 2026-07-26
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: how_to
 category: infrastructure

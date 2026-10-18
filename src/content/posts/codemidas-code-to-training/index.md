@@ -3,7 +3,7 @@ title: "코드를 지우면 AI의 연습문제가 될까"
 description: "CodeMidas 논문으로 기존 코드를 강화학습 문제로 바꾸는 방법을 읽습니다. 정답 유출과 채점 오류를 거르는 과정, 성능 지표의 조건을 만화와 함께 살펴봅니다."
 slug: "codemidas-code-to-training"
 publishedAt: "2026-09-21"
-updatedAt: "2026-09-21"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "AI 코딩 도구", "벤치마크"]

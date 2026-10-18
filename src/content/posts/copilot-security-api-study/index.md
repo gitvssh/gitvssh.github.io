@@ -3,7 +3,7 @@ title: "AI 코딩 도우미는 보안 API도 안전하게 쓸까: Copilot 실증
 description: "AI가 짜준 OAuth 로그인 코드가 테스트를 통과했다고 해서 진짜 안전할까요? 전문 개발자 44명을 대상으로 한 Copilot 보안 API 실증 연구를 통해 기능 구현과 보안 검증의 간극을 분석합니다."
 slug: "copilot-security-api-study"
 publishedAt: 2026-07-15
-updatedAt: 2026-07-15
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

@@ -3,7 +3,7 @@ title: "LLM은 믿을 만한 출처를 더 믿을까: Learn2Discern이 밝힌 RA
 description: "RAG 검색으로 정보를 주입했을 때 LLM은 진짜 신뢰할 수 있는 출처를 더 믿을까요? 미시간대 연구진의 Learn2Discern 실험을 통해 모델이 사실의 정확성보다 '인기도(Popularity)'에 휘둘리는 메커니즘과 RAG 가드레일 설계법을 분석합니다."
 slug: "information-discernment-llm-sources"
 publishedAt: 2026-07-23
-updatedAt: 2026-07-23
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

@@ -3,7 +3,7 @@ title: "Claude Code 주간 한도 변경: 25% 늘었는데 왜 줄었을까"
 description: "Claude Code의 주간 한도 전환을 프로모션 전·직전 기준으로 비교하고, 5시간 한도와 구독 적용 범위를 공식 도움말에서 확인했습니다."
 slug: "claude-code-weekly-limit-baseline"
 publishedAt: "2026-09-15"
-updatedAt: "2026-09-15"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 코딩 도구", "AI 에이전트"]

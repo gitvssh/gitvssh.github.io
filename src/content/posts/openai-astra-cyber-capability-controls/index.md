@@ -3,7 +3,7 @@ title: "GPT-6 Astra 출시: Critical 사이버 등급과 실제 제공 범위"
 description: "OpenAI GPT-6 Astra의 순차 롤아웃, Critical 사이버 능력 판정, 강화된 보호조치와 모니터링 한계를 함께 정리합니다."
 slug: "openai-astra-cyber-capability-controls"
 publishedAt: 2026-08-10
-updatedAt: 2026-09-06
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

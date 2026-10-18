@@ -4,7 +4,7 @@ searchTitle: "AI 에이전트 메모리 상태 추적 벤치마크"
 description: "StateMemBench가 사실 회상과 현재 상태 추적을 어떻게 분리했는지, StateMem의 만료·의존성 재검사 방식과 합성 평가·호출 비용의 한계를 살펴봅니다."
 slug: "statemem-agent-memory-state-tracking"
 publishedAt: 2026-08-21
-updatedAt: 2026-08-21
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

@@ -4,7 +4,7 @@ searchTitle: "OpenAI 자동화 연구 인턴 발표와 실제 위임 범위"
 description: "OpenAI가 공개한 연구 에이전트 사용량, 사람 개입, 실험 증가의 한계를 바탕으로 '자동화 연구 인턴'의 실제 범위를 분석합니다."
 slug: "openai-automated-research-intern"
 publishedAt: 2026-09-08
-updatedAt: 2026-09-08
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

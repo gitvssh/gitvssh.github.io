@@ -3,7 +3,7 @@ title: "AI 튜터의 설명, 학생 반응에 맞춰 바꾸도록 훈련하는 �
 description: "Sherpa 논문의 모의 학생과 맞춤형 설명 훈련을 살펴보고, 정답률·교사 선호·실제 학습 효과를 구분합니다."
 slug: "sherpa-adaptive-ai-tutoring"
 publishedAt: "2026-10-07"
-updatedAt: "2026-10-07"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["LLM", "AI 활용", "벤치마크"]

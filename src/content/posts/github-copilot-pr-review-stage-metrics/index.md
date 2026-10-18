@@ -3,7 +3,7 @@ title: "Copilot 지표에 PR 대기 구간이 생겼다: 사람 리뷰만 집계
 description: "GitHub의 새 PR 리뷰 시간 지표가 나누는 세 구간, 사람 리뷰 집계 범위, 빈 배열과 0의 차이, 조회 조건을 정리합니다."
 slug: "github-copilot-pr-review-stage-metrics"
 publishedAt: "2026-09-28"
-updatedAt: "2026-09-28"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 코딩", "개발 도구"]

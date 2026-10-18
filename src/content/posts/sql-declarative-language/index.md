@@ -4,7 +4,7 @@ searchTitle: "SQL은 왜 선언형 언어인가? 실행 계획과 인덱스 튜�
 description: "분명 인덱스를 걸었는데 왜 Full Table Scan을 탈까요? 선언형 언어로서의 SQL의 본질과 옵티마이저의 실행 계획(EXPLAIN), 복합 인덱스 설계 원리를 정리합니다."
 slug: "sql-declarative-language"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-15
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: concept
 category: database

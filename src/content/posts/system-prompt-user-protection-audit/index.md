@@ -4,7 +4,7 @@ searchTitle: "시스템 프롬프트 감사, 사용자 보호는 충분할까"
 description: "AISPA가 공개 시스템 프롬프트 88개를 여덟 사용자 보호 차원으로 감사한 방법과 결과, 공개 스냅샷과 실제 행동 검증 사이의 한계를 살펴봅니다."
 slug: "system-prompt-user-protection-audit"
 publishedAt: 2026-08-02
-updatedAt: 2026-08-02
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

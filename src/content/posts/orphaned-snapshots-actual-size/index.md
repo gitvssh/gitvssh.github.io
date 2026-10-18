@@ -4,7 +4,7 @@ description: "Longhorn actualSize가 volume head와 snapshot을 함께 센다는
 searchTitle: "Longhorn actualSize와 시스템 스냅숏 점검법"
 slug: "orphaned-snapshots-actual-size"
 publishedAt: 2026-10-03
-updatedAt: 2026-10-03
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

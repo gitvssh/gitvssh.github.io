@@ -4,7 +4,7 @@ searchTitle: "AI 수학 도형 생성 벤치마크"
 description: "올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."
 slug: "ai-geometry-diagram-reasoning-gap"
 publishedAt: 2026-08-20
-updatedAt: 2026-08-20
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

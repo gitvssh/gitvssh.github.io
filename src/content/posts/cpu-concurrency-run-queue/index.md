@@ -3,7 +3,7 @@ title: "RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대�
 description: "RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다."
 slug: "cpu-concurrency-run-queue"
 publishedAt: 2026-07-21
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: how_to
 category: infrastructure

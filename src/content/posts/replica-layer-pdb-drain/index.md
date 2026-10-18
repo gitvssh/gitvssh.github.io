@@ -4,7 +4,7 @@ description: "단일 Vault를 보호한 PDB의 중단 예산 0에서 kubectl dra
 searchTitle: "Kubernetes drain이 PDB maxUnavailable 0에서 멈춘 이유"
 slug: "replica-layer-pdb-drain"
 publishedAt: 2026-09-06
-updatedAt: 2026-09-06
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

@@ -3,7 +3,7 @@ title: "MAI 실시간 음성 인식: 임시 자막과 확정 결과를 나누는
 description: "Microsoft가 발표한 실시간 음성 인식의 임시·확정 결과 차이와 제공 모델, 발표 가격을 정리하고 음성 에이전트의 준비·실행 경계를 살펴봅니다."
 slug: "mai-streaming-transcript-final-boundary"
 publishedAt: "2026-10-02"
-updatedAt: "2026-10-02"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 에이전트", "AI 모델", "멀티모달 AI"]

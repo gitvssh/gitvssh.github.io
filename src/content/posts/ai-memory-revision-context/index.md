@@ -3,7 +3,7 @@ title: "AI가 기억한 나는 언제 고칠 수 있을까: 기억과 맥락 사
 description: "AI의 오래된 기억을 고치는 일과 새 목적에 사용하는 일을 나누어 보고, 기억 갱신 연구와 니센바움의 맥락적 프라이버시로 신뢰의 기준을 살펴봅니다."
 slug: "ai-memory-revision-context"
 publishedAt: 2026-09-12T08:24:47+09:00
-updatedAt: 2026-09-12T08:24:47+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

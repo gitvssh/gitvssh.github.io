@@ -4,7 +4,7 @@ searchTitle: "LLM 버그 탐지 벤치마크 FuzzingBrain-Bench"
 description: "FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다."
 slug: "llm-open-ended-bug-discovery"
 publishedAt: 2026-08-27
-updatedAt: 2026-08-27
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

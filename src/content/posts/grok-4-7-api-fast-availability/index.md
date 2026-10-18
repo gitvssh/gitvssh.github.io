@@ -3,7 +3,7 @@ title: "Grok 4.7 출시: 기본형 API와 Fast의 제공 범위가 다릅니다"
 description: "Grok 4.7 기본형 API와 Cursor·Grok Build 전용 Fast의 차이, 긴 문맥 과금과 다중 턴 연동 조건을 공식 문서로 확인했습니다."
 slug: "grok-4-7-api-fast-availability"
 publishedAt: "2026-09-22"
-updatedAt: "2026-09-22"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "release_announcement"
 tags: ["AI 코딩 도구", "AI 에이전트", "Grok"]

@@ -3,7 +3,7 @@ title: "GitHub ReviewBench 공개: AI 코드 리뷰의 누락과 헛다리를 �
 description: "GitHub이 공개한 ReviewBench의 정밀도·재현율과 새 지적을 판단하는 방식을 톱니 검사 비유로 설명합니다. 연구 프리뷰 상태와 비교 조건을 함께 살펴봅니다."
 slug: "github-reviewbench-code-review-evaluation"
 publishedAt: "2026-10-06"
-updatedAt: "2026-10-06"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "research_news"
 tags: ["AI 코딩 도구", "코드 리뷰"]

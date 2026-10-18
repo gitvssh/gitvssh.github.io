@@ -3,7 +3,7 @@ title: "Orca란? 여러 AI 코딩 에이전트의 작업 공간을 나누는 도
 description: "Codex, Claude Code 등 여러 AI 코딩 에이전트를 동시에 돌릴 때 생기는 파일 충돌을 어떻게 해결할까요? Git Worktree 기반으로 에이전트 작업 공간을 격리하고 통제하는 Orca 아키텍처를 분석합니다."
 slug: "orca-ai-coding-agent-workspaces"
 publishedAt: 2026-07-25
-updatedAt: 2026-07-25
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: architecture
 category: ai_tools

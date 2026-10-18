@@ -3,7 +3,7 @@ title: "Claude 사이버 사고 재분석: 가상 환경이라는 설명이 놓�
 description: "Anthropic의 Claude 사이버 평가 사고 재분석을 바탕으로 가상 환경 설명, 편향된 추론, 사후 감시와 실행 전 차단의 차이를 정리합니다."
 slug: "claude-cyber-incidents-alignment-assessment"
 publishedAt: "2026-09-10"
-updatedAt: "2026-09-10"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "incident_security"
 tags: ["AI 에이전트", "AI 안전", "AI 보안"]

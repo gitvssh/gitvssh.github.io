@@ -3,7 +3,7 @@ title: "컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누�
 description: "AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다."
 slug: "tactile-computer-use-agents"
 publishedAt: 2026-07-17
-updatedAt: 2026-07-17
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

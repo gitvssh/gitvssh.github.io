@@ -3,7 +3,7 @@ title: "AI 검증, 비밀은 어디까지 숨길 수 있을까"
 description: "외부 판단을 쓰는 AI 검증의 영지식 한계와 서명된 오라클의 구성, 검증자와 서명자가 각각 아는 정보를 구분합니다."
 slug: "zero-knowledge-oversight-signed-oracles"
 publishedAt: "2026-10-03"
-updatedAt: "2026-10-03"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "theoretical"
 tags: ["AI 안전", "AI 보안", "AI 에이전트"]

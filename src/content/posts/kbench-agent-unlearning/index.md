@@ -3,7 +3,7 @@ title: "답변에서 지운 정보가 도구 결과에 남는다면"
 description: "K-Bench 논문으로 AI 에이전트의 언러닝을 저장 위치와 관측 경로로 나눠 살펴봅니다. 답변 누출 감소, 도구 결과의 잔여 정보, 정상 기능 보존과 탐지 한계를 함께 읽습니다."
 slug: "kbench-agent-unlearning"
 publishedAt: "2026-09-14"
-updatedAt: "2026-09-14"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "AI 보안", "벤치마크", "RAG"]

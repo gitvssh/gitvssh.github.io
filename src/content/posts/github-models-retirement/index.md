@@ -3,7 +3,7 @@ title: "GitHub Models 종료: 2026년 7월 30일 완전 셧다운 대비 가이�
 description: "GitHub의 무료 모델 추론 서비스인 GitHub Models가 2026년 7월 30일부로 전면 종료됩니다. Playground, Inference API, BYOK 엔드포인트 중단 일정과 Brownout 테스트 대응법을 정리합니다."
 slug: "github-models-retirement"
 publishedAt: 2026-07-11
-updatedAt: 2026-07-23
+updatedAt: "2026-10-18"
 track: news
 subtype: fact_brief
 tags:

@@ -4,7 +4,7 @@ searchTitle: "LLM 에이전트 장애 원인 분석과 DiagGuard"
 description: "마이크로서비스 장애 원인을 맞힌 LLM도 증거와 전파 경로를 놓칠 수 있는 이유, trajectory 평가와 DiagGuard의 이중 방어를 살펴봅니다."
 slug: "llm-agent-rca-trajectory-evidence"
 publishedAt: 2026-08-24
-updatedAt: 2026-08-24
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

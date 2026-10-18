@@ -3,7 +3,7 @@ title: "Claude Haiku 5.5 출시: 낮아진 가격과 API 전환 때 바뀌는 �
 description: "Claude Haiku 5.5의 프롬프트 길이별 가격과 토큰 계산 변화를 정리합니다. 기존 Messages API에서 바꿔야 할 추론 설정과 응답 처리도 살펴봅니다."
 slug: "claude-haiku-5-5-price-migration"
 publishedAt: "2026-10-08"
-updatedAt: "2026-10-08"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "release_announcement"
 tags: ["AI 모델", "AI 에이전트", "LLM"]

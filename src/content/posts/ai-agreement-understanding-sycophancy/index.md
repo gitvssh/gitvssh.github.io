@@ -4,7 +4,7 @@ searchTitle: "AI 아첨은 이해일까"
 description: "AI의 동의를 이해의 증거와 구분하고, 근거·반례·불확실성·일관성으로 답변의 신뢰를 확인하는 기준을 살펴봅니다."
 slug: "ai-agreement-understanding-sycophancy"
 publishedAt: 2026-09-09T03:41:32+09:00
-updatedAt: 2026-09-09T03:41:32+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: opinion
 category: ai_philosophy

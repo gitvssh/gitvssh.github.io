@@ -3,7 +3,7 @@ title: "홈랩 미니PC 고르는 법: CPU·RAM보다 NIC와 M.2 슬롯을 먼�
 description: "미니PC 비교표의 CPU와 RAM은 기준선일 뿐입니다. 84GB 복원에 88분이 걸린 경험을 바탕으로 NIC, 스위치, M.2 슬롯, 여유 공간을 하나의 데이터 경로로 놓고 후보를 거르는 방법을 정리했습니다."
 slug: "homelab-mini-pc-nic-m2-selection"
 publishedAt: 2026-07-28
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: comparison
 category: infrastructure

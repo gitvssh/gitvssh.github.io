@@ -4,7 +4,7 @@ description: "MySQL 시점 복구 리허설이 성공 로그를 남겼지만 목
 searchTitle: "MySQL PITR 거짓 성공: mysqlbinlog와 셸 파이프 실패"
 slug: "restore-rehearsal-false-success"
 publishedAt: 2026-08-10T18:12:49+09:00
-updatedAt: 2026-08-10T18:12:49+09:00
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

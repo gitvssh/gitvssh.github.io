@@ -4,7 +4,7 @@ searchTitle: "HarvestBench AI 에이전트 윤리 행동 평가"
 description: "HarvestBench가 AI 에이전트의 말이 아니라 피해를 피하기 위해 실제 비용을 쓰는 행동을 어떻게 평가했는지 살펴봅니다."
 slug: "harvestbench-priced-harm"
 publishedAt: 2026-09-08
-updatedAt: 2026-09-08
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

@@ -3,7 +3,7 @@ title: "보기 좋은 3D가 정확한 3D는 아닌 이유"
 description: "UAV3DCrop에서 외관·깊이·작물 높이·실제 크기 평가의 선두가 갈리는 이유와 3D 재구성 벤치마크의 한계를 살펴봅니다."
 slug: "uav3dcrop-appearance-geometry-gap"
 publishedAt: 2026-08-11
-updatedAt: 2026-08-11
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

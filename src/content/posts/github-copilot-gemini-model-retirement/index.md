@@ -3,7 +3,7 @@ title: "GitHub Copilot, Gemini 2.5 Pro·3 Flash 지원을 종료했다"
 description: "GitHub Copilot에서 종료된 Gemini 2.5 Pro·3 Flash와 각각의 대체 모델, 개인 설정·자동화·조직 정책에서 확인할 항목을 정리합니다."
 slug: "github-copilot-gemini-model-retirement"
 publishedAt: 2026-08-03
-updatedAt: 2026-08-03
+updatedAt: "2026-10-18"
 track: news
 subtype: fact_brief
 tags:

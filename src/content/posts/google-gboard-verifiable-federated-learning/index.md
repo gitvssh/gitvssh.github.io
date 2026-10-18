@@ -3,7 +3,7 @@ title: "Gboard 연합학습, 서버로 옮긴 계산을 검증하는 법"
 description: "Google이 Gboard에 적용한 TEE 기반 연합학습을 설명합니다. 암호화 업로드, 허용 코드의 키 수령, 차등 프라이버시 출력과 남은 보안 한계를 구분합니다."
 slug: "google-gboard-verifiable-federated-learning"
 publishedAt: "2026-10-03"
-updatedAt: "2026-10-03"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 보안", "AI 인프라", "AI 모델"]

@@ -4,7 +4,7 @@ searchTitle: "AI 문헌 리뷰 에이전트 평가와 LitReview Arena"
 description: "LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다."
 slug: "litreview-arena-expert-evaluation"
 publishedAt: 2026-08-25
-updatedAt: 2026-08-25
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

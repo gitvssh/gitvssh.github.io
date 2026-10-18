@@ -3,7 +3,7 @@ title: "Fable 5 생물학 질문이 덜 막힌다: 안전 분류기의 경계를
 description: "Anthropic이 Fable 5의 생물학 안전 분류기 오탐을 줄인 방법과 계속 제한되는 전문 연구 범위를 구분합니다."
 slug: "fable-5-biology-safeguards-update"
 publishedAt: 2026-08-08
-updatedAt: 2026-08-08
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

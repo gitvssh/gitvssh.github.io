@@ -3,7 +3,7 @@ title: "GitHub Copilot 코드 리뷰 API 지원과 Balanced 기본값 전환"
 description: "GitHub Copilot 코드 리뷰 요청을 REST·GraphQL API로 연결할 수 있습니다. Balanced 기본값의 적용 시점과 명시적으로 선택한 Lite 유지 조건을 구분합니다."
 slug: "github-copilot-review-api-balanced"
 publishedAt: "2026-10-05"
-updatedAt: "2026-10-05"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 코딩 도구", "코드 리뷰"]

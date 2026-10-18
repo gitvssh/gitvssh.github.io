@@ -3,7 +3,7 @@ title: "휴대폰과 PC를 오가는 AI, 파일은 정말 도착했을까"
 description: "JarvisGUI 논문이 기기 간 GUI 작업을 연결하고 완료를 평가한 방법, 낮은 전체 성공률의 실험 조건과 실제 파일 상태 확인의 의미를 살펴봅니다."
 slug: "jarvisgui-cross-device-state"
 publishedAt: 2026-09-10
-updatedAt: 2026-09-10
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

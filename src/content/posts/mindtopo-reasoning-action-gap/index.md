@@ -3,7 +3,7 @@ title: "길을 알아보는 AI는 파이프도 연결할까"
 description: "MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다."
 slug: "mindtopo-reasoning-action-gap"
 publishedAt: "2026-09-11"
-updatedAt: "2026-09-11"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "멀티모달 AI", "벤치마크"]

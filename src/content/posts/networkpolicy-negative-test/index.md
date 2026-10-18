@@ -4,7 +4,7 @@ description: "NetworkPolicy 선언이 Synced인 것과 패킷이 실제로 차�
 searchTitle: "Kubernetes NetworkPolicy 적용 확인과 음성 테스트"
 slug: "networkpolicy-negative-test"
 publishedAt: 2026-08-16
-updatedAt: 2026-08-16
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

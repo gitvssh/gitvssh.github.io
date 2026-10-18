@@ -3,7 +3,7 @@ title: "AI 에이전트 경쟁, 모델보다 ‘입구’와 표준을 본다"
 description: "AI 에이전트 시장의 경쟁이 모델 성능 싸움에서 '사용자 접점(Gatekeeper)'과 '개방형 상호운용성 표준'의 주도권 싸움으로 이동하고 있습니다. 프랑스 경쟁당국의 최신 분석을 통해 에이전트 플랫폼화 리스크를 짚어봅니다."
 slug: "ai-agent-competition-open-standards"
 publishedAt: 2026-07-18
-updatedAt: 2026-07-18
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

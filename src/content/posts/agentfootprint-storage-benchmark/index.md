@@ -3,7 +3,7 @@ title: "AI 에이전트의 숨은 저장 발자국, AgentFootprint가 측정한 
 description: "AI 에이전트가 작업을 끝내면 토큰 비용은 멈추지만 디스크 용량은 계속 쌓입니다. 체크포인트와 로그의 중복 직렬화 문제, 그리고 복원성(Resilience)과 스토리지 비용의 트레이드오프를 분석합니다."
 slug: "agentfootprint-storage-benchmark"
 publishedAt: 2026-07-24
-updatedAt: 2026-07-24
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

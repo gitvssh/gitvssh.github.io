@@ -3,7 +3,7 @@ title: "GitHub 보안 자동 수정에 기억이 생겼다: Copilot Memory 연�
 description: "GitHub가 보안 수정 패턴을 다음 경고와 코드 리뷰에 활용하도록 연동했습니다. 공개 프리뷰 조건과 현재 코드 검증, 검사 범위를 공식 자료로 확인합니다."
 slug: "github-agentic-autofix-copilot-memory"
 publishedAt: "2026-09-27"
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 에이전트", "AI 코딩 도구", "AI 안전"]

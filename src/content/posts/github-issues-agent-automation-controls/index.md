@@ -3,7 +3,7 @@ title: "GitHub Issues, AI 자동화에 승인·신뢰도·근거를 붙였다"
 description: "GitHub Issues에 AI 에이전트 자동화 통제 기능이 도입되었습니다. 라벨링 및 담당자 지정 시 신뢰도 점수와 변경 근거(Rationale)를 남기는 메커니즘과, UI 승인 창 뒤에 숨겨진 실제 API 권한 경계를 분석합니다."
 slug: "github-issues-agent-automation-controls"
 publishedAt: 2026-07-24
-updatedAt: 2026-07-24
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

@@ -3,7 +3,7 @@ title: "톰슨로이터 엔지니어 감축 보도: 최대 500명과 AI 채용 2
 description: "Thomson Reuters의 엔지니어링 인력 감축과 AI 중심 시니어 250명 순증 채용 보도 팩트체크: 단순 인력 축소가 아닌 '코드 작성자에서 시스템 아키텍트/리뷰어'로의 엔지니어 직무 대전환을 분석합니다."
 slug: "thomson-reuters-ai-workforce-shift"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-14
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

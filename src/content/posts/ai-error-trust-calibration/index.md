@@ -3,7 +3,7 @@ title: "AI가 한 번 틀리면 다시 믿어도 될까: 실망과 판단 사이
 description: "한 번 틀린 AI를 계속 써도 될까요? 알고리즘 기피 연구와 흄의 논의로 대안의 성능, 실패의 피해, 다시 맡길 조건을 함께 살핍니다."
 slug: "ai-error-trust-calibration"
 publishedAt: "2026-10-15T07:49:50.258884+09:00"
-updatedAt: "2026-10-16T22:00:00+09:00"
+updatedAt: "2026-10-18"
 track: "tech_column"
 subtype: "opinion"
 category: "ai_philosophy"

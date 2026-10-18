@@ -3,7 +3,7 @@ title: "Kubernetes는 무엇을 해결하나: 홈랩에서 k3s로 시작하기 �
 description: "컨테이너를 실행하는 일과 클러스터를 운영하는 일은 다릅니다. 컨테이너 런타임, 제어 시스템, 컨트롤 플레인, 워커, 상태 저장 계층의 역할을 나눠 보고 내 홈랩에 k3s가 필요한 시점인지 판단합니다."
 slug: "kubernetes-k3s-homelab"
 publishedAt: 2026-07-20
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: concept
 category: infrastructure

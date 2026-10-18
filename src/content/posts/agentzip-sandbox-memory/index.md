@@ -3,7 +3,7 @@ title: "에이전트가 기다리는 동안 RAM을 줄이는 법"
 description: "AgentZip 논문이 AI 샌드박스의 유사한 메모리와 모델 응답 대기를 어떻게 활용하는지, RAM 절감과 완료 시간의 비교 조건을 함께 살펴봅니다."
 slug: "agentzip-sandbox-memory"
 publishedAt: "2026-09-13"
-updatedAt: "2026-09-13"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "AI 인프라", "리눅스 운영"]

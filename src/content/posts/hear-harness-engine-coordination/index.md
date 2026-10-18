@@ -3,7 +3,7 @@ title: "AI 에이전트가 기다리는 이유, 서버와 작업 계획을 나�
 description: "HEAR 논문으로 작업 계획과 서버 캐시 상태의 연결, 대기 보호의 절충, 접수와 완료의 차이를 살펴봅니다."
 slug: "hear-harness-engine-coordination"
 publishedAt: "2026-10-06"
-updatedAt: "2026-10-06"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "AI 인프라", "LLM", "벤치마크"]

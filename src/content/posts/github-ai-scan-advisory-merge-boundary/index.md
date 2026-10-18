@@ -3,7 +3,7 @@ title: "GitHub AI Scan 정식 출시: 탐지 결과가 병합을 막지는 않�
 description: "GitHub AI Scan의 정식 출시와 PR 검사 범위를 정리합니다. 권고 결과와 병합 차단의 차이, 지원 저장소와 AI 크레딧 과금 조건을 살펴봅니다."
 slug: "github-ai-scan-advisory-merge-boundary"
 publishedAt: "2026-10-16"
-updatedAt: "2026-10-16"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 코딩 도구", "보안"]

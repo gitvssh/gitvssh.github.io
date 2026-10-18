@@ -4,7 +4,7 @@ searchTitle: "ExecCritic AI 코딩 테스트 에이전트 연구"
 description: "ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다."
 slug: "execcritic-independent-tests"
 publishedAt: 2026-09-09
-updatedAt: 2026-09-09
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

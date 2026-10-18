@@ -3,7 +3,7 @@ title: "AI에게 한 시간 맡겼다면, 무엇이 늘어야 할까"
 description: "AgentTime의 AI 에이전트 실행 시간 실험을 살펴보고, 시간 준수·작업 과정·결과 품질을 구분합니다."
 slug: "agenttime-runtime-work-quality"
 publishedAt: "2026-10-08"
-updatedAt: "2026-10-08"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["LLM", "AI 활용", "벤치마크"]

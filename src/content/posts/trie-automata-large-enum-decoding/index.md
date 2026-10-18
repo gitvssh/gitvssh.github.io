@@ -4,7 +4,7 @@ searchTitle: "LLM 구조화 출력의 enum 병목과 트라이 디코딩"
 description: "큰 유한 선택지 집합에서 일반 문법 디코딩이 느려지는 이유와 트라이 기반 사전 계산의 이점과 적용 경계를 살펴봅니다."
 slug: "trie-automata-large-enum-decoding"
 publishedAt: 2026-08-15
-updatedAt: 2026-08-15
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

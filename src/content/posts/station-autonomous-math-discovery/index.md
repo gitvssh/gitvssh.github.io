@@ -4,7 +4,7 @@ searchTitle: "멀티 에이전트 수학 연구 Station 논문"
 description: "Station 논문의 공동 문헌 구조, 수학 구성 결과, 604점 인증서 검산과 문헌상 신규성의 경계를 살펴봅니다."
 slug: "station-autonomous-math-discovery"
 publishedAt: 2026-08-26
-updatedAt: 2026-08-26
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

@@ -3,7 +3,7 @@ title: "GPT-5.6 출시: Sol·Terra·Luna 차이와 가격, 개발자가 확인�
 description: "OpenAI GPT-5.6 정식 출시 분석: 플래그십 Sol, 가성비 Terra, 대량 처리용 Luna의 스펙과 API 토큰 가격표, 멀티 에이전트 Ultra 모드, 그리고 워크로드별 도입 가이드라인을 정리합니다."
 slug: "gpt-5-6-launch"
 publishedAt: 2026-07-14
-updatedAt: 2026-07-15
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

@@ -3,7 +3,7 @@ title: "에이전트 메모리, 업데이트마다 실력을 다시 재야 한�
 description: "EvoPathBench 논문으로 AI 에이전트의 메모리와 스킬 갱신을 평가하는 방법을 읽습니다. 일반화·기존 능력 유지·규칙 수정을 나누고, 공개 데이터 검증과 연구 한계를 만화로 살펴봅니다."
 slug: "evopathbench-capability-checkpoints"
 publishedAt: "2026-09-22"
-updatedAt: "2026-09-22"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "LLM", "벤치마크"]

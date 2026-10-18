@@ -4,7 +4,7 @@ searchTitle: "AI 시각 도구 사용 평가, crop-and-zoom 관측은 답을 바
 description: "시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다."
 slug: "visual-tool-use-causal-audit"
 publishedAt: 2026-08-08
-updatedAt: 2026-08-08
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

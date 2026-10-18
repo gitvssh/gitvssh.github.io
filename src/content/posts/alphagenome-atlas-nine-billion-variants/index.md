@@ -4,7 +4,7 @@ searchTitle: "AlphaGenome Atlas 90억 DNA 변이 예측 공개"
 description: "Google DeepMind가 공개한 AlphaGenome Atlas의 90억 변이 예측, 후보 우선순위, 실험·임상 경계를 설명합니다."
 slug: "alphagenome-atlas-nine-billion-variants"
 publishedAt: 2026-09-09
-updatedAt: 2026-09-09
+updatedAt: "2026-10-18"
 track: news
 subtype: research_news
 tags:

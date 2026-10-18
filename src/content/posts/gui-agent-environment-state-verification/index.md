@@ -3,7 +3,7 @@ title: "AI 에이전트의 작업 완료, 화면만 보고 판단해도 될까"
 description: "GUI 에이전트의 완료를 스크린샷이 아니라 파일·설정·앱 상태 증거로 판정하는 Interactive Reward Agent의 방법과 한계를 살펴봅니다."
 slug: "gui-agent-environment-state-verification"
 publishedAt: 2026-07-29
-updatedAt: 2026-07-29
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

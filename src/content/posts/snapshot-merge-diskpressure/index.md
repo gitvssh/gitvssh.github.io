@@ -4,7 +4,7 @@ description: "Longhorn 스냅숏 정리가 왜 임시 공간을 더 쓰는지, D
 searchTitle: "Longhorn 스냅숏 병합 DiskPressure 복구 순서"
 slug: "snapshot-merge-diskpressure"
 publishedAt: 2026-10-03
-updatedAt: 2026-10-03
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

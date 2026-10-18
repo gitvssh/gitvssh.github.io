@@ -3,7 +3,7 @@ title: "AI가 논문 도표를 다시 그리지 않고 고치는 법: SciDiagram
 description: "AI에게 '화살표 하나만 옮겨줘'라고 부탁했을 때 왜 그림 전체를 다시 그려서 엉뚱하게 망가뜨릴까요? 픽셀 재생성 대신 SVG 벡터 요소를 정밀 수정하고 개정 이력에서 편집 스킬을 학습하는 SciDiagramEdit 기술을 분석합니다."
 slug: "scidiagramedit-paper-figure-revision"
 publishedAt: 2026-07-18
-updatedAt: 2026-07-18
+updatedAt: "2026-10-18"
 track: paper
 subtype: systems
 tags:

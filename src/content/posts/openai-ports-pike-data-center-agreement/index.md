@@ -3,7 +3,7 @@ title: "OpenAI가 오하이오 AI 데이터센터 계약에 들어갔습니다: 
 description: "OpenAI의 PORTS-Pike 용량 확보 계약을 기존 캠퍼스 계획, 첫 가용 시점, 후속 전력·허가·금융 조건과 나눠 설명합니다."
 slug: "openai-ports-pike-data-center-agreement"
 publishedAt: 2026-08-18
-updatedAt: 2026-08-18
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

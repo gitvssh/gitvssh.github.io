@@ -3,7 +3,7 @@ title: "CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유"
 description: "CoreDNS를 두 replica로 이중화한 뒤, 노드 resolver가 같은 인클러스터 VIP를 가리키는 잠복 순환을 발견했습니다. 평시 DNS 가용성과 콜드 부트스트랩 경로를 분리한 홈랩 구축기 3편입니다."
 slug: "dns-bootstrap-loop"
 publishedAt: 2026-07-31
-updatedAt: 2026-07-31
+updatedAt: "2026-10-18"
 track: tech_column
 subtype: case_study
 category: development_episode

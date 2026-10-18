@@ -4,7 +4,7 @@ searchTitle: "OpenAI Jalapeño 추론 칩 첫 실측 결과"
 description: "OpenAI Jalapeño의 첫 추론 성능 결과를 벤치마크 조건, 데이터 이동 설계, 생산 검증과 연말 배포 경계로 나눠 분석합니다."
 slug: "openai-jalapeno-inference-results"
 publishedAt: 2026-08-26
-updatedAt: 2026-08-26
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

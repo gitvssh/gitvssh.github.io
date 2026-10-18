@@ -3,7 +3,7 @@ title: "스킬을 더했는데 왜 더 못해질까, Regression Tax가 측정한
 description: "AI 에이전트에 절차형 스킬을 추가하면 새 작업은 성공하지만 기존에 잘 되던 작업이 깨질 수 있습니다. 486개 과제 실험을 바탕으로 성능 획득(Gain)과 퇴보(Regression)의 메커니즘을 분석합니다."
 slug: "llm-agent-skill-regression-tax"
 publishedAt: 2026-07-27
-updatedAt: 2026-07-28
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:

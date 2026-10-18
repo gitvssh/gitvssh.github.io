@@ -3,7 +3,7 @@ title: "Vera Rubin 양산 시작: AI 인프라가 '전력당 토큰(Tokens per W
 description: "NVIDIA의 차세대 AI 팩토리 아키텍처 Vera Rubin NVL72가 글로벌 전면 양산에 들어갔습니다. 개별 GPU 스펙을 넘어 랙 스케일(Rack-scale) 통합 설계와 전력 효율(Tokens/Watt) 관점의 인프라 전환을 분석합니다."
 slug: "nvidia-vera-rubin-full-production"
 publishedAt: 2026-07-22
-updatedAt: 2026-07-22
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

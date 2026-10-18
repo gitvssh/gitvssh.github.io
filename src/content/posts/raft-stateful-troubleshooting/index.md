@@ -3,7 +3,7 @@ title: "장애 검색, 지금 조사한 단계까지 맞춰야 한다"
 description: "RAFT 논문으로 장애 조사 단계를 검색 단위로 삼는 방법을 읽습니다. 합성·Jira 검색 결과와 표본 조건, 실제 해결 성과의 검증 경계를 함께 살펴봅니다."
 slug: "raft-stateful-troubleshooting"
 publishedAt: "2026-09-20"
-updatedAt: "2026-09-20"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "RAG", "벤치마크", "운영 자동화 안전"]

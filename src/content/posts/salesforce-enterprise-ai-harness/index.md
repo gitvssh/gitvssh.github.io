@@ -3,7 +3,7 @@ title: "Salesforce AI Harness 발표: 에이전트의 실행과 권한을 한곳
 description: "Salesforce가 발표한 AI Harness의 실행 구조와 AI Control Plane 구상을 살피고, 현재 제공 기술과 향후 통합 기능의 경계를 정리합니다."
 slug: "salesforce-enterprise-ai-harness"
 publishedAt: "2026-09-11"
-updatedAt: "2026-09-11"
+updatedAt: "2026-10-18"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["AI 에이전트", "AI 보안", "운영 자동화 안전"]

@@ -3,7 +3,7 @@ title: "OpenAI ZDR용 비공개 안전 처리 프리뷰: 원문 없이 연속 �
 description: "OpenAI ZDR의 현재 보존 범위와 Private Safety Processing 프리뷰가 원문 고객 콘텐츠와 제한된 안전 신호를 어떻게 분리하는지 설명합니다."
 slug: "openai-zdr-private-safety-processing"
 publishedAt: 2026-08-20
-updatedAt: 2026-08-20
+updatedAt: "2026-10-18"
 track: news
 subtype: announcement_analysis
 tags:

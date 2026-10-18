@@ -4,7 +4,7 @@ searchTitle: "ChatGPT와 인과추론 교육 RCT 결과"
 description: "1,053명 무작위 실험에서 ChatGPT 접근과 인과추론 훈련이 답의 완성도·아이디어 다양성·평가 점수에 서로 다른 영향을 보인 범위와 한계를 설명합니다."
 slug: "chatgpt-critical-thinking-rct"
 publishedAt: 2026-08-30
-updatedAt: 2026-08-30
+updatedAt: "2026-10-18"
 track: news
 subtype: research_news
 tags:

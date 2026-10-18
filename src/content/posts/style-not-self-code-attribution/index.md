@@ -3,7 +3,7 @@ title: "AI는 자기 코드를 어떻게 알아볼까"
 description: "Style, Not Self 논문으로 AI의 코드 작성자 판별이 길이와 주석에 얼마나 기대는지 살펴봅니다. 공개 판정 기록 재집계와 4장 만화로 정규화 효과와 익명화의 한계를 구분합니다."
 slug: "style-not-self-code-attribution"
 publishedAt: "2026-09-26"
-updatedAt: "2026-09-26"
+updatedAt: "2026-10-18"
 track: "paper"
 subtype: "empirical"
 tags: ["LLM", "AI 코딩 도구", "벤치마크", "AI 안전"]

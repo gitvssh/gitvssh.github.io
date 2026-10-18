@@ -4,7 +4,7 @@ searchTitle: "AI 에이전트 도구 스키마가 거절을 약하게 만드는 
 description: "같은 모델도 도구 스키마를 받으면 유해 요청 거절이 약해진다는 연구와 SafeKeep의 평문 안전 관문, 평가 범위를 살펴봅니다."
 slug: "tool-specifications-agent-safety"
 publishedAt: 2026-08-03
-updatedAt: 2026-08-03
+updatedAt: "2026-10-18"
 track: paper
 subtype: empirical
 tags:
