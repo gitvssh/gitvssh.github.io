@@ -20,45 +20,43 @@ featured: false
 draft: false
 ---
 
-Anthropic과 Accenture가 2026년 9월 18일 [상주 외부 평가팀 협력](https://www.anthropic.com/news/accenture-embedded-evaluation)을 발표했습니다. 평가팀을 초청하겠다는 약속에 구체적인 협력사가 붙었습니다. Accenture의 AI 사업부 Faculty가 주도할 예정이며, 운영 세부사항은 계속 논의 중입니다. 9월 21일 확인한 양사 발표를 바탕으로 달라진 점을 정리했습니다.
+Anthropic과 Accenture가 2026년 9월 18일 [상주 외부 평가팀(Embedded Evaluators) 협력](https://www.anthropic.com/news/accenture-embedded-evaluation)을 발표했습니다. 앞서 외부 평가자를 연구 과정에 초청하겠다고 밝혔던 구상에 첫 협력사가 정해진 것인데요. Accenture의 AI 사업부인 Faculty가 주도할 예정이며 구체적인 운영 세부사항은 계속 논의 중입니다. 9월 21일 확인한 양사 발표를 바탕으로 무엇이 정해졌고 무엇이 과제로 남았는지 정리합니다.
 
 글·해설: 다메카솔
 
 Updated: 2026-09-21
 
-## 초청 약속에서 협력사 발표로
+## 초청 약속에서 첫 협력사 발표로
 
 ![문밖에서 기다리던 외부 평가자가 연구 과정에 접근하는 도입 구상](./page-01.webp)
 
-이제 협력사가 정해졌습니다. 양사는 모델 평가, 공격적인 시험으로 취약점을 찾는 레드팀, 정렬 평가와 안전장치 시험을 추진한다고 밝혔습니다. Anthropic은 평가자가 직원과 비슷한 접근권으로 학습 과정과 개발·배포 결정을 관찰하는 방식을 설명했습니다. 공개 자료가 확인해 주는 단계는 협력 발표까지이며, 팀 배치 완료나 평가 결과를 공개한 자료는 아닙니다.
+앞서 다리오 아모데이(Dario Amodei)는 [9월 에세이](https://darioamodei.com/post/we-must-pace-the-frontier)에서 안전 검증 시간을 확보할 수 있도록 프런티어 AI의 능력 향상 속도를 조율하자며 상주 외부 평가팀 초청 계획을 제안한 바 있습니다. 이번 발표는 그 후속 조치로, 양사는 모델 역량 평가, 공격적 시험으로 취약점을 찾는 레드팀 활동, 정렬(alignment) 평가 및 안전장치 시험을 함께 추진한다고 밝혔습니다.
 
-앞서 다리오 아모데이는 [9월 에세이](https://darioamodei.com/post/we-must-pace-the-frontier)에서 안전 검증 시간을 확보하도록 AI 능력 향상 속도를 조절하자고 제안했습니다. 외부 팀 초청은 그때의 계획이었고, 이번 발표는 그 후속 조치입니다. 그림은 내부 과정을 관찰한다는 구상을 보여 줍니다.
+Anthropic은 외부 평가자가 내부 직원과 유사한 수준의 접근권으로 모델 학습 과정과 개발·배포 결정을 가까이서 관찰하는 구상을 설명했습니다. 다만 현재 공개된 내용은 **파트너십 체결 발표** 단계이며, 이미 상주 팀 배치가 완료됐거나 첫 평가 보고서가 나왔다는 뜻은 아닙니다.
 
-## 평가비는 누가 내고, 결과는 누가 공개하나
+## 평가 비용 지급 구조와 공개 기준의 현재 상태
 
 ![평가비 지급 관계와 공개 기준을 함께 확인하자는 카솔의 설명](./page-02.webp)
 
-Anthropic이 Accenture의 평가 업무 비용을 직접 지급할 계획입니다. 회사는 접근 정보와 보고 방식의 공통 기준, 안정된 재원 체계가 아직 없다고 설명했습니다. 비영리 평가자 METR 등과 자체 재원으로 시범 운영하는 방안도 논의 중입니다. 추가 평가자는 향후 발표할 계획이며 협력은 비독점입니다.
+외부 감시·평가 제도를 볼 때는 누가 비용을 대고 어디까지 독자적으로 결과를 공개할 수 있는지가 핵심입니다. 양사 발표문에서 확인되는 조건은 다음 세 가지입니다.
 
-[Accenture 발표](https://newsroom.accenture.com/news/2026/accenture-and-anthropic-partner-to-build-team-of-embedded-evaluators-at-anthropic)는 각 회사가 향후 5년간 AI 안전 역량에 최소 10억 달러씩 투자할 것으로 예상한다고 적었습니다. 긴 기간에 걸친 큰 규모의 약속입니다. 집행된 돈이나 평가 계약 대금이 확정됐다는 뜻으로 읽을 근거는 없으며, Accenture도 전망의 실현을 보장하지 않는다고 명시했습니다.
+- **평가 비용 지급과 비독점 시범 운영**: 이번 협력에서 Accenture 평가팀의 업무 비용은 Anthropic이 직접 지급할 계획입니다. Anthropic은 아직 업계 공통의 정보 접근·보고 기준이나 독립된 재원 체계가 자리 잡지 않았다고 설명하며, 비영리 평가 기관인 METR 등과도 자체 재원을 활용한 시범 운영을 논의 중이라고 밝혔습니다(이번 협력은 비독점이며 추가 평가자는 추후 발표 예정).
+- **투자 전망과 확정 금액의 구분**: [Accenture 발표문](https://newsroom.accenture.com/news/2026/accenture-and-anthropic-partner-to-build-team-of-embedded-evaluators-at-anthropic)에는 양사가 향후 5년간 AI 안전 역량에 각각 최소 10억 달러씩 투자할 것으로 예상한다는 문구가 실려 있으나, 이는 이미 집행된 기금이나 확정된 평가 용역 대금이 아니라 실현 보장이 없는 장기 전망치로 명시돼 있습니다.
+- **결과 발표권과 최종 책임**: 아모데이의 9월 에세이는 개인정보·계약·법적 예외를 제외한 내부 접근권과 외부 평가자의 독자적 핵심 결과 발표권을 구상했으나, 9월 18일 발표문에서는 세부 운영 방식이 아직 논의 중이라고 적고 있습니다. 또한 외부 평가팀이 참여하더라도 모델 안전에 대한 최종 책임은 Anthropic에 남습니다.
 
-원래 에세이는 개인정보·계약·법적 예외가 있는 접근권과 핵심 결과 발표권을 구상했습니다. 이번 발표에는 세부 운영 방식이 논의 중이라고 적혀 있습니다. 저는 두 자료를 합쳐 이미 완성된 운영 규칙처럼 읽기보다, 앞으로 공개될 조건과 대조할 기준으로 삼겠습니다. 모델 안전의 책임은 Anthropic에 남는다고 회사도 밝혔습니다.
+## 다메카솔의 해석: 기록 접근 범위와 이견 공개 절차가 관건
 
-## 다메카솔의 해석: 기록 접근과 이견 공개가 관건
+상주 평가팀이라는 이름보다 실무적으로 더 중요한 것은 **실제로 어떤 원시 기록까지 열어 볼 수 있는가**입니다. 백엔드 시스템을 감사할 때도 요약된 보고서만 건네받는 것과 실패한 실행 로그·학습 체크포인트를 직접 대조하는 것은 검증의 깊이가 완전히 다르기 때문입니다.
 
-평가팀 이름보다 먼저 살필 것은 관찰 범위입니다. 운영 시스템을 점검할 때 요약 보고서만 받는 것과 실패한 실행 기록까지 대조하는 것은 증거의 깊이가 다릅니다. 외부 평가자가 학습·배포 과정의 어떤 기록을 볼 수 있는지 공개해야 독자도 검증 범위를 판단할 수 있습니다. 이는 제가 운영 점검 원칙에 비춰 해석한 내용이며, 이번 평가팀의 실제 업무를 관찰했다는 뜻은 아닙니다.
+또한 평가 대상 기업이 평가 비용을 직접 지급하는 구조에서는, 양측의 판단이 엇갈렸을 때 외부 평가팀이 불리한 발견이나 이견을 어떻게 외부에 공개할 수 있는지가 신뢰도를 좌우합니다([최근 정렬 사건에 대한 회사 자체 평가](/posts/claude-cyber-incidents-alignment-assessment/)를 읽을 때도 같은 기준이 적용됩니다). 한편 데미스 하사비스(Demis Hassabis)의 [7월 공동 평가기구 구상](https://demishassabis.substack.com/p/a-framework-for-frontier-ai-and-the-dawning-of-a-new-age)이나 아모데이의 업계·국제 조정 제안과 달리 이번 발표는 개별 기업 간 파트너십이며, Anthropic은 모델 학습과 출시를 계속 진행한다고 밝혔습니다. 앞으로 첫 평가 보고서가 나올 때는 **평가팀이 직접 확인한 자료 범위와 접근하지 못한 범위가 투명하게 함께 적혀 있는지**부터 살펴보겠습니다.
 
-비용 지급 관계도 함께 봐야 합니다. 회사가 비용을 낸다는 사실만으로 평가가 편향됐다고 결론낼 수는 없지만, 불리한 결과를 발표할 권리와 이견이 생겼을 때의 처리 절차가 중요해집니다. [최근 정렬 사건에 대한 회사 평가](/posts/claude-cyber-incidents-alignment-assessment/)를 읽을 때도 같은 원칙이 적용됩니다. 저는 첫 공개 결과에서 확인한 범위와 접근하지 못한 범위를 함께 밝히는지 보겠습니다.
-
-배경이 된 데미스 하사비스의 [7월 공동 평가기구 구상](https://demishassabis.substack.com/p/a-framework-for-frontier-ai-and-the-dawning-of-a-new-age)과 아모데이의 업계·국제 조정 제안은 별도의 논의입니다. 이번 양사 협력 발표로 업계 전체가 합의했거나 모델 훈련을 멈췄다고 확장할 근거는 없습니다. Anthropic은 모델 학습과 출시를 계속한다고 밝혔습니다.
-
-> **업데이트 (2026-09-21)**: 9월 14일 글에서 외부 평가팀 초청 계획으로 설명했던 단계에 Accenture 협력 발표가 추가됐습니다. 9월 18일 양사 원문을 반영해 본문과 만화 문구를 갱신했으며, 최초 발행일과 URL은 유지했습니다.
+> **업데이트 (2026-09-21)**: 9월 14일 최초 발행 당시 ‘외부 평가팀 초청 계획’으로 다뤘던 내용에 9월 18일 Anthropic·Accenture 협력 발표를 반영해 본문과 만화 문구를 갱신했습니다(최초 발행일과 URL은 유지).
 
 ## 출처
 
-- [Anthropic — Partnering with Accenture on embedded evaluation](https://www.anthropic.com/news/accenture-embedded-evaluation): 2026년 9월 18일. 협력·재원·운영 계획에 대한 당사자 발표.
-- [Accenture — Accenture and Anthropic Partner to Build Team of Embedded Evaluators at Anthropic](https://newsroom.accenture.com/news/2026/accenture-and-anthropic-partner-to-build-team-of-embedded-evaluators-at-anthropic): 2026년 9월 18일. 협력 범위와 투자 전망에 대한 상대 당사자 발표. 두 발표는 독립적인 운영 검증 결과와 구분했습니다.
-- [Dario Amodei — We Must Pace the Frontier](https://darioamodei.com/post/we-must-pace-the-frontier): 원문 표기 2026년 9월. 최초 약속과 제안의 배경.
-- [Demis Hassabis — A Framework for Frontier AI and the Dawning of a New Age](https://demishassabis.substack.com/p/a-framework-for-frontier-ai-and-the-dawning-of-a-new-age): 2026년 7월 14일. 이전 공동 평가기구 제안. 모든 원문은 9월 21일 재확인했습니다.
+- [Anthropic — Partnering with Accenture on embedded evaluation](https://www.anthropic.com/news/accenture-embedded-evaluation): 2026년 9월 18일 발표.
+- [Accenture — Accenture and Anthropic Partner to Build Team of Embedded Evaluators at Anthropic](https://newsroom.accenture.com/news/2026/accenture-and-anthropic-partner-to-build-team-of-embedded-evaluators-at-anthropic): 2026년 9월 18일 발표.
+- [Dario Amodei — We Must Pace the Frontier](https://darioamodei.com/post/we-must-pace-the-frontier): 2026년 9월 에세이.
+- [Demis Hassabis — A Framework for Frontier AI and the Dawning of a New Age](https://demishassabis.substack.com/p/a-framework-for-frontier-ai-and-the-dawning-of-a-new-age): 2026년 7월 14일 (모든 원문 2026년 9월 21일 재확인).
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
