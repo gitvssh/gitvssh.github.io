@@ -67,6 +67,7 @@ const posts = defineCollection({
       slug: z.string(),
       publishedAt: z.coerce.date(),
       updatedAt: z.coerce.date().optional(),
+      dateDisplay: z.enum(['auto', 'show', 'hide']).default('auto'),
       track: z.enum(['paper', 'news', 'tech_column', 'practice']),
       subtype: z.string(),
       category: z.enum(TECH_CATEGORY_KEYS).optional(),
@@ -82,18 +83,29 @@ const posts = defineCollection({
       readerOutcome: z.string().min(1).optional(),
       contentFormats: z
         .array(z.enum(['article', 'comic', 'diagram', 'table', 'tutorial', 'checklist']))
+        .min(1)
         .default(['article', 'comic']),
       freshnessStatus: z.enum(['current', 'review_due', 'outdated', 'archived']).default('current'),
       reviewedAt: z.coerce.date().optional(),
       reviewAfter: z.coerce.date().optional(),
       testedAt: z.coerce.date().optional(),
-      cover: image(),
-      coverAlt: z.string(),
+      testedVersion: z.string().trim().min(1).optional(),
+      cover: image().optional(),
+      coverAlt: z.string().trim().min(1).optional(),
       sourceUrl: z.url().optional(),
       officialResources: z.array(officialResource).max(4).optional(),
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),
     }).superRefine((data, context) => {
+      if (data.contentFormats.includes('comic') && !data.cover) {
+        context.addIssue({ code: 'custom', path: ['cover'], message: '만화 글에는 cover가 필요합니다.' });
+      }
+      if (data.cover && !data.coverAlt) {
+        context.addIssue({ code: 'custom', path: ['coverAlt'], message: '표지 이미지에는 coverAlt가 필요합니다.' });
+      }
+      if (!data.cover && data.coverAlt) {
+        context.addIssue({ code: 'custom', path: ['cover'], message: 'coverAlt는 표지 이미지와 함께 사용합니다.' });
+      }
       if (data.track === 'tech_column' && !data.category) {
         context.addIssue({
           code: 'custom',

@@ -28,6 +28,18 @@ Every post uses exactly one primary track:
 - `paper`
 - `news`
 - `tech_column`
+- `practice`
+
+Explicit non-comic `contentFormats` supports text-only articles; images are
+optional for that format. Omitted formats retain the article+comic default.
+Supplied covers require alt text, and comic posts require a cover. Do not add
+empty image placeholders to satisfy a comic-only assumption.
+
+`dateDisplay` controls visible dates only (`auto`, `show`, `hide`). Auto shows
+paper/news publication dates and hides them for technical/practice posts.
+Keep honest publication/revision timestamps in metadata and RSS; show optional
+testedAt/testedVersion as useful verification context. Same-day and bulk
+publication are valid. Do not impose an RSS item-count or post-age cutoff.
 
 ## SEO Invariants
 

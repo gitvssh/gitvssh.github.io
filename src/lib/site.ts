@@ -17,8 +17,8 @@ export const SOCIAL_IMAGE_WIDTH = 1280;
 export const SOCIAL_IMAGE_HEIGHT = 720;
 export const DEFAULT_SOCIAL_IMAGE_PATH = '/social-default.jpg';
 
-export function socialImagePathForPost(postId: string) {
-  return `/social/${postId}.jpg`;
+export function socialImagePathForPost(postId: string, hasCover = true) {
+  return hasCover ? `/social/${postId}.jpg` : DEFAULT_SOCIAL_IMAGE_PATH;
 }
 
 // Console-issued verification tokens. They are public page metadata, not secrets.

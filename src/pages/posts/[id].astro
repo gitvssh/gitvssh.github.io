@@ -5,7 +5,7 @@ import ArticleToc from '../../components/ArticleToc.astro';
 import OfficialResourceCards from '../../components/OfficialResourceCards.astro';
 import RelatedPostCard from '../../components/RelatedPostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, getPostDisplayTitle, getRelatedPosts, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
+import { formatDate, getPostDisplayTitle, getRelatedPosts, showPublicationDates, sortPosts, sortSeriesPosts, TECH_CATEGORIES, TRACKS } from '../../lib/content';
 import { breadcrumbSchema, organizationSchema, personSchema, type BreadcrumbItem } from '../../lib/schema';
 import { AUTHOR_NAME, SOCIAL_IMAGE_HEIGHT, SOCIAL_IMAGE_WIDTH, socialImagePathForPost } from '../../lib/site';
 import { getPublishedTopics, getTopicsForPost, type PublishedTopic } from '../../lib/topics';
@@ -56,9 +56,9 @@ const displayTitle = getPostDisplayTitle(post.data);
 const searchTitle = `${post.data.searchTitle ?? post.data.title} | ${AUTHOR_NAME}`;
 const postPath = `/posts/${post.id}/`;
 const canonical = new URL(postPath, Astro.site);
-const socialImage = socialImagePathForPost(post.id);
+const socialImage = socialImagePathForPost(post.id, Boolean(post.data.cover));
 const socialImageUrl = new URL(socialImage, Astro.site);
-const coverUrl = new URL(post.data.cover.src, Astro.site);
+const coverUrl = post.data.cover ? new URL(post.data.cover.src, Astro.site) : undefined;
 const wordCount = post.body ? post.body.replace(/[#*_>`\[\]()!-]/g, ' ').split(/\s+/).filter(Boolean).length : undefined;
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -73,7 +73,7 @@ const articleSchema = {
   url: canonical.href,
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical.href },
   // 16:9 social crop first, then the full portrait cover so Google has two aspect ratios.
-  image: [socialImageUrl.href, coverUrl.href],
+  image: [...new Set([socialImageUrl.href, ...(coverUrl ? [coverUrl.href] : [])])],
   thumbnailUrl: socialImageUrl.href,
   author: personSchema(Astro.site),
   publisher: organizationSchema(Astro.site),
@@ -109,7 +109,7 @@ const hasUpdatedDate =
   socialTitle={displayTitle}
   description={post.data.description}
   image={socialImage}
-  imageAlt={post.data.coverAlt}
+  imageAlt={post.data.coverAlt ?? displayTitle}
   imageWidth={SOCIAL_IMAGE_WIDTH}
   imageHeight={SOCIAL_IMAGE_HEIGHT}
   type="article"
@@ -141,8 +141,10 @@ const hasUpdatedDate =
         {category && <a class="category-label" href={`/categories/${post.data.category}/`}>{category.label}</a>}
         {post.data.series && <a class="series-label" href={`/series/${post.data.series.slug}/`}>{post.data.series.title} {post.data.series.order}편</a>}
         <a class="author-link" href="/about/" rel="author">글·해설: {AUTHOR_NAME}</a>
-        <span>발행 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
-        {hasUpdatedDate && <span>수정 <time datetime={post.data.updatedAt?.toISOString()}>{formatDate(post.data.updatedAt!)}</time></span>}
+        {showPublicationDates(post.data) && <span>발행 <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>}
+        {showPublicationDates(post.data) && hasUpdatedDate && <span>수정 <time datetime={post.data.updatedAt?.toISOString()}>{formatDate(post.data.updatedAt!)}</time></span>}
+        {post.data.testedAt && <span>검증 <time datetime={post.data.testedAt.toISOString()}>{formatDate(post.data.testedAt)}</time></span>}
+        {post.data.testedVersion && <span>검증 환경 {post.data.testedVersion}</span>}
       </div>
       {
         topics.length > 0 && (
@@ -161,17 +163,17 @@ const hasUpdatedDate =
       </div>
     </header>
 
-    <figure class="article-cover shell shell--wide">
+    {post.data.cover && <figure class="article-cover shell shell--wide">
       <Image
         src={post.data.cover}
-        alt={post.data.coverAlt}
+        alt={post.data.coverAlt!}
         widths={[640, 960, 1280]}
         sizes="(min-width: 920px) 760px, 92vw"
         format="webp"
         loading="eager"
         fetchpriority="high"
       />
-    </figure>
+    </figure>}
 
     {post.data.officialResources?.length && <OfficialResourceCards resources={post.data.officialResources} />}
 

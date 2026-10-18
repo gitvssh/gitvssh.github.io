@@ -366,6 +366,10 @@ p {
   grid-template-columns: minmax(300px, 0.88fr) minmax(340px, 1.12fr);
 }
 
+.post-card--text {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .post-card__image {
   display: block;
   min-height: 260px;
@@ -1200,6 +1204,10 @@ p {
 .compact-post-list time {
   color: var(--muted);
   font-size: 13px;
+}
+
+.compact-post-list > .compact-post-list__item--undated {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .compact-post-list li > div {

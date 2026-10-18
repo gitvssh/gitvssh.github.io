@@ -11,8 +11,10 @@
     "dev": "astro dev",
     "check:public": "node scripts/check-public-repo.mjs",
     "generate:social": "node scripts/generate-social-images.mjs",
-    "check": "pnpm run check:public && astro check",
-    "build": "pnpm run check:public && astro check && astro build && pnpm run generate:social",
+    "test:publication": "node --experimental-strip-types --test scripts/publication-policy.test.mjs",
+    "test:publication-build": "node scripts/check-publication-build.mjs",
+    "check": "pnpm run check:public && pnpm run test:publication && astro check",
+    "build": "pnpm run check:public && pnpm run test:publication && astro check && astro build && pnpm run generate:social",
     "preview": "astro preview"
   },
   "dependencies": {

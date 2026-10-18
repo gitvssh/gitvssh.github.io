@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { formatDate, getPostDisplayTitle, TECH_CATEGORIES, TRACKS } from '../lib/content';
+import { formatDate, getPostDisplayTitle, showPublicationDates, TECH_CATEGORIES, TRACKS } from '../lib/content';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -14,8 +14,8 @@ const category = post.data.category ? TECH_CATEGORIES[post.data.category] : unde
 const displayTitle = getPostDisplayTitle(post.data);
 ---
 
-<article class:list={['post-card', { 'post-card--prominent': prominent }]}>
-  <a class="post-card__image" href={`/posts/${post.id}/`} tabindex="-1" aria-hidden="true">
+<article class:list={['post-card', { 'post-card--prominent': prominent, 'post-card--text': !post.data.cover }]}>
+  {post.data.cover && <a class="post-card__image" href={`/posts/${post.id}/`} tabindex="-1" aria-hidden="true">
     <Image
       src={post.data.cover}
       alt=""
@@ -24,7 +24,7 @@ const displayTitle = getPostDisplayTitle(post.data);
       format="webp"
       loading={prominent ? 'eager' : 'lazy'}
     />
-  </a>
+  </a>}
   <div class="post-card__body">
     <div class="post-meta">
       <a class={`track-label track-label--${post.data.track}`} href={`/tracks/${post.data.track}/`}>
@@ -38,7 +38,7 @@ const displayTitle = getPostDisplayTitle(post.data);
           {post.data.series.title} {post.data.series.order}편
         </a>
       )}
-      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+      {showPublicationDates(post.data) && <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>}
     </div>
     <h2><a href={`/posts/${post.id}/`}>{displayTitle}</a></h2>
     <p>{post.data.description}</p>

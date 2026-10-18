@@ -19,7 +19,7 @@ private production studio and must not be added here.
 
 ## Requirements
 
-- Node.js 22.12 or newer
+- Node.js 22.13 or newer
 - pnpm 11.7.0 through Corepack
 
 ## Local Development
@@ -39,8 +39,11 @@ pnpm check
 pnpm build
 ```
 
-`pnpm check` first runs the public-repository allowlist and secret-pattern
-gate, then Astro's type checks. The production build is written to `dist/`.
+`pnpm check` runs the public-repository allowlist and secret-pattern gate,
+publication policy regressions, then Astro's type checks. The production build is written to `dist/`.
+`pnpm test:publication-build` additionally builds temporary coverless article
+fixtures through the actual schema, templates and RSS using an isolated output
+directory. It removes only its temporary fixtures and build afterward.
 GitHub Actions deploys only from `gitvssh/gitvssh.github.io` on `main`.
 See [Deployment](#deployment) for where that build actually runs.
 
@@ -101,7 +104,8 @@ Site identity lives in `src/lib/site.ts` (`SITE_ORIGIN`, `SITE_NAME`,
 page; `src/lib/schema.ts` builds the `WebSite`, `Organization`, `BreadcrumbList`
 and `CollectionPage` blocks, and `src/pages/posts/[id].astro` the
 `BlogPosting`/`NewsArticle`. `pnpm build` renders `dist/social/<slug>.jpg`
-(1280×720) for each post; `public/social-default.jpg` covers every other page.
+(1280×720) for each post with a cover; `public/social-default.jpg` covers
+coverless articles and every other page.
 Listing pages with no post render `noindex` and are left out of `sitemap.xml`.
 
 ## Content
@@ -109,6 +113,27 @@ Listing pages with no post render `noindex` and are left out of `sitemap.xml`.
 Published posts live in `src/content/posts/<slug>/`. Each folder contains one
 Markdown entry and only the final public images for that post. Frontmatter is
 validated by `src/content.config.ts`.
+
+Omitted `contentFormats` keeps the legacy `[article, comic]` default and
+requires a cover. Explicit `contentFormats: [article]` (or another nonempty
+selection without `comic`) permits a text-first post without any image assets.
+Any supplied `cover` requires descriptive `coverAlt`; comic posts still require
+both. Coverless articles use text cards and the site's default social image.
+
+`publishedAt` records the actual first public release, including an established
+earlier release when migrating a post. `updatedAt` records a meaningful content
+revision; neither is rewritten to simulate a new RSS entry. `dateDisplay`
+controls only visible publication/update dates: `auto` (default) shows them for
+paper/news and hides them for technical/practice posts; `show` and `hide`
+override this per post. Optional `testedAt` and `testedVersion` communicate the
+actual verification date/environment independently. Dates remain in structured
+metadata and RSS regardless of display choice.
+
+The summary RSS contains every non-draft post, sorted by original publication
+date with a stable slug tie-break. There is no batch-size, daily-count or age
+limit; the canonical post URL remains its stable GUID. A reader may apply its
+own history window, so a bulk archive release does not guarantee a notification
+for every older item.
 
 Optional `officialResources` frontmatter renders static link-preview cards for
 official announcements, documentation, product pages, and press material. The

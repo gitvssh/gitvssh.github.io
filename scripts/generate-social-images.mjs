@@ -6,7 +6,7 @@ import sharp from 'sharp';
 const WIDTH = 1280;
 const HEIGHT = 720;
 const postsRoot = resolve('src/content/posts');
-const outputRoot = resolve('dist/social');
+const outputRoot = resolve(process.argv[2] ?? 'dist', 'social');
 const supportedExtensions = new Set(['.avif', '.jpeg', '.jpg', '.png', '.webp']);
 
 function readFrontmatterValue(markdown, key) {
@@ -29,10 +29,13 @@ for (const directory of postDirectories) {
 
   const postRoot = resolve(postsRoot, directory.name);
   const markdown = await readFile(join(postRoot, 'index.md'), 'utf8');
-  if (/^draft:\s*true\s*$/m.test(markdown)) continue;
+  const frontmatter = markdown.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1] ?? '';
+  if (/^draft:\s*true\s*$/m.test(frontmatter)) continue;
 
-  const coverValue = readFrontmatterValue(markdown, 'cover');
-  if (!coverValue) throw new Error(`${directory.name}: cover frontmatter is required.`);
+  const coverValue = readFrontmatterValue(frontmatter, 'cover');
+  // The content schema requires a cover for comics. Articles without one share
+  // public/social-default.jpg; their page and RSS never point at a missing card.
+  if (!coverValue) continue;
 
   const coverPath = resolve(postRoot, coverValue);
   if (!coverPath.startsWith(`${postRoot}${sep}`)) {

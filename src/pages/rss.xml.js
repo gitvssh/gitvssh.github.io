@@ -2,8 +2,7 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { getPostDisplayTitle, SITE_NAME, TECH_CATEGORIES, TRACKS } from '../lib/content';
 import { AUTHOR_NAME, SITE_DESCRIPTION, socialImagePathForPost } from '../lib/site';
-
-const FEED_ITEM_LIMIT = 50;
+import { getFeedPosts } from '../lib/publication';
 
 function escapeXml(value) {
   return value
@@ -14,8 +13,7 @@ function escapeXml(value) {
 }
 
 export async function GET(context) {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
-  posts.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+  const posts = getFeedPosts(await getCollection('posts'));
   const siteUrl = new URL('/', context.site).href;
 
   return rss({
@@ -23,8 +21,8 @@ export async function GET(context) {
     description: SITE_DESCRIPTION,
     site: context.site,
     xmlns: { media: 'http://search.yahoo.com/mrss/' },
-    items: posts.slice(0, FEED_ITEM_LIMIT).map((post) => {
-      const image = new URL(socialImagePathForPost(post.id), context.site).href;
+    items: posts.map((post) => {
+      const image = new URL(socialImagePathForPost(post.id, Boolean(post.data.cover)), context.site).href;
       const categories = [
         TRACKS[post.data.track].label,
         ...(post.data.category ? [TECH_CATEGORIES[post.data.category].label] : []),
@@ -34,7 +32,7 @@ export async function GET(context) {
         title: getPostDisplayTitle(post.data),
         description: post.data.description,
         pubDate: post.data.publishedAt,
-        link: `/posts/${post.id}/`,
+        link: new URL(`/posts/${post.id}/`, context.site).href,
         categories,
         customData:
           `<dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">${escapeXml(AUTHOR_NAME)}</dc:creator>` +

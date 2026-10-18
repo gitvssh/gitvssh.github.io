@@ -1,4 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
+import { comparePublicationOrder } from './publication';
+export { showPublicationDates } from './publication';
 export {
   getPostDisplayTitle,
   SITE_NAME,
@@ -9,9 +11,7 @@ export {
 export type { TechCategory, Track } from './taxonomy';
 
 export function sortPosts(posts: CollectionEntry<'posts'>[]) {
-  return [...posts].sort(
-    (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
-  );
+  return [...posts].sort(comparePublicationOrder);
 }
 
 export function sortSeriesPosts(posts: CollectionEntry<'posts'>[]) {
