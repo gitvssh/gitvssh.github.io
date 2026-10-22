@@ -2,7 +2,7 @@
 title: "한 번 잘 푸는 AI는 대화가 이어져도 잘 고칠까: UserSWE"
 description: "UserSWE는 사용자 설명이 바뀌는 대화에서 코딩 AI를 평가합니다. 대화 횟수와 실행 판정에 따라 달라진 결과, 연구의 한계를 만화와 글로 살펴봅니다."
 slug: "userswe-dynamic-user-coding"
-publishedAt: "2026-10-22T06:22:51.193002+00:00"
+publishedAt: "2026-10-22T06:32:19Z"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "코딩", "벤치마크", "사용자 시뮬레이션"]
