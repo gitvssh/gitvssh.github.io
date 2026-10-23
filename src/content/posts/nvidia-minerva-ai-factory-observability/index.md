@@ -2,7 +2,7 @@
 title: "NVIDIA Minerva, 흩어진 장애 신호를 AI 작업과 연결하다"
 description: "NVIDIA Minerva가 GPU·네트워크·작업 정보를 연결하는 방식과 원인 추정, 복구 실행, 도입 계획의 차이를 설명합니다."
 slug: "nvidia-minerva-ai-factory-observability"
-publishedAt: "2026-10-23"
+publishedAt: "2026-10-23T00:24:25Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["NVIDIA", "AI 인프라", "관측성"]
