@@ -2,7 +2,7 @@
 title: "AI가 확신할수록 학습 신호가 사라지는 이유: softmax의 반올림"
 description: "softmax와 cross-entropy의 반올림은 어떻게 학습 신호를 바꿀까요? 작은 기울기 소실과 증류의 잔여 기울기를 구분하고 논문의 실험 범위를 살펴봅니다."
 slug: "softmax-rounding-gradient"
-publishedAt: "2026-10-24T06:16:36.140135+00:00"
+publishedAt: "2026-10-24T06:26:23Z"
 track: "paper"
 subtype: "theoretical"
 tags: ["machine-learning", "numerical-stability", "softmax", "distillation"]
