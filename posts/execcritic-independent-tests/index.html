@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>ExecCritic AI 코딩 테스트 에이전트 연구 | 다메카솔</title><meta name="description" content="ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/execcritic-independent-tests/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유"><meta property="og:description" content="ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/execcritic-independent-tests/"><meta property="og:image" content="https://blog.damecasol.com/social/execcritic-independent-tests.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/execcritic-independent-tests.jpg"><meta property="og:image:alt" content="성인형 카솔이 파란 테스트 작업대와 주황 수정 작업대 사이에서 검증 토큰을 소개하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유"><meta name="twitter:description" content="ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/execcritic-independent-tests.jpg"><meta name="twitter:image:alt" content="성인형 카솔이 파란 테스트 작업대와 주황 수정 작업대 사이에서 검증 토큰을 소개하는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/execcritic-independent-tests/","headline":"AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유","name":"AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유","description":"ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다.","datePublished":"2026-09-09T00:00:00.000Z","dateModified":"2026-10-18T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/execcritic-independent-tests/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/execcritic-independent-tests/"},"image":["https://blog.damecasol.com/social/execcritic-independent-tests.jpg","https://blog.damecasol.com/_astro/cover.BHiSpDXn.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/execcritic-independent-tests.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 에이전트, 코딩 에이전트, 소프트웨어 테스트, 벤치마크","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1510,"citation":"https://arxiv.org/abs/2609.09133"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유","item":"https://blog.damecasol.com/posts/execcritic-independent-tests/"}]}</script><meta property="article:published_time" content="2026-09-09T00:00:00.000Z"><meta property="article:modified_time" content="2026-10-18T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 에이전트"><meta property="article:tag" content="코딩 에이전트"><meta property="article:tag" content="소프트웨어 테스트"><meta property="article:tag" content="벤치마크"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="execcritic-independent-tests" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-09-09T00:00:00.000Z">2026년 9월 9일</time></span><span>수정 <time datetime="2026-10-18T00:00:00.000Z">2026년 10월 18일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>AI 코딩 에이전트의 테스트를 따로 맡겨야 하는 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>ExecCritic이 AI 코딩 에이전트의 테스트 생성과 코드 수정을 분리해 검증 근거를 고정한 방법과 실험 결과를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BHiSpDXn_Z14ejdV.webp" srcset="/_astro/cover.BHiSpDXn_1YdXcM.webp 640w, /_astro/cover.BHiSpDXn_1KFrYD.webp 960w, /_astro/cover.BHiSpDXn_Z14ejdV.webp 1024w" alt="성인형 카솔이 파란 테스트 작업대와 주황 수정 작업대 사이에서 검증 토큰을 소개하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#패치와-테스트가-같은-빈틈을-공유할-수-있다" data-toc-link="패치와-테스트가-같은-빈틈을-공유할-수-있다" data-analytics-event="toc_click" data-analytics-target="패치와-테스트가-같은-빈틈을-공유할-수-있다">패치와 테스트가 같은 빈틈을 공유할 수 있다</a></li><li class="article-toc__depth-2"><a href="#테스트-에이전트가-먼저-요구를-검사한다" data-toc-link="테스트-에이전트가-먼저-요구를-검사한다" data-analytics-event="toc_click" data-analytics-target="테스트-에이전트가-먼저-요구를-검사한다">테스트 에이전트가 먼저 요구를 검사한다</a></li><li class="article-toc__depth-2"><a href="#수정-에이전트는-고정-테스트를-바꿀-수-없다" data-toc-link="수정-에이전트는-고정-테스트를-바꿀-수-없다" data-analytics-event="toc_click" data-analytics-target="수정-에이전트는-고정-테스트를-바꿀-수-없다">수정 에이전트는 고정 테스트를 바꿀 수 없다</a></li><li class="article-toc__depth-2"><a href="#생성-테스트는-좋으면-돕고-약하면-해친다" data-toc-link="생성-테스트는-좋으면-돕고-약하면-해친다" data-analytics-event="toc_click" data-analytics-target="생성-테스트는-좋으면-돕고-약하면-해친다">생성 테스트는 좋으면 돕고 약하면 해친다</a></li><li class="article-toc__depth-2"><a href="#실행-비용과-언어-일반화는-아직-열린-문제다" data-toc-link="실행-비용과-언어-일반화는-아직-열린-문제다" data-analytics-event="toc_click" data-analytics-target="실행-비용과-언어-일반화는-아직-열린-문제다">실행 비용과 언어 일반화는 아직 열린 문제다</a></li><li class="article-toc__depth-2"><a href="#로컬-테스트와-최종-평가는-권한이-다르다" data-toc-link="로컬-테스트와-최종-평가는-권한이-다르다" data-analytics-event="toc_click" data-analytics-target="로컬-테스트와-최종-평가는-권한이-다르다">로컬 테스트와 최종 평가는 권한이 다르다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-검증-근거를-수정-권한-밖에-두자" data-toc-link="다메카솔의-해석-검증-근거를-수정-권한-밖에-두자" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-검증-근거를-수정-권한-밖에-두자">다메카솔의 해석: 검증 근거를 수정 권한 밖에 두자</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#테스트-에이전트를-따로-두면-항상-더-좋아지나요" data-toc-link="테스트-에이전트를-따로-두면-항상-더-좋아지나요" data-analytics-event="toc_click" data-analytics-target="테스트-에이전트를-따로-두면-항상-더-좋아지나요">테스트 에이전트를 따로 두면 항상 더 좋아지나요?</a></li><li class="article-toc__depth-3"><a href="#base에서-실패하고-gold에서-통과하면-완벽한-테스트인가요" data-toc-link="base에서-실패하고-gold에서-통과하면-완벽한-테스트인가요" data-analytics-event="toc_click" data-analytics-target="base에서-실패하고-gold에서-통과하면-완벽한-테스트인가요">Base에서 실패하고 Gold에서 통과하면 완벽한 테스트인가요?</a></li><li class="article-toc__depth-3"><a href="#고정-테스트를-통과하면-배포해도-되나요" data-toc-link="고정-테스트를-통과하면-배포해도-되나요" data-analytics-event="toc_click" data-analytics-target="고정-테스트를-통과하면-배포해도-되나요">고정 테스트를 통과하면 배포해도 되나요?</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>코딩 에이전트가 수정 패치를 만들고 그 패치를 승인할 테스트까지 직접 작성한다면 겉보기에는 무척 편리합니다. 하지만 요구사항을 잘못 이해한 한 가지 실수가 패치와 테스트 양쪽에 동시에 들어갈 수 있다는 점이 문제인데요. 「ExecCritic: Learn to Test, Test to Improve for Coding Agents」는 테스트를 만드는 에이전트와 코드를 고치는 에이전트를 분리하고, 테스트 실행 결과를 고정된 피드백으로 활용하는 구조를 실험했습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>역할과 권한의 분리</strong>: 독립된 Test 에이전트가 테스트 패치(<code>test.patch</code>)와 실행 명령(<code>test_command</code>)을 만들고, 별도의 Repair 에이전트는 소스 코드만 수정합니다.</li>
+<li><strong>Base 게이트 검증</strong>: 생성된 테스트는 버그가 남아 있는 Base 체크아웃에서 정상 실행된 뒤 깨끗하게 실패해야만(fail-closed) 수정 루프에 들어갑니다.</li>
+<li><strong>테스트 품질의 양날</strong>: SWE-bench Verified에서 생성 테스트의 품질에 따라 동일한 기본 수정 에이전트의 해결률이 **57.3%**로 떨어지거나 **65.3%**로 올랐습니다(무테스트 기본 61.2%).</li>
+<li><strong>학습 효과와 난도별 한계</strong>: 학습된 Test·Repair 조합은 Verified에서 **72.6%**를 기록했지만, 더 어려운 SWE-bench Pro에서 단일 생성 테스트의 개선 폭은 <strong>0.7%포인트</strong>(Oracle 피드백은 11.8%포인트)에 그쳤습니다.</li>
+<li><strong>로컬 통과와 최종 판정 구분</strong>: 고정 테스트 통과는 수정 루프의 종료 조건일 뿐 정답 증명이 아니며, 최종 해결 여부는 별도의 전체 공식 평가(F2P·P2P)가 판정합니다.</li>
+</ul>
+<h2 id="패치와-테스트가-같은-빈틈을-공유할-수-있다">패치와 테스트가 같은 빈틈을 공유할 수 있다</h2>
+<p><img alt="같은 로봇이 깨진 코드 블록과 맞지 않는 측정 틀을 동시에 만들며 같은 모서리를 놓치는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.PgOUPEye_2l4ILm.webp" srcset=""></p>
+<p>코드 수정 과정에서 테스트는 단순한 실행 버튼이 아니라 이슈가 요구한 행동을 검사하는 별도의 명세입니다. 만약 패치와 테스트를 같은 에이전트 흐름 안에서 함께 작성하면, 요구사항을 잘못 해석한 흔적이 두 산출물에 나란히 남기 쉽습니다. 잘못된 패치가 그 잘못된 테스트를 통과하며 스스로를 증명하는 ‘자기확인’ 구조가 되는 셈입니다.</p>
+<p>ExecCritic은 이 결합을 역할과 권한 분리로 끊어 냅니다. <strong>Test 에이전트</strong>는 저장소에 맞는 <code>test.patch</code>, 그 테스트를 실행할 정확한 <code>test_command</code>, 행동 계약을 담은 JSON을 하나의 번들로 묶어 제출하고, <strong>Repair 에이전트</strong>는 이 번들을 건드리지 않은 채 소스 수정에만 집중합니다. 여기서 ‘독립’이라는 말은 두 모델의 실수가 통계적으로 완전히 무관하다는 뜻이 아니라, 테스트 작성과 소스 수정을 별도 정책과 단계로 나누어 수정 단계가 검사 기준을 임의로 바꾸지 못하게 막았다는 뜻입니다.</p>
+<h2 id="테스트-에이전트가-먼저-요구를-검사한다">테스트 에이전트가 먼저 요구를 검사한다</h2>
+<p><img alt="파란 테스트 로봇이 버그 기계를 검사해 세 개의 물리적 산출물을 초록 게이트로 넘기고 주황 수정 로봇은 분리된 공간에서 기다리는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.D2sy0LAH_1gDSHX.webp" srcset=""></p>
+<p>Test 에이전트가 만든 번들은 곧바로 수정 에이전트에게 전달되지 않습니다. 하네스는 먼저 버그가 남아 있는 Base 체크아웃에 테스트 패치를 적용하고, 지정된 명령이 정상적으로 실행된 뒤 깨끗하게 실패하는지 확인합니다. 만약 테스트 자체가 실행되지 않거나 버그가 있는 상태인데도 이미 통과해 버리면 fail-closed 원칙에 따라 탈락합니다.</p>
+<p>물론 이 <strong>Base 게이트</strong>가 증명하는 범위는 좁습니다. 테스트가 현재의 버그 상태를 거부한다는 뜻일 뿐, 테스트에 적힌 기대값이 이슈의 진짜 요구사항과 완벽히 일치한다는 보증은 아니기 때문입니다. 저자들은 정답인 Gold 패치에서도 해당 테스트가 통과하는지를 <code>Base-to-Gold</code> 지표로 감사하지만, 이 Gold 패치는 테스트 생성 중에 보이지 않으며 배포형 수정 단계의 입력이나 테스트 선별 근거로도 쓰이지 않습니다.</p>
+<p>이 경계가 중요한 이유는 명확합니다. Gold 패치를 보고 테스트를 고르면 실제 운영 환경에서는 결코 얻을 수 없는 정답 정보가 평가 루프에 새어 들어가기 때문입니다. 따라서 ExecCritic은 오직 Base 체크아웃에서 자격을 확인한 번들만 고정해 Repair 단계에 넘기고, Gold 평가는 모델 학습과 오프라인 분석에만 사용합니다.</p>
+<h2 id="수정-에이전트는-고정-테스트를-바꿀-수-없다">수정 에이전트는 고정 테스트를 바꿀 수 없다</h2>
+<p><img alt="봉인된 측정 장치 아래에서 주황 코드 블록만 차례로 교체되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Cz9scXQi_Z8lSrQ.webp" srcset=""></p>
+<p>번들을 넘겨받은 Repair 에이전트는 고정된 테스트 패치와 실행 명령을 수정할 수 없으며, 오직 소스 코드 패치만 고칠 수 있습니다. 테스트가 실패하면 실행 피드백을 받아 최대 다섯 차례까지 소스 패치를 개정합니다.</p>
+<p>이 구조는 테스트 기대값을 느슨하게 바꾸거나 아예 테스트 파일을 지워 실패를 덮어 버리는 지름길을 원천 차단합니다. 테스트가 답을 알려 주는 해설지가 아니라 바꿀 수 없는 ‘측정 지그(jig)’로 작동하기 때문에, 에이전트는 소스 코드 쪽의 원인을 다시 파고들어야 합니다. 다만 이 로컬 테스트의 초록불은 해당 수정 루프를 멈추는 조건일 뿐 최종 정답 판정이 아니며, 전체 공식 F2P(Fail-to-Pass)·P2P(Pass-to-Pass) 테스트가 기존 동작 보존과 이슈 해결을 따로 확인한 뒤에야 최종 벤치마크 해결로 집계됩니다.</p>
+<h2 id="생성-테스트는-좋으면-돕고-약하면-해친다">생성 테스트는 좋으면 돕고 약하면 해친다</h2>
+<p><img alt="주황 수정 로봇 앞에서 휘어진 빨간 측정 레일과 정밀한 초록 레일이 코드 블록을 서로 다른 방향으로 이끄는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.BDQ9Tuq-_1nMmyG.webp" srcset=""></p>
+<p>그렇다면 실행 피드백을 붙이는 것만으로 항상 성능이 오를까요? SWE-bench Verified와 SWE-bench Pro에서 확인된 주요 수치를 비교해 보면 테스트 자체의 품질이 얼마나 결정적인지 드러납니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 항목 및 구성</th>
+<th style="text-align: right">기본/비교 기준</th>
+<th style="text-align: right">테스트 피드백 적용 결과</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Verified</strong>: 기본 Repair + 기본 Qwen Test</td>
+<td style="text-align: right">61.2% (무테스트 1회)</td>
+<td style="text-align: right"><strong>57.3%</strong></td>
+<td>약한 테스트가 해결률을 오히려 낮춤 (3회 수정 실행 평균)</td>
+</tr>
+<tr>
+<td><strong>Verified</strong>: 기본 Repair + GPT-5.6-sol Test</td>
+<td style="text-align: right">61.2% (무테스트 1회)</td>
+<td style="text-align: right"><strong>65.3%</strong></td>
+<td>정교한 테스트로 해결률 상승 (3회 수정 실행 평균)</td>
+</tr>
+<tr>
+<td><strong>Verified</strong>: Test 에이전트 Base-to-Gold 성공률</td>
+<td style="text-align: right">22.2% (기본)</td>
+<td style="text-align: right"><strong>39.6%</strong> (SFT) → <strong>62.2%</strong> (RL)</td>
+<td>사후학습 단계에 따라 테스트 생성 품질 향상</td>
+</tr>
+<tr>
+<td><strong>Verified</strong>: 학습된 Repair + 학습된 RL Test</td>
+<td style="text-align: right">68.3% (피드백 없는 첫 수정)</td>
+<td style="text-align: right"><strong>72.6%</strong></td>
+<td>무테스트 기본 Repair(61.2%) 대비 +11.4%p</td>
+</tr>
+<tr>
+<td><strong>SWE-bench Pro</strong>: GPT-5.6-sol 생성 테스트 vs Oracle</td>
+<td style="text-align: right">+0.7%p (생성 테스트)</td>
+<td style="text-align: right"><strong>+11.8%p</strong> (Oracle 피드백)</td>
+<td>고난도 과제에서 단일 생성 테스트의 포착 범위 한계</td>
+</tr>
+</tbody>
+</table>
+<p>표에서 보듯 실행 피드백 자체가 이득을 보장하지는 않습니다. 요구사항을 정확히 짚어낸 테스트는 탐색 범위를 좁혀 주지만, 약한 테스트는 올바른 패치를 밀어내거나 잘못된 국소 목표로 에이전트를 이끌 수 있습니다. 또한 학습된 Test·Repair 조합이 SWE-bench Verified에서는 72.6%까지 올라갔지만, 더 복잡한 SWE-bench Pro에서는 GPT-5.6-sol 생성 테스트의 개선 폭이 0.7%포인트에 머물러 단일 생성 테스트가 포착할 수 있는 행동 범위의 한계도 함께 보여 줍니다.</p>
+<h2 id="실행-비용과-언어-일반화는-아직-열린-문제다">실행 비용과 언어 일반화는 아직 열린 문제다</h2>
+<p>성능 수치 이면의 운영 조건도 함께 짚어 봐야 합니다.</p>
+<ul>
+<li><strong>추가 실행 비용</strong>: 피드백 수정이 실제로 일어난 120개 궤적은 평균 13개의 추가 에이전트 턴을 사용했습니다. 여기에 테스트를 만드는 단계 자체가 별도 비용으로 추가되는데, 논문은 토큰·지연 시간·금전 비용을 동일 조건으로 맞춘 효율 비교를 제시하지 않으므로 해결률 상승을 곧바로 ‘더 저렴한 시스템’으로 읽을 수는 없습니다.</li>
+<li><strong>언어별 전이 격차</strong>: Python 과제로만 사후학습한 Test 에이전트의 타 언어 Base-to-Gold 성공률은 Rust <strong>66.7%</strong>, C++ <strong>58.3%</strong>, C <strong>26.1%</strong>, Java **2.4%**였습니다. 일부 언어로의 전이 가능성은 보이지만 모든 저장소 생태계에 고르게 일반화됐다고 보기는 어렵습니다.</li>
+<li><strong>분리 정책과 향후 과제</strong>: 현재 Test와 Repair는 별도 정책으로 학습됩니다. 저자들은 가중치를 공유하는 공동학습을 미래 과제로 남겼는데, 한 모델 안에 두 역할을 합칠 때는 서로의 허점을 이용하거나 실제 과제 대신 상대 정책에 맞춰지는 퇴행(collusion)을 막아야 합니다.</li>
+</ul>
+<h2 id="로컬-테스트와-최종-평가는-권한이-다르다">로컬 테스트와 최종 평가는 권한이 다르다</h2>
+<p><img alt="성인형 카솔이 작은 로컬 테스트 게이트와 그 뒤의 더 큰 독립 전체 평가 장치를 구분해 소개하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.BvV2B0Hl_Zoav3w.webp" srcset=""></p>
+<p>이 논문에서 가장 실용적인 설계는 테스트를 여러 번 실행한다는 점보다 <strong>증거의 권한을 나눈 구조</strong>에 있습니다. Test는 요구사항을 검사하고, 하네스는 실행 가능한 실패를 확인하며, Repair는 소스만 바꿉니다. 고정 테스트는 수정 방향을 안내할 뿐 최종 전체 평가는 별도 권한으로 남습니다.</p>
+<p>공식 저장소(<code>1891f8efa473d1917c716cd4d80db1a6186721ad</code> 커밋)에는 실행 코드와 테스트가 공개돼 있지만, 논문 결과·궤적·체크포인트·데이터셋·자격 증명·샌드박스 상태는 공개 아카이브에 포함되지 않았습니다(공식 README가 가리키는 일부 빌더 경로도 아카이브에 없으며 프로젝트 환경에 새 의존성을 추가 설치하지 않았습니다). 따라서 이번 검토는 PDF·TeX·공식 메타데이터·고정 코드 아카이브를 대조해 방법과 공개 범위를 감사한 것이며, 벤치마크 수치를 독립 재계산한 결과는 아닙니다.</p>
+<h2 id="다메카솔의-해석-검증-근거를-수정-권한-밖에-두자">다메카솔의 해석: 검증 근거를 수정 권한 밖에 두자</h2>
+<p>코딩 에이전트 운영 파이프라인에 이 연구를 적용한다면 핵심 원칙은 <strong>검사자와 수정자의 권한 분리</strong>입니다. 이슈에서 검증 가능한 행동을 뽑아내는 단계가 먼저 테스트를 만들고, 버그 상태에서 실행 가능한 실패를 확인한 뒤 그 번들을 해시와 함께 고정합니다. 이후 수정 에이전트에는 소스 코드 경로에만 쓰기 권한을 주고 테스트와 평가 설정은 읽기 전용으로 묶어 두는 방식입니다.</p>
+<p>아울러 수정 루프의 성공 증거와 배포 성공 증거도 명확히 나눠야 합니다. 고정 테스트 통과는 다음 단계로 넘어갈 수 있다는 로컬 신호일 뿐이며, 전체 회귀 테스트·정책 검사·빌드·실제 배포 검증은 별도의 최종 게이트로 남겨 두어야 합니다(이는 논문이 실제 조직 배포에서 검증한 결과가 아니라, 논문의 구조를 운영 절차로 옮긴 해석입니다).</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>ExecCritic: Learn to Test, Test to Improve for Coding Agents</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Leitian Tao 외</td>
+</tr>
+<tr>
+<td>공개</td>
+<td>arXiv v1 제출 2026-09-08 17:53:37 UTC, 공식 최근 목록 2026-09-09</td>
+</tr>
+<tr>
+<td>라이선스</td>
+<td>CC BY 4.0</td>
+</tr>
+<tr>
+<td>공식 코드</td>
+<td><a href="https://github.com/MSR-Orchard/execcritic/tree/1891f8efa473d1917c716cd4d80db1a6186721ad">MSR-Orchard/execcritic</a></td>
+</tr>
+<tr>
+<td>이 글의 확인 범위</td>
+<td>PDF·TeX·공식 메타데이터·고정 코드 대조, 벤치마크 결과 독립 재현 없음</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="테스트-에이전트를-따로-두면-항상-더-좋아지나요">테스트 에이전트를 따로 두면 항상 더 좋아지나요?</h3>
+<p>아닙니다. 같은 기본 Repair 에이전트를 쓰더라도 약한 생성 테스트를 붙이면 해결률이 61.2%에서 57.3%로 오히려 낮아졌습니다. 역할 분리는 자기확인 위험을 줄이는 구조일 뿐, Test 에이전트 자체의 품질과 최종 독립 평가가 여전히 뒷받침되어야 합니다.</p>
+<h3 id="base에서-실패하고-gold에서-통과하면-완벽한-테스트인가요">Base에서 실패하고 Gold에서 통과하면 완벽한 테스트인가요?</h3>
+<p>버그 상태와 정답 패치 두 체크아웃을 구분하는 행동을 포착했다는 점에서 강력한 오프라인 신호입니다. 하지만 숨은 요구사항 전체를 빠짐없이 검사하거나 다른 회귀를 모두 막는다는 보증은 아니므로, 실제 수정 루프에서는 Gold를 쓰지 않고 최종 공식 평가를 따로 수행합니다.</p>
+<h3 id="고정-테스트를-통과하면-배포해도-되나요">고정 테스트를 통과하면 배포해도 되나요?</h3>
+<p>고정 테스트는 수정 루프 안의 로컬 종료 기준입니다. 전체 회귀 여부, 기존 통과 테스트 보존, 빌드와 정책 검사, 실제 배포 상태는 별도 게이트로 확인해야 합니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/generative-compilation/">생성형 컴파일로 복잡한 프로그램을 만드는 방법</a></li>
+<li><a href="/posts/workflow-as-knowledge/">AI 워크플로 자체를 지식으로 관리해야 하는 이유</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.09133">Leitian Tao 외, “ExecCritic,” arXiv:2609.09133</a></li>
+<li><a href="https://arxiv.org/pdf/2609.09133v1">공식 PDF v1</a></li>
+<li><a href="https://github.com/MSR-Orchard/execcritic/tree/1891f8efa473d1917c716cd4d80db1a6186721ad">공식 코드, commit 1891f8e</a></li>
+</ul>
+<p>업데이트: 2026-09-09</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.
+논문의 표와 그림은 복제하지 않았고, 저자 보고값과 공개 코드 감사 범위를 구분했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/userswe-dynamic-user-coding/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D_nW0bpK_2vwdVM.webp" srcset="/_astro/cover.D_nW0bpK_Kzo5K.webp 240w, /_astro/cover.D_nW0bpK_1XKpGe.webp 360w, /_astro/cover.D_nW0bpK_Z1SfGwe.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-22T06:32:19.000Z">2026년 10월 22일</time></div><h3><a href="/posts/userswe-dynamic-user-coding/" data-analytics-event="related_post_click" data-analytics-target="userswe-dynamic-user-coding">한 번 잘 푸는 AI는 대화가 이어져도 잘 고칠까: UserSWE</a></h3><p>UserSWE는 사용자 설명이 바뀌는 대화에서 코딩 AI를 평가합니다. 대화 횟수와 실행 판정에 따라 달라진 결과, 연구의 한계를 만화와 글로 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/shortcut-sensitivity-safety-evaluation/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DJy_B9PU_2baiIl.webp" srcset="/_astro/cover.DJy_B9PU_Ze714l.webp 240w, /_astro/cover.DJy_B9PU_Y40w8.webp 360w, /_astro/cover.DJy_B9PU_2cf27B.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-18T00:00:00.000Z">2026년 10월 18일</time></div><h3><a href="/posts/shortcut-sensitivity-safety-evaluation/" data-analytics-event="related_post_click" data-analytics-target="shortcut-sensitivity-safety-evaluation">안전성 점수가 높아도, AI가 무엇을 봤는지는 따져야 합니다</a></h3><p>안전성 검사기의 높은 점수는 무엇을 뜻할까요? 표식·도구 이름을 바꾼 짝 비교와 평가 단위의 차이를 통해, 오탐 결과와 연구의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/fde-gym-customer-outcomes/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BMyy8xGM_A1EMy.webp" srcset="/_astro/cover.BMyy8xGM_Z1KiGgJ.webp 240w, /_astro/cover.BMyy8xGM_Zx7EFg.webp 360w, /_astro/cover.BMyy8xGM_F3lUd.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-16T00:00:00.000Z">2026년 10월 16일</time></div><h3><a href="/posts/fde-gym-customer-outcomes/" data-analytics-event="related_post_click" data-analytics-target="fde-gym-customer-outcomes">AI가 기능은 만들었는데, 고객의 일은 왜 그대로일까</a></h3><p>FDE-Gym은 숨은 업무 조건을 찾고 기존 시스템을 고친 뒤 고객 성과까지 평가합니다. 평균 점수와 해결률의 차이, 질문 비용, 모의 환경의 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

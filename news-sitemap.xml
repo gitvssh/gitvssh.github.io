@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/nemotron-bolt-e4b-memory-context/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-24T00:19:13.000Z</news:publication_date>
+      <news:title>Nemotron Bolt E4B, 4GB라는 이름보다 대화 길이를 보세요</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://blog.damecasol.com/posts/nvidia-minerva-ai-factory-observability/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-23T00:24:25.000Z</news:publication_date>
+      <news:title>NVIDIA Minerva, 흩어진 장애 신호를 AI 작업과 연결하다</news:title>
+    </news:news>
+  </url>
+</urlset>
