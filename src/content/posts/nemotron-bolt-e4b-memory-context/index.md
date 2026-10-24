@@ -2,7 +2,7 @@
 title: "Nemotron Bolt E4B, 4GB라는 이름보다 대화 길이를 보세요"
 description: "Bolt E4B의 공개 소식과 로컬 대화 모델의 메모리 조건을 살펴봅니다. 4GB라는 이름과 실행 중 메모리를 구분합니다."
 slug: "nemotron-bolt-e4b-memory-context"
-publishedAt: "2026-10-24T00:09:28.475195+00:00"
+publishedAt: "2026-10-24T00:19:13Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["NVIDIA", "로컬 AI", "언어 모델"]
