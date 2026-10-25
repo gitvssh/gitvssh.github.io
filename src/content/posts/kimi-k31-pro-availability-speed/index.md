@@ -2,7 +2,7 @@
 title: "Kimi K3.1 Pro 출시, 이용 조건과 Highspeed의 범위"
 description: "Kimi K3.1 Pro의 서비스 이용과 가중치 공개 예정일을 구분하고, Highspeed의 출력 속도·사용량·실행 조건을 살펴봅니다."
 slug: "kimi-k31-pro-availability-speed"
-publishedAt: "2026-10-25T00:13:52.449596+00:00"
+publishedAt: "2026-10-25T00:22:20Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Kimi", "코딩 에이전트", "언어 모델"]
