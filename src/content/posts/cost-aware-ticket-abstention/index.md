@@ -2,7 +2,7 @@
 title: "AI 문의 분류, 언제 사람에게 넘겨야 할까"
 description: "AI 문의 분류에서 확신도 보정과 오류 구별은 어떻게 다를까요? 사람 검토를 포함한 비용 실험을 통해 자동 처리율과 남은 오분류를 함께 읽습니다."
 slug: "cost-aware-ticket-abstention"
-publishedAt: "2026-10-25T06:16:03Z"
+publishedAt: "2026-10-25T06:28:30Z"
 track: "paper"
 subtype: "empirical"
 tags: ["machine-learning", "llm", "evaluation", "human-in-the-loop"]
