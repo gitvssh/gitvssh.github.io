@@ -2,7 +2,7 @@
 title: "AI 수학 증명, 통과했는데 다른 문제를 풀었다면"
 description: "AI 수학 증명이 통과해도 원래 문제를 풀었다는 보장은 없습니다. SemantEq가 명제의 충실성을 검사하는 방법과 정밀도 100%의 시험 조건, 알려진 한계를 살펴봅니다."
 slug: "semanteq-faithful-formalization"
-publishedAt: "2026-10-26T06:24:43Z"
+publishedAt: "2026-10-26T06:36:40Z"
 track: "paper"
 subtype: "systems"
 tags: ["llm", "evaluation", "formal-verification", "mathematics"]
