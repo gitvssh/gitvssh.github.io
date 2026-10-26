@@ -2,7 +2,7 @@
 title: "Dessa 공개, 소리로 배운 대화와 연구 프리뷰의 경계"
 description: "Block의 음성 전용 학습과 전이중 대화 설명을 살펴보고, Dessa 데모와 연구 프리뷰의 실제 이용 범위를 구분합니다."
 slug: "dessa-speech-only-research-preview"
-publishedAt: "2026-10-26T00:16:12.981242+00:00"
+publishedAt: "2026-10-26T00:24:27Z"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["Dessa", "음성 AI", "온디바이스 AI"]
