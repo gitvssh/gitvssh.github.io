@@ -2,7 +2,7 @@
 title: "GPT-6.1 Terra 공개, 화면 이해에서 컴퓨터 조작으로"
 description: "GPT-6.1 Terra의 화면 이해·컴퓨터 조작 용도, 제공 플랜과 API 요금 조건을 공식 발표와 문서로 정리합니다."
 slug: "gpt-6-1-terra-computer-use"
-publishedAt: "2026-10-27T00:14:51.417518+00:00"
+publishedAt: "2026-10-27T00:26:32Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["OpenAI", "AI 에이전트", "컴퓨터 사용"]
