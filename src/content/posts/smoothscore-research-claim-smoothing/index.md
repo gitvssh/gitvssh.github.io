@@ -2,7 +2,7 @@
 title: "출처가 있어도 결론은 과장될 수 있다: SmoothScore가 본 AI 리서치"
 description: "출처가 달린 AI 보고서도 근거보다 강한 결론을 낼 수 있습니다. SmoothScore가 조건과 반론의 누락을 측정한 방법, 원문 제공 실험의 개선, 평가의 한계를 만화로 살펴봅니다."
 slug: "smoothscore-research-claim-smoothing"
-publishedAt: "2026-10-27T06:23:00Z"
+publishedAt: "2026-10-27T06:34:21Z"
 track: "paper"
 subtype: "empirical"
 tags: ["llm", "evaluation", "deep-research", "ai-agents"]
