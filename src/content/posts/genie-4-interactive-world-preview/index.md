@@ -2,7 +2,7 @@
 title: "Genie 4 공개, 소리와 대화가 더해진 가상 세계"
 description: "Genie 4의 소리·대화 생성과 장면 편집 기능, 연구 미리보기의 접근 범위와 일관성 한계를 구글 공식 발표로 정리합니다."
 slug: "genie-4-interactive-world-preview"
-publishedAt: "2026-10-28T00:10:28.527860+00:00"
+publishedAt: "2026-10-28T00:18:53Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Google", "세계 모델", "생성형 AI"]
