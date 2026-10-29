@@ -2,7 +2,7 @@
 title: "문서는 읽되 지시는 따르지 않게: Heads of Security"
 description: "외부 문서를 읽는 AI가 그 안의 지시까지 따르는 문제. Heads of Security의 attention 게이트와 공격 평가 조건, 신뢰 경계의 한계를 만화로 살펴봅니다."
 slug: "heads-of-security-attention-gates"
-publishedAt: "2026-10-29T06:10:44.221713+00:00"
+publishedAt: "2026-10-29T06:20:49Z"
 track: "paper"
 subtype: "empirical"
 tags: ["llm", "security", "ai-agents"]
