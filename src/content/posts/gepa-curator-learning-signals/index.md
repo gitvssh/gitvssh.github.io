@@ -47,10 +47,12 @@ GoBrowse의 GitLab·Shopping·Shopping Admin·Reddit 과제로 WebArena 환경�
 
 표 1의 전체 성공률은 다음과 같습니다. ±는 5회 반복의 표준편차이며, 신뢰구간이나 표준오차가 아닙니다.
 
-| 최적화 모델 | GEPA | GEPA-Curator | 평균 차이 |
-| --- | ---: | ---: | ---: |
-| Gemini 3.1 Pro Preview | 78.7±0.6% | 82.1±1.7% | 3.4퍼센트포인트 |
-| Claude Opus 5 | 79.5±1.2% | 84.5±1.0% | 5.0퍼센트포인트 |
+| 최적화 모델 | GEPA | GEPA-Curator |
+| --- | ---: | ---: |
+| Gemini 3.1 Pro Preview | 78.7±0.6% | 82.1±1.7% |
+| Claude Opus 5 | 79.5±1.2% | 84.5±1.0% |
+
+평균 차이는 Gemini 3.1 Pro Preview에서 3.4퍼센트포인트, Claude Opus 5에서 5.0퍼센트포인트입니다.
 
 같은 실험 조건에서 평균 성공률이 높아졌다는 결과입니다. 실행 모델까지 Gemini나 Opus로 바뀐 실험으로 읽으면 역할을 혼동하게 됩니다. 또한 GEPA-Curator는 후보 집합에서 Pareto 방식으로 선택하는 부분을 뺀 단일 계보 변형 위에 구현되어 있습니다. 저자들은 별도의 제거 실험으로 이 선택의 영향을 살폈습니다.
 
