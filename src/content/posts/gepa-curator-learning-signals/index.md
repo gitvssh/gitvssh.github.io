@@ -2,7 +2,7 @@
 title: "실패를 전부 배우면 AI가 더 나아질까: GEPA-Curator"
 description: "실패 로그를 모두 프롬프트 수정에 써도 될까요? GEPA-Curator의 과제 선별과 성공 사례 참조, 평가 조건을 만화로 살펴봅니다."
 slug: "gepa-curator-learning-signals"
-publishedAt: "2026-10-30T06:13:45.584188+00:00"
+publishedAt: "2026-10-30T06:23:35Z"
 track: "paper"
 subtype: "empirical"
 tags: ["llm", "ai-agents"]
