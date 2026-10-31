@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/servicenow-chatgpt-availability-boundary/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-31T00:19:57.000Z</news:publication_date>
+      <news:title>ServiceNow와 ChatGPT 연결, 지금 쓸 수 있는 범위는</news:title>
+    </news:news>
+  </url>
+</urlset>
