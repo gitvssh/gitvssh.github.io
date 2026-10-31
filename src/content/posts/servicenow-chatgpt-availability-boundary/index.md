@@ -2,7 +2,7 @@
 title: "ServiceNow와 ChatGPT 연결, 지금 쓸 수 있는 범위는"
 description: "ServiceNow MCP 플러그인의 현재 제공 범위, 조직 권한과 미리보기·출시 계획을 공식 발표로 구분합니다."
 slug: "servicenow-chatgpt-availability-boundary"
-publishedAt: "2026-10-31T00:10:57.595939+00:00"
+publishedAt: "2026-10-31T00:19:57Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["OpenAI", "ServiceNow", "MCP"]
