@@ -2,7 +2,7 @@
 title: "AI가 끝냈다는 말, 무엇으로 확인할까: VeriCUA"
 description: "VeriCUA가 완료 주장과 관측 근거를 구별하는 방법, 온라인 판정 보류와 오프라인 초기 판단 대체의 차이를 살펴봅니다."
 slug: "vericua-completion-evidence"
-publishedAt: "2026-11-01T06:16:37.961693Z"
+publishedAt: "2026-11-01T06:25:46Z"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "VeriCUA", "컴퓨터 사용", "완료 검증"]
