@@ -2,7 +2,7 @@
 title: "Flide: 같은 문맥은 한 번, 질문은 서로 독립적으로"
 description: "Flide가 공유 문맥의 계산을 재사용하면서 질문 간 간섭을 막는 방법과, 실험 속도·수학적 정확성·비트 동일성의 조건을 살펴봅니다."
 slug: "flide-exact-state-forking"
-publishedAt: "2026-11-02T06:15:24.684043+00:00"
+publishedAt: "2026-11-02T06:28:17Z"
 track: "paper"
 subtype: "systems"
 tags: ["LLM", "추론 최적화", "Flide", "KV 캐시"]
