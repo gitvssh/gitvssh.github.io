@@ -2,7 +2,7 @@
 title: "AI 학습 선호 공통 신호, OpenAI 도입은 아직 예정"
 description: "OpenAI의 AI 학습 선호 공통 신호 도입 계획과 기존 크롤러 제어, IETF 개인 초안 상태를 구분합니다."
 slug: "ai-training-preference-signal-plan"
-publishedAt: "2026-11-02T00:15:26.447468+00:00"
+publishedAt: "2026-11-02T00:23:35Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["OpenAI", "robots.txt", "AI 학습"]
