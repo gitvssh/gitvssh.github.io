@@ -2,7 +2,7 @@
 title: "피드백을 기억한 AI는 처음 보는 항공사도 알아볼까?"
 description: "CLR-Bench에서 연습 문제를 고친 에이전트가 새 사례를 분류하는지, 모델과 평가 지표를 바꿔 살펴봅니다."
 slug: "clr-bench-hidden-rule"
-publishedAt: "2026-11-03T06:11:55Z"
+publishedAt: "2026-11-03T06:21:40Z"
 track: "paper"
 subtype: "empirical"
 tags: ["CLR-Bench", "AI 에이전트", "일반화"]
