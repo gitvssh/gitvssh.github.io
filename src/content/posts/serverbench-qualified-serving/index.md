@@ -2,7 +2,7 @@
 title: "ServerBench: AI가 만든 서버는 얼마나 잘 버틸까?"
 description: "지연시간 조건을 지킨 처리 성과와 정확성 검증으로 AI가 만든 서버를 평가하는 ServerBench를 읽습니다."
 slug: "serverbench-qualified-serving"
-publishedAt: "2026-11-05T06:15:21.307702+00:00"
+publishedAt: "2026-11-05T06:25:39Z"
 track: "paper"
 subtype: "empirical"
 tags: ["ServerBench", "AI 에이전트", "LLM 서빙"]
