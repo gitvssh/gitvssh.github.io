@@ -2,7 +2,7 @@
 title: "Terminal-Bench: 채점기를 고치면 AI 점수도 달라진다"
 description: "Terminal-Bench 2.1 연구로 채점 오류와 시간 예산이 AI 에이전트 점수에 미치는 영향을 읽습니다."
 slug: "terminal-bench-maintenance-debt"
-publishedAt: "2026-11-06T06:14:38.559473+00:00"
+publishedAt: "2026-11-06T06:24:18Z"
 track: "paper"
 subtype: "empirical"
 tags: ["Terminal-Bench", "AI 에이전트", "벤치마크"]
