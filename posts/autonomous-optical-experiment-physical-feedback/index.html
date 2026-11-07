@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>AI 실험 에이전트 물리 잔차, OPERA 논문은 점수 착시를 어떻게 줄였나 | 다메카솔</title><meta name="description" content="OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유"><meta property="og:description" content="OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/"><meta property="og:image" content="https://blog.damecasol.com/social/autonomous-optical-experiment-physical-feedback.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/autonomous-optical-experiment-physical-feedback.jpg"><meta property="og:image:alt" content="광학 실험 경로와 디지털 트윈, 물리 장비를 비교하는 카솔"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유"><meta name="twitter:description" content="OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/autonomous-optical-experiment-physical-feedback.jpg"><meta name="twitter:image:alt" content="광학 실험 경로와 디지털 트윈, 물리 장비를 비교하는 카솔"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/","headline":"AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유","name":"AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유","description":"OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다.","datePublished":"2026-08-09T00:00:00.000Z","dateModified":"2026-10-18T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/"},"image":["https://blog.damecasol.com/social/autonomous-optical-experiment-physical-feedback.jpg","https://blog.damecasol.com/_astro/cover.BU9azy9W.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/autonomous-optical-experiment-physical-feedback.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 에이전트, LLM, 벤치마크","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":901,"citation":"https://arxiv.org/abs/2608.05990"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유","item":"https://blog.damecasol.com/posts/autonomous-optical-experiment-physical-feedback/"}]}</script><meta property="article:published_time" content="2026-08-09T00:00:00.000Z"><meta property="article:modified_time" content="2026-10-18T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 에이전트"><meta property="article:tag" content="LLM"><meta property="article:tag" content="벤치마크"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="autonomous-optical-experiment-physical-feedback" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-09T00:00:00.000Z">2026년 8월 9일</time></span><span>수정 <time datetime="2026-10-18T00:00:00.000Z">2026년 10월 18일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>AI 실험 에이전트가 점수 대신 물리 잔차를 보는 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>OPERA 논문이 실행 가능한 연산자와 물리 잔차를 분리해 광학 실험 에이전트의 점수 착시를 줄인 방법과 적용 경계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.BU9azy9W_ycpDw.webp" srcset="/_astro/cover.BU9azy9W_Z1IHmCh.webp 640w, /_astro/cover.BU9azy9W_Z1WfRPq.webp 960w, /_astro/cover.BU9azy9W_ycpDw.webp 1024w" alt="광학 실험 경로와 디지털 트윈, 물리 장비를 비교하는 카솔" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#점수-상승과-실제-물리-개선은-다른-사건이다" data-toc-link="점수-상승과-실제-물리-개선은-다른-사건이다" data-analytics-event="toc_click" data-analytics-target="점수-상승과-실제-물리-개선은-다른-사건이다">점수 상승과 실제 물리 개선은 다른 사건이다</a></li><li class="article-toc__depth-2"><a href="#잔차를-나누자-점수-착시와-예산-낭비가-줄었다" data-toc-link="잔차를-나누자-점수-착시와-예산-낭비가-줄었다" data-analytics-event="toc_click" data-analytics-target="잔차를-나누자-점수-착시와-예산-낭비가-줄었다">잔차를 나누자 점수 착시와 예산 낭비가 줄었다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-답보다-물리-확인부터-본다" data-toc-link="다메카솔의-해석-답보다-물리-확인부터-본다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-답보다-물리-확인부터-본다">다메카솔의 해석: 답보다 물리 확인부터 본다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>자율 실험 에이전트가 보는 요약 점수는 올랐는데 실제 광학 성능은 나아지지 않은 결정이 최대 39.0%에 달했습니다. 에이전트가 엉뚱한 답을 낸 것이 아니라, 에이전트가 최적화하는 요약 점수와 우리가 실제로 개선하려는 물리 상태가 어긋난 결과입니다. **「OPERA: Operator–Residual Feedback for Reliable Autonomous Optical Experiments with Language-Model Agents」**는 실행 가능한 광학 행동을 검사 가능한 <code>연산자(operator)</code>로 제한하고 관측 결과가 물리 조건에서 얼마나 벗어났는지를 분해된 <code>잔차(residual)</code>로 보여 주어, 점수 착시를 줄이고 분포가 달라진 조건에서도 실험을 안정적으로 이어 가는 구조를 검증했습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>점수 착시 대폭 감소</strong>: 빔 성형·구조광 3차원 재구성·간섭계 세 과제(독립 문제 90개, 4개 모델)에서 점수는 올랐지만 실제 물리 개선이 없던 결정 비율이 점수만 줄 때의 23.6<del>39.0%에서 연산자-잔차 피드백 시 0.9</del>1.9%로 줄었습니다.</li>
+<li><strong>목표 유지율과 예산 절감</strong>: 독립 테스트 문제 270개(54,000개 궤적)에서 목표 도달 후 끝까지 유지한 비율은 75.8%(네 기준 전략은 33.9<del>60.1%), 예산 상한 대비 사용률은 61.7%(기준 전략은 70.8</del>86.0%)였습니다.</li>
+<li><strong>분해된 잔차 벡터의 효과</strong>: 물리 위반을 단일 스칼라로 합치면 불일치율이 11.6%였으나 분리된 벡터로 보여 주자 2.3%까지 낮아졌고, 채널 이름·방향·단위·운영 한계와 물리 설명을 더할수록 예산 사용이 추가로 줄었습니다.</li>
+<li><strong>적용 경계</strong>: 익숙한 분포에서는 과제 특화 알고리즘이 더 적은 예산과 약간 더 높은 최종 성능을 보였으며, 물리 장비 실험은 디지털 트윈에서 찾은 절차를 고정 전사한 오프라인 검증이었습니다.</li>
+</ul>
+<h2 id="점수-상승과-실제-물리-개선은-다른-사건이다">점수 상승과 실제 물리 개선은 다른 사건이다</h2>
+<p><img alt="점수 구슬은 올라가지만 실제 레이저는 목표를 빗나가는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.C6mlfZBG_B56EF.webp" srcset=""></p>
+<p>논문의 핵심 질문은 언어 모델 에이전트가 눈에 보이는 요약 점수만 높이려다 실제 광학 성능을 악화시키거나 제자리에 머물게 하는 일을 어떻게 막을 것인가입니다. 저자들은 빔 성형, 구조광 3차원 재구성, 간섭계의 세 과제에서 GPT-5.1, DeepSeek v4 pro, Qwen 3.7-max, Claude Opus 4.7을 동일한 실행 하네스로 평가했습니다(독립 문제 90개, 문제 단위 5,000회 부트스트랩 신뢰구간).</p>
+<p>점수만 제공한 조건에서는 점수가 올라도 실제 물리 개선이 없었던 결정이 과제에 따라 23.6<del>39.0%에 달했지만, 연산자-잔차 피드백을 제공하자 이 비율이 0.9</del>1.9%로 떨어졌습니다.</p>
+<p><img alt="실행 연산자에서 관측을 거쳐 세 물리 잔차로 이어지는 광학 피드백 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.DISdXYh7_EzBOx.webp" srcset=""></p>
+<p>이를 위해 <code>OPERA</code>는 에이전트가 임의의 장비 명령을 새로 만드는 대신 측정·제어·재구성을 바꾸는 검사 가능한 실행 단위인 **연산자(operator)**를 고르게 하고, 실행 결과를 세 층으로 분리합니다.</p>
+<ol>
+<li>에이전트가 실행 중 참고하는 요약 점수</li>
+<li>이름·방향·단위와 함께 분리해 보여 주는 <strong>물리 잔차(residual)</strong></li>
+<li>에이전트에게는 숨기고 오프라인 최종 평가에만 쓰는 실제 물리 성능 기준</li>
+</ol>
+<h2 id="잔차를-나누자-점수-착시와-예산-낭비가-줄었다">잔차를 나누자 점수 착시와 예산 낭비가 줄었다</h2>
+<p><img alt="점수만 보는 경로와 세 잔차를 함께 보는 안정된 경로를 비교한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.K5ON5Vb-_ZXpChU.webp" srcset=""></p>
+<p>독립 테스트 문제 270개(목표 미도달 궤적을 예산 상한까지 포함한 54,000개 기록)에서 측정한 <code>OPERA</code>의 주요 성과와 한계는 다음과 같습니다.</p>
+<table>
+<thead>
+<tr>
+<th>비교 항목</th>
+<th>OPERA (연산자-잔차 피드백)</th>
+<th>비교 기준선 및 세부 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>목표 도달 후 유지율</strong> (270문제)</td>
+<td><strong>75.8%</strong></td>
+<td>4개 기준 전략: 33.9~60.1%</td>
+</tr>
+<tr>
+<td><strong>예산 상한 대비 사용률</strong></td>
+<td><strong>61.7%</strong></td>
+<td>4개 기준 전략: 70.8~86.0%</td>
+</tr>
+<tr>
+<td><strong>잔차 표현별 불일치율</strong></td>
+<td>분리된 벡터 <strong>2.3%</strong></td>
+<td>점수만 제공 39.5%, 단일 스칼라 압축 11.6% (채널 메타데이터 제공 시 예산 -8.6%, 물리 설명 추가 시 -5.3% 추가 절감)</td>
+</tr>
+<tr>
+<td><strong>오프라인 최선 연산자 선택률</strong></td>
+<td><strong>34%</strong> (구조광 3D 재구성)</td>
+<td>점수만 본 조건: 2%</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="분포 변화에 적응하는 광학 경로와 물리 장비를 가리키는 카솔" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CYWz_PLN_QS498.webp" srcset=""></p>
+<p>다만 결과를 해석할 때 세 가지 경계를 분명히 해야 합니다.</p>
+<ul>
+<li><strong>분포 외(OOD) 적응 vs. 익숙한 조건</strong>: 강력한 과제 특화 알고리즘과 비교했을 때 <code>OPERA</code>의 예산 절감 이점은 분포가 달라진 조건에 집중됐습니다. 익숙한 조건에서는 과제 특화 방법이 더 적은 예산을 쓰고 최종 물리 성능도 약간 더 높았습니다.</li>
+<li><strong>실행 가능성과 알고리즘적 새로움의 구분</strong>: 60회 전략 생성 시도 중 53회가 실행 가능한 절차를 만들었고(24개는 기준 이상, 17개는 기준 미달, 조건부 수용 1개·거부 11개), 그중 52개는 기존 알고리즘 계열과 일치하고 1개는 부분 일치해 완전히 새로운 알고리즘 계열이 발명된 것은 아니었습니다.</li>
+<li><strong>고정 절차 전사와 공개 패키지 경계</strong>: 구조광 3D 재구성 하드웨어 실험에서 전사된 절차는 예산 상한의 평균 60.0%(고정 Gray code는 95.8%)를 썼지만, 디지털 트윈에서 고른 절차를 장비에 고정 전사한 것이지 라이브 하드웨어 잔차로 닫힌 고리(closed-loop) 온라인 제어를 한 것은 아닙니다. 또한 2026년 8월 9일 확인한 공식 GitHub 저장소(커밋 <code>9fabab3991edbf092c2d7a6391895567cd5bca28</code>)와 Zenodo 묶음에는 제공자 SDK·라이브 장비 제어·최종 통계 파이프라인이 제외되어 있고, <code>release_integrity.py</code> 실행 시 매니페스트의 <code>fig2_*</code>와 실제 <code>fig3_*</code> 경로 차이 및 미서명 파일로 무결성 검사가 바로 통과하지 않는 경계가 확인됐습니다.</li>
+</ul>
+<h2 id="다메카솔의-해석-답보다-물리-확인부터-본다">다메카솔의 해석: 답보다 물리 확인부터 본다</h2>
+<p>이 논문의 구조를 소프트웨어 및 실험 에이전트 운영 규칙으로 옮긴다면 최종 요약 점수보다 세 가지를 먼저 물어야 합니다.</p>
+<ol>
+<li>에이전트가 실행할 수 있는 행동이 검사 가능한 연산자 단위로 제한돼 있는가?</li>
+<li>실행 뒤 단일 점수 대신 어떤 물리·도메인 조건이 얼마나 어긋났는지 분해된 잔차로 보여 주는가?</li>
+<li>최종 승인 평가는 에이전트가 실시간으로 최적화하는 신호와 분리돼 있는가?</li>
+</ol>
+<p>코딩 에이전트로 치면 허용된 도구 집합, 테스트 실패의 분해된 원인 로그, 그리고 모델에게 숨긴 최종 회귀 테스트 세트를 분리하는 설계와 정확히 맞닿아 있습니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>OPERA: Operator–Residual Feedback for Reliable Autonomous Optical Experiments with Language-Model Agents</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Ning Xu 외</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-08-06 13:03:22 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.AI, physics.optics</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>arXiv preprint, 동료심사 채택 여부 미확인</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.05990">논문 초록과 메타데이터 — arXiv:2608.05990</a></li>
+<li><a href="https://arxiv.org/pdf/2608.05990">논문 원문 PDF</a></li>
+<li><a href="https://github.com/ningxu1995/OPERA/tree/9fabab3991edbf092c2d7a6391895567cd5bca28">공식 OPERA 코드 저장소</a></li>
+<li><a href="https://zenodo.org/records/21504254">공식 Zenodo 공개 묶음</a></li>
+<li><a href="/posts/videoargus-evidence-video-evaluation/">관련 글: AI 영상 평가가 점수 하나로 끝나면 안 되는 이유</a></li>
+<li><a href="/posts/visual-tool-use-causal-audit/">관련 글: AI가 화면을 본다고 정말 더 잘 푸는 걸까</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-09</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/fde-gym-customer-outcomes/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BMyy8xGM_A1EMy.webp" srcset="/_astro/cover.BMyy8xGM_Z1KiGgJ.webp 240w, /_astro/cover.BMyy8xGM_Zx7EFg.webp 360w, /_astro/cover.BMyy8xGM_F3lUd.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-16T00:00:00.000Z">2026년 10월 16일</time></div><h3><a href="/posts/fde-gym-customer-outcomes/" data-analytics-event="related_post_click" data-analytics-target="fde-gym-customer-outcomes">AI가 기능은 만들었는데, 고객의 일은 왜 그대로일까</a></h3><p>FDE-Gym은 숨은 업무 조건을 찾고 기존 시스템을 고친 뒤 고객 성과까지 평가합니다. 평균 점수와 해결률의 차이, 질문 비용, 모의 환경의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/carryon-object-context/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.RDB2GDpn_Z7CEs8.webp" srcset="/_astro/cover.RDB2GDpn_Z2gILHI.webp 240w, /_astro/cover.RDB2GDpn_Z13xK7f.webp 360w, /_astro/cover.RDB2GDpn_9Cgte.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-15T00:00:00.000Z">2026년 10월 15일</time></div><h3><a href="/posts/carryon-object-context/" data-analytics-event="related_post_click" data-analytics-target="carryon-object-context">AI가 끝낸 일을 다시 설명하느라 바쁠 때</a></h3><p>CarryOn은 재사용할 작업물과 남은 의무를 함께 보존합니다. 기록 갱신의 안전장치, OSWorld와 검색 평가의 결과, 코드 공개 전의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/cleat-value-guided-clarification/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.wnyihWWB_Z5bgve.webp" srcset="/_astro/cover.wnyihWWB_Z26DyQ3.webp 240w, /_astro/cover.wnyihWWB_ZSsxfz.webp 360w, /_astro/cover.wnyihWWB_jHtkT.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-14T00:00:00.000Z">2026년 10월 14일</time></div><h3><a href="/posts/cleat-value-guided-clarification/" data-analytics-event="related_post_click" data-analytics-target="cleat-value-guided-clarification">AI가 자꾸 되물을 때, 어떤 질문이 필요한가</a></h3><p>CLEAT는 어떤 확인 질문이 현재 에이전트의 결정을 개선하는지 학습합니다. 평소 행동과의 비교, 정책 갱신, 모의 사용자 평가의 성과와 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
