@@ -2,7 +2,7 @@
 title: "ReproBridge: 다음 실행자를 위해 실험 과정을 남기는 법"
 description: "ReproBridge 연구로 코드·환경·실행기·판단 근거를 함께 남길 때의 효과와 비용·검증 한계를 읽습니다."
 slug: "reprobridge-execution-knowledge"
-publishedAt: "2026-11-07T06:11:59.751054+00:00"
+publishedAt: "2026-11-08T00:17:05Z"
 track: "paper"
 subtype: "empirical"
 tags: ["ReproBridge", "AI 에이전트", "실험 재현"]
