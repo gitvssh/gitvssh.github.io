@@ -2,7 +2,7 @@
 title: "Arete-27B: 후학습으로 답변 관점을 바꾼 실험"
 description: "Arete-27B의 후학습 실험과 개발사가 만든 평가의 범위를 구분합니다."
 slug: "arete-27b-value-post-training"
-publishedAt: "2026-11-09T00:43:22.103008+00:00"
+publishedAt: "2026-11-09T00:52:48Z"
 track: "news"
 subtype: "research_news"
 tags: ["공개 모델", "후학습", "평가"]
