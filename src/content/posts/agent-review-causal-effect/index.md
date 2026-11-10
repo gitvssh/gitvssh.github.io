@@ -2,7 +2,7 @@
 title: "AI 검토, 언제 넣어야 도움이 될까?"
 description: "AI 에이전트의 한 번 검토와 반복 검토 정책은 무엇이 다를까요? 인과 평가 논문의 비교 조건과 적용 한계를 읽습니다."
 slug: "agent-review-causal-effect"
-publishedAt: "2026-11-10T06:10:20.559030+00:00"
+publishedAt: "2026-11-10T06:30:31Z"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "인과 추론", "평가"]
