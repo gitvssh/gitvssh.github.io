@@ -2,7 +2,7 @@
 title: "Claude Fable·Mythos 5.2: 같은 모델, 다른 접근 조건"
 description: "Claude Fable 5.2와 Mythos 5.2의 공통 기반, 접근 조건과 회사 발표 수치를 구분합니다."
 slug: "claude-fable-mythos-52-access"
-publishedAt: "2026-11-11T00:07:15.952108+00:00"
+publishedAt: "2026-11-11T00:17:25Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Claude", "AI 모델"]
