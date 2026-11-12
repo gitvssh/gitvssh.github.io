@@ -2,7 +2,7 @@
 title: "Gemini 4 Carbon 공개 확대: 유료 API와 별도 보안 접근"
 description: "Gemini 4 Carbon의 유료 API, Ultra 순차 제공, 별도 보안용 신청과 도입 가격을 구분합니다."
 slug: "gemini-4-carbon-access"
-publishedAt: "2026-11-12T00:08:53.230065+00:00"
+publishedAt: "2026-11-12T00:18:53Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Gemini", "AI 모델"]
