@@ -2,7 +2,7 @@
 title: "AI 기억이 틀렸다면, 원래 기록으로 돌아가기"
 description: "WikiTrace가 교훈과 원래 실행 기록을 연결하는 방법, 기억이 만드는 새 실패와 연구의 한계를 살펴봅니다."
 slug: "wikitrace-evidence-linked-memory"
-publishedAt: "2026-11-12T06:10:50.651113+00:00"
+publishedAt: "2026-11-12T06:20:47Z"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "메모리", "평가"]
