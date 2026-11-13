@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>https://blog.damecasol.com/posts/gemini-4-carbon-access/</loc>
+    <news:news>
+      <news:publication>
+        <news:name>3분만에 만화로 보는 IT</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-11-12T00:18:53.000Z</news:publication_date>
+      <news:title>Gemini 4 Carbon 공개 확대: 유료 API와 별도 보안 접근</news:title>
+    </news:news>
+  </url>
+</urlset>
