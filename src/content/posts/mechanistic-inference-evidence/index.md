@@ -2,7 +2,7 @@
 title: "AI 내부를 관찰하면 작동 원리까지 알 수 있을까"
 description: "기계적 해석가능성 논문이 제안한 관찰·인과적 영향·계산 역할의 구분과 설명의 한계를 살펴봅니다."
 slug: "mechanistic-inference-evidence"
-publishedAt: "2026-11-13T06:07:43.029652+00:00"
+publishedAt: "2026-11-13T06:17:00Z"
 track: "paper"
 subtype: "position"
 tags: ["해석가능성", "신경망", "인과 추론"]
