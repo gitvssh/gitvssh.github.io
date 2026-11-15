@@ -2,7 +2,7 @@
 title: "형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류"
 description: "소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다."
 slug: "semantic-parser-silent-errors"
-publishedAt: "2026-11-15T06:10:13.337567+00:00"
+publishedAt: "2026-11-15T06:20:29Z"
 track: "paper"
 subtype: "empirical"
 tags: ["언어 모델", "의미 분석", "평가"]
