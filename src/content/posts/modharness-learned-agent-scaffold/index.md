@@ -2,7 +2,7 @@
 title: "ModHarness-RL: 모델 곁의 도구도 학습할 수 있을까?"
 description: "ModHarness-RL의 고정 압축 규칙과 학습 중 갱신하는 개입 규칙을 구분하고, CodeSearch 결과의 범위를 살펴봅니다."
 slug: "modharness-learned-agent-scaffold"
-publishedAt: "11/16/2026 06:28:19"
+publishedAt: "2026-11-16T06:28:19Z"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "강화학습", "평가"]
