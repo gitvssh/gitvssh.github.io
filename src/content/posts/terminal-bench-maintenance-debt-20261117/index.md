@@ -2,7 +2,7 @@
 title: "Terminal-Bench: 채점기를 고치면 AI 점수도 달라진다"
 description: "Terminal-Bench 2.0과 2.1에서 같은 에이전트의 점수가 달라진 이유는 과제와 채점기가 수정되었기 때문입니다."
 slug: "terminal-bench-maintenance-debt-20261117"
-publishedAt: "2026-11-17T10:23:38Z"
+publishedAt: "2026-11-17T10:42:45.852Z"
 track: "paper"
 subtype: "empirical"
 tags: ["Terminal-Bench", "AI 에이전트", "벤치마크"]
