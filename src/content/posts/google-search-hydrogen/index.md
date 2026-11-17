@@ -2,7 +2,7 @@
 title: "Google 검색에 Hydrogen 적용: 복잡한 질문을 나눠 찾는다"
 description: "Google 검색의 Hydrogen 적용과 하위 주제 동시 검색, 제공 범위를 구분합니다."
 slug: "google-search-hydrogen"
-publishedAt: "2026-11-17T08:36:38.512369+00:00"
+publishedAt: "2026-11-17T08:47:02Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Gemini", "검색"]
