@@ -2,7 +2,7 @@
 title: "실행은 같은데, 요약 뒤 AI 판정은 왜 달라질까?"
 description: "동일한 실행에서 근거를 가리거나 복원했을 때 AI 검증자의 판정이 유지되는지 살펴봅니다."
 slug: "verification-transport-evidence"
-publishedAt: "2026-11-17T06:16:33Z"
+publishedAt: "2026-11-17T06:26:47Z"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "평가", "관측 가능성"]
