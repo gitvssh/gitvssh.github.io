@@ -2,7 +2,7 @@
 title: "GPT-6.2 Astra와 Sol: 복잡한 프로젝트와 일상 업무"
 description: "GPT-6.2 Astra와 Sol의 역할, 제공 범위와 Ultrafast 조건을 구분합니다."
 slug: "gpt-62-astra-sol-work"
-publishedAt: "2026-11-18T00:06:01.120631+00:00"
+publishedAt: "2026-11-18T00:14:04Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["OpenAI", "GPT", "Codex"]
