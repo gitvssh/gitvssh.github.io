@@ -2,7 +2,7 @@
 title: "VeriCUA: 끝냈다는 말에서 저장된 결과 확인으로"
 description: "컴퓨터 사용 에이전트가 “작업을 끝냈다”고 말해도, 그 말만으로 완료를 확정할 수는 없습니다."
 slug: "vericua-completion-evidence-20261118"
-publishedAt: "2026-11-18T08:37:20Z"
+publishedAt: "2026-11-18T08:46:24.559Z"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "VeriCUA", "컴퓨터 사용", "완료 검증"]
