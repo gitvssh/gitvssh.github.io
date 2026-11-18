@@ -2,7 +2,7 @@
 title: "AI 개선안을 잘 만들어도, 잘 고르는 건 다른 문제다"
 description: "좋은 개선안이 있어도 평가 잡음 때문에 선택하지 못할 수 있습니다. Resolution Hypothesis의 생성·선택 실험과 한계를 구분합니다."
 slug: "resolution-hypothesis-selection"
-publishedAt: "2026-11-18T06:15:23.756395+00:00"
+publishedAt: "2026-11-18T06:26:44Z"
 track: "paper"
 subtype: "empirical"
 tags: ["AI 에이전트", "평가", "자기개선"]
