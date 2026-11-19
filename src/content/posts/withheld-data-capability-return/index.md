@@ -2,7 +2,7 @@
 title: "학습 데이터를 빼도, 능력의 바탕은 남을까?"
 description: "특정 학습 신호를 빼도 다른 학습이 능력의 바탕을 만들 수 있을까요? 학습 신호 제거 실험과 재학습 비용, 해석의 한계를 나눠 봅니다."
 slug: "withheld-data-capability-return"
-publishedAt: "2026-11-19T06:18:47.024908+00:00"
+publishedAt: "2026-11-19T06:30:53Z"
 track: "paper"
 subtype: "empirical"
 tags: ["LLM", "학습 데이터", "모델 평가"]
