@@ -2,7 +2,7 @@
 title: "OpenAI의 칩 설계 AI: 회로를 바꾸고 동작은 검증한다"
 description: "AI의 회로 수정과 설계 도구 검증, 실제 제품 반영의 차이를 설명합니다."
 slug: "openai-chip-design-rtl-verification"
-publishedAt: "2026-11-19T00:15:46.307595+00:00"
+publishedAt: "2026-11-19T00:25:09Z"
 track: "news"
 subtype: "research_news"
 tags: ["AI 하드웨어", "OpenAI", "반도체"]
