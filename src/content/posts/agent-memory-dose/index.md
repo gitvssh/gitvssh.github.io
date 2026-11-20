@@ -2,7 +2,7 @@
 title: "에이전트의 기억은 많을수록 좋을까?"
 description: "과거 경험을 모두 읽히는 것이 늘 유리할까요? ALTK Evolve 연구의 모델별 기억량 비교와 반복된 지침이 실패한 사례를 살펴봅니다."
 slug: "agent-memory-dose"
-publishedAt: "2026-11-20T06:14:48.486886+00:00"
+publishedAt: "2026-11-20T06:27:21Z"
 track: "paper"
 subtype: "empirical"
 tags: ["LLM", "AI 에이전트", "메모리", "모델 평가"]
