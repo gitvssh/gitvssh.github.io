@@ -2,7 +2,7 @@
 title: "Gemini 도구 검색: 필요한 매개변수만 불러온다"
 description: "도구 이름·설명과 매개변수 구조를 나눠 읽는 방식, 프리뷰 지원 범위와 과금 조건을 설명합니다."
 slug: "gemini-tool-retrieval-preview"
-publishedAt: "2026-11-20T00:15:55.785601+00:00"
+publishedAt: "2026-11-20T00:27:29Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Gemini", "AI 에이전트", "도구 호출"]
