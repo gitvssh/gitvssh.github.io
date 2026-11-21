@@ -2,7 +2,7 @@
 title: "Gemini가 대신 거는 전화, 어디까지 맡길 수 있을까"
 description: "Gemini의 전화 대행을 가능하게 한 Duplex의 변화와 미국 지원 조건, 통화 전 확인과 중단 경계를 살펴봅니다."
 slug: "gemini-duplex-business-calls"
-publishedAt: "2026-11-21T01:04:33.162713+00:00"
+publishedAt: "2026-11-21T01:14:26Z"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["Gemini", "음성 AI", "AI 에이전트"]
