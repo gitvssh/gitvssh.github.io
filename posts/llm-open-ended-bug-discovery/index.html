@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>LLM 버그 탐지 벤치마크 FuzzingBrain-Bench | 다메카솔</title><meta name="description" content="FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="정답을 모른 채 버그를 찾는 AI 에이전트 평가"><meta property="og:description" content="FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/"><meta property="og:image" content="https://blog.damecasol.com/social/llm-open-ended-bug-discovery.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/llm-open-ended-bug-discovery.jpg"><meta property="og:image:alt" content="성인형 카솔이 여러 버그 탐지 경로가 연결된 봉인 실험실 문을 여는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="정답을 모른 채 버그를 찾는 AI 에이전트 평가"><meta name="twitter:description" content="FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/llm-open-ended-bug-discovery.jpg"><meta name="twitter:image:alt" content="성인형 카솔이 여러 버그 탐지 경로가 연결된 봉인 실험실 문을 여는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/","headline":"정답을 모른 채 버그를 찾는 AI 에이전트 평가","name":"정답을 모른 채 버그를 찾는 AI 에이전트 평가","description":"FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.","datePublished":"2026-08-27T00:00:00.000Z","dateModified":"2026-10-18T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/"},"image":["https://blog.damecasol.com/social/llm-open-ended-bug-discovery.jpg","https://blog.damecasol.com/_astro/cover.DAIoUA9I.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/llm-open-ended-bug-discovery.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 에이전트, AI 보안, LLM, 벤치마크","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1397,"citation":"https://arxiv.org/abs/2608.25158"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"정답을 모른 채 버그를 찾는 AI 에이전트 평가","item":"https://blog.damecasol.com/posts/llm-open-ended-bug-discovery/"}]}</script><meta property="article:published_time" content="2026-08-27T00:00:00.000Z"><meta property="article:modified_time" content="2026-10-18T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 에이전트"><meta property="article:tag" content="AI 보안"><meta property="article:tag" content="LLM"><meta property="article:tag" content="벤치마크"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="llm-open-ended-bug-discovery" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-27T00:00:00.000Z">2026년 8월 27일</time></span><span>수정 <time datetime="2026-10-18T00:00:00.000Z">2026년 10월 18일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>정답을 모른 채 버그를 찾는 AI 에이전트 평가</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>FuzzingBrain-Bench의 정답 없는 버그 발견 평가, 재현 가능한 크래시 점수와 근본 취약점 판정의 경계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DAIoUA9I_Z1crCVA.webp" srcset="/_astro/cover.DAIoUA9I_19UPf8.webp 640w, /_astro/cover.DAIoUA9I_Vnk1Y.webp 960w, /_astro/cover.DAIoUA9I_Z1crCVA.webp 1024w" alt="성인형 카솔이 여러 버그 탐지 경로가 연결된 봉인 실험실 문을 여는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#정답-하나만-보면-새-실패를-버릴-수-있다" data-toc-link="정답-하나만-보면-새-실패를-버릴-수-있다" data-analytics-event="toc_click" data-analytics-target="정답-하나만-보면-새-실패를-버릴-수-있다">정답 하나만 보면 새 실패를 버릴 수 있다</a></li><li class="article-toc__depth-2"><a href="#봉인된-과제에는-소스와-하네스만-있다" data-toc-link="봉인된-과제에는-소스와-하네스만-있다" data-analytics-event="toc_click" data-analytics-target="봉인된-과제에는-소스와-하네스만-있다">봉인된 과제에는 소스와 하네스만 있다</a></li><li class="article-toc__depth-2"><a href="#세-번-같은-흔적을-남겨야-센다" data-toc-link="세-번-같은-흔적을-남겨야-센다" data-analytics-event="toc_click" data-analytics-target="세-번-같은-흔적을-남겨야-센다">세 번 같은 흔적을 남겨야 센다</a></li><li class="article-toc__depth-2"><a href="#가장-강한-모델도-17개-과제에서는-크래시를-못-냈다" data-toc-link="가장-강한-모델도-17개-과제에서는-크래시를-못-냈다" data-analytics-event="toc_click" data-analytics-target="가장-강한-모델도-17개-과제에서는-크래시를-못-냈다">가장 강한 모델도 17개 과제에서는 크래시를 못 냈다</a></li><li class="article-toc__depth-2"><a href="#공개-index는-확인했지만-모델-실행은-재현하지-않았다" data-toc-link="공개-index는-확인했지만-모델-실행은-재현하지-않았다" data-analytics-event="toc_click" data-analytics-target="공개-index는-확인했지만-모델-실행은-재현하지-않았다">공개 index는 확인했지만 모델 실행은 재현하지 않았다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-크래시와-취약점-확정-사이에-관문을-둔다" data-toc-link="다메카솔의-해석-크래시와-취약점-확정-사이에-관문을-둔다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-크래시와-취약점-확정-사이에-관문을-둔다">다메카솔의 해석: 크래시와 취약점 확정 사이에 관문을 둔다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#점수가-높으면-더-많은-실제-취약점을-찾았다는-뜻인가요" data-toc-link="점수가-높으면-더-많은-실제-취약점을-찾았다는-뜻인가요" data-analytics-event="toc_click" data-analytics-target="점수가-높으면-더-많은-실제-취약점을-찾았다는-뜻인가요">점수가 높으면 더 많은 실제 취약점을 찾았다는 뜻인가요?</a></li><li class="article-toc__depth-3"><a href="#정답을-숨기면-채점-정확도가-떨어지지-않나요" data-toc-link="정답을-숨기면-채점-정확도가-떨어지지-않나요" data-analytics-event="toc_click" data-analytics-target="정답을-숨기면-채점-정확도가-떨어지지-않나요">정답을 숨기면 채점 정확도가 떨어지지 않나요?</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>퍼저나 보안 에이전트가 사전에 알려진 취약점과 다른 위치에서 새로운 크래시를 터뜨렸다면, 그 결과를 오답으로 버려야 할까요? **「FuzzingBrain-Bench V1: Evaluating Open-Ended Bug Discovery by LLMs」**는 알려진 정답을 모델에게 숨긴 채 실제로 재현되는 서로 다른 크래시를 찾게 하는 개방형 평가를 제안합니다(2026년 8월 25일 21:09:20 UTC 제출된 arXiv v1 기준이며, 8월 27일 cs.AI 공식 일일 신규 목록에서 최근 7일 확장 없이 선정했습니다).</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>봉인된 개방형 과제</strong>: 43개 오픈소스 프로젝트의 77개 과제(C 36개, C++ 32개, Java/JVM 9개)에서 정답 위치·패치·참조 PoC를 모델에게 전혀 보여 주지 않았습니다.</li>
+<li><strong>3회 재현 기반 채점</strong>: 후보 입력은 하네스에서 세 번 실행해 모두 크래시하고 동일한 서명(정규화된 fault class + 관련 함수 최대 3개)을 남겨야만 점수 후보가 됩니다.</li>
+<li><strong>모델별 탐색 결과</strong>: 세 가지 Claude 모델 중 <strong>Opus 4.8</strong>이 <strong>196/579점</strong>(60/77개 과제에서 1개 이상 크래시 발생)으로 가장 높았으나, 17개 과제에서는 크래시를 내지 못했습니다.</li>
+<li><strong>서명과 근본 취약점의 구분</strong>: 서로 다른 크래시 서명이 곧 서로 다른 근본 취약점(root-cause vulnerability)을 뜻하지는 않으며, 이번 검토에서는 공개 인덱스와 점수 산식을 직접 검산했습니다(231개 모델 실행 자체는 재현하지 않았습니다).</li>
+</ul>
+<h2 id="정답-하나만-보면-새-실패를-버릴-수-있다">정답 하나만 보면 새 실패를 버릴 수 있다</h2>
+<p><img alt="한 목표만 비추는 탐색 장치 주변의 다른 균열들이 탐지되지 않은 채 남은 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DtzfBa6X_Z22g1JH.webp" srcset=""></p>
+<p>기존의 취약점 재현형 벤치마크는 모델이 이미 알려진 버그를 다시 찾아냈는지 묻기에 적합합니다. 예상한 결함 위치나 참조 PoC(개념증명 입력)와 일치하면 성공으로 처리할 수 있어 채점도 명쾌합니다.</p>
+<p>하지만 미지의 버그를 찾는 개방형 탐색에서는 이 기준이 오히려 족쇄가 됩니다. 모델이 같은 프로그램 안에서 전혀 다른 유효한 크래시를 찾아냈더라도, 사전에 정해 둔 정답 하나와 다르다는 이유로 실패처럼 처리될 수 있기 때문인데요. FuzzingBrain-Bench는 특정 목표 취약점 하나를 맞히게 하는 대신, 에이전트가 실행 중 찾아낸 재현 가능한 크래시를 모아 같은 과제 안에서 <strong>서로 다른 크래시 서명</strong>을 세어 점수로 환산합니다. 정답 복원 능력보다 넓은 버그 발견 능력을 측정하려는 설계입니다.</p>
+<h2 id="봉인된-과제에는-소스와-하네스만-있다">봉인된 과제에는 소스와 하네스만 있다</h2>
+<p><img alt="AI 탐색기가 정답 표시 없이 소스 구조와 입력 조각만 있는 봉인 과제를 조사하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.BbMQ_KHv_Z1c5O4N.webp" srcset=""></p>
+<p>FuzzingBrain-Bench V1은 43개 오픈소스 프로젝트에서 <strong>77개 과제</strong>(C 36개, C++ 32개, Java/JVM 9개)를 구축했습니다. 각 과제는 취약한 리비전의 소스 코드와 퍼징 하네스, sanitizer 설정, 계측된(instrumented) 하네스 바이너리를 Docker 이미지 안에 담아 제공합니다.</p>
+<p>모델에게는 참조 PoC나 버그 리포트, 수정 패치, Git 히스토리, 정답 위치가 전혀 주어지지 않습니다. 오직 <code>setup</code>, <code>exec</code>, <code>run_poc_on_harness</code> 세 가지 도구만으로 소스를 읽고 명령을 실행하며 후보 입력을 시험해야 하는데, 특히 <code>exec</code>는 격리된 별도 네트워크 네임스페이스에서 돌아가므로 외부 이슈 트래커나 수정 커밋을 검색할 수도 없습니다. 저자들은 이 환경에 Claude Haiku 4.5, Sonnet 4.6, Opus 4.8 세 모델을 투입해 과제당 최대 100턴, 1,800초 제한으로 실험을 진행했습니다.</p>
+<h2 id="세-번-같은-흔적을-남겨야-센다">세 번 같은 흔적을 남겨야 센다</h2>
+<p><img alt="세 번의 반복 시험에서 같은 균열 신호가 일치하고 다른 신호는 분리되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.C2tfl2oz_1tAaaM.webp" srcset=""></p>
+<p>에이전트가 제출한 후보 입력은 하네스에서 연속으로 <strong>세 번</strong> 실행됩니다. 세 번의 실행이 모두 크래시를 일으키고 똑같은 서명을 남겨야만 유효한 점수 후보로 인정받으며, 한 번만 실패하거나 실행할 때마다 크래시 위치가 달라지는 불안정한(flaky) 입력은 제외됩니다.</p>
+<p>크래시 서명은 정규화한 결함 분류(fault class)와 스택의 관련 함수 이름 최대 세 개를 조합해 만듭니다. 같은 과제 실행 안에서 이미 등장한 서명은 한 번만 집계해, 동일한 크래시를 반복 제출해 점수를 부풀리는 현상을 막았습니다.</p>
+<p>다만 여기에는 반드시 짚어야 할 경계가 있습니다. <strong>하나의 근본 결함이라도 서로 다른 함수 호출 경로를 타고 들어가면 서로 다른 상위 함수 이름을 남길 수 있다</strong>는 점입니다. 따라서 고유한 크래시 서명(distinct crash signature)은 관찰된 실패 현상을 나누는 단위일 뿐, 독립된 근본 취약점(root-cause vulnerability) 개수를 확정하는 단위는 아닙니다.</p>
+<h2 id="가장-강한-모델도-17개-과제에서는-크래시를-못-냈다">가장 강한 모델도 17개 과제에서는 크래시를 못 냈다</h2>
+<p><img alt="세 AI 탐색기 앞에 열린 과제와 닫힌 과제가 함께 넓게 남아 있는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.FqOxSCXe_232FuG.webp" srcset=""></p>
+<p>저자들이 보고한 세 모델의 성적표와 행동 특성은 다음과 같습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 모델</th>
+<th style="text-align: right">종합 점수 (만점 579점)</th>
+<th style="text-align: right">1개 이상 크래시를 낸 과제 수 (전체 77개)</th>
+<th style="text-align: right">과제당 사용 턴 중앙값 (최대 100턴)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claude Opus 4.8</strong></td>
+<td style="text-align: right"><strong>196 / 579</strong></td>
+<td style="text-align: right"><strong>60 / 77</strong></td>
+<td style="text-align: right">51턴</td>
+</tr>
+<tr>
+<td><strong>Claude Sonnet 4.6</strong></td>
+<td style="text-align: right"><strong>156 / 579</strong></td>
+<td style="text-align: right"><strong>50 / 77</strong></td>
+<td style="text-align: right">100턴</td>
+</tr>
+<tr>
+<td><strong>Claude Haiku 4.5</strong></td>
+<td style="text-align: right"><strong>58 / 579</strong></td>
+<td style="text-align: right"><strong>35 / 77</strong></td>
+<td style="text-align: right">100턴</td>
+</tr>
+</tbody>
+</table>
+<p>확인된 취약점이 존재하는 과제들인데도 <strong>13개 과제</strong>에서는 세 모델 모두 단 하나의 크래시 입력도 만들지 못했고, 가장 점수가 높은 Opus 4.8 역시 <strong>17개 과제</strong>에서 크래시를 내지 못했습니다.</p>
+<p>점수 산식과 행동 패턴에서도 눈여겨볼 대목이 있습니다.</p>
+<ul>
+<li><strong>난이도 가중 점수 산식</strong>: 각 과제 점수는 <code>min(서로 다른 크래시 수, 3) × 난이도 D</code>로 계산해 합산하며(만점 579점), 난이도 <code>D</code>(1~5)는 평가 대상인 세 Anthropic 모델 패널의 성공률로 정한 고정값입니다. 평가 대상과 난이도 산정 기준이 같은 모델 계열에 묶여 있다는 점은 다른 모델군으로 결과를 확장할 때 유의해야 할 제약입니다.</li>
+<li><strong>조기 종료 정책의 영향</strong>: Sonnet 4.6과 Haiku 4.5의 사용 턴 중앙값이 제한치인 100턴이었던 것과 달리 Opus 4.8은 <strong>51턴</strong>에 머물렀습니다. 저자들은 Opus가 스스로 탐색을 일찍 멈추는 경향 때문에 일부 낮은 난이도 구간에서 오히려 Sonnet보다 약한 결과를 냈다고 분석했는데, 모델의 추론 능력뿐 아니라 <strong>언제 멈추느냐는 종료 정책</strong>도 벤치마크 성적에 직접 영향을 준 셈입니다.</li>
+</ul>
+<h2 id="공개-index는-확인했지만-모델-실행은-재현하지-않았다">공개 index는 확인했지만 모델 실행은 재현하지 않았다</h2>
+<p>이번 검토에서는 공식 저장소 고정 커밋(<code>76ac1fce7094400c1dce017a8c1432d48969881c</code>)의 아카이브를 보존하고 공개 인덱스와 난이도 표를 직접 검산했습니다. 고유 과제 별칭(alias) 77개, 대소문자 정규화 기준 프로젝트 43개, 언어별 분포(C 36개·C++ 32개·JVM 9개), 난이도 계수 합과 과제당 크래시 상한(3개)으로 계산한 최대 점수 579점이 모두 논문과 정확히 일치함을 확인했습니다.</p>
+<p>다만 77개 Docker 이미지를 내려받아 세 모델의 231개 실행을 재생하지는 않았으며, 각 크래시 서명이 실제로 별개의 근본 취약점인지 대조할 참조 PoC와 정답 키(answer key)도 공개 저장소에는 포함되지 않았습니다. 또한 과제 수가 77개로 비교적 작고 sanitizer가 잘 잡아내는 결함에 표본이 치우쳐 있다는 점(메모리 안전성 결함 45개, 서비스 거부 및 기타 결함 32개)도 V1의 한계로 남아 있습니다.</p>
+<h2 id="다메카솔의-해석-크래시와-취약점-확정-사이에-관문을-둔다">다메카솔의 해석: 크래시와 취약점 확정 사이에 관문을 둔다</h2>
+<p><img alt="성인형 카솔이 크래시 증거와 중복 제거, 근본 원인, 사람 승인을 차례로 분리해 설명하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.BRLFj4WY_12jnLI.webp" srcset=""></p>
+<p>만약 AI 보안 에이전트를 실무 취약점 분류(triage) 파이프라인에 연결한다면, 그 결과를 다음 네 단계로 분리해 다뤄야 합니다.</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>남길 증거와 판단 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 크래시 증거 확보</strong></td>
+<td>입력 해시, sanitizer 출력, 실행 환경과 3회 연속 재현 결과</td>
+</tr>
+<tr>
+<td><strong>2. 서명 중복 제거</strong></td>
+<td>결함 분류(fault class), 함수 호출 경로, 정규화 규칙 버전</td>
+</tr>
+<tr>
+<td><strong>3. 근본 원인 분석</strong></td>
+<td>관련 소스 코드, 호출 경로 대조, 동일 근본 결함으로 묶은 근거</td>
+</tr>
+<tr>
+<td><strong>4. 최종 승인 및 우선순위</strong></td>
+<td>보안 담당자가 확정한 실제 취약점 여부, 영향 범위, 패치 우선순위</td>
+</tr>
+</tbody>
+</table>
+<p>FuzzingBrain-Bench의 크래시 서명 방식은 앞의 1·2단계를 자동화하는 데 무척 유용하지만, 서명 개수를 곧바로 ‘발견한 취약점 수’나 ‘패치 우선순위’로 승격하면 증거보다 결론이 앞서게 됩니다. 재현 가능한 크래시는 조사할 가치가 충분한 강력한 신호일 뿐, 실제 취약점 확정은 코드와 영향 범위를 읽는 별도의 판단 영역입니다.</p>
+<p>앞서 다룬 <a href="/posts/tool-specifications-agent-safety/">도구 명세로 에이전트 행동을 제한하는 방법</a>이 실행 전의 안전 경계를 짚었다면, 이번 벤치마크는 실행 뒤 쏟아지는 실패 증거를 어떻게 채점하고 걸러낼지 보여 줍니다. <a href="/posts/agentic-coding-production-traces/">프로덕션 코딩 에이전트의 작업 흔적을 다룬 글</a>처럼 최종 점수 하나보다 어떤 도구 호출과 재현 기록이 그 숫자를 만들었는지 남겨 두어야 실제 운영에서도 안전하게 재판단할 수 있습니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>FuzzingBrain-Bench V1: Evaluating Open-Ended Bug Discovery by LLMs</td>
+</tr>
+<tr>
+<td>공개 이력</td>
+<td>arXiv v1 2026-08-25 21:09:20 UTC; 2026-08-27 cs.AI 신규 목록 등장</td>
+</tr>
+<tr>
+<td>과제</td>
+<td>43개 오픈소스 프로젝트, 77개 과제</td>
+</tr>
+<tr>
+<td>평가 모델</td>
+<td>Claude Haiku 4.5, Sonnet 4.6, Opus 4.8</td>
+</tr>
+<tr>
+<td>공개 artifact</td>
+<td>MIT 공식 코드, 공개 challenge index, grader와 고정 난이도 표</td>
+</tr>
+</tbody>
+</table>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="점수가-높으면-더-많은-실제-취약점을-찾았다는-뜻인가요">점수가 높으면 더 많은 실제 취약점을 찾았다는 뜻인가요?</h3>
+<p>점수는 3회 연속 재현된 서로 다른 크래시 서명 수와 난이도 계수를 반영한 값입니다. 동일한 근본 결함이 호출 경로에 따라 여러 서명을 남길 수 있으므로, 점수나 서명 수가 실제 고유 취약점 개수와 일대일로 일치한다고 볼 수는 없습니다.</p>
+<h3 id="정답을-숨기면-채점-정확도가-떨어지지-않나요">정답을 숨기면 채점 정확도가 떨어지지 않나요?</h3>
+<p>사전 정답과의 일치 대신 ‘3회 연속 재현’, ‘sanitizer 결함 검출’, ‘정규화된 함수 경로’라는 객관적 실행 신호를 사용합니다. 예상 밖의 새로운 버그 발견을 포착하는 대신, 근본 원인 확정은 후속 분석 단계로 남기는 실용적 절충입니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/tool-specifications-agent-safety/">도구 명세로 AI 에이전트를 안전하게 쓰는 방법</a></li>
+<li><a href="/posts/agentic-coding-production-traces/">production 코딩 에이전트의 실제 작업 흔적</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.25158">FuzzingBrain 연구진, “FuzzingBrain-Bench V1: Evaluating Open-Ended Bug Discovery by LLMs,” arXiv:2608.25158</a></li>
+<li><a href="https://arxiv.org/pdf/2608.25158">arXiv v1 PDF</a></li>
+<li><a href="https://github.com/fuzzingbrain/FuzzingBrain-Bench/tree/76ac1fce7094400c1dce017a8c1432d48969881c">FuzzingBrain-Bench 공식 저장소, pinned commit 76ac1fce</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+<p>Updated: 2026-08-27</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/fde-gym-customer-outcomes/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BMyy8xGM_A1EMy.webp" srcset="/_astro/cover.BMyy8xGM_Z1KiGgJ.webp 240w, /_astro/cover.BMyy8xGM_Zx7EFg.webp 360w, /_astro/cover.BMyy8xGM_F3lUd.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-16T00:00:00.000Z">2026년 10월 16일</time></div><h3><a href="/posts/fde-gym-customer-outcomes/" data-analytics-event="related_post_click" data-analytics-target="fde-gym-customer-outcomes">AI가 기능은 만들었는데, 고객의 일은 왜 그대로일까</a></h3><p>FDE-Gym은 숨은 업무 조건을 찾고 기존 시스템을 고친 뒤 고객 성과까지 평가합니다. 평균 점수와 해결률의 차이, 질문 비용, 모의 환경의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/carryon-object-context/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.RDB2GDpn_Z7CEs8.webp" srcset="/_astro/cover.RDB2GDpn_Z2gILHI.webp 240w, /_astro/cover.RDB2GDpn_Z13xK7f.webp 360w, /_astro/cover.RDB2GDpn_9Cgte.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-15T00:00:00.000Z">2026년 10월 15일</time></div><h3><a href="/posts/carryon-object-context/" data-analytics-event="related_post_click" data-analytics-target="carryon-object-context">AI가 끝낸 일을 다시 설명하느라 바쁠 때</a></h3><p>CarryOn은 재사용할 작업물과 남은 의무를 함께 보존합니다. 기록 갱신의 안전장치, OSWorld와 검색 평가의 결과, 코드 공개 전의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/cleat-value-guided-clarification/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.wnyihWWB_Z5bgve.webp" srcset="/_astro/cover.wnyihWWB_Z26DyQ3.webp 240w, /_astro/cover.wnyihWWB_ZSsxfz.webp 360w, /_astro/cover.wnyihWWB_jHtkT.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-14T00:00:00.000Z">2026년 10월 14일</time></div><h3><a href="/posts/cleat-value-guided-clarification/" data-analytics-event="related_post_click" data-analytics-target="cleat-value-guided-clarification">AI가 자꾸 되물을 때, 어떤 질문이 필요한가</a></h3><p>CLEAT는 어떤 확인 질문이 현재 에이전트의 결정을 개선하는지 학습합니다. 평소 행동과의 비교, 정책 갱신, 모의 사용자 평가의 성과와 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>AI 영상 생성 평가 기준, VideoArgus는 어떻게 증거를 모을까 | 다메카솔</title><meta name="description" content="VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="AI 영상 평가가 점수 하나로 끝나면 안 되는 이유"><meta property="og:description" content="VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/"><meta property="og:image" content="https://blog.damecasol.com/social/videoargus-evidence-video-evaluation.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/videoargus-evidence-video-evaluation.jpg"><meta property="og:image:alt" content="성인형 카솔이 서로 다른 실패를 가진 두 영상 필름을 증거 렌즈로 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="AI 영상 평가가 점수 하나로 끝나면 안 되는 이유"><meta name="twitter:description" content="VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/videoargus-evidence-video-evaluation.jpg"><meta name="twitter:image:alt" content="성인형 카솔이 서로 다른 실패를 가진 두 영상 필름을 증거 렌즈로 살피는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/","headline":"AI 영상 평가가 점수 하나로 끝나면 안 되는 이유","name":"AI 영상 평가가 점수 하나로 끝나면 안 되는 이유","description":"VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다.","datePublished":"2026-08-07T00:00:00.000Z","dateModified":"2026-10-18T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/"},"image":["https://blog.damecasol.com/social/videoargus-evidence-video-evaluation.jpg","https://blog.damecasol.com/_astro/cover.Zsni2f4S.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/videoargus-evidence-video-evaluation.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"멀티모달 AI, 벤치마크","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1390,"citation":"https://arxiv.org/abs/2608.05485"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"AI 영상 평가가 점수 하나로 끝나면 안 되는 이유","item":"https://blog.damecasol.com/posts/videoargus-evidence-video-evaluation/"}]}</script><meta property="article:published_time" content="2026-08-07T00:00:00.000Z"><meta property="article:modified_time" content="2026-10-18T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="멀티모달 AI"><meta property="article:tag" content="벤치마크"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="videoargus-evidence-video-evaluation" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-07T00:00:00.000Z">2026년 8월 7일</time></span><span>수정 <time datetime="2026-10-18T00:00:00.000Z">2026년 10월 18일</time></span></div><h1>AI 영상 평가가 점수 하나로 끝나면 안 되는 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>VideoArgus가 입력별 루브릭을 고정하고 추적·OCR·깊이·시간 증거를 모아 영상 생성과 편집 결과를 평가하는 방법과 검증 한계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.Zsni2f4S_1Fda6G.webp" srcset="/_astro/cover.Zsni2f4S_Kzku5.webp 640w, /_astro/cover.Zsni2f4S_x1OgV.webp 960w, /_astro/cover.Zsni2f4S_1Fda6G.webp 1024w" alt="성인형 카솔이 서로 다른 실패를 가진 두 영상 필름을 증거 렌즈로 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#모든-영상에-같은-자를-대면-실패-이유가-사라진다" data-toc-link="모든-영상에-같은-자를-대면-실패-이유가-사라진다" data-analytics-event="toc_click" data-analytics-target="모든-영상에-같은-자를-대면-실패-이유가-사라진다">모든 영상에 같은 자를 대면 실패 이유가 사라진다</a></li><li class="article-toc__depth-2"><a href="#후보를-보기-전에-입력별-루브릭을-고정한다" data-toc-link="후보를-보기-전에-입력별-루브릭을-고정한다" data-analytics-event="toc_click" data-analytics-target="후보를-보기-전에-입력별-루브릭을-고정한다">후보를 보기 전에 입력별 루브릭을 고정한다</a></li><li class="article-toc__depth-2"><a href="#기준마다-다른-도구로-증거를-모은다" data-toc-link="기준마다-다른-도구로-증거를-모은다" data-analytics-event="toc_click" data-analytics-target="기준마다-다른-도구로-증거를-모은다">기준마다 다른 도구로 증거를 모은다</a></li><li class="article-toc__depth-2"><a href="#사람의-순위-판단에는-더-가까웠다" data-toc-link="사람의-순위-판단에는-더-가까웠다" data-analytics-event="toc_click" data-analytics-target="사람의-순위-판단에는-더-가까웠다">사람의 순위 판단에는 더 가까웠다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-평균-점수보다-실패-근거를-먼저-읽는다" data-toc-link="다메카솔의-해석-평균-점수보다-실패-근거를-먼저-읽는다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-평균-점수보다-실패-근거를-먼저-읽는다">다메카솔의 해석: 평균 점수보다 실패 근거를 먼저 읽는다</a></li><li class="article-toc__depth-2"><a href="#실험-및-재현-시-참고할-한계" data-toc-link="실험-및-재현-시-참고할-한계" data-analytics-event="toc_click" data-analytics-target="실험-및-재현-시-참고할-한계">실험 및 재현 시 참고할 한계</a></li><li class="article-toc__depth-2"><a href="#실무-체크리스트" data-toc-link="실무-체크리스트" data-analytics-event="toc_click" data-analytics-target="실무-체크리스트">실무 체크리스트</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>AI로 영상을 생성하거나 편집할 때 가장 먼저 던지는 질문은 “둘 중 어떤 영상이 더 좋은가?”입니다. 하지만 한 영상은 인물의 얼굴을 잘 보존한 대신 동작 순서가 틀리고, 다른 영상은 지시를 잘 따랐지만 중간에 물체가 사라질 수 있습니다. 평균 점수 하나로는 승자를 고를 수 있어도, 구체적으로 무엇이 왜 실패했고 어디를 고쳐야 하는지는 알기 어렵습니다.</p>
+<p>2026년 8월 6일 공개된 프리프린트 <strong>VideoArgus: Agentic Rubric-Grounded Unified Evaluation for Video Generation and Editing</strong>은 이 문제를 입력별 맞춤형 평가 기준(루브릭)과 시각 증거 도구로 풀려는 연구입니다. 후보 영상을 보기 전에 프롬프트와 조건 이미지·영상만으로 루브릭을 먼저 고정(<code>output-blind</code>)하고, 같은 입력에서 나온 모든 후보 영상을 동일한 기준으로 검사합니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>출력 블라인드(Output-Blind) 루브릭 고정</strong>: 후보 영상을 보기 전에 텍스트 지시, 첫 프레임, 참고 이미지, 원본 영상만으로 입력별 평가 루브릭(평균 11.9개 기준)을 생성·고정해 특정 후보에 유리하게 기준이 바뀌는 현상을 막습니다.</li>
+<li><strong>도구 기반 증거 수집과 진단</strong>: 22개 의미 차원 중 해당 입력에 필요한 기준만 뽑아 객체 추적, 시각 유사도, 깊이 분석, OCR, 깜빡임(flicker) 탐지 등 전문 도구로 증거를 모으고, 평가 VLM이 기준별 점수(0~10점)와 실패 근거를 기록합니다.</li>
+<li><strong>인간 평가자 순위와의 높은 일치도</strong>: 5개 생성·편집 작업(1,026개 입력, VideoArgus-Bench) 중 210개 입력·1,260개 영상에 대해 훈련된 평가자 15명의 순위와 비교한 결과, 다섯 작업 모두에서 기존 벤치마크 평가기보다 입력 내 Spearman·Kendall 순위 상관이 높았습니다(예: T2V Spearman 0.162 → 0.496, TI2V -0.060 → 0.605).</li>
+</ul>
+<h2 id="모든-영상에-같은-자를-대면-실패-이유가-사라진다">모든 영상에 같은 자를 대면 실패 이유가 사라진다</h2>
+<p><img alt="하나의 거대한 평가 자가 서로 다른 요구를 가진 세 영상 장면을 똑같이 재지만 각기 다른 실패 흔적이 남는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.B8p-pBk__ZI2BfD.webp" srcset=""></p>
+<p>영상 생성과 편집은 입력 조건에 따라 다섯 가지 설정으로 나뉩니다. 텍스트만으로 만드는 <strong>T2V</strong>, 첫 프레임을 함께 주는 <strong>TI2V</strong>, 인물이나 사물 참고 이미지를 주는 <strong>TS2V</strong>, 원본 영상을 편집하는 <strong>TV2V</strong>, 참고 대상과 원본 영상을 함께 쓰는 <strong>TSV2V</strong>입니다.</p>
+<p>입력 조건이 달라지면 핵심 실패 지점도 달라집니다. “모자를 던졌다가 받는다”는 프롬프트에서는 동작 순서와 물리 법칙이 중요하고, 참고 인물 사진을 준 편집에서는 얼굴과 의상 보존이 중요하며, 원본 영상 편집에서는 지시한 부분 외에 배경과 움직임이 그대로 유지됐는지가 핵심입니다.</p>
+<p>기존 평가기는 특정 작업에만 갇혀 있거나 모든 입력에 획일적인 평가 차원을 적용하는 경우가 많았습니다. 좁은 지표는 객체 추적이나 화질 한 가지는 잘 재지만 프롬프트의 전체 요구를 놓치기 쉽고, 시각언어모델(VLM)이 한 번에 내린 총평은 무슨 근거로 점수가 깎였는지 역추적하기 어렵습니다. VideoArgus는 입력에서 관찰 가능한 요구사항을 먼저 분해해 루브릭으로 고정하는 방식을 택했습니다.</p>
+<h2 id="후보를-보기-전에-입력별-루브릭을-고정한다">후보를 보기 전에 입력별 루브릭을 고정한다</h2>
+<p><img alt="입력 조건이 중앙 기준 프리즘을 거쳐 고정된 네 기준으로 나뉘고 두 후보 필름에 동일하게 연결되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.aoOFB_Fx_dFI3g.webp" srcset=""></p>
+<p>VideoArgus는 텍스트 지시와 선택적인 첫 프레임, 참고 이미지, 원본 영상만 보고 루브릭을 한 번 만든 뒤, 후보 영상들을 평가할 때 그대로 재사용합니다. 후보 영상의 장점이나 결함을 미리 보고 기준을 맞추지 않는 <code>output-blind</code> 설계입니다.</p>
+<p>루브릭의 각 기준에는 다음 항목이 구체적으로 명시됩니다.</p>
+<ul>
+<li><strong>관찰 대상과 채점 기준</strong>: 무엇을 관찰할지, 0~10점을 어떤 기준으로 부여할지 정의합니다.</li>
+<li><strong>예상 실패와 중요도</strong>: 어떤 실패가 예상되는지, 필수 조건인 <code>hard</code> 기준인지 선호에 가까운 <code>soft</code> 기준인지, 가중치(중요도)가 얼마인지 정합니다. 필수(<code>hard</code>) 기준이 낮은 점수를 받으면 최종 점수에 상한(hard cap)을 걸어 평균 점수 착시를 막습니다.</li>
+<li><strong>증거 도구 호출 순서</strong>: 어떤 시각 도구를 어떤 순서로 실행해 증거를 수집할지 지정합니다.</li>
+</ul>
+<p>논문은 객체·속성·개수, 공간·시간 관계, 행동, 움직임, 카메라, 물리적 타당성, 화질, 스타일, 첫 프레임 일치, 대상 정체성, 편집 지시 이행, 원본 보존 등 22개 의미 차원을 다루지만 모든 입력에 22개 점수를 억지로 붙이지 않습니다. 해당 입력에 실제로 필요한 차원에서만 0개, 1개 또는 여러 개의 구체적 기준을 생성합니다.</p>
+<h2 id="기준마다-다른-도구로-증거를-모은다">기준마다 다른 도구로 증거를 모은다</h2>
+<p><img alt="하나의 후보 필름을 추적·깊이·문자 영역·깜빡임 렌즈가 검사하고 증거 빛줄기가 저울로 모이는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.C0aT2sDA_4p94w.webp" srcset=""></p>
+<p>루브릭이 고정되면 각 기준에 맞는 전문 도구가 증거를 수집합니다.</p>
+<table>
+<thead>
+<tr>
+<th>검증 대상</th>
+<th>활용하는 증거 도구</th>
+<th>폴백(Fallback) 및 종합 방식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>인물·사물의 프레임 간 유지</td>
+<td>객체 추적(Tracking) 도구</td>
+<td>도구가 지원되지 않거나 증거 수집에 실패하면 기준별 VLM 질의로 전환. 이후 평가 VLM이 기준·수집 증거·대표 프레임을 함께 보고 점수와 이유를 기록한 뒤 중요도 가중 평균과 hard cap으로 총점 산출</td>
+</tr>
+<tr>
+<td>참고 이미지와의 정체성 일치</td>
+<td>시각 유사도(Visual similarity)</td>
+<td>〃</td>
+</tr>
+<tr>
+<td>객체 간 앞뒤·배치 관계</td>
+<td>깊이 분석(Depth analysis)</td>
+<td>〃</td>
+</tr>
+<tr>
+<td>화면 내 텍스트 정확도</td>
+<td>광학문자인식(OCR)</td>
+<td>〃</td>
+</tr>
+<tr>
+<td>시간축 흔들림·번쩍임</td>
+<td>깜빡임 탐지(Flicker probe)</td>
+<td>〃</td>
+</tr>
+</tbody>
+</table>
+<p>이 구조의 강점은 “8.2점이라서 더 좋다”에서 끝나지 않는다는 점입니다. 어떤 대상이 몇 번째 프레임에서 사라졌는지, 바꾸지 말아야 할 배경이 얼마나 변형됐는지, 동작 순서가 어디서 끊겼는지가 진단 보고서에 남아 다음 생성이나 편집 단계의 피드백으로 바로 쓸 수 있습니다.</p>
+<h2 id="사람의-순위-판단에는-더-가까웠다">사람의 순위 판단에는 더 가까웠다</h2>
+<p>저자들은 다섯 가지 생성·편집 설정에 걸쳐 입력 1,026개(고유 이미지 653개, 고유 영상 416개)로 <strong>VideoArgus-Bench</strong>를 구축하고 55개 모델-작업 조합을 평가했습니다. 입력 하나의 고정 루브릭에는 평균 11.9개 기준이 들어갔습니다.</p>
+<p>인간 판단과의 정렬 검증은 외부 벤치마크 입력 210개에서 입력마다 6개 모델 영상을 모아 총 1,260개 영상을 대상으로 진행했습니다. 훈련된 평가자 15명이 익명·무작위 순서로 0~10점을 매기고 동률을 순위화한 결과, VideoArgus-Full은 다섯 작업 모두에서 원본 벤치마크 평가기보다 입력 내(within-input) Spearman 및 Kendall 순위 상관이 높았습니다.</p>
+<ul>
+<li><strong>주요 작업별 입력 내 Spearman 상관</strong>: T2V에서 원본 평가기 <code>0.162</code> 대비 VideoArgus-Full <code>0.496</code>, TI2V에서 원본 <code>-0.060</code> 대비 <code>0.605</code>로 큰 폭의 격차를 보였으며 나머지 세 작업도 같은 방향이었습니다.</li>
+<li><strong>루브릭 세밀도와 엄격성</strong>: 자동 생성된 루브릭은 사람이 쓴 루브릭보다 기준 수가 평균 2.33배 많았지만, 점수 상한을 거는 <code>hard</code> 기준 수는 평균 2.09개 대 2.27개로 비슷해 단순히 기준을 가혹하게 만들어 상관도를 높인 것이 아님을 보였습니다.</li>
+<li><strong>전문 도구 절제(Ablation) 실험</strong>: 전문 시각 도구를 빼고 VLM 질의로만 대체했을 때보다 전체 구성을 썼을 때 입력 내 Spearman은 5개 작업 모두에서, Kendall은 4개 작업에서 더 높았습니다. 다만 입력 구분 없이 전체 표본을 하나로 묶은(pooled) 상관은 결과가 혼재되어, 보완 도구의 이득은 주로 <strong>같은 입력 내 후보 간 순위 복원</strong>에서 뚜렷하게 나타났습니다.</li>
+</ul>
+<h2 id="다메카솔의-해석-평균-점수보다-실패-근거를-먼저-읽는다">다메카솔의 해석: 평균 점수보다 실패 근거를 먼저 읽는다</h2>
+<p><img alt="성인형 카솔이 증거가 연결된 평가 저울과 아직 검증되지 않은 안개 구간 사이에서 최종 승인을 멈춰 세우는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.rnxWh-rO_2gWq3n.webp" srcset=""></p>
+<p>이 구조는 공개 리더보드 경쟁보다 내부 제작 파이프라인의 QA에 먼저 적용할 때 가치가 큽니다. 프롬프트를 확정할 때 필수 기준과 선호 기준을 나누어 후보 생성 전에 루브릭을 고정하고, 생성 후에는 총점보다 실패 프레임과 도구 증거를 먼저 확인하면 프롬프트·참고 이미지·편집 마스크·후처리 중 어디를 고쳐야 할지 빠르게 좁힐 수 있습니다.</p>
+<p>물론 자동 평가가 인간의 최종 승인을 대체할 수는 없습니다. 인물의 초상권과 저작권, 위험 행동 묘사, 브랜드 톤앤매너 일관성, 그리고 루브릭 생성기나 평가 VLM이 미처 포착하지 못한 맥락적 요구는 여전히 별도의 사람 검토 게이트로 남겨 두어야 합니다.</p>
+<h2 id="실험-및-재현-시-참고할-한계">실험 및 재현 시 참고할 한계</h2>
+<p>2026년 8월 6일 공개된 이 프리프린트(University of Rochester)를 실무에 참고할 때는 세 가지 경계를 함께 봐야 합니다.</p>
+<ol>
+<li><strong>모델 의존성과 후보 범위</strong>: 루브릭 생성에는 Claude Opus 4.8을, 기준별 질의와 최종 판단에는 로컬 Qwen3.6-27B를 사용했습니다. 루브릭 생성기를 바꿨을 때의 모델 순위 유사도는 평균 0.909, 평가 VLM 교체 시에는 0.931로 높았으나 이는 시험한 모델과 입력당 6개 후보 순위 안에서 확인된 결과입니다.</li>
+<li><strong>부록 통계 미포함</strong>: 인간 정렬 세트는 210개 입력·평가자 15명 규모이며, 본문에서 언급한 부트스트랩 신뢰구간과 쌍대 검정(paired test) 수치는 공개된 11쪽 PDF와 TeX 소스 번들에 부록이 빠져 있어 독립적으로 대조할 수 없었습니다.</li>
+<li><strong>재현 데이터와 연산 비용</strong>: 공식 코드와 고정 루브릭 데이터셋은 공개됐지만 평가 대상이 된 생성 후보 영상 자체는 포함되지 않아, 리더보드를 그대로 재실행하려면 각 모델 영상을 다시 생성해야 합니다. 비용은 루브릭 생성에 입력당 평균 0.231달러(일회성 API), 영상 1개 로컬 평가에 모델 로딩 제외 평균 H100 0.033 GPU 시간이 소요되었습니다.</li>
+</ol>
+<h2 id="실무-체크리스트">실무 체크리스트</h2>
+<ol>
+<li>후보 영상을 보기 전에 프롬프트별 필수(<code>hard</code>)·선호(<code>soft</code>) 기준을 먼저 고정했는가?</li>
+<li>얼굴 보존, 동작 순서, 물리 법칙, 화면 내 글자, 원본 배경 보존을 하나의 총평으로 뭉개지 않았는가?</li>
+<li>기준마다 가장 직접적인 증거 프레임과 측정 도구를 연결했는가?</li>
+<li>평균 점수와 함께 구체적인 실패 이유와 다음 수정 대상을 기록했는가?</li>
+<li>권리·안전·브랜드 적합성·최종 인간 승인을 자동 점수와 분리된 게이트로 두었는가?</li>
+</ol>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>VideoArgus: Agentic Rubric-Grounded Unified Evaluation for Video Generation and Editing</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Ziyun Zeng, Zixuan Wang, Yongsheng Yu, Hang Hua, Jiebo Luo</td>
+</tr>
+<tr>
+<td>소속</td>
+<td>University of Rochester</td>
+</tr>
+<tr>
+<td>arXiv v1 제출</td>
+<td>2026-08-06 00:28:38 UTC</td>
+</tr>
+<tr>
+<td>분야</td>
+<td>cs.CV</td>
+</tr>
+<tr>
+<td>유형</td>
+<td>empirical (arXiv preprint)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.05485">논문 초록과 메타데이터, arXiv:2608.05485</a></li>
+<li><a href="https://arxiv.org/pdf/2608.05485">논문 원문 PDF</a></li>
+<li><a href="https://zzzmyyzeng.github.io/VideoArgus/">VideoArgus 공식 프로젝트</a></li>
+<li><a href="https://github.com/zzzmyyzeng/VideoArgus">공식 코드 저장소</a></li>
+<li><a href="https://huggingface.co/datasets/zengziyun/VideoArgusBench">VideoArgusBench 공식 데이터셋</a></li>
+<li><a href="/posts/information-discernment-llm-sources/">관련 글: AI가 인용한 출처를 믿어도 될까</a></li>
+<li><a href="/posts/scidiagramedit-paper-figure-revision/">관련 글: AI가 논문 도표를 다시 그리지 않고 고치는 법</a></li>
+</ul>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/nnv3-verification-boundaries/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.9GwFCt9X_1oad7E.webp" srcset="/_astro/cover.9GwFCt9X_Sngtm.webp 240w, /_astro/cover.9GwFCt9X_26yi4P.webp 360w, /_astro/cover.9GwFCt9X_Z1KrO8C.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-27T00:00:00.000Z">2026년 9월 27일</time></div><h3><a href="/posts/nnv3-verification-boundaries/" data-analytics-event="related_post_click" data-analytics-target="nnv3-verification-boundaries">AI 검증, 테스트한 점 밖까지 확인하려면</a></h3><p>NNV3의 집합 기반 신경망 검증을 읽으며 가중치·영상·그래프 확장, 확률적 보장 조건, unknown 판정의 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/mindtopo-reasoning-action-gap/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D0Rs1RAY_ZuHef2.webp" srcset="/_astro/cover.D0Rs1RAY_1tEObs.webp 240w, /_astro/cover.D0Rs1RAY_Z2nli20.webp 360w, /_astro/cover.D0Rs1RAY_Z1aagqw.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-11T00:00:00.000Z">2026년 9월 11일</time></div><h3><a href="/posts/mindtopo-reasoning-action-gap/" data-analytics-event="related_post_click" data-analytics-target="mindtopo-reasoning-action-gap">길을 알아보는 AI는 파이프도 연결할까</a></h3><p>MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/jarvisgui-cross-device-state/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CC92een1_KWn0f.webp" srcset="/_astro/cover.CC92een1_Z1zVMsu.webp 240w, /_astro/cover.CC92een1_ZmKKR1.webp 360w, /_astro/cover.CC92een1_PpfIs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-10T00:00:00.000Z">2026년 9월 10일</time></div><h3><a href="/posts/jarvisgui-cross-device-state/" data-analytics-event="related_post_click" data-analytics-target="jarvisgui-cross-device-state">휴대폰과 PC를 오가는 AI, 파일은 정말 도착했을까</a></h3><p>JarvisGUI 논문이 기기 간 GUI 작업을 연결하고 완료를 평가한 방법, 낮은 전체 성공률의 실험 조건과 실제 파일 상태 확인의 의미를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
