@@ -2,7 +2,7 @@
 title: "AI의 플레이 경험으로 게임을 고치는 PlayCraft"
 description: "AI의 반복 플레이 경험으로 게임을 수정하는 PlayCraft 연구를 살펴봅니다. 연습에 따른 성과 변화와 사람의 재미를 구분해 읽습니다."
 slug: "playcraft-agent-playtesting"
-publishedAt: "2026-11-22T06:21:23.846016+00:00"
+publishedAt: "2026-11-22T06:37:05Z"
 track: "paper"
 subtype: "systems"
 tags: ["AI 에이전트", "게임 개발", "플레이테스트", "모델 평가"]
