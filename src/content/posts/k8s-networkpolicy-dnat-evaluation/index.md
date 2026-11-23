@@ -3,7 +3,7 @@ title: "Kubernetes NetworkPolicy 간헐적 Connection Refused: DNAT 뒤 목적�
 description: "쿠버네티스 Service VIP를 호출할 때 왜 2번 중 1번꼴로 Connection Refused가 떴을까요? iptables의 DNAT 주소 변환과 NetworkPolicy 평가 순서가 빚어낸 네트워크 장애 트러블슈팅기입니다."
 slug: "k8s-networkpolicy-dnat-evaluation"
 publishedAt: 2026-07-20
-updatedAt: "2026-10-18"
+updatedAt: "2026-11-20"
 track: tech_column
 subtype: case_study
 category: network
@@ -26,123 +26,131 @@ sourceUrl: "urn:internal:infra:failure-pattern:i-39"
 featured: false
 draft: false
 ---
+
+같은 파드에서 똑같은 쿠버네티스 Service 주소를 호출했는데, 한 번은 정상 연결되고 다음 호출에서는 `connection refused`로 튕겨 나갈 때가 있습니다. NetworkPolicy YAML을 다시 훑어봐도 Service VIP와 포트는 분명히 열어 두었으니 답답할 수밖에 없죠. 이럴 때는 선언한 가상 주소 대신, 커널의 DNAT 주소 변환 뒤에서 방화벽이 실제로 검사하는 목적지 IP를 확인해 봐야 합니다.
+
 글·해설: 다메카솔
 
-동일한 파드에서 동일한 쿠버네티스 Service 도메인을 호출했는데, **어떤 때는 정상적으로 연결되고 바로 다음 호출에서는 `Connection Refused`가 발생**하는 기괴한 현상을 겪어보신 적 있으신가요?
+## 핵심 내용
 
-네트워크 정책(NetworkPolicy) YAML을 아무리 쳐다봐도 Service VIP와 포트는 완벽하게 `allow` 처리되어 있는데도 말이죠.
+- **단발 성공의 함정**: 2026년 7월 17일 k3s(v1.36 3노드·kube-router) 환경에서 같은 파드로 12회 호출하자 6회 통과, 6회 거부가 나왔습니다. 한 번의 성공이 정책 정상의 증거가 되지 못한다는 관찰입니다.
+- **DNAT 뒤 목적지 평가**: iptables 모드의 Service는 ClusterIP 패킷을 백엔드 Endpoint IP로 DNAT하며, kube-router는 이렇게 바뀐 목적지 기준으로 방화벽 체인을 평가합니다.
+- **구현체별 순서 차이**: Kubernetes 문서는 주소 재작성과 정책 평가 선후를 고정하지 않고 CNI와 Service 구현 조합에 맡깁니다.
+- **대상별 정책 선택**: 내부 Pod는 `namespaceSelector`와 `podSelector` 조합을, 노드나 외부 주소는 범위를 좁힌 `ipBlock` CIDR을 우선 검토합니다.
 
-이 문제의 범인은 바로 **"쿠버네티스 iptables의 DNAT(Destination NAT) 주소 변환과 NetworkPolicy 방화벽 규칙 평가의 선후 관계"**에 있었습니다. 방화벽이 검사하는 주소는 우리가 선언한 'Service 가상 IP(VIP)'가 아니라, **'DNAT을 거쳐 최종 변환된 실제 파드/노드의 엔드포인트 IP'**였기 때문입니다.
-
-이번 글에서는 홈랩 k3s 클러스터에서 간헐적 연결 거부 장애를 추적하고 해결했던 실전 트러블슈팅 경험을 공유합니다.
-
-## 두 번 중 한 번만 실패하는 기괴한 네트워크 장애
+## 한 번 성공했는데도 정책을 의심한 이유
 
 ![첫 연결 성공 뒤 정상이라고 판단했지만 12회 반복에서 성공과 거부가 반반으로 갈린 사고 장면](./page-01.webp)
 
-CI 러너 파드가 사내 이미지 레지스트리 서비스(`registry.default.svc`)로 이미지를 푸시할 때 간헐적으로 빌드가 깨지는 현상이 발생했습니다.
+첫 요청이 통과하면 정책도 정상이라고 넘어가기 쉽습니다. 하지만 홈랩 클러스터를 운영하던 중 하루 사이에 성격이 다른 두 경로가 똑같은 패턴으로 막히는 일이 벌어졌습니다.
 
-테스트 파드에서 반복 호출을 날려보니 충격적인 결과가 나왔습니다:
-- 12번의 호출 중 **정확히 6번은 성공(200 OK), 6번은 즉시 `Connection Refused`**로 거부되었습니다.
+첫 번째 사고에서는 CI 러너(ARC listener)가 기동 직후 API 서버의 Service 주소를 호출하다 `connection refused`를 남기고 재시작을 반복했습니다. VIP는 허용했지만 DNAT 뒤 실제 목적지인 노드의 API 엔드포인트와 6443 포트가 막혀 있었던 셈이죠. 같은 날 이미지 푸시(BuildKit) 경로에서도 로드밸런서(Traefik LB) VIP는 열려 있었으나, 실제 목적지인 프록시 Pod와 `targetPort` 구간에서 연결이 거부됐습니다.
 
-단 한 번의 요청 성공만 보고 "네트워크 정책이 잘 뚫렸네" 하고 넘어가기 십상이지만, 뒤에서는 트래픽이 50% 확률로 드롭되고 있었던 것입니다.
+단순 링크 장애인지 가려내려고 같은 출발 파드에서 외부 공개 API를 호출해 보니 문제없이 통과했습니다. 이어서 문제가 난 주소를 12번 연속 호출하자 6번은 붙고 6번은 거부됐는데요. 물론 작은 표본의 현장 기록이라 실패율을 특정 비율로 일반화할 수는 없지만, 단발 테스트만 믿고 넘어가면 반복 호출에서 드러나는 거부를 놓치기 쉽다는 점이 분명해졌습니다.
 
-## Service VIP는 껍데기일 뿐: iptables DNAT의 실체
+가령 요청 횟수만 세고 어느 백엔드가 골라졌는지 남기지 않으면 원인을 좁히기 어렵습니다. 내부 분석에서도 통과한 연결이 같은 노드의 백엔드였을 가능성이 제기됐지만 이는 추론이므로, 직접 확인할 때는 회차와 선택된 Endpoint를 함께 기록해야 합니다. 두 값을 나란히 묶는 기록 형식은 아래처럼 간단합니다.
+
+```text
+attempt  source_pod  service  selected_endpoint  result
+01       test-pod    api      endpoint-a         OK
+02       test-pod    api      endpoint-b         REFUSED
+```
+
+## Service VIP 뒤에서 일어나는 DNAT과 kube-router 평가
 
 ![Service VIP로 들어온 패킷이 DNAT로 Endpoint 주소로 바뀐 뒤 kube-router 정책 체인을 지나는 세로 단면도](./page-02.webp)
 
-쿠버네티스의 Service ClusterIP(예: `10.43.0.50`)는 물리적으로 존재하는 실제 인터페이스가 아닙니다. 리눅스 커널의 iptables(또는 IPVS) 룰에 의해 등록된 가상 IP일 뿐입니다.
+Service ClusterIP는 물리 인터페이스에 붙은 주소가 아니라 커널 규칙이 받아 주는 가상 진입점입니다. Kubernetes 공식 문서에 따르면 iptables 모드의 Service는 ClusterIP로 들어온 패킷을 백엔드 `EndpointSlice` 목록 중 하나로 목적지 주소 변환(DNAT)해 넘깁니다.
 
-패킷이 Service VIP로 향하면 커널은 다음 과정을 거칩니다:
-1. **DNAT(목적지 주소 변환)**: Service VIP를 백엔드에 매달려 있는 실제 파드 IP 목록(`EndpointSlice`) 중 하나로 확률적으로 치환합니다. (예: Pod-A `10.42.1.15` 또는 Pod-B `10.42.2.20`)
-2. **NetworkPolicy 방화벽 평가**: CNI 플러그인(kube-router/Calico 등)이 패킷을 검사합니다.
+한편 kube-router의 NetworkPolicy 컨트롤러는 `filter` 테이블의 `FORWARD` 체인에서 출발지나 목적지 Pod IP에 맞는 방화벽 체인으로 패킷을 보냅니다. 이 환경에서는 패킷이 방화벽 체인에 닿기 전에 이미 DNAT을 거쳐 목적지가 VIP에서 실제 Endpoint IP로 바뀐 상태였거든요.
 
-이때 핵심은 **"NetworkPolicy가 패킷을 검사할 때는 이미 목적지 IP가 Service VIP가 아니라 실제 Pod IP로 바뀌어 있다"**는 사실입니다.
+그래서 정책에 가상 주소만 열어 두고 실제 백엔드 Pod나 노드 IP를 빠뜨리면, 특정 Endpoint로 라우팅되는 순간 `connection refused`가 돌아옵니다. 반대로 이 순서를 짚고 나면 같은 Service 주소가 왜 Endpoint에 따라 엇갈리는지 바로 설명되죠.
 
-만약 NetworkPolicy에 Service VIP 대역만 열어두고 실제 백엔드 파드 셀렉터(`podSelector`)나 노드 IP를 열어주지 않았다면, **패킷이 특정 노드나 외부 엔드포인트로 라우팅되는 순간 방화벽에 걸려 `Connection Refused(REJECT)`로 튕겨 나가게 됩니다.**
+다만 모든 환경이 항상 DNAT 뒤에 정책을 평가한다고 단정하기는 어렵습니다. Kubernetes 공식 문서도 주소 재작성과 정책 처리 선후를 규정하지 않으며 CNI 플러그인, 클라우드 공급자, Service 구현 조합에 따라 달라질 수 있다고 설명합니다.
 
-## Connection Refused 3단계 감별법
+## connection refused를 세 갈래로 감별하기
 
 ![같은 connection refused를 정책 경로, Endpoint와 앱 상태, 초기 정책 프로그래밍 지연로 나누는 감별 도식](./page-03.webp)
 
-쿠버네티스에서 연결 거부 에러가 떴을 때 다음 순서로 원인을 분리해야 합니다:
+`connection refused`가 떴다고 곧바로 방화벽 탓으로 결론 내리면 다른 장애를 놓치기 쉽습니다. 같은 오류를 내는 세 가지 경로를 순서대로 분리해 봐야 하는 이유입니다.
 
-### 1단계: 엔드포인트 생존 확인
-```bash
-// Service에 연결된 실제 백엔드 IP 목록 조회
-kubectl get endpointslice -l kubernetes.io/service-name=<서비스명> -o wide
-```
-백엔드 파드가 준비(`Ready`) 상태인지, 컨테이너 프로세스가 실제로 해당 포트(`targetPort`)를 열고 Listen 중인지 확인합니다.
+- **정책 경로 차단**: DNAT 뒤 목적지 주소나 `targetPort`가 NetworkPolicy 허용 범위 밖에 있어 노드 방화벽이 연결을 거부하는 경우입니다.
+- **Endpoint와 앱 상태**: Service에 `Ready` 상태의 Endpoint가 없거나, 대상 프로세스가 `targetPort`에서 수신 대기하지 않아 커널이 거절하는 경우입니다.
+- **초기 프로그래밍 지연**: 새 파드가 먼저 통신을 시작했지만 노드의 `ipset`이나 방화벽 체인 반영이 늦어 잠깐 거부가 생기는 타이밍 문제입니다.
 
-### 2단계: 반복 호출을 통한 패킷 경로 추적
-```bash
-// 출발 파드 내부에서 연속 호출 테스트
-kubectl exec -it <출발파드> -- sh -c \
-  'for i in $(seq 1 10); do curl -s -o /dev/null -w "%{http_code}\n" http://<서비스명>:<포트>; done'
-```
-특정 엔드포인트로 튈 때만 실패하는지 확인합니다.
+점검은 Service와 실제 백엔드 구성을 맞추어 보는 일부터 시작합니다. 아래 명령으로 가상 포트와 `EndpointSlice`의 IP·포트를 먼저 확인해 둡니다.
 
-### 3단계: 노드 레벨 방화벽 체인 및 ipset 검증
 ```bash
-// 노드에 직접 접속하여 CNI 방화벽 룰과 차단 로그 확인
-sudo iptables-save -t filter | grep -E 'KUBE-ROUTER|KUBE-POD-FW'
-sudo ipset list
+kubectl get svc -n <namespace> <service> -o wide
+kubectl get endpointslice -n <namespace> -l kubernetes.io/service-name=<service> -o wide
 ```
 
-## 안전하고 올바른 NetworkPolicy 작성법
+그다음 같은 출발 파드에서 Service 주소와 개별 Endpoint를 구분해 반복 호출합니다. 운영 트래픽에 부담을 주지 않는 간격으로 시각과 결과를 함께 남겨야 어느 경로에서 튕기는지 보입니다.
+
+```bash
+kubectl exec -n <namespace> <source-pod> -- sh -c \
+  'for i in $(seq 1 12); do date -Iseconds; <connection-command>; done'
+```
+
+마지막으로 실패가 재현된 노드에서 `filter` 체인과 `ipset`을 살펴봅니다. 배포판마다 체인 접두사가 다를 수 있으니 노드에 실제로 올라간 체인 이름부터 확인하는 편입니다.
+
+```bash
+sudo iptables-save -t filter | grep -E 'KUBE-ROUTER|KUBE-POD-FW|KUBE-NWPLCY'
+sudo ipset list | grep -E 'KUBE-(SRC|DST)'
+```
+
+## 실제 목적지 성격에 맞춰 정책 고치기
 
 ![카솔이 반복 연결, Endpoint 기록, 노드 규칙 확인, 대상별 허용의 네 단계 카드를 정리하는 마지막 페이지](./page-04.webp)
 
-동적으로 IP가 바뀌는 쿠버네티스 환경에서는 절대 파드 IP를 하드코딩해서 정책을 뚫으면 안 됩니다:
+실제 목적지 IP를 찾았다고 그 주소를 그대로 허용 목록에 넣으면 다음 파드 재시작 때 다시 막힙니다. 그 IP가 클러스터 내부 파드인지, 노드나 외부 주소인지 구분해야 재배포에도 버티는 정책을 고를 수 있거든요.
 
-| 통신 대상 종류 | 권장하는 정책 표현 | 피해야 할 안티패턴 |
-| :--- | :--- | :--- |
-| **클러스터 내부 파드** | `namespaceSelector` + `podSelector` 조합 | 파드 IP를 `ipBlock.cidr`로 직접 지정 |
-| **클러스터 외부 / 노드 IP** | 최소화된 서브넷 단위 `ipBlock.cidr` | 귀찮다고 `0.0.0.0/0` 전체 허용 |
-| **Service 포트 매핑** | 컨테이너의 실제 `targetPort` 기준 매칭 | Service의 가상 `port`만 선언 |
+| 실제 평가 대상 | 우선 검토할 정책 표현 | 피해야 할 실수 |
+| --- | --- | --- |
+| **클러스터 내부 Pod** | `namespaceSelector`와 `podSelector` 조합 | 바뀌는 Pod IP를 `ipBlock`에 정적 등록 |
+| **노드 또는 외부 IP** | 필요한 범위만 좁힌 `ipBlock` CIDR | 전체 사설망이나 `0.0.0.0/0` 통째 허용 |
+| **포트가 다른 Endpoint** | 실제 백엔드의 프로토콜과 `targetPort` | Service 앞단의 `port` 번호만 선언 |
+
+Kubernetes 공식 문서도 `ipBlock`은 주로 클러스터 외부 IP 범위를 고르는 용도로 설명합니다. 파드 IP는 수시로 바뀌므로, 예를 들어 내부 파드로 나가는 Egress 규칙을 열 때는 아래처럼 네임스페이스·파드 셀렉터와 실제 `targetPort`를 짝지어 두는 편이 안정적입니다.
 
 ```yaml
-#--- 올바른 NetworkPolicy 작성 예시 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-to-registry
+  name: allow-to-target-pod
 spec:
   podSelector:
     matchLabels:
-      app: ci-runner
+      app: <source-app>
   policyTypes:
     - Egress
   egress:
     - to:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: infra
+              kubernetes.io/metadata.name: <target-namespace>
           podSelector:
             matchLabels:
-              app: image-registry
+              app: <target-app>
       ports:
         - protocol: TCP
-          port: 5000
+          port: <target-port>
 ```
 
-## 다메카솔의 해석: 1번의 성공에 속지 않는 방어적 엔지니어링
+정책을 수정한 뒤에는 처음과 같은 출발 파드에서 반복 호출을 다시 돌려야 합니다. 의도한 모든 Endpoint가 고르게 통과하는지와 비인가 경로가 여전히 차단되는지를 함께 확인해야 검증이 끝납니다.
 
-시니어 엔지니어로서 네트워크 트러블슈팅을 다룰 때 가장 경계해야 할 것은 **"한 번 잘 되니까 정상이다"라는 섣부른 낙관론**입니다.
+## 함께 읽을 네트워크·인프라 글
 
-1. **엔드포인트 분산에 따른 경로 검증**: 라운드로빈 로드밸런싱 환경에서는 최소 N회 이상의 반복 테스트를 수행하여 모든 백엔드 경로가 균일하게 통과하는지 검증해야 합니다.
-2. **CNI와 iptables의 패킷 수명주기 이해**: 쿠버네티스의 추상화 계층(Service, Ingress) 아래에서 리눅스 커널이 패킷을 어떻게 조작(DNAT, SNAT)하는지 이해해야 신속한 장애 진단이 가능합니다.
-3. **네트워크 정책 적용 후 양방향 검증**: 허용하려던 정상 트래픽이 통과하는지뿐만 아니라, **차단되어야 할 비인가 트래픽이 확실하게 드롭되는지(Negative Test)**까지 확인해야 진정한 보안이 완성됩니다.
-
-## 함께 읽을 네트워크/인프라 글
-
-- [홈랩 쿠버네티스 구축기: CoreDNS 부트스트랩 루프 트러블슈팅](/posts/dns-bootstrap-loop/)
-- [K3s etcd 쿼럼 원리와 3노드 HA 아키텍처](/posts/three-node-etcd-quorum-context/)
+- [홈랩 쿠버네티스 구축기 3편: CoreDNS를 두 대 띄우고도 재구축이 위험했던 이유](/posts/dns-bootstrap-loop/)
+- [홈랩 쿠버네티스 구축기 2편: 3노드여야 하는 이유, 그리고 빈 결과의 함정](/posts/three-node-etcd-quorum-context/)
 
 ## 출처
 
 - [Kubernetes Documentation — Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 - [Kubernetes Documentation — Virtual IPs and Service Proxies](https://kubernetes.io/docs/reference/networking/virtual-ips/)
-- [kube-router Official GitHub Repository](https://github.com/cloudnativelabs/kube-router)
+- [kube-router Official GitHub Repository](https://github.com/cloudnativelabs/kube-router) ([Network Policy Controller source](https://github.com/cloudnativelabs/kube-router/blob/master/pkg/controllers/netpol/network_policy_controller.go))
+- 내부 운영 기록: 실패 패턴 I-39, 인프라 CHANGELOG 2026-07-17(특정 IP, namespace, 사설 호스트명은 제외).
+
+이 글의 사례는 2026년 7월 홈랩 k3s v1.36(내장 kube-router) 환경에서 겪은 실제 운영 기록과 공식 문서를 바탕으로 정리했으며, 만화 도식은 이해를 돕기 위해 새로 구성했습니다.
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.

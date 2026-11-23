@@ -16,7 +16,7 @@ cover: "./cover.webp"
 coverAlt: "편집 화면과 저장 파일의 차이를 살피는 카솔"
 sourceUrl: "https://arxiv.org/abs/2610.40578v1"
 featured: false
-draft: false
+draft: true
 ---
 
 VeriCUA는 컴퓨터 사용 에이전트의 완료 보고를 검증할 때, 부족한 근거를 찾아 추가로 살펴보는 연구입니다. 화면·파일·앱 상태에서 얻은 관측을 요청의 세부 조건과 연결합니다. 특히 **결론을 내렸다는 사실과 그 결론을 뒷받침할 근거가 충분하다는 사실을 구별**합니다. 

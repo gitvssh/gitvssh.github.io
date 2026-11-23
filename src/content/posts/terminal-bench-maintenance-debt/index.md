@@ -16,7 +16,7 @@ cover: "./cover.webp"
 coverAlt: "정답을 거부하는 채점기를 조사하는 카솔"
 sourceUrl: "https://arxiv.org/abs/2611.08417v1"
 featured: false
-draft: false
+draft: true
 ---
 
 Terminal-Bench 2.1 연구는 AI 성능표의 점수가 채점 코드와 실행 조건에도 좌우된다는 사실을 보여줍니다. 정답을 틀렸다고 처리하거나, 실행 환경이 깨지면 모델의 능력과 다른 실패를 셉니다.
