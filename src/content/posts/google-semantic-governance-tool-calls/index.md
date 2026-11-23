@@ -2,7 +2,7 @@
 title: "메일 권한이 있어도 보내면 안 될 때, Google의 실행 전 검사"
 description: "도구 권한과 개별 행동의 판단을 구분하고, Google의 실행 전 검사와 미리보기·스트리밍 제한을 살펴봅니다."
 slug: "google-semantic-governance-tool-calls"
-publishedAt: "2026-11-23T00:10:36.783766+00:00"
+publishedAt: "2026-11-23T00:24:38Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Google Cloud", "AI 에이전트", "보안"]
