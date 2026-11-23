@@ -2,7 +2,7 @@
 title: "긴 추론 없이 선택지를 평가하는 GLiDE"
 description: "긴 추론 문장 없이 선택 확률을 계산하는 GLiDE를 살펴봅니다. 평가 조건과 공개 코드의 confidence 정의를 구분합니다."
 slug: "glide-single-pass-decisions"
-publishedAt: "2026-11-23T06:20:15.850262+00:00"
+publishedAt: "2026-11-23T06:37:28Z"
 track: "paper"
 subtype: "systems"
 tags: ["언어 모델", "지식 증류", "분류", "모델 평가"]
