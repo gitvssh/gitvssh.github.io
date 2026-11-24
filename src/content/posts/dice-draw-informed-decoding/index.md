@@ -2,7 +2,7 @@
 title: "난수를 미리 공유해 초안을 고르는 DICE"
 description: "DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다."
 slug: "dice-draw-informed-decoding"
-publishedAt: "2026-11-24T06:19:13.876015+00:00"
+publishedAt: "2026-11-24T06:34:35Z"
 track: "paper"
 subtype: "systems"
 tags: ["언어 모델", "추측 디코딩", "추론 최적화"]
