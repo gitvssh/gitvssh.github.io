@@ -1,10 +1,10 @@
-﻿---
+---
 title: "replica 1은 같은 뜻이 아니었습니다: Vault PDB 앞에서 멈춘 drain"
 description: "단일 Vault를 보호한 PDB의 중단 예산 0에서 kubectl drain이 멈춘 사건과 애플리케이션·스토리지 복제를 따로 설계한 기록입니다."
 searchTitle: "Kubernetes drain이 PDB maxUnavailable 0에서 멈춘 이유"
 slug: "replica-layer-pdb-drain"
 publishedAt: 2026-09-06
-updatedAt: "2026-10-18"
+updatedAt: "2026-11-23"
 track: tech_column
 subtype: case_study
 category: development_episode
@@ -35,12 +35,9 @@ featured: false
 draft: false
 ---
 
+노드 교체를 위해 `kubectl drain`을 걸었는데 화면이 `evicting pod vault-0`에서 멈춘 채 오류도 없이 제자리에 서 있다면 당황스럽기 마련이죠. 2026년 7월 14일, 홈랩 클러스터를 확장하던 중 노드 한 대를 비우려다 실제로 겪은 일입니다. 원인을 따라가 보니 장애가 아니라 단일 복제본으로 띄워 둔 Vault와 Helm 차트가 자동 계산한 중단 예산이 맞물린 결과였습니다.
+
 글·해설: 다메카솔
-
-2026년 7월 14일, 2노드 홈랩을 3노드로 다시 세우던 중 노드 한 대를 비우려고 `kubectl drain`을 실행했습니다. 그런데 화면은 `evicting pod vault-0`에서 멈춰 서더니 오류로 끝나지도, 다음 파드로 넘어가지도 않았습니다.
-
-
-> 이 글은 당시 실패 패턴 원장 H-05와 이후의 복제 정책 ADR을 2026년 8월 9일에 다시 대조해 쓴 회고입니다. 사설 주소와 호스트명은 뺐고, 정확한 차트 패치 버전은 기록이 없어 확정하지 않습니다.
 
 ## 핵심 내용
 
@@ -50,24 +47,22 @@ draft: false
 
 ## 두 노드에서 하나만 띄운 이유와 멈춰 선 drain
 
-당시 Vault replica를 하나로 둔 것은 고가용성을 포기해서가 아니라, 2노드 환경에서 Raft 멤버를 둘로 만드는 편이 실익이 없다고 판단했기 때문입니다. 멤버가 둘이면 과반수도 둘이어서 한 노드만 빠져도 합의를 이어 갈 수 없고, 장애 허용 수는 그대로인 채 관리할 멤버만 늘어납니다.
+당시 2노드 홈랩을 3노드로 다시 세우는 동안 Vault를 `replica: 1`로 둔 데에는 나름의 이유가 있었습니다. 멤버가 둘이면 과반수도 둘이어서 한 노드만 빠져도 Raft 합의를 이어 갈 수 없고, 장애 허용 수는 그대로인 채 관리할 멤버만 늘어나거든요. 그래서 3노드가 준비되기 전까지는 단일 멤버로 유지하는 편이 실익이 있다고 판단했습니다.
 
-그래서 3노드가 준비되기 전까지 Vault를 하나만 두었는데, Helm 차트가 그 replica 수를 보고 PodDisruptionBudget의 `maxUnavailable`을 0으로 계산했습니다.
+그런데 Helm 차트가 이 replica 수를 보고 PodDisruptionBudget의 `maxUnavailable`을 0으로 계산해 버렸습니다.
 
 ```yaml
 spec:
   maxUnavailable: 0
 ```
 
-Kubernetes 공식 문서가 설명하듯 `maxUnavailable: 0` 또는 `minAvailable: 100%`이면 자발적 축출(voluntary eviction)을 단 하나도 허용하지 않아 해당 노드의 drain이 끝나지 않을 수 있습니다.
+Kubernetes 공식 문서가 설명하듯 `maxUnavailable: 0` 또는 `minAvailable: 100%`이면 자발적 축출(voluntary eviction)을 단 하나도 허용하지 않아 해당 노드의 `drain`이 끝나지 않을 수 있습니다. 결국 제가 마주한 멈춤은 장애가 아니라 정책 집행의 결과였습니다. `drain`이 노드를 스케줄 불가로 만들고 eviction API로 파드를 내보내려 할 때, API는 PDB의 허용 중단 수 0을 존중해 종료 유예를 기다리며 그 자리에서 대기하게 됩니다.
 
 ![단일 Vault 파드 앞의 중단 예산 0 장벽에서 노드 비우기 흐름이 멈춘 장면](./page-01.webp)
 
-결국 제가 마주한 멈춤은 장애가 아니라 정책 집행이었습니다. `drain`이 노드를 스케줄 불가로 만들고 eviction API로 파드를 내보내려 하자, API는 PDB의 허용 중단 수 0을 존중해 그 자리에서 대기한 것입니다.
-
 ## values를 바꿨는데도 0이 남았습니다
 
-처음에는 `values.yaml`에서 PDB 값을 바꾸면 다음 렌더에서 1이 나올 거라고 생각했습니다. 하지만 당시 차트 helper는 replica가 하나면 내가 바꾼 값보다 템플릿 계산을 우선해 `maxUnavailable: 0`을 그대로 출력했습니다. 이 지점에서 Git에 적힌 설정 파일과 클러스터에 실제로 들어간 렌더 결과를 나누어 확인해야 했습니다.
+처음에는 Helm values 설정에서 PDB 값을 바꾸면 다음 렌더에서 1이 나올 거라고 기대했습니다. 하지만 당시 차트 helper는 단일 replica 조건이 들어오면 override 값보다 템플릿 계산을 우선해 `maxUnavailable: 0`을 그대로 출력했거든요. 이 지점에서 Git에 적힌 설정 파일과 클러스터에 실제로 들어간 렌더 결과를 나누어 확인해야 했습니다.
 
 ```bash
 helm template <release> <chart> -f values.yaml \
@@ -77,15 +72,15 @@ kubectl get pdb -A
 kubectl describe pdb <pdb-name> -n <namespace>
 ```
 
-특히 `disruptionsAllowed`가 0인지 먼저 보면 `drain`이 대기하는 이유를 빠르게 좁힐 수 있습니다. 당시 선택지는 점검 시간을 잡고 PDB를 잠시 지우거나 `--disable-eviction`으로 eviction API를 우회하는 두 가지였는데, 둘 다 단일 Vault 파드가 내려가는 동안 서비스 중단을 감수하겠다는 운영 승인이었습니다. 이후 3노드 전환을 마치고 Vault를 3멤버로 늘리자 차트가 `maxUnavailable: 1`을 계산해 한 멤버를 자발적으로 내릴 여유가 생겼습니다.
+특히 `disruptionsAllowed`가 0인지 먼저 보면 `drain`이 대기하는 이유를 빠르게 좁힐 수 있습니다. 당시 선택지는 점검 시간을 잡고 PDB를 잠시 지우거나 `--disable-eviction`으로 eviction API를 우회하는 두 가지였는데, 후자 역시 가용성 보호를 건너뛰고 단일 Vault 파드의 서비스 중단을 감수하는 운영 판단이었던 셈이죠. 이후 3노드 전환을 마치고 Vault를 3멤버로 늘리자 차트가 `maxUnavailable: 1`을 계산해 한 멤버를 자발적으로 내릴 여유가 생겼습니다.
 
 ![2노드 단일 멤버 단계와 3노드 세 멤버 단계를 나란히 비교한 장면](./page-02.webp)
 
 ## 같은 시기에 replica를 한 번 더 셌습니다
 
-비슷한 시기에 `replica: 1`이라는 표기가 Longhorn 볼륨 정책에도 등장해 두 사건이 하나로 보일 수 있지만, Longhorn replica 1이 `drain`을 막은 것은 아니었습니다. 애플리케이션 replica는 서비스를 수행하는 프로세스의 사본이고, 스토리지 replica는 한 볼륨의 블록 사본이어서 복구 대상과 담당자가 서로 다릅니다.
+비슷한 시기에 Longhorn 볼륨 정책에도 `replica: 1`이라는 표기가 등장해 두 사건이 하나로 겹쳐 보일 수 있습니다. 하지만 이번 `drain` 정체는 Longhorn replica 1과는 별개였고, 직접 원인은 단일 Vault를 보호한 PDB의 허용 중단 수가 0이었던 점이죠. 애플리케이션 replica는 서비스를 수행하는 프로세스의 사본이고, 스토리지 replica는 볼륨별 엔진이 여러 노드에 동기 복제하는 블록 사본이어서 복구 대상과 주체가 서로 다릅니다.
 
-만약 데이터베이스 인스턴스 셋이 3개이고 각 PVC가 다시 Longhorn 블록 사본 3개를 만들면 물리 데이터 경로는 최대 9개로 곱해져 CPU·네트워크·디스크 비용을 모두 치르게 됩니다. 그래서 당시 홈랩에서는 워크로드마다 복제 계층을 다음과 같이 나누었습니다.
+예를 들어 데이터베이스 인스턴스 셋이 3개이고 각 PVC가 다시 Longhorn 블록 사본 3개를 만들면 물리 데이터 경로는 최대 9개로 곱해집니다. 그만큼 CPU·네트워크·디스크 쓰기 비용을 중복으로 치르게 되는 셈이죠. 그래서 당시 홈랩에서는 워크로드의 자체 복제 능력에 따라 복제 계층을 다음처럼 나누었습니다.
 
 | 워크로드 | 애플리케이션 복구 주체 | Longhorn replica | 판단 |
 | --- | --- | ---: | --- |
@@ -94,7 +89,7 @@ kubectl describe pdb <pdb-name> -n <namespace>
 | SeaweedFS 단일 인스턴스 | 없음 | 3 | 볼륨 계층이 노드 실패를 받아야 함 |
 | Prometheus·Loki·Tempo | 제한적 재생성·재수집 | 2 | 손실 비용과 저장 비용 사이 절충 |
 
-이 표는 보편적인 권장값이 아니라 당시 홈랩의 결정 기록입니다. 특히 Longhorn 문서가 말하는 $N-1$은 볼륨 replica 실패에 관한 조건일 뿐, 애플리케이션의 정상 응답이나 데이터베이스 승격 일관성까지 자동으로 보장하는 숫자는 아닙니다.
+이 표는 보편적인 권장값이 아니라 당시 홈랩의 결정 기록입니다. Longhorn은 건강한 replica가 목표치보다 적을 때 자동으로 rebuild를 수행하지만, Longhorn 문서가 말하는 $N-1$은 볼륨 replica 실패에 관한 조건일 뿐입니다. 애플리케이션의 정상 응답이나 데이터베이스 승격 일관성까지 볼륨 계층이 자동으로 챙겨 주는 것은 아니므로 계층별로 역할을 분리해 두는 편이 좋습니다.
 
 ![애플리케이션 복제와 볼륨 복제를 분리해 워크로드마다 다른 경로를 선택한 장면](./page-03.webp)
 
@@ -108,7 +103,7 @@ kubectl describe pdb <pdb-name> -n <namespace>
 
 ![남성 카솔이 복구 주체와 실패 범위와 점검 예산의 세 갈래를 확인하는 장면](./page-04.webp)
 
-`replica: 1`이라는 숫자를 발견했을 때 무조건 숫자부터 늘리기보다, 그 숫자가 어느 계층의 사본이며 무엇이 실패했을 때 누가 복구하는지부터 확인하는 편이 정확합니다.
+설계나 점검 중에 `replica: 1`이라는 숫자를 발견하더라도 무조건 숫자부터 늘리기보다는, 그 사본이 어느 계층에 속하며 장애가 났을 때 누가 복구를 맡는지부터 짚어 보는 편이 정확합니다.
 
 ## 함께 읽을 개념 글
 
@@ -125,6 +120,6 @@ kubectl describe pdb <pdb-name> -n <namespace>
 - [CloudNativePG: Replication](https://cloudnative-pg.io/docs/current/replication/)
 - [Longhorn 1.12: Architecture and Concepts](https://longhorn.io/docs/1.12.0/concepts/)
 
-공식 문서는 2026년 8월 9일 다시 확인했습니다. 본문 명령과 리소스 이름은 공개 가능한 예시로 바꿨습니다.
+공식 문서는 2026년 8월 9일 다시 확인했습니다. 본문 명령과 리소스 이름은 공개 가능한 예시로 바꿨으며, 당시 차트 패치 버전은 기록이 남아 있지 않아 확정하지 않았습니다.
 
 이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다. 만화 이미지는 텍스트 없는 원화에 결정적 레터링을 합성해 만들었습니다. 공식 로고·UI·문서 도표 등 외부 이미지 자산은 사용하지 않았습니다.
