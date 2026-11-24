@@ -2,7 +2,7 @@
 title: "패치 배포까지 시간을 버는 Shirudo의 임시 방어"
 description: "Shirudo의 임시 방어와 영구 패치를 구분하고, 공개 시연의 범위와 사전 출시·커널 요구 조건을 살펴봅니다."
 slug: "shirudo-live-shields-before-patching"
-publishedAt: "2026-11-24T00:12:52.125820+00:00"
+publishedAt: "2026-11-24T00:29:18Z"
 track: "news"
 subtype: "release_announcement"
 tags: ["Shirudo", "AI 에이전트", "보안", "Linux"]
