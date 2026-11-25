@@ -2,7 +2,7 @@
 title: "작은 모델에 조사를 맡기는 Delegent"
 description: "Delegent가 작은 모델에 조사와 테스트를 맡기는 구조를 살펴봅니다. 큰 모델 API 비용 절감과 전체 운영비·완료 시간의 차이를 실험 조건과 함께 읽습니다."
 slug: "delegent-small-model-legwork"
-publishedAt: "2026-11-25T06:20:41.738019+00:00"
+publishedAt: "2026-11-25T06:35:49Z"
 track: "paper"
 subtype: "systems"
 tags: ["언어 모델", "AI 에이전트", "코딩 에이전트"]
