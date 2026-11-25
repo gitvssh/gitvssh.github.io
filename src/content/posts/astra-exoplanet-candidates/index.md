@@ -2,7 +2,7 @@
 title: "AI가 찾은 외계행성 후보, 발견 확정까지 남은 일"
 description: "Codex와 Astra가 공개 관측 자료에서 후보를 고른 과정과, 외계행성을 확정하기 위해 남은 검증을 살펴봅니다."
 slug: "astra-exoplanet-candidates"
-publishedAt: "2026-11-25T00:12:40.296026+00:00"
+publishedAt: "2026-11-25T00:26:49Z"
 track: "news"
 subtype: "research_news"
 tags: ["OpenAI", "AI 에이전트", "천문학"]
