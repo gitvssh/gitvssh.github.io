@@ -2,7 +2,7 @@
 title: "Claude가 옮긴 Rust API, 같은 동작인지는 어떻게 확인했을까"
 description: "Anthropic의 Messages API 이전 사례로 코드 생성 뒤의 동작 비교와 부작용 분리, 사람 검토의 역할을 살펴봅니다."
 slug: "anthropic-rust-migration-verification"
-publishedAt: "2026-11-26T01:10:42.742523+00:00"
+publishedAt: "2026-11-26T01:25:47Z"
 track: "news"
 subtype: "announcement_analysis"
 tags: ["Claude", "AI 에이전트", "Rust"]
