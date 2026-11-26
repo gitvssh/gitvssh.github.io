@@ -2,7 +2,7 @@
 title: "토크나이저 최적화에도 보장의 한계가 있다"
 description: "토크나이저 최적화의 상수배 근사 보장이 왜 어려운지 살펴봅니다. P≠NP 가정과 최악의 입력에 대한 결과를 실제 말뭉치 성능과 구분합니다."
 slug: "tokenisation-approximation-limits"
-publishedAt: "2026-11-26T06:16:05.759739+00:00"
+publishedAt: "2026-11-26T06:30:52Z"
 track: "paper"
 subtype: "theoretical"
 tags: ["토큰화", "알고리즘", "계산 복잡도"]
