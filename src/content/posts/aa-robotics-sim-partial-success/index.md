@@ -2,7 +2,7 @@
 title: "로봇이 접시를 들면 성공일까? AA-Robotics-Sim의 완료 기준"
 description: "가상 로봇 평가에서 부분 점수와 작업 완료가 어떻게 다른지, 실물 성능과 구분해야 할 조건을 살펴봅니다."
 slug: "aa-robotics-sim-partial-success"
-publishedAt: "2026-11-27T00:19:33.958303+00:00"
+publishedAt: "2026-11-27T00:33:43Z"
 track: "news"
 subtype: "research_news"
 tags: ["로보틱스", "AI 에이전트", "평가"]
