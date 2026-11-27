@@ -2,7 +2,7 @@
 title: "다시 그린 이미지가 AI의 눈을 흐릴 때"
 description: "생성 보조 이미지가 시각 추론의 정확도를 낮춘 실험을 살펴봅니다. 같은 계획을 고정한 비교와 원본 크롭, 과제별 예외를 구분합니다."
 slug: "generated-images-visual-reasoning"
-publishedAt: "2026-11-27T06:20:08.597766+00:00"
+publishedAt: "2026-11-27T06:35:24Z"
 track: "paper"
 subtype: "empirical"
 tags: ["멀티모달", "시각 추론", "이미지 생성"]
