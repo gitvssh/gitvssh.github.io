@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>AI 수학 도형 생성 벤치마크 | 다메카솔</title><meta name="description" content="올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다"><meta property="og:description" content="올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"><meta property="og:image" content="https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.jpg"><meta property="og:image:alt" content="성인형 카솔이 같은 풀이 경로에서 갈라진 정확한 기하 구성과 어긋난 구성을 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다"><meta name="twitter:description" content="올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.jpg"><meta name="twitter:image:alt" content="성인형 카솔이 같은 풀이 경로에서 갈라진 정확한 기하 구성과 어긋난 구성을 비교하는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/","headline":"정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다","name":"정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다","description":"올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다.","datePublished":"2026-08-20T00:00:00.000Z","dateModified":"2026-11-23T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"},"image":["https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.jpg","https://blog.damecasol.com/_astro/cover.CRqvXbZd.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/ai-geometry-diagram-reasoning-gap.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 모델, 멀티모달 AI, 벤치마크","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1028,"citation":"https://arxiv.org/abs/2608.18111"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다","item":"https://blog.damecasol.com/posts/ai-geometry-diagram-reasoning-gap/"}]}</script><meta property="article:published_time" content="2026-08-20T00:00:00.000Z"><meta property="article:modified_time" content="2026-11-23T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 모델"><meta property="article:tag" content="멀티모달 AI"><meta property="article:tag" content="벤치마크"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="ai-geometry-diagram-reasoning-gap" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-20T00:00:00.000Z">2026년 8월 20일</time></span><span>수정 <time datetime="2026-11-23T00:00:00.000Z">2026년 11월 23일</time></span></div><h1>정답을 푸는 AI도 정확한 도형은 못 그릴 수 있습니다</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>올림피아드 기하 풀이와 도형 구성을 분리한 벤치마크의 방법, 컴파일 성공과 기하 충실도의 차이, 생성 도형 검증 기준을 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CRqvXbZd_ZJoA0J.webp" srcset="/_astro/cover.CRqvXbZd_1uPNVz.webp 640w, /_astro/cover.CRqvXbZd_1hiiIq.webp 960w, /_astro/cover.CRqvXbZd_ZJoA0J.webp 1024w" alt="성인형 카솔이 같은 풀이 경로에서 갈라진 정확한 기하 구성과 어긋난 구성을 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#풀었다와-그렸다-사이" data-toc-link="풀었다와-그렸다-사이" data-analytics-event="toc_click" data-analytics-target="풀었다와-그렸다-사이">‘풀었다’와 ‘그렸다’ 사이</a></li><li class="article-toc__depth-2"><a href="#무엇을-어떻게-시험했나" data-toc-link="무엇을-어떻게-시험했나" data-analytics-event="toc_click" data-analytics-target="무엇을-어떻게-시험했나">무엇을 어떻게 시험했나</a></li><li class="article-toc__depth-2"><a href="#실행-성공은-기하-충실도가-아니었다" data-toc-link="실행-성공은-기하-충실도가-아니었다" data-analytics-event="toc_click" data-analytics-target="실행-성공은-기하-충실도가-아니었다">실행 성공은 기하 충실도가 아니었다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-생성-도형은-세-번-검사한다" data-toc-link="다메카솔의-해석-생성-도형은-세-번-검사한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-생성-도형은-세-번-검사한다">다메카솔의 해석: 생성 도형은 세 번 검사한다</a></li><li class="article-toc__depth-2"><a href="#논문-정보" data-toc-link="논문-정보" data-analytics-event="toc_click" data-analytics-target="논문-정보">논문 정보</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>수학 올림피아드 문제를 척척 푸는 AI에게 도형 코드까지 짜 달라고 하면 실행되는 그림 정도는 쉽게 나올 것 같습니다. 하지만 **「Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry」**는 텍스트 풀이 능력과 문제 조건을 충실한 도형으로 구성하는 능력을 분리해 측정했고, 두 역량 사이에는 뚜렷한 격차가 드러났습니다. 전체 평균 Asymptote 컴파일 성공률이 36%대에 그쳤을 뿐 아니라, 참조 풀이를 함께 건네도 렌더링된 도형의 기하 충실도는 나아지지 않았거든요.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>풀이와 구성의 분리</strong>: 954개 중 어려운 297문제를 추려 다섯 모델의 Asymptote 도형 생성을 평가했습니다.</li>
+<li><strong>낮은 컴파일과 충실도</strong>: 평균 컴파일 성공률 36.14%, 평균 VLM 비평 점수 46.58점(100점 만점)에 머물렀습니다.</li>
+<li><strong>참조 풀이의 역설</strong>: 정답 풀이를 주면 코드 겹침은 늘었지만, 시각 충실도는 거의 오르지 않거나 오히려 낮아졌습니다.</li>
+</ul>
+<h2 id="풀었다와-그렸다-사이">‘풀었다’와 ‘그렸다’ 사이</h2>
+<p><img alt="하나의 추론 경로가 풀이 성공과 관계가 어긋난 도형으로 갈라지는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DQoA92S__Z1AmH4Y.webp" srcset=""></p>
+<p>텍스트로 기하 문제를 푸는 일은 대수식이나 논리 단계를 따라 정답을 찾는 과정입니다. 반면 도형을 그리는 일은 점, 선, 원, 교점을 평면 좌표에 동시에 배치해 지문에 적히지 않은 암묵적 공간 제약까지 맞추어야 합니다.</p>
+<p>예를 들어 AI가 “선분 AB와 CD의 교점 P가 외접원 위에 놓인다”고 풀어 정답을 맞혔다고 해 볼까요? 막상 생성한 도형 코드를 렌더링해 보니 두 선분이 만나지 않거나 점 P가 원 밖에 찍혀 있다면 그림은 독자를 오도하게 됩니다. 저자들은 이처럼 명시적·암묵적 기하 관계를 만족하는 시각 구성을 만들고 검증하는 역량을 **도형적 추론(diagrammatic reasoning)**이라 부릅니다. 풀이 점수를 곧바로 도형 품질의 근거로 삼기 어려운 이유죠.</p>
+<h2 id="무엇을-어떻게-시험했나">무엇을 어떻게 시험했나</h2>
+<p><img alt="문제 카드와 선택적 참조 풀이가 도형 생성 과정을 거쳐 사람의 기준 도형과 비교되는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.TcriaAv6_Z1G1J9X.webp" srcset=""></p>
+<p>저자들은 사람이 작성한 Asymptote 해설 도형이 있는 자족적 기하 문제 954개를 모으고, 그중 어려운 297문제 하위 집합으로 다섯 모델 계열을 시험했습니다. 화질 변수를 배제하려 모델의 주력인 Asymptote 코드 출력을 요구했으며, 문제만 주는 조건과 참조 풀이를 함께 주는 조건을 나란히 비교한 것입니다. 결과는 단일 점수 대신 네 층으로 나누어 평가했습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 층</th>
+<th>확인하는 것</th>
+<th>놓칠 수 있는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>텍스트·코드 겹침</td>
+<td>참조 설명·코드와 표현이 비슷한가</td>
+<td>다른 표현으로 그린 올바른 도형</td>
+</tr>
+<tr>
+<td>컴파일 성공</td>
+<td>Asymptote 코드가 실행되는가</td>
+<td>실행되지만 관계가 틀린 그림</td>
+</tr>
+<tr>
+<td>이미지 유사도</td>
+<td>렌더 결과가 기준과 가까운가</td>
+<td>동치 배치와 미세한 관계 오류</td>
+</tr>
+<tr>
+<td>VLM 비평</td>
+<td>시각 모델이 기준과 기하 일치도를 보는가</td>
+<td>심사 모델이 놓치거나 오판한 오류</td>
+</tr>
+</tbody>
+</table>
+<p>코드가 실행된다는 사실과 그림 속 기하 관계가 맞다는 사실은 전혀 다른 층위의 증거거든요. 네 층을 나눈 덕분에 병목이 문법 단계인지 공간 배치인지 또렷이 갈렸습니다.</p>
+<h2 id="실행-성공은-기하-충실도가-아니었다">실행 성공은 기하 충실도가 아니었다</h2>
+<p><img alt="실행 가능한 코드와 기하 관계가 맞는 도형이 서로 다른 검사 결과를 내는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Ba-oo5MT_ZhMKJy.webp" srcset=""></p>
+<p>다섯 모델과 두 입력 조건을 조합한 열 가지 실험에서는 코드 생성부터 시각 충실도까지 단계별 병목이 뚜렷이 드러났습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 모델</th>
+<th>컴파일 성공률 (문제만 / 풀이)</th>
+<th>VLM 비평 /100 (문제만 / 풀이)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Gemini 3.1 Flash-lite</code></td>
+<td>59.3% / 59.2%</td>
+<td>45.2 / 42.6</td>
+</tr>
+<tr>
+<td><code>GLM 5.1</code></td>
+<td>38.6% / 40.0%</td>
+<td>45.0 / 44.2</td>
+</tr>
+<tr>
+<td><code>Claude Sonnet 4.6</code></td>
+<td>41.3% / 27.6%</td>
+<td>51.0 / 49.5</td>
+</tr>
+<tr>
+<td><code>Kimi K2.5</code></td>
+<td>22.0% / 30.9%</td>
+<td>53.2 / 50.8</td>
+</tr>
+<tr>
+<td><code>GPT-5.4-mini</code></td>
+<td>20.8% / 21.7%</td>
+<td>46.4 / 37.9</td>
+</tr>
+<tr>
+<td><strong>전체 평균 (범위)</strong></td>
+<td><strong>36.14%</strong> (20.8%~59.3%)</td>
+<td><strong>46.58</strong> (최고 53.2)</td>
+</tr>
+</tbody>
+</table>
+<p>표의 수치를 짚어 보면 두 가지 역설이 눈에 띕니다. 우선 코드를 가장 안정적으로 컴파일한 모델이 기하 충실도까지 높지는 않았습니다. 컴파일 성공률 1위 모델은 VLM 비평에서 전체 평균을 밑돌았고, 반대로 컴파일 실패가 더 잦았던 두 모델이 비평 점수 상위에 올랐거든요.</p>
+<p>여기에 참조 풀이를 함께 건네도 그림의 시각 품질은 좀처럼 오르지 않았습니다. 풀이 텍스트를 주자 키워드와 코드 겹침 지표는 일제히 올랐지만, 다섯 모델 모두에서 VLM 비평 점수는 오히려 소폭 내려갔고 이미지 유사도 역시 제자리에 가까웠습니다. 모델이 해법을 이해하지 못해서라기보다, 그 관계를 일관된 좌표와 보조 구성으로 번역하는 단계에서 따로 막히는 셈이죠.</p>
+<p>물론 이 실험 결과를 실무에 옮길 때는 네 가지 설계 경계도 함께 봐야 합니다.</p>
+<ul>
+<li><strong>외부 성적 대비</strong>: 같은 297문제에서 풀이 정답률을 다시 재지 않고 공개된 AIME 2025 시스템 카드 성적(도구 유무에 따라 약 87~100% 수준)과 비교했습니다.</li>
+<li><strong>단일 생성 평가</strong>: 설정당 도형을 한 번씩만 생성해 반복 샘플링에 따른 변동성은 별도로 남았습니다.</li>
+<li><strong>심사 지표 한계</strong>: VLM 심사자(GPT-5.4-mini)가 미세 오류를 오판할 수 있고, 코드 겹침 지표는 상투적 문법 재사용에 유리합니다.</li>
+<li><strong>공개 스냅숏 범위</strong>: 수집분은 954문제지만 2026년 8월 공개된 Hugging Face 저장소에는 어려운 하위 집합 297행(문제·풀이·코드 포함)만 담겼습니다.</li>
+</ul>
+<h2 id="다메카솔의-해석-생성-도형은-세-번-검사한다">다메카솔의 해석: 생성 도형은 세 번 검사한다</h2>
+<p><img alt="성인형 카솔이 실행 성공, 기하 제약, 사람의 시각 검토를 분리한 검증 흐름을 안내하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.CG9mCmhR_ZVPNu6.webp" srcset=""></p>
+<p>이 결과는 도형 생성기가 쓸모없다는 뜻이 아니라, <strong>정답 풀이 점수만으로 도형 품질까지 대신 평가할 수 없다</strong>는 실무 신호에 가깝습니다. 교육 자료나 기술 문서 파이프라인에 AI 도형을 쓴다면, 최소한 아래 세 단계 검증을 분리해 두는 편이 좋습니다.</p>
+<ol>
+<li><strong>실행 검사</strong>: Asymptote나 SVG 코드가 문법 오류 없이 파싱·렌더링되는지 확인합니다.</li>
+<li><strong>기하 제약 검사</strong>: 교점, 공선, 평행, 수직, 접선, 내접 같은 핵심 조건이 실제 좌표 계산에서도 맞는지 검산합니다.</li>
+<li><strong>시각 의미 검사</strong>: 레이블 겹침이나 선 혼선, 오해를 부르는 비율 왜곡은 사람이나 독립 심사기로 확인합니다.</li>
+</ol>
+<p>가령 원에 접하는 직선을 생성하는 문제 은행이라면, 렌더링 통과만 보고 배포하기보다 원의 중심과 직선 거리가 반지름과 같은지 좌표 계산으로 한 번 더 걸러내야 합니다. 실행만 통과한 오답 그림도 있고 배치가 달라도 관계가 맞는 그림도 있어 세 검사를 모두 거쳐야 안심할 수 있습니다.</p>
+<h2 id="논문-정보">논문 정보</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>제목</td>
+<td>Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry</td>
+</tr>
+<tr>
+<td>저자</td>
+<td>Hsien Xin Peng, Anthony Kim, Alvin Li, Calvin Supasanya, Shivank Garg, Kevin Zhu</td>
+</tr>
+<tr>
+<td>공개 이력</td>
+<td>arXiv v1 제출 2026-06-23 02:39:21 UTC · 2026-08-20 cs.AI 신규 목록 등장</td>
+</tr>
+<tr>
+<td>발표 정보</td>
+<td>ICML 2026 AI4MATH Workshop</td>
+</tr>
+</tbody>
+</table>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/scidiagramedit-paper-figure-revision/">AI가 과학 도형을 고칠 때, 무엇을 보존해야 할까 — SciDiagramEdit 논문 리뷰</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.18111">Hsien Xin Peng 외, “Solving Is Not Drawing: A Benchmark for Diagrammatic Reasoning in Olympiad Geometry,” arXiv:2608.18111</a></li>
+<li><a href="https://arxiv.org/html/2608.18111v1">arXiv HTML 본문</a></li>
+<li><a href="https://huggingface.co/datasets/max98765/hard_geometry_problems_with_diagrams">공식 Hugging Face 데이터셋</a></li>
+</ul>
+<p>이 글은 arXiv 논문 원문(PDF·TeX 소스)과 공개된 297행 데이터셋 스냅숏을 바탕으로 해설했으며 실험을 독립 재현하지 않았고, 만화는 논문 그림을 복제하지 않고 자체 시각 언어로 재구성했습니다.
+이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/nnv3-verification-boundaries/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.9GwFCt9X_1oad7E.webp" srcset="/_astro/cover.9GwFCt9X_Sngtm.webp 240w, /_astro/cover.9GwFCt9X_26yi4P.webp 360w, /_astro/cover.9GwFCt9X_Z1KrO8C.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-27T00:00:00.000Z">2026년 9월 27일</time></div><h3><a href="/posts/nnv3-verification-boundaries/" data-analytics-event="related_post_click" data-analytics-target="nnv3-verification-boundaries">AI 검증, 테스트한 점 밖까지 확인하려면</a></h3><p>NNV3의 집합 기반 신경망 검증을 읽으며 가중치·영상·그래프 확장, 확률적 보장 조건, unknown 판정의 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/mindtopo-reasoning-action-gap/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D0Rs1RAY_ZuHef2.webp" srcset="/_astro/cover.D0Rs1RAY_1tEObs.webp 240w, /_astro/cover.D0Rs1RAY_Z2nli20.webp 360w, /_astro/cover.D0Rs1RAY_Z1aagqw.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-11T00:00:00.000Z">2026년 9월 11일</time></div><h3><a href="/posts/mindtopo-reasoning-action-gap/" data-analytics-event="related_post_click" data-analytics-target="mindtopo-reasoning-action-gap">길을 알아보는 AI는 파이프도 연결할까</a></h3><p>MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/jarvisgui-cross-device-state/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CC92een1_KWn0f.webp" srcset="/_astro/cover.CC92een1_Z1zVMsu.webp 240w, /_astro/cover.CC92een1_ZmKKR1.webp 360w, /_astro/cover.CC92een1_PpfIs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-10T00:00:00.000Z">2026년 9월 10일</time></div><h3><a href="/posts/jarvisgui-cross-device-state/" data-analytics-event="related_post_click" data-analytics-target="jarvisgui-cross-device-state">휴대폰과 PC를 오가는 AI, 파일은 정말 도착했을까</a></h3><p>JarvisGUI 논문이 기기 간 GUI 작업을 연결하고 완료를 평가한 방법, 낮은 전체 성공률의 실험 조건과 실제 파일 상태 확인의 의미를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

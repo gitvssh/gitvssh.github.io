@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>난수를 미리 공유해 초안을 고르는 DICE | 다메카솔</title><meta name="description" content="DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/dice-draw-informed-decoding/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="난수를 미리 공유해 초안을 고르는 DICE"><meta property="og:description" content="DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다."><meta property="og:url" content="https://blog.damecasol.com/posts/dice-draw-informed-decoding/"><meta property="og:image" content="https://blog.damecasol.com/social/dice-draw-informed-decoding.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/dice-draw-informed-decoding.jpg"><meta property="og:image:alt" content="갈림길의 토큰을 보며 어느 초안을 준비할지 묻는 카솔"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="난수를 미리 공유해 초안을 고르는 DICE"><meta name="twitter:description" content="DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/dice-draw-informed-decoding.jpg"><meta name="twitter:image:alt" content="갈림길의 토큰을 보며 어느 초안을 준비할지 묻는 카솔"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/dice-draw-informed-decoding/","headline":"난수를 미리 공유해 초안을 고르는 DICE","name":"난수를 미리 공유해 초안을 고르는 DICE","description":"DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다.","datePublished":"2026-11-24T06:34:35.000Z","dateModified":"2026-11-24T06:34:35.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/dice-draw-informed-decoding/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/dice-draw-informed-decoding/"},"image":["https://blog.damecasol.com/social/dice-draw-informed-decoding.jpg","https://blog.damecasol.com/_astro/cover.7aRrVBOe.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/dice-draw-informed-decoding.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"언어 모델, 추측 디코딩, 추론 최적화","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":861,"citation":"https://arxiv.org/abs/2611.27891v1"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"난수를 미리 공유해 초안을 고르는 DICE","item":"https://blog.damecasol.com/posts/dice-draw-informed-decoding/"}]}</script><meta property="article:published_time" content="2026-11-24T06:34:35.000Z"><meta property="article:modified_time" content="2026-11-24T06:34:35.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="언어 모델"><meta property="article:tag" content="추측 디코딩"><meta property="article:tag" content="추론 최적화"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="dice-draw-informed-decoding" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-11-24T06:34:35.000Z">2026년 11월 24일</time></span></div><h1>난수를 미리 공유해 초안을 고르는 DICE</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.7aRrVBOe_1hQhyH.webp" srcset="/_astro/cover.7aRrVBOe_Z1xDQVo.webp 640w, /_astro/cover.7aRrVBOe_1okXx5.webp 960w, /_astro/cover.7aRrVBOe_1hQhyH.webp 1254w" alt="갈림길의 토큰을 보며 어느 초안을 준비할지 묻는 카솔" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1254" height="1254"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#큰-모델의-예측과-난수는-다르게-다룰-수-있습니다" data-toc-link="큰-모델의-예측과-난수는-다르게-다룰-수-있습니다" data-analytics-event="toc_click" data-analytics-target="큰-모델의-예측과-난수는-다르게-다룰-수-있습니다">큰 모델의 예측과 난수는 다르게 다룰 수 있습니다</a></li><li class="article-toc__depth-2"><a href="#같은-난수가-초안과-검증을-연결합니다" data-toc-link="같은-난수가-초안과-검증을-연결합니다" data-analytics-event="toc_click" data-analytics-target="같은-난수가-초안과-검증을-연결합니다">같은 난수가 초안과 검증을 연결합니다</a></li><li class="article-toc__depth-2"><a href="#처리량-개선은-같은-조건끼리-비교합니다" data-toc-link="처리량-개선은-같은-조건끼리-비교합니다" data-analytics-event="toc_click" data-analytics-target="처리량-개선은-같은-조건끼리-비교합니다">처리량 개선은 같은 조건끼리 비교합니다</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-난수-관리도-추론-설계입니다" data-toc-link="다메카솔의-해석-난수-관리도-추론-설계입니다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-난수-관리도-추론-설계입니다">다메카솔의 해석: 난수 관리도 추론 설계입니다</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>작은 모델이 다음 문장을 미리 써 놓아도, 큰 모델이 다른 길을 고르면 준비한 계산이 낭비됩니다. DICE는 이 낭비를 줄이기 위해 나중에 검증에 사용할 난수를 먼저 뽑아 초안 준비에도 활용합니다. 답변을 뽑는 규칙을 유지하면서, 계산을 어디에 쓸지 바꾸는 연구입니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="큰-모델의-예측과-난수는-다르게-다룰-수-있습니다">큰 모델의 예측과 난수는 다르게 다룰 수 있습니다</h2>
+<p>추측 디코딩은 작은 초안 모델인 드래프터가 여러 토큰을 준비하고, 큰 목표 모델이 한 번에 확인하는 방식입니다. 모든 후보를 준비하기에는 계산량이 부족하므로 실제 출력으로 이어질 경로를 잘 골라야 하죠. 이 과정에는 아직 계산하지 않은 목표 모델의 예측과, 확률에 따라 토큰을 뽑을 때 쓰는 난수라는 두 가지 불확실성이 있습니다.</p>
+<p>목표 모델의 예측은 계산해야 알 수 있지만 난수는 미리 뽑을 수 있습니다. 논문의 도입 예시는 이 차이를 작은 수식으로 보여 줍니다. 고정된 초안 토큰의 확률을 q, 목표 모델의 확률을 p, 검증 난수를 u라고 하면 수락 조건은 <code>u × q ≤ p</code>입니다.</p>
+<table>
+<thead>
+<tr>
+<th>고정된 초안의 예시</th>
+<th>작은 난수</th>
+<th>큰 난수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초안 확률 q</td>
+<td>0.5</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>미리 뽑은 u</td>
+<td>0.1</td>
+<td>0.9</td>
+</tr>
+<tr>
+<td>수락에 필요한 p</td>
+<td>0.05 이상</td>
+<td>0.45 이상</td>
+</tr>
+</tbody>
+</table>
+<p>아직 p를 모르더라도 이번 검증이 어느 문턱을 사용할지는 알 수 있습니다. 예를 들어 다음 단어 뒤를 더 길게 준비할지, 거절될 경우의 다른 경로를 준비할지 판단하는 데 이 정보가 도움이 될 수 있겠죠. 이 표는 원리를 설명하는 예시이며, 처리량 실험값은 아래에서 따로 살펴봅니다.</p>
+<h2 id="같은-난수가-초안과-검증을-연결합니다">같은 난수가 초안과 검증을 연결합니다</h2>
+<p>DICE의 트리 방식은 드래프터의 점수에 미리 뽑은 검벨(Gumbel) 난수를 결합합니다. 검벨 난수는 점수에 더해 확률적으로 후보를 고르는 데 쓰이는 값입니다. 이 정보를 후보 생성, 다음 가지 확장, 최종 검증할 노드 선택에 모두 반영합니다. 한 갈림길에서만 잘 골라도 나머지 계산을 엉뚱한 경로에 쓰면 효과가 작기 때문입니다.</p>
+<p><img alt="하나의 난수 흐름을 초안 준비와 목표 모델 검증에 함께 전달하는 구조" loading="lazy" decoding="async" width="1254" height="1254" src="/_astro/page-01.CVBPCbLJ_1rIVMl.webp" srcset=""></p>
+<p>목표 모델은 자신의 실제 점수와 같은 난수로 최종 토큰을 결정합니다. 논문의 증명은 난수를 출력 위치에 연결하고, 아직 쓰지 않은 값은 다음 회차에 이어 쓸 때 같은 난수의 순차 생성 결과가 유지됨을 보입니다. 초안이 잘못 예상해도 출력 결정을 대신하는 것은 아닙니다.</p>
+<p>‘추가 학습 없음’에도 준비 작업은 있습니다. 저자들은 목표·초안 모델 조합마다 점수의 두 계수를 보정합니다.</p>
+<table>
+<thead>
+<tr>
+<th>보정에 쓰인 관찰</th>
+<th>논문의 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최초 노드 수</td>
+<td>2,000개</td>
+</tr>
+<tr>
+<td>프롬프트 분량</td>
+<td>보통 1~3개</td>
+</tr>
+</tbody>
+</table>
+<p>모델 가중치를 다시 학습하는 일과 후보 점수를 조정하는 일을 구분해서 읽어야 합니다.</p>
+<h2 id="처리량-개선은-같은-조건끼리-비교합니다">처리량 개선은 같은 조건끼리 비교합니다</h2>
+<p>저자들은 여러 드래프터와 추론 엔진에서 초안 트리를 평가했습니다. 아래는 원문 표의 SPEED-Bench 결과 중 두 사례이며, 각 행 안에서 모델 가중치와 엔진을 유지했습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 범위와 공통 조건</th>
+<th>설정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>전체 트리 평가</td>
+<td>모델 조합 16개, 엔진 구분 시 18개 구성</td>
+</tr>
+<tr>
+<td>아래 사례의 하드웨어</td>
+<td>H200 GPU</td>
+</tr>
+<tr>
+<td>샘플링 온도 / 동시 요청</td>
+<td>1 / 1</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>목표 모델 / 드래프터 / 엔진</th>
+<th>기존 트리 방식</th>
+<th>DICE</th>
+<th>논문의 상대 개선율</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Llama-3.1-8B / EAGLE-3 / Transformers</td>
+<td>53.1토큰/초</td>
+<td>66.2토큰/초</td>
+<td>24.62%</td>
+</tr>
+<tr>
+<td>Qwen3.8-27B / EAGLE-4 / vLLM</td>
+<td>377.6토큰/초</td>
+<td>456.4토큰/초</td>
+<td>20.88%</td>
+</tr>
+</tbody>
+</table>
+<p>이는 기존 추측 디코딩 대비 생성 처리량의 차이입니다. 답의 정확도 개선이나 모든 서비스의 응답 시간 단축으로 옮겨 읽을 수는 없습니다. 표의 배수 열은 또 별도로 순차 생성 대비 값을 나타내므로, 어떤 기준을 나눴는지도 확인해야 합니다.</p>
+<p>다음 회차의 초안을 미리 준비하는 비동기 방식에도 같은 발상을 적용했습니다. 원문의 두 번째 표는 Alpaca·GSM8K·HumanEval·UltraFeedback에서 기존 SSD와 비교합니다. 위와 같은 하드웨어·온도·동시 요청 조건을 썼습니다.</p>
+<p>비교 조합은 목표 모델 Llama-3.1-70B-Instruct와 드래프터 Llama-3.2-1B-Instruct입니다. 결과는 다음과 같습니다.</p>
+<table>
+<thead>
+<tr>
+<th>측정 항목</th>
+<th>기존 SSD</th>
+<th>DICE 적용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>생성 처리량</td>
+<td>160.8토큰/초</td>
+<td>182.0토큰/초</td>
+</tr>
+<tr>
+<td>다음 초안 캐시 적중률</td>
+<td>59.8%</td>
+<td>77.9%</td>
+</tr>
+</tbody>
+</table>
+<p>여기서는 제안 토큰 자체를 검증 난수에 맞춰 뽑지 않습니다. 독립된 난수로 초안을 만들고, 어느 접두사의 초안을 미리 준비할지만 고릅니다. 이 구분이 출력 분포를 보존하는 조건입니다.</p>
+<h2 id="다메카솔의-해석-난수-관리도-추론-설계입니다">다메카솔의 해석: 난수 관리도 추론 설계입니다</h2>
+<p>항상 빨라지는 장치는 아닙니다. 논문의 온도 0 실험처럼 가장 높은 점수를 고르는 탐욕적 검증에서는 기준 방식과 같은 속도였습니다. 초안 쪽에 실제 검증과 다른 난수를 준 실험에서는 오히려 수락 길이가 줄었습니다. 임의의 잡음을 더하는 것과 같은 난수를 공유하는 것은 효과가 다르죠.</p>
+<p><img alt="초안이 준비한 경로를 목표 모델이 확인하고 최종 토큰을 결정하는 모습을 살펴보는 카솔" loading="lazy" decoding="async" width="1254" height="1254" src="/_astro/page-02.CyG7Y6a1_1oJnSr.webp" srcset=""></p>
+<p>서비스에 적용한다면 난수 스트림과 출력 위치를 어떻게 관리하는지부터 살펴보겠습니다. 요청 시드만 같게 두는 것으로 끝내지 않고, 회차나 실행 순서가 달라져도 해당 위치에 같은 값이 대응하는지 확인해야 합니다. 이후 대표 입력과 실제 동시 요청 수에서 처리량뿐 아니라 사용자가 기다리는 시간도 함께 비교하는 편이 좋겠습니다.</p>
+<p><a href="/posts/nemotron-bolt-e4b-memory-context/">Nemotron Bolt의 드래프터 제공</a>처럼 초안 모델을 확보하는 일과, 그 모델의 계산을 효율적으로 배분하는 일은 서로 이어집니다. DICE가 보여 주는 흥미로운 지점은 더 좋은 예측 모델을 만드는 것 외에도, 이미 알 수 있는 정보를 계산 순서에 반영할 여지가 있다는 점입니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li>Guanning Zeng·Andrea Zanette, <a href="https://arxiv.org/abs/2611.27891v1">Speculative Decoding Is Less Speculative Than You Think, v1</a>, 2026-11-20 제출된 프리프린트. 방법 §3, 표 1·2, 온도·동기화 실험 §4–5, 분포 보존 증명 부록 B. 2026-11-24 확인.</li>
+<li><a href="https://arxiv.org/pdf/2611.27891v1">논문 전체 PDF</a>, <a href="https://arxiv.org/html/2611.27891v1">HTML 원문</a>.</li>
+</ul>
+<p>논문 실험을 독립 재현하지 않았습니다. 별도 공식 DICE 코드·프로젝트 링크는 확인하지 못했으며, 만화는 원문 그림을 복제하지 않고 새로 구성했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/delegent-small-model-legwork/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.r_ORXwTE_Z26D4Ed.webp" srcset="/_astro/cover.r_ORXwTE_CSI4S.webp 240w, /_astro/cover.r_ORXwTE_Z1udRj6.webp 360w, /_astro/cover.r_ORXwTE_1rPF6Q.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-25T06:35:49.000Z">2026년 11월 25일</time></div><h3><a href="/posts/delegent-small-model-legwork/" data-analytics-event="related_post_click" data-analytics-target="delegent-small-model-legwork">작은 모델에 조사를 맡기는 Delegent</a></h3><p>Delegent가 작은 모델에 조사와 테스트를 맡기는 구조를 살펴봅니다. 큰 모델 API 비용 절감과 전체 운영비·완료 시간의 차이를 실험 조건과 함께 읽습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/glide-single-pass-decisions/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.lorla-BU_28WFmd.webp" srcset="/_astro/cover.lorla-BU_1qi7ld.webp 240w, /_astro/cover.lorla-BU_ZGOt2L.webp 360w, /_astro/cover.lorla-BU_2ff4nb.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-23T06:37:28.000Z">2026년 11월 23일</time></div><h3><a href="/posts/glide-single-pass-decisions/" data-analytics-event="related_post_click" data-analytics-target="glide-single-pass-decisions">긴 추론 없이 선택지를 평가하는 GLiDE</a></h3><p>긴 추론 문장 없이 선택 확률을 계산하는 GLiDE를 살펴봅니다. 평가 조건과 공개 코드의 confidence 정의를 구분합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/semantic-parser-silent-errors/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.C3anqXbl_Z1VxBxF.webp" srcset="/_astro/cover.C3anqXbl_Z1NRij4.webp 240w, /_astro/cover.C3anqXbl_18cf6S.webp 360w, /_astro/cover.C3anqXbl_ZYUlh6.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-15T06:20:29.000Z">2026년 11월 15일</time></div><h3><a href="/posts/semantic-parser-silent-errors/" data-analytics-event="related_post_click" data-analytics-target="semantic-parser-silent-errors">형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류</a></h3><p>소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>AI 문헌 리뷰 에이전트 평가와 LitReview Arena | 다메카솔</title><meta name="description" content="LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유"><meta property="og:description" content="LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/"><meta property="og:image" content="https://blog.damecasol.com/social/litreview-arena-expert-evaluation.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/litreview-arena-expert-evaluation.jpg"><meta property="og:image:alt" content="성인형 카솔이 두 문헌 더미와 연결된 연구 개념 지형을 비교하는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유"><meta name="twitter:description" content="LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/litreview-arena-expert-evaluation.jpg"><meta name="twitter:image:alt" content="성인형 카솔이 두 문헌 더미와 연결된 연구 개념 지형을 비교하는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/","headline":"AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유","name":"AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유","description":"LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다.","datePublished":"2026-08-25T00:00:00.000Z","dateModified":"2026-11-23T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/"},"image":["https://blog.damecasol.com/social/litreview-arena-expert-evaluation.jpg","https://blog.damecasol.com/_astro/cover.C33P7EKQ.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/litreview-arena-expert-evaluation.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 에이전트, LLM, 벤치마크, 문헌 리뷰","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1094,"citation":"https://arxiv.org/abs/2608.21374"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유","item":"https://blog.damecasol.com/posts/litreview-arena-expert-evaluation/"}]}</script><meta property="article:published_time" content="2026-08-25T00:00:00.000Z"><meta property="article:modified_time" content="2026-11-23T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 에이전트"><meta property="article:tag" content="LLM"><meta property="article:tag" content="벤치마크"><meta property="article:tag" content="문헌 리뷰"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="litreview-arena-expert-evaluation" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-08-25T00:00:00.000Z">2026년 8월 25일</time></span><span>수정 <time datetime="2026-11-23T00:00:00.000Z">2026년 11월 23일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>AI가 논문을 많이 찾아도 좋은 문헌 리뷰가 되지 않는 이유</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>LitReview Arena의 전문가 비교를 통해 문헌 수집과 연구 지형 합성의 차이, AI judge 보정과 공개 재현 한계를 살펴봅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.C33P7EKQ_zt1Mm.webp" srcset="/_astro/cover.C33P7EKQ_ZzC7Cw.webp 640w, /_astro/cover.C33P7EKQ_ZNaCPF.webp 960w, /_astro/cover.C33P7EKQ_zt1Mm.webp 1024w" alt="성인형 카솔이 두 문헌 더미와 연결된 연구 개념 지형을 비교하는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#핵심-내용" data-toc-link="핵심-내용" data-analytics-event="toc_click" data-analytics-target="핵심-내용">핵심 내용</a></li><li class="article-toc__depth-2"><a href="#논문-수와-연구-지형은-다른-문제다" data-toc-link="논문-수와-연구-지형은-다른-문제다" data-analytics-event="toc_click" data-analytics-target="논문-수와-연구-지형은-다른-문제다">논문 수와 연구 지형은 다른 문제다</a></li><li class="article-toc__depth-2"><a href="#분야-전문가의-익명-비교로-다섯-가지를-따로-쟀다" data-toc-link="분야-전문가의-익명-비교로-다섯-가지를-따로-쟀다" data-analytics-event="toc_click" data-analytics-target="분야-전문가의-익명-비교로-다섯-가지를-따로-쟀다">분야 전문가의 익명 비교로 다섯 가지를 따로 쟀다</a></li><li class="article-toc__depth-2"><a href="#강한-에이전트도-구조와-연구-제안에서-밀렸다" data-toc-link="강한-에이전트도-구조와-연구-제안에서-밀렸다" data-analytics-event="toc_click" data-analytics-target="강한-에이전트도-구조와-연구-제안에서-밀렸다">강한 에이전트도 구조와 연구 제안에서 밀렸다</a></li><li class="article-toc__depth-2"><a href="#ai-심사자의-높은-일치가-전문가-정렬을-뜻하진-않았다" data-toc-link="ai-심사자의-높은-일치가-전문가-정렬을-뜻하진-않았다" data-analytics-event="toc_click" data-analytics-target="ai-심사자의-높은-일치가-전문가-정렬을-뜻하진-않았다">AI 심사자의 높은 일치가 전문가 정렬을 뜻하진 않았다</a></li><li class="article-toc__depth-2"><a href="#공개-데이터-경계와-적용-범위" data-toc-link="공개-데이터-경계와-적용-범위" data-analytics-event="toc_click" data-analytics-target="공개-데이터-경계와-적용-범위">공개 데이터 경계와 적용 범위</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-검색근거구조제안을-분리한다" data-toc-link="다메카솔의-해석-검색근거구조제안을-분리한다" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-검색근거구조제안을-분리한다">다메카솔의 해석: 검색·근거·구조·제안을 분리한다</a></li><li class="article-toc__depth-2"><a href="#함께-읽기" data-toc-link="함께-읽기" data-analytics-event="toc_click" data-analytics-target="함께-읽기">함께 읽기</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>딥리서치나 문헌 리뷰 에이전트를 쓰다 보면 논문을 수십 편씩 찾아 요약해 주니 연구 조사도 금세 끝날 것이라는 기대가 생깁니다. 막상 해당 분야 연구자들에게 인간 초안과 AI 초안을 익명으로 비교하게 해 보니, AI가 쓴 글은 잘 정리된 참고문헌 목록에 머무는 경우가 많았습니다. 검색량과 인용 범위는 넓어졌지만, 분야의 연구 지형을 세우고 다음 질문을 짚어내는 단계에서는 여전히 간격이 남아 있었거든요.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="핵심-내용">핵심 내용</h2>
+<ul>
+<li><strong>수집과 합성의 분리</strong>: 논문을 넓게 모으는 일과 분야 구조를 조직해 비자명한 연구 방향을 제안하는 일은 난이도가 다릅니다.</li>
+<li><strong>인간 초안과의 격차</strong>: 전체 효용(D5)에서 인간 초안과 직접 맞붙은 결정적 대결 904건 중 비인간 시스템 승리는 208건(23.0%)에 그쳤습니다.</li>
+<li><strong>AI 심사자의 함정과 보정</strong>: 보정 없는 LLM 심사자는 인간 1위 순위를 뒤집었지만, <code>LitJudge</code> 보정을 적용하자 D5 순위 상관이 0.467에서 0.792로 올랐습니다.</li>
+</ul>
+<h2 id="논문-수와-연구-지형은-다른-문제다">논문 수와 연구 지형은 다른 문제다</h2>
+<p><img alt="AI가 많은 무지 논문을 모으는 동안 전문가가 연구 개념과 빈틈의 관계를 조직하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.D36IdEBG_Z2dKECr.webp" srcset=""></p>
+<p>문헌 리뷰에는 검색으로 해결할 수 있는 일과 깊은 학술적 판단이 필요한 일이 함께 들어 있습니다. 관련 논문을 찾고 인용이 주장과 맞는지 대조하는 작업은 규칙화하기 쉽지만, 분야를 어떤 축으로 묶고 상충하는 실험 결과를 어떻게 설명할지는 훨씬 높은 수준의 합성을 요구하죠.</p>
+<p>예를 들어 에이전트 메모리 최적화 분야를 AI에게 정리해 달라고 요청하는 상황을 떠올려 봅시다. 시스템이 관련 논문 80편을 찾아 요약하고 인용을 정확히 달더라도, 장기 기억 압축 방식과 검색 기반 방식의 갈림길이나 검증되지 않은 병목을 짚어내지 못하면 참고문헌 목록에 그치고 맙니다. 「LitReview Arena」 연구진은 기존 자동 평가가 참조 문헌 겹침이나 인용 수처럼 세기 쉬운 지표에 치우친 탓에 이런 구조적 품질을 놓쳤다고 봤습니다.</p>
+<h2 id="분야-전문가의-익명-비교로-다섯-가지를-따로-쟀다">분야 전문가의 익명 비교로 다섯 가지를 따로 쟀다</h2>
+<p><img alt="분야 전문가들이 익명 초안 두 개를 다섯 개의 시각 기준으로 나눠 비교하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.Dwb1_ovQ_dee9g.webp" srcset=""></p>
+<p>연구팀은 정답 초안 하나와 표면 유사도를 재는 대신, 같은 주제의 두 초안을 나란히 놓고 연구 출발점으로 어느 쪽이 더 나은지 묻는 <code>LitReview Arena</code>를 구축했습니다. OpenAlex의 최근 AI 서베이 논문 중 인용 50회를 넘긴 3천 편 이상에서 주제를 뽑았고, AI 논문 작성 경험이 있는 전문가 105명이 세부 분야에 맞는 익명 초안 쌍을 좌우 무작위로 받아 <code>A</code>, <code>B</code>, <code>Tie</code>, <code>Both Bad</code>로 판정했습니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 차원</th>
+<th>묻는 핵심 질문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Literature Coverage (D1)</td>
+<td>중요한 문헌을 충분히 포함했는가</td>
+</tr>
+<tr>
+<td>Claim Support (D2)</td>
+<td>핵심 주장이 관련 인용으로 뒷받침되는가</td>
+</tr>
+<tr>
+<td>Paper Structure (D3)</td>
+<td>접근법 사이 관계를 이해할 수 있게 조직했는가</td>
+</tr>
+<tr>
+<td>Research Suggestions (D4)</td>
+<td>중요하고 비자명한 연구 방향을 제시했는가</td>
+</tr>
+<tr>
+<td>Overall Utility (D5)</td>
+<td>연구자의 출발점으로 어느 초안이 더 유용한가</td>
+</tr>
+</tbody>
+</table>
+<p>단일 총점으로 뭉뚱그리지 않고 포괄성과 구조적 합성을 분리해 잰 덕분에 어디서 격차가 벌어지는지 분명히 드러났죠.</p>
+<h2 id="강한-에이전트도-구조와-연구-제안에서-밀렸다">강한 에이전트도 구조와 연구 제안에서 밀렸다</h2>
+<p><img alt="AI의 넓지만 얕은 문헌 연결망과 전문가가 만든 깊은 연구 지형 및 구체적인 탐색로를 대비한 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.BIrcsp8O_Z2tyC6T.webp" srcset=""></p>
+<p>비교 결과 인간 초안이 다섯 차원 모두에서 1위를 지켰습니다. 에이전트형 시스템이 추론 시점에 단독 모델보다 약 15배 많은 토큰을 투입해 전반적 품질을 끌어올렸는데도, 인간 초안과의 효용 격차는 쉽게 닫히지 않았습니다.</p>
+<table>
+<thead>
+<tr>
+<th>비교 항목</th>
+<th>보고된 수치</th>
+<th>해석 포인트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>인간 vs 비인간 승률 (D5)</td>
+<td>208 / 904건 (23.0%)</td>
+<td><code>Tie</code>·<code>Both Bad</code> 제외 결정적 대결 기준</td>
+</tr>
+<tr>
+<td>D5와의 차원별 순위 상관</td>
+<td>구조 0.99 · 제안 0.96 · 포괄 0.90</td>
+<td>수집량보다 구조화와 제안이 효용 좌우</td>
+</tr>
+<tr>
+<td>질의당 평균 토큰</td>
+<td>에이전트 122.3K vs 단독 8.1K</td>
+<td>약 15배 예산으로도 인간과의 격차 유지</td>
+</tr>
+<tr>
+<td>보정 전 Qwen3-235B (500건)</td>
+<td>D5 상관 0.467 (인간 310 vs GPT-5.2 2490)</td>
+<td>유창성 선호로 인간 1위 Elo 순위 역전</td>
+</tr>
+<tr>
+<td>심사자 간 일치도</td>
+<td>AI끼리 0.7 이상 / 전문가끼리 0.861</td>
+<td>AI의 높은 일치가 전문가 정렬을 보장하진 않음</td>
+</tr>
+<tr>
+<td>LitJudge 보정 후 (500건)</td>
+<td>D5 0.467→0.792 / D4 0.430→0.842</td>
+<td>유사 사례와 다양성 공백 기준점 활용 효과</td>
+</tr>
+</tbody>
+</table>
+<p>저자들이 많은 AI 초안을 유기적으로 합성된 리뷰보다 잘 정리된 참고문헌 목록에 가깝다고 해석한 까닭이 여기에 있습니다. 문헌을 넓게 모으는 능력만으로는 분야의 숨은 관계를 드러내고 다음 실험을 제안하는 단계까지 넘어가기 어렵다는 셈이죠.</p>
+<h2 id="ai-심사자의-높은-일치가-전문가-정렬을-뜻하진-않았다">AI 심사자의 높은 일치가 전문가 정렬을 뜻하진 않았다</h2>
+<p><img alt="두 AI 심사가 같은 회색 경로를 고르지만 전문가들은 더 깊은 근거 경로를 가리키고 보정 다리가 두 판단을 잇는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.BdrcMUco_1gqQdy.webp" srcset=""></p>
+<p>전문가 평가는 비용이 많이 들기 때문에, 연구팀은 500건의 대결 부분집합으로 LLM 심사자가 이를 대신할 수 있는지 시험했습니다. 결과는 의외였는데, Qwen과 DeepSeek 심사자는 모든 차원에서 서로 0.7 이상 일치하면서도 정작 전문가 순위와는 크게 어긋났거든요. AI 심사자들이 표면적 유창성이나 형식 선호를 공유하면 안정적으로 같은 오답을 고를 수 있음을 보여 줍니다.</p>
+<p>연구팀이 제안한 <code>LitJudge</code>는 구조 유사 사례, 주제 유사 사례, 인간 초안 기반의 다양성 연구 공백 기준점을 함께 컨텍스트로 넣어 이 간격을 보정합니다. 덕분에 D5와 Research Suggestions(D4) 정렬이 크게 높아졌지만, 이를 전문가 심사를 대체하는 도구라기보다 전문가 사례를 재사용하는 보정 장치로 읽는 편이 정확합니다.</p>
+<h2 id="공개-데이터-경계와-적용-범위">공개 데이터 경계와 적용 범위</h2>
+<p>주 벤치마크가 AI 주제 중심이라(부록의 생물학 파일럿이 비슷한 경향을 보였더라도) 생물의학이나 법률처럼 증거 규범과 안전 비용이 다른 분야에서는 별도의 사실·인용 검증이 필요합니다. 전문가 사례 보정 역시 익숙한 문법이나 유행 주제로 쏠릴 위험이 있고, 새 논문이 계속 들어오는 살아 있는 리뷰(living review)의 장기 갱신 과제도 아직 다루지 않았습니다.</p>
+<p>공개 저장소에는 MIT 라이선스 평가 코드·프로토콜과 전문가 판정(2,754행), 정규화 주제(925행)가 담겨 있습니다. 다만 실제 초안 쌍을 담은 <code>battles.jsonl</code>은 약 164MB의 Git LFS 포인터로만 제공되고 평가자 ID도 가명 처리돼 있어, 공개 아카이브만으로 전체 대결을 재실행하거나 참여자 수를 재집계하기는 어렵습니다.</p>
+<h2 id="다메카솔의-해석-검색근거구조제안을-분리한다">다메카솔의 해석: 검색·근거·구조·제안을 분리한다</h2>
+<p><img alt="성인형 카솔이 근거 연결망, 연구 구조, 다음 연구 경로의 세 검증 관문을 설명하는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.CITY7MqG_2huirr.webp" srcset=""></p>
+<p>문헌 리뷰 에이전트를 연구 워크플로에 도입한다면 단일 종합 점수 대신 아래 네 층의 증거를 분리해 관리하는 편이 안전합니다.</p>
+<ul>
+<li><strong>검색 범위</strong>: 쿼리, 데이터베이스, 기준일(cutoff date), 누락 후보를 남깁니다.</li>
+<li><strong>주장 근거</strong>: 주장(claim)별 인용 논문과 원문 확인 위치를 기록합니다.</li>
+<li><strong>연구 구조</strong>: 분야 분류 축과 상충하는 결과를 묶은 근거를 검토합니다.</li>
+<li><strong>연구 제안</strong>: 선행 연구로 바로 반박되지 않는 구체적 공백(gap)인지 걸러냅니다.</li>
+</ul>
+<p>자동 심사자 역시 고정된 정답 판독기처럼 쓰기보다 전문가가 읽은 표본을 정기적으로 넣어 순위를 재보정하는 편이 좋습니다. 결국 도입 성패는 논문을 몇 편 더 긁어오는지가 아니라 사람이 분류 축을 고친 횟수, 근거 없는 제안을 걸러낸 비율, 새 논문이 들어올 때 기존 주장을 안전하게 갱신하는지로 갈리는 편입니다.</p>
+<h2 id="함께-읽기">함께 읽기</h2>
+<ul>
+<li><a href="/posts/ai-open-ended-research-shadow-evaluation/">AI 에이전트는 열린 연구 질문을 끝까지 풀 수 있을까</a></li>
+<li><a href="/posts/information-discernment-llm-sources/">LLM이 출처를 제시해도 정보 판단이 끝나지 않는 이유</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.21374">Ruotong Zhao 외, “LitReview Arena: Evaluating Literature Review Agents with Battle-Style Peer Review Platform,” arXiv:2608.21374</a></li>
+<li><a href="https://arxiv.org/pdf/2608.21374">arXiv v1 PDF</a></li>
+<li><a href="https://github.com/VanellopeAsher/LitReview-Arena/tree/768d18362ae913f74a0257f240ba50c00dc9eef9">저자 공식 GitHub 저장소, pinned revision 768d1836</a></li>
+<li><a href="https://icml.cc/Conferences/2026">ICML 2026 공식 사이트</a></li>
+</ul>
+<p>이 글은 논문 원문(arXiv v1, 2026-07-01 제출·2026-08-25 cs.AI 등재)과 저자 공개 저장소 아카이브를 바탕으로 정리했으며, 별도 실행 재현은 수행하지 않았고 그림은 새로 구성했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/fde-gym-customer-outcomes/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.BMyy8xGM_A1EMy.webp" srcset="/_astro/cover.BMyy8xGM_Z1KiGgJ.webp 240w, /_astro/cover.BMyy8xGM_Zx7EFg.webp 360w, /_astro/cover.BMyy8xGM_F3lUd.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-16T00:00:00.000Z">2026년 10월 16일</time></div><h3><a href="/posts/fde-gym-customer-outcomes/" data-analytics-event="related_post_click" data-analytics-target="fde-gym-customer-outcomes">AI가 기능은 만들었는데, 고객의 일은 왜 그대로일까</a></h3><p>FDE-Gym은 숨은 업무 조건을 찾고 기존 시스템을 고친 뒤 고객 성과까지 평가합니다. 평균 점수와 해결률의 차이, 질문 비용, 모의 환경의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/carryon-object-context/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.RDB2GDpn_Z7CEs8.webp" srcset="/_astro/cover.RDB2GDpn_Z2gILHI.webp 240w, /_astro/cover.RDB2GDpn_Z13xK7f.webp 360w, /_astro/cover.RDB2GDpn_9Cgte.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-15T00:00:00.000Z">2026년 10월 15일</time></div><h3><a href="/posts/carryon-object-context/" data-analytics-event="related_post_click" data-analytics-target="carryon-object-context">AI가 끝낸 일을 다시 설명하느라 바쁠 때</a></h3><p>CarryOn은 재사용할 작업물과 남은 의무를 함께 보존합니다. 기록 갱신의 안전장치, OSWorld와 검색 평가의 결과, 코드 공개 전의 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/cleat-value-guided-clarification/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.wnyihWWB_Z5bgve.webp" srcset="/_astro/cover.wnyihWWB_Z26DyQ3.webp 240w, /_astro/cover.wnyihWWB_ZSsxfz.webp 360w, /_astro/cover.wnyihWWB_jHtkT.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-10-14T00:00:00.000Z">2026년 10월 14일</time></div><h3><a href="/posts/cleat-value-guided-clarification/" data-analytics-event="related_post_click" data-analytics-target="cleat-value-guided-clarification">AI가 자꾸 되물을 때, 어떤 질문이 필요한가</a></h3><p>CLEAT는 어떤 확인 질문이 현재 에이전트의 결정을 개선하는지 학습합니다. 평소 행동과의 비교, 정책 갱신, 모의 사용자 평가의 성과와 한계를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석 | 다메카솔</title><meta name="description" content="AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/tactile-computer-use-agents/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석"><meta property="og:description" content="AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/tactile-computer-use-agents/"><meta property="og:image" content="https://blog.damecasol.com/social/tactile-computer-use-agents.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/tactile-computer-use-agents.jpg"><meta property="og:image:alt" content="카솔이 흔들리는 좌표 십자선과 역할·상태가 드러난 버튼을 비교해 가리키는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석"><meta name="twitter:description" content="AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/tactile-computer-use-agents.jpg"><meta name="twitter:image:alt" content="카솔이 흔들리는 좌표 십자선과 역할·상태가 드러난 버튼을 비교해 가리키는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/tactile-computer-use-agents/","headline":"컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석","name":"컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석","description":"AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다.","datePublished":"2026-07-17T00:00:00.000Z","dateModified":"2026-11-20T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/tactile-computer-use-agents/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/tactile-computer-use-agents/"},"image":["https://blog.damecasol.com/social/tactile-computer-use-agents.jpg","https://blog.damecasol.com/_astro/cover.Bac8LWk_.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/tactile-computer-use-agents.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"AI 에이전트, 멀티모달 AI","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":986,"citation":"https://arxiv.org/abs/2607.14443"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석","item":"https://blog.damecasol.com/posts/tactile-computer-use-agents/"}]}</script><meta property="article:published_time" content="2026-07-17T00:00:00.000Z"><meta property="article:modified_time" content="2026-11-20T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="AI 에이전트"><meta property="article:tag" content="멀티모달 AI"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="tactile-computer-use-agents" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-07-17T00:00:00.000Z">2026년 7월 17일</time></span><span>수정 <time datetime="2026-11-20T00:00:00.000Z">2026년 11월 20일</time></span></div><nav class="article-topics" aria-label="관련 주제"><span>관련 주제</span><a href="/topics/ai-agents/">#AI 에이전트</a></nav><h1>컴퓨터 사용 AI 에이전트가 화면 좌표 대신 의미를 누르는 법: Tactile 분석</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>AI 에이전트에게 마우스 조작을 시켰을 때 왜 엉뚱한 곳을 클릭하거나 멈칫거릴까요? 단순 스크린샷 픽셀 좌표 추정을 넘어 OS 접근성 트리(Accessibility Tree)를 1급 인터페이스로 활용하는 Tactile 아키텍처를 분석합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.Bac8LWk__kVyio.webp" srcset="/_astro/cover.Bac8LWk__12Xc0e.webp 640w, /_astro/cover.Bac8LWk__OpFM5.webp 960w, /_astro/cover.Bac8LWk__kVyio.webp 1024w" alt="카솔이 흔들리는 좌표 십자선과 역할·상태가 드러난 버튼을 비교해 가리키는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#스크린샷-기반-gui-조작이-실패하는-이유" data-toc-link="스크린샷-기반-gui-조작이-실패하는-이유" data-analytics-event="toc_click" data-analytics-target="스크린샷-기반-gui-조작이-실패하는-이유">스크린샷 기반 GUI 조작이 실패하는 이유</a></li><li class="article-toc__depth-2"><a href="#접근성-우선accessibility-first-3단계-사다리" data-toc-link="접근성-우선accessibility-first-3단계-사다리" data-analytics-event="toc_click" data-analytics-target="접근성-우선accessibility-first-3단계-사다리">접근성 우선(Accessibility-first) 3단계 사다리</a></li><li class="article-toc__depth-2"><a href="#좌표-x-y-대신-행동-가능한-ui-객체로-묶기" data-toc-link="좌표-x-y-대신-행동-가능한-ui-객체로-묶기" data-analytics-event="toc_click" data-analytics-target="좌표-x-y-대신-행동-가능한-ui-객체로-묶기">좌표 (x, y) 대신 행동 가능한 UI 객체로 묶기</a></li><li class="article-toc__depth-2"><a href="#관찰목표-고정실행검증의-4단계-통제-루프" data-toc-link="관찰목표-고정실행검증의-4단계-통제-루프" data-analytics-event="toc_click" data-analytics-target="관찰목표-고정실행검증의-4단계-통제-루프">관찰·목표 고정·실행·검증의 4단계 통제 루프</a></li><li class="article-toc__depth-2"><a href="#macosworld-예비-평가와-적용-한계" data-toc-link="macosworld-예비-평가와-적용-한계" data-analytics-event="toc_click" data-analytics-target="macosworld-예비-평가와-적용-한계">macOSWorld 예비 평가와 적용 한계</a></li><li class="article-toc__depth-2"><a href="#다메카솔의-해석-rpa와-ai-에이전트가-만나는-지점" data-toc-link="다메카솔의-해석-rpa와-ai-에이전트가-만나는-지점" data-analytics-event="toc_click" data-analytics-target="다메카솔의-해석-rpa와-ai-에이전트가-만나는-지점">다메카솔의 해석, RPA와 AI 에이전트가 만나는 지점</a></li><li class="article-toc__depth-2"><a href="#함께-읽을-ai-시스템-글" data-toc-link="함께-읽을-ai-시스템-글" data-analytics-event="toc_click" data-analytics-target="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>데스크톱 화면을 직접 조작하는 Computer Use 에이전트를 붙여 보면, 버튼을 몇 픽셀 빗맞히거나 아직 비활성화(Disabled)된 버튼을 계속 누르는 모습을 자주 보게 됩니다. 실패한 뒤에도 좌표가 틀린 건지, 앱 응답이 늦은 건지, 이미 처리된 건지 원인을 가르기 어렵죠.</p>
+<p>글·해설: 다메카솔</p>
+<p>시스템 논문 「Tactile: Giving Computer-Using Agents Hands and Feet」는 OS 접근성 트리(Accessibility Tree)를 1순위로 읽고 OCR과 시각 제어를 단계적으로 결합하는 오픈소스 MCP 도구 계층을 제안했습니다. 새 모델을 학습하는 대신, 에이전트에게 구조화된 UI 상태와 검증 가능한 실행 도구를 쥐여 주는 접근입니다.</p>
+<h2 id="스크린샷-기반-gui-조작이-실패하는-이유">스크린샷 기반 GUI 조작이 실패하는 이유</h2>
+<p><img alt="보내기 모양 버튼을 본 커서가 좌표를 빗나가고 성공 여부를 확인하지 못하는 세 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-00.BJKusVmR_ZvgjTS.webp" srcset=""></p>
+<p>사람은 화면을 볼 때 버튼이 지금 눌릴 수 있는 상태인지와 클릭 뒤 어떤 변화가 나올지 함께 파악합니다. 반면 순수 비전(VLM) 에이전트는 ’보내기’라는 글자를 읽더라도 활성 여부나 포커스 대상, 네이티브 실행 지원 여부를 픽셀만으로 판별하기 어렵습니다.</p>
+<ul>
+<li><strong>대상의 모호함</strong>: 캡처 압축이나 Retina 배율 환산 과정에서 텍스트가 뭉개지고 클릭 좌표가 어긋납니다.</li>
+<li><strong>상태 정보 부재</strong>: 회색 비활성 버튼이나 로딩 중인 컨트롤을 색감만으로 구분하기 어려워 헛클릭을 반복합니다.</li>
+<li><strong>검증 루프 단절</strong>: 클릭 뒤 모달이 닫혔는지 확인할 기준이 따로 없어 실패 원인을 추적하기 어렵습니다.</li>
+</ul>
+<p>결국 대상 선택과 실행, 결과 확인이 클릭 한 번에 엉켜 있으니 장애가 나도 어디를 고쳐야 할지 막막해집니다.</p>
+<h2 id="접근성-우선accessibility-first-3단계-사다리">접근성 우선(Accessibility-first) 3단계 사다리</h2>
+<p><img alt="접근성 의미, OCR 좌표, 시각 제어의 세 층을 위에서 아래로 배치한 운영 사다리" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.DihhnFXH_14Tqu3.webp" srcset=""></p>
+<p>그렇다고 시각 모델을 완전히 버리고 접근성 API만 쓰기에는 현실의 데스크톱 앱에 트리가 비어 있거나 오래된 노드가 섞인 구간이 많거든요. Tactile은 증거 신뢰도에 따라 세 층의 운영 사다리를 타고 내려가는 방식을 택했습니다.</p>
+<ol>
+<li><strong>1순위, OS 접근성 의미(Accessibility API)</strong>: macOS Accessibility API(Windows는 초기 지원 단계의 UI Automation)에서 역할·상태·<code>AXPress</code> 같은 네이티브 액션을 조회해 마우스 이동 없이 OS 이벤트로 실행합니다.</li>
+<li><strong>2순위, OCR 좌표</strong>: 접근성 정보가 부족하거나 웹뷰 비중이 큰 영역에서는 로컬 OCR로 텍스트 바운딩 박스와 중심점을 뽑아 출처 라벨과 함께 타깃팅합니다.</li>
+<li><strong>3순위, 시각 제어(Visual Fallback)</strong>: 타임라인·캔버스·아이콘 전용 위젯처럼 접근성과 텍스트 근거가 모두 약한 구간에서만 스크린샷 좌표 예측으로 내려갑니다.</li>
+</ol>
+<p>에이전트는 플랫폼 API를 직접 다루지 않고 표준 MCP 도구(<code>get_app_state</code>, <code>click</code>, <code>type_text</code> 등)로 이 사다리를 일관되게 호출합니다.</p>
+<h2 id="좌표-x-y-대신-행동-가능한-ui-객체로-묶기">좌표 <code>(x, y)</code> 대신 행동 가능한 UI 객체로 묶기</h2>
+<p><img alt="중앙 버튼 후보로 역할, 상태, 행동, 근거의 네 정보 타일이 합쳐지는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.R9GXmbLZ_ZONVf1.webp" srcset=""></p>
+<p>핵심 관찰 도구인 <code>get_app_state</code>는 관찰 모드(<code>ax</code>, <code>ax_ocr</code>, <code>ax_ocr_visual</code>)에 맞춰 여러 신호를 압축한 <strong>UI 후보 객체</strong>로 정리하며, 모든 좌표를 macOS 좌상단 화면 포인트로 정규화해 Retina 배율 혼선을 줄입니다. 아래 예시는 후보 객체가 담는 핵심 계약 구조를 요약한 형태입니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#24292E">{</span></span>
+<span class="line"><span style="color:#005CC5">  "target"</span><span style="color:#24292E">: </span><span style="color:#032F62">"Submit Button"</span><span style="color:#24292E">,</span></span>
+<span class="line"><span style="color:#005CC5">  "source"</span><span style="color:#24292E">: </span><span style="color:#032F62">"Accessibility_API"</span><span style="color:#24292E">,</span></span>
+<span class="line"><span style="color:#005CC5">  "state"</span><span style="color:#24292E">: { </span><span style="color:#005CC5">"visible"</span><span style="color:#24292E">: </span><span style="color:#005CC5">true</span><span style="color:#24292E">, </span><span style="color:#005CC5">"enabled"</span><span style="color:#24292E">: </span><span style="color:#005CC5">true</span><span style="color:#24292E">, </span><span style="color:#005CC5">"focused"</span><span style="color:#24292E">: </span><span style="color:#005CC5">false</span><span style="color:#24292E"> },</span></span>
+<span class="line"><span style="color:#005CC5">  "supported_actions"</span><span style="color:#24292E">: [</span><span style="color:#032F62">"Native_Press"</span><span style="color:#24292E">, </span><span style="color:#032F62">"Click"</span><span style="color:#24292E">],</span></span>
+<span class="line"><span style="color:#005CC5">  "verification_hint"</span><span style="color:#24292E">: </span><span style="color:#032F62">"Check if Dialog Closed"</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>예를 들어 논문에 기록된 Zoom 회의 예약 사례에서는 초기 화면의 필터링된 접근성 후보가 52개였지만, 예약 대화상자와 날짜 선택기가 열리면서 요소가 최대 468개까지 불어났는데요. Tactile은 가시성과 활성 상태 기준으로 핵심 후보만 추려 모델에 넘기고, 원본 전체 상태는 별도 트레이스 로그에 남겨 사후 디버깅을 지원합니다.</p>
+<h2 id="관찰목표-고정실행검증의-4단계-통제-루프">관찰·목표 고정·실행·검증의 4단계 통제 루프</h2>
+<p><img alt="관찰, 목표 고정, 실행, 검증이 원형 화살표로 이어지고 검증이 다시 관찰로 돌아가는 루프" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Ce78sn2J_SmtgB.webp" srcset=""></p>
+<p>후보를 확보한 뒤에는 단발성 클릭으로 끝내지 않고 네 단계 통제 루프로 실행과 확인을 분리합니다.</p>
+<ol>
+<li><strong>관찰(Observe)</strong>: 활성 앱의 접근성 노드와 OCR, 필요시 시각 정보를 모아 상태 요약을 구성합니다.</li>
+<li><strong>목표 고정(Target/Ground)</strong>: 출처와 상태가 가장 분명한 UI 후보를 실행 단계와 분리해 선택합니다.</li>
+<li><strong>실행(Act)</strong>: 안전한 네이티브 OS 이벤트를 우선 호출하고, 불가피할 때만 좌표 클릭이나 키보드 입력으로 내려갑니다.</li>
+<li><strong>검증(Verify)</strong>: 실행 직후 화면과 상태 트리를 재조회해 대화상자 닫힘 같은 변화를 확인하고, 근거가 약하면 성공으로 넘기지 않고 기록합니다.</li>
+</ol>
+<h2 id="macosworld-예비-평가와-적용-한계">macOSWorld 예비 평가와 적용 한계</h2>
+<p>저자들은 macOSWorld 계열 과제를 100단계 안에 끝내는 비율(<code>Success@100</code>)로 예비 평가를 진행했습니다. Codex 채점 표본과 96개 교차 에이전트 하위집합을 함께 보면, 접근성 구조가 살아 있는 과제에서 개선 폭이 훨씬 뚜렷한 편입니다.</p>
+<table>
+<thead>
+<tr>
+<th>평가 구분</th>
+<th>에이전트</th>
+<th>기본</th>
+<th>Tactile 결합</th>
+<th>변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>전체 채점 표본</td>
+<td>Codex</td>
+<td>41.06%</td>
+<td>50.00%</td>
+<td>+8.94%p</td>
+</tr>
+<tr>
+<td>AX 지원(AX-adapted)</td>
+<td>Codex</td>
+<td>45.22%</td>
+<td>55.26%</td>
+<td>+10.04%p</td>
+</tr>
+<tr>
+<td>AX 제한(Limited-AX)</td>
+<td>Codex</td>
+<td>27.78%</td>
+<td>33.33%</td>
+<td>+5.55%p</td>
+</tr>
+<tr>
+<td>96개 교차(상한)</td>
+<td>Codex</td>
+<td>38.54%</td>
+<td>50.00%</td>
+<td>+11.46%p</td>
+</tr>
+<tr>
+<td>96개 교차(상한)</td>
+<td>Claude Code</td>
+<td>33.33%</td>
+<td>43.75%</td>
+<td>+10.42%p</td>
+</tr>
+<tr>
+<td>96개 교차(상한)</td>
+<td>OpenCode</td>
+<td>33.33%</td>
+<td>40.62%</td>
+<td>+7.29%p</td>
+</tr>
+<tr>
+<td>96개 교차(상한)</td>
+<td>Goose</td>
+<td>41.67%</td>
+<td>43.75%</td>
+<td>+2.08%p</td>
+</tr>
+</tbody>
+</table>
+<p>다만 96개 교차 에이전트 하위집합의 결합 점수는 학습된 라우팅 정책이 아니라 기본(no-skill)·암묵적·명시적 호출 중 과제별 최선 결과를 취한 상한(upper bound)입니다. 현재 구현과 평가가 macOS 중심이며, CapCut 타임라인이나 WeChat 미디어 영역처럼 시각 비중이 큰 앱에서는 폴백 비용과 좌표 모호성이 다시 커진다는 한계도 감안해야 합니다.</p>
+<h2 id="다메카솔의-해석-rpa와-ai-에이전트가-만나는-지점">다메카솔의 해석, RPA와 AI 에이전트가 만나는 지점</h2>
+<p>사내 업무 자동화(RPA)나 데스크톱 에이전트를 설계할 때 Tactile이 남기는 실무 기준은 세 가지로 압축됩니다.</p>
+<ul>
+<li><strong>시각 모델 남용 줄이기</strong>: 매 스텝 화면 전체를 VLM에 보내면 토큰 비용과 지연 시간이 급증하므로, OS 접근성 메타데이터를 1차 인터페이스로 쓰고 시각 모델은 의미가 빈 구간에만 투입해야 합니다.</li>
+<li><strong>웹·앱 접근성(a11y)이 곧 에이전트 호환성</strong>: <code>button</code>, <code>aria-label</code> 같은 표준 접근성 속성을 충실히 갖춘 화면일수록 스크린 리더 사용자뿐 아니라 AI 에이전트도 오동작 없이 조작할 수 있습니다.</li>
+<li><strong>실행 직후 상태 검증 내재화</strong>: DOM이나 접근성 트리 변화를 바로 확인하고 미확인 상태를 별도로 남기는 루프가 있어야 무한 클릭 장애를 막을 수 있습니다.</li>
+</ul>
+<h2 id="함께-읽을-ai-시스템-글">함께 읽을 AI 시스템 글</h2>
+<ul>
+<li><a href="/posts/orca-ai-coding-agent-workspaces/">AI 코딩 에이전트 작업 공간 격리(Orca)와 권한 통제</a></li>
+<li><a href="/posts/llm-agent-skill-regression-tax/">LLM 에이전트 스킬 주입과 회귀(Regression Tax) 방어 전략</a></li>
+</ul>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.14443">Tactile: Giving Computer-Using Agents Hands and Feet, arXiv:2607.14443</a></li>
+<li><a href="https://github.com/yliust/Tactile">Tactile Official GitHub Repository</a></li>
+</ul>
+<p>이 글은 arXiv v1 논문 원문과 공식 저장소 문서를 바탕으로 정리했으며, 별도 실행이나 성능 재현은 포함하지 않았고 본문 그림과 표는 새로 구성했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/mindtopo-reasoning-action-gap/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.D0Rs1RAY_ZuHef2.webp" srcset="/_astro/cover.D0Rs1RAY_1tEObs.webp 240w, /_astro/cover.D0Rs1RAY_Z2nli20.webp 360w, /_astro/cover.D0Rs1RAY_Z1aagqw.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-11T00:00:00.000Z">2026년 9월 11일</time></div><h3><a href="/posts/mindtopo-reasoning-action-gap/" data-analytics-event="related_post_click" data-analytics-target="mindtopo-reasoning-action-gap">길을 알아보는 AI는 파이프도 연결할까</a></h3><p>MindTopo 논문이 그림 속 연결 관계를 답하는 능력과 직접 파이프를 연결하는 능력을 어떻게 나눠 평가했는지, 결과의 조건과 한계를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/jarvisgui-cross-device-state/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CC92een1_KWn0f.webp" srcset="/_astro/cover.CC92een1_Z1zVMsu.webp 240w, /_astro/cover.CC92een1_ZmKKR1.webp 360w, /_astro/cover.CC92een1_PpfIs.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-09-10T00:00:00.000Z">2026년 9월 10일</time></div><h3><a href="/posts/jarvisgui-cross-device-state/" data-analytics-event="related_post_click" data-analytics-target="jarvisgui-cross-device-state">휴대폰과 PC를 오가는 AI, 파일은 정말 도착했을까</a></h3><p>JarvisGUI 논문이 기기 간 GUI 작업을 연결하고 완료를 평가한 방법, 낮은 전체 성공률의 실험 조건과 실제 파일 상태 확인의 의미를 살펴봅니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/visual-tool-use-causal-audit/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.CMg6Nj-N_Z1lyLxU.webp" srcset="/_astro/cover.CMg6Nj-N_ZP5Hpt.webp 240w, /_astro/cover.CMg6Nj-N_n5jb0.webp 360w, /_astro/cover.CMg6Nj-N_1AgkLt.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-08-08T00:00:00.000Z">2026년 8월 8일</time></div><h3><a href="/posts/visual-tool-use-causal-audit/" data-analytics-event="related_post_click" data-analytics-target="visual-tool-use-causal-audit">AI가 화면을 확대했다고 정말 더 잘 본 걸까</a></h3><p>시각 AI의 도구 호출과 반환 관측의 실제 기여를 정책·궤적·한 단계 개입으로 구분한 인과 감사 연구를 살펴봅니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

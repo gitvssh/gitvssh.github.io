@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법 | 다메카솔</title><meta name="description" content="RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/cpu-concurrency-run-queue/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법"><meta property="og:description" content="RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다."><meta property="og:url" content="https://blog.damecasol.com/posts/cpu-concurrency-run-queue/"><meta property="og:image" content="https://blog.damecasol.com/social/cpu-concurrency-run-queue.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/cpu-concurrency-run-queue.jpg"><meta property="og:image:alt" content="메모리 수조에는 빈 공간이 많지만 좁은 CPU 관문 앞에는 작업이 길게 줄 선 모습을 카솔이 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법"><meta name="twitter:description" content="RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/cpu-concurrency-run-queue.jpg"><meta name="twitter:image:alt" content="메모리 수조에는 빈 공간이 많지만 좁은 CPU 관문 앞에는 작업이 길게 줄 선 모습을 카솔이 살피는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/cpu-concurrency-run-queue/","headline":"RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법","name":"RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법","description":"RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다.","datePublished":"2026-07-21T00:00:00.000Z","dateModified":"2026-11-23T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/cpu-concurrency-run-queue/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/cpu-concurrency-run-queue/"},"image":["https://blog.damecasol.com/social/cpu-concurrency-run-queue.jpg","https://blog.damecasol.com/_astro/cover.DOKVnkWC.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/cpu-concurrency-run-queue.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"인프라·운영","keywords":"리눅스 운영, 관측 가능성, Kubernetes","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1087}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"기술 해설","item":"https://blog.damecasol.com/tracks/tech_column/"},{"@type":"ListItem","position":3,"name":"인프라·운영","item":"https://blog.damecasol.com/categories/infrastructure/"},{"@type":"ListItem","position":4,"name":"RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법","item":"https://blog.damecasol.com/posts/cpu-concurrency-run-queue/"}]}</script><meta property="article:published_time" content="2026-07-21T00:00:00.000Z"><meta property="article:modified_time" content="2026-11-23T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="인프라·운영"><meta property="article:tag" content="리눅스 운영"><meta property="article:tag" content="관측 가능성"><meta property="article:tag" content="Kubernetes"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="cpu-concurrency-run-queue" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a></div><h1>RAM은 남는데 서버가 느리다: CPU 코어·동시성·실행 대기 읽는 법</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>RAM은 남는데 작업이 느리거나 반복해서 실패한다면 CPU 쪽 신호를 봐야 합니다. CPU 사용률과 load average, 실행 대기, PSI, 컨테이너 throttling을 같은 시간대에 놓고 병목을 가려냅니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.DOKVnkWC_27zXhN.webp" srcset="/_astro/cover.DOKVnkWC_1gtmUU.webp 640w, /_astro/cover.DOKVnkWC_12UQHL.webp 960w, /_astro/cover.DOKVnkWC_27zXhN.webp 1024w" alt="메모리 수조에는 빈 공간이 많지만 좁은 CPU 관문 앞에는 작업이 길게 줄 선 모습을 카솔이 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#ram-여유와-cpu-여유는-왜-다른가" data-toc-link="ram-여유와-cpu-여유는-왜-다른가" data-analytics-event="toc_click" data-analytics-target="ram-여유와-cpu-여유는-왜-다른가">RAM 여유와 CPU 여유는 왜 다른가</a></li><li class="article-toc__depth-2"><a href="#cpu-사용률과-실행-대기를-같은-시간대에-놓기" data-toc-link="cpu-사용률과-실행-대기를-같은-시간대에-놓기" data-analytics-event="toc_click" data-analytics-target="cpu-사용률과-실행-대기를-같은-시간대에-놓기">CPU 사용률과 실행 대기를 같은 시간대에 놓기</a></li><li class="article-toc__depth-2"><a href="#load와-cpu-사용률을-함께-가려-보는-기준" data-toc-link="load와-cpu-사용률을-함께-가려-보는-기준" data-analytics-event="toc_click" data-analytics-target="load와-cpu-사용률을-함께-가려-보는-기준">load와 CPU 사용률을 함께 가려 보는 기준</a></li><li class="article-toc__depth-2"><a href="#kubernetes에서는-request와-limit을-따로-본다" data-toc-link="kubernetes에서는-request와-limit을-따로-본다" data-analytics-event="toc_click" data-analytics-target="kubernetes에서는-request와-limit을-따로-본다">Kubernetes에서는 request와 limit을 따로 본다</a></li><li class="article-toc__depth-2"><a href="#airflow-동시성을-결정하는-여러-관문" data-toc-link="airflow-동시성을-결정하는-여러-관문" data-analytics-event="toc_click" data-analytics-target="airflow-동시성을-결정하는-여러-관문">Airflow 동시성을 결정하는 여러 관문</a></li><li class="article-toc__depth-2"><a href="#첫-진단을-위한-관측-순서와-검증-실험" data-toc-link="첫-진단을-위한-관측-순서와-검증-실험" data-analytics-event="toc_click" data-analytics-target="첫-진단을-위한-관측-순서와-검증-실험">첫 진단을 위한 관측 순서와 검증 실험</a></li><li class="article-toc__depth-2"><a href="#자주-묻는-질문" data-toc-link="자주-묻는-질문" data-analytics-event="toc_click" data-analytics-target="자주-묻는-질문">자주 묻는 질문</a></li><li class="article-toc__depth-3"><a href="#load-average가-cpu-코어-수보다-높으면-무조건-장애인가요" data-toc-link="load-average가-cpu-코어-수보다-높으면-무조건-장애인가요" data-analytics-event="toc_click" data-analytics-target="load-average가-cpu-코어-수보다-높으면-무조건-장애인가요">load average가 CPU 코어 수보다 높으면 무조건 장애인가요?</a></li><li class="article-toc__depth-3"><a href="#airflow-parallelism만-낮추면-되나요" data-toc-link="airflow-parallelism만-낮추면-되나요" data-analytics-event="toc_click" data-analytics-target="airflow-parallelism만-낮추면-되나요">Airflow parallelism만 낮추면 되나요?</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>대시보드에 메모리가 남아도 서버가 느리거나 배치가 실패한다면 병목이 CPU 쪽에 있을 확률이 높습니다. 저도 Synology NAS에 학습용 k3s를 올렸을 때 32GB RAM만 믿다가 Airflow DAG 실패를 겪었는데요, 당시 남은 제약은 부족한 CPU 코어였습니다. 남는 RAM과 CPU 처리 여유는 별개이므로 실행 대기·pressure·throttling·동시 실행 수를 함께 대조해야 하죠.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="ram-여유와-cpu-여유는-왜-다른가">RAM 여유와 CPU 여유는 왜 다른가</h2>
+<p><img alt="빈 메모리 선반과 작업이 쌓이는 작은 CPU 작업대를 대비해 용량과 처리량이 다른 문제임을 보여 주는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.Z5fDoJYn_1KX3wS.webp" srcset=""></p>
+<p>메모리는 코드와 데이터를 담는 공간이고, CPU는 준비된 일을 시간 조각으로 나눠 처리합니다. <code>available memory</code>가 많아도 실행할 task가 CPU 코어보다 빠르게 늘면 대기열이 길어지거든요. 반대로 CPU가 한가해 보여도 디스크나 네트워크 응답을 기다리면 서비스는 느려집니다.</p>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>먼저 볼 신호</th>
+<th>모르는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>메모리 부족인가</td>
+<td>available memory, working set, swap, OOM</td>
+<td>CPU 대기·진척</td>
+</tr>
+<tr>
+<td>CPU 사용량</td>
+<td>CPU 사용률, 사용 core 수</td>
+<td>실행 대기 시간</td>
+</tr>
+<tr>
+<td>대기 위치</td>
+<td>load, 실행 대기, CPU·I/O PSI, throttling</td>
+<td>작업 진척</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cpu-사용률과-실행-대기를-같은-시간대에-놓기">CPU 사용률과 실행 대기를 같은 시간대에 놓기</h2>
+<p><img alt="같은 시간축 위에 CPU 사용, 실행 대기, CPU pressure의 세 신호를 겹쳐 보는 진단 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.Dd2w1tl8_MtVti.webp" srcset=""></p>
+<p>CPU 사용률은 관측 <code>window</code> 동안 CPU가 일한 평균 비율로, Kubernetes Metrics API도 누적 카운터를 구간 평균으로 계산합니다. <code>load average</code>는 대기열 규모를 보이며, 예를 들어 <code>/proc/loadavg</code> 앞 세 값은 1분·5분·15분 평균이고 네 번째 필드의 슬래시 앞 값이 실행·대기 중인 프로세스 수입니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>0.61 0.61 0.55 3/828 22084</span></span></code></pre>
+<p>다만 Linux load는 runnable task뿐 아니라 일부 중단 불가능 I/O 대기까지 반영하므로 단독 판정표로 쓰기 어렵습니다. 이때 PSI(Pressure Stall Information)를 함께 보면 자원이 바빠 작업이 멈춘 비율을 바로 가려낼 수 있죠. <code>/proc/pressure/cpu</code>, <code>/proc/pressure/memory</code>, <code>/proc/pressure/io</code>는 최근 10초·60초·300초 평균을 담으며 <code>some</code>은 일부 task가 멈춘 시간 비율입니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">uptime</span></span>
+<span class="line"><span style="color:#6F42C1">cat</span><span style="color:#032F62"> /proc/loadavg</span></span>
+<span class="line"><span style="color:#6F42C1">cat</span><span style="color:#032F62"> /proc/pressure/cpu</span></span>
+<span class="line"><span style="color:#6F42C1">cat</span><span style="color:#032F62"> /proc/pressure/io</span></span></code></pre>
+<p>이 명령들은 작업 시작·혼잡·종료 구간에 반복 기록해 CPU와 I/O pressure 중 어느 쪽이 크게 움직이는지 비교해야 합니다.</p>
+<h2 id="load와-cpu-사용률을-함께-가려-보는-기준">load와 CPU 사용률을 함께 가려 보는 기준</h2>
+<p><img alt="CPU 실행 대기와 스토리지 대기가 모두 load에 영향을 줄 수 있어 pressure 신호로 갈라 봐야 함을 보여 주는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.C_-X-FtF_1HcAcS.webp" srcset=""></p>
+<p>높은 load는 밀린 일이 있다는 경고일 뿐 runnable task와 디스크 대기가 섞여 원인명까지 알려주기는 어렵습니다.</p>
+<table>
+<thead>
+<tr>
+<th>관측 조합</th>
+<th>의심할 원인</th>
+<th>다음 확인</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU·CPU PSI·실행 대기 상승</td>
+<td>CPU 경합</td>
+<td>Pod별 CPU, 동시 실행 수</td>
+</tr>
+<tr>
+<td>load 상승 + 낮은 CPU + I/O PSI 증가</td>
+<td>스토리지·FS 대기</td>
+<td>디스크 지연, process I/O</td>
+</tr>
+<tr>
+<td>호스트 여유 + 특정 Pod 저하</td>
+<td>컨테이너 CPU limit</td>
+<td>resource 설정, throttling</td>
+</tr>
+<tr>
+<td>높은 CPU + 출력 정체 + 내부 진행</td>
+<td>계산·읽기 진행 중</td>
+<td>stage 처리량, 완료 카운터</td>
+</tr>
+<tr>
+<td>모든 지표 낮음 + 요청 지연</td>
+<td>외부 API, lock, 대기</td>
+<td>trace, thread dump</td>
+</tr>
+</tbody>
+</table>
+<p>가령 CPU 100%라도 압축·파싱·인덱싱 중이라면 정상 진척일 수 있고, 사용률이 낮아도 lock이나 외부 응답 대기로 멈출 수 있습니다. 따라서 CPU가 바쁜 상태와 실제 작업 진척을 분리해 살펴야 헛발질을 줄일 수 있거든요.</p>
+<h2 id="kubernetes에서는-request와-limit을-따로-본다">Kubernetes에서는 request와 limit을 따로 본다</h2>
+<p><img alt="호스트에는 CPU 여유가 있지만 컨테이너 내부의 제한 관문 때문에 작업이 throttling되는 구조" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.Hjcx0L8M_1Jw4iT.webp" srcset=""></p>
+<p>Kubernetes CPU <code>request</code>는 scheduler의 Pod 배치 판단과 컨테이너 경쟁 시 상대 가중치에 쓰입니다. 반면 <code>limit</code>은 실행 상한선이라 한도에 닿으면 커널이 cgroup 실행을 대기시키는 throttling이 걸리죠. 호스트 CPU가 남아도 특정 컨테이너만 느려지는 까닭이 여기에 있습니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6F42C1">kubectl</span><span style="color:#032F62"> top</span><span style="color:#032F62"> node</span></span>
+<span class="line"><span style="color:#6F42C1">kubectl</span><span style="color:#032F62"> top</span><span style="color:#032F62"> pod</span><span style="color:#005CC5"> -A</span><span style="color:#005CC5"> --containers</span></span>
+<span class="line"><span style="color:#6F42C1">kubectl</span><span style="color:#032F62"> get</span><span style="color:#032F62"> pod</span><span style="color:#005CC5"> -A</span><span style="color:#005CC5"> -o</span><span style="color:#032F62"> custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,CPU_LIMIT:.spec.containers[*].resources.limits.cpu'</span></span></code></pre>
+<p><code>kubectl top</code>은 metrics-server나 Metrics API 어댑터 기반의 오토스케일링용 구간 수치라 장기 추세나 throttling 분석에는 한계가 있습니다. 정밀 확인은 cgroup v2 <code>cpu.stat</code>의 <code>nr_throttled</code>·<code>throttled_usec</code> 증가량으로 판단하며, OS·배포판·런타임마다 경로가 다르므로 노드의 cgroup v2 여부와 경로를 먼저 확인해야 합니다.</p>
+<h2 id="airflow-동시성을-결정하는-여러-관문">Airflow 동시성을 결정하는 여러 관문</h2>
+<p><img alt="Airflow의 여러 동시성 관문을 한 단계 낮춘 전후 실행을 카솔이 비교하는 마무리 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.AwUM0PZt_Z2uBA5c.webp" srcset=""></p>
+<p>Airflow의 동시 실행 task 수는 여러 관문을 거친 결과입니다. 2026년 7월 23일 확인한 공식 문서에서 <code>parallelism</code>은 scheduler별 task instance 상한을, <code>max_active_tasks_per_dag</code>는 DAG별 상한(개별 DAG는 <code>max_active_tasks</code>로 재정의)을, Pool은 worker slot 수를 제한하죠.</p>
+<p>실제 동시성은 executor·worker 수, active run, Pool, task 제한, 외부 처리량 중 가장 좁은 관문이 정하므로 문제 시간대의 <code>running</code> task 수를 세어야 합니다. 코어보다 과도한 동시성은 컨텍스트 전환과 재시도 부하를 키우고, 무조건 낮추면 병렬성이 줄어드니 통제 실험으로 조정하는 편이 안전합니다.</p>
+<h2 id="첫-진단을-위한-관측-순서와-검증-실험">첫 진단을 위한 관측 순서와 검증 실험</h2>
+<p>별도 도구 없이 아래 일곱 단계만 밟아도 CPU 병목 여부를 빠르게 좁힐 수 있습니다.</p>
+<ol>
+<li><strong>시간창 고정</strong>: DAG 시작·지연·실패·종료 시각을 단일 타임존으로 기록합니다.</li>
+<li><strong>호스트 신호</strong>: CPU 사용률, <code>/proc/loadavg</code>, <code>/proc/pressure/cpu</code>, <code>/proc/pressure/io</code>를 남깁니다.</li>
+<li><strong>대기 분리</strong>: load만 보지 말고 CPU·I/O pressure 방향을 대조합니다.</li>
+<li><strong>Pod 대조</strong>: request·limit과 <code>kubectl top</code> window, 지연 container를 맞춥니다.</li>
+<li><strong>throttling 증가량</strong>: 작업 전후 <code>cpu.stat</code> 변화량을 비교합니다.</li>
+<li><strong>실제 동시성</strong>: 전체·DAG별 running task와 Pool 점유 slot을 셉니다.</li>
+<li><strong>단일 변수 재실행</strong>: 입력·코드는 고정하고 한 관문만 낮춰 비교합니다.</li>
+</ol>
+<p>비슷한 증상을 다시 겪는다면 장비 증설 전 동시성 상한을 절반으로 낮춘 실험부터 비교해 볼 텐데요.</p>
+<table>
+<thead>
+<tr>
+<th>비교 항목</th>
+<th>기준 실행</th>
+<th>동시성 축소 실행</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>입력·코드·외부 조건</td>
+<td>고정</td>
+<td>고정</td>
+</tr>
+<tr>
+<td>동시 running task</td>
+<td>현재 값</td>
+<td>절반으로 축소(가능 시)</td>
+</tr>
+<tr>
+<td>완료 여부·소요 시간</td>
+<td>기록</td>
+<td>기록</td>
+</tr>
+<tr>
+<td>PSI·실행 대기·throttling</td>
+<td>증가량</td>
+<td>증가량</td>
+</tr>
+<tr>
+<td>재시도·오류 유형</td>
+<td>기록</td>
+<td>기록</td>
+</tr>
+</tbody>
+</table>
+<p>축소 실행에서 완료율이 오르고 CPU 대기와 throttling이 줄면 CPU 경합 가설이 강해집니다. 총 소요 시간만 늘고 오류가 그대로면 다른 병목을, I/O pressure가 크면 저장장치 경로를 먼저 점검해야 하며 이 실험이 장비 구매 전 가장 값싼 검증법이 됩니다.</p>
+<h2 id="자주-묻는-질문">자주 묻는 질문</h2>
+<h3 id="load-average가-cpu-코어-수보다-높으면-무조건-장애인가요">load average가 CPU 코어 수보다 높으면 무조건 장애인가요?</h3>
+<p>단순 비율만으로 장애로 보기는 어렵습니다. 짧은 burst인지 지속 대기인지, runnable task인지 I/O 대기인지와 서비스 지연·실패 동반 여부를 함께 따져야 하죠.</p>
+<h3 id="airflow-parallelism만-낮추면-되나요">Airflow parallelism만 낮추면 되나요?</h3>
+<p>단일 값 조정만으로는 부족한 경우가 흔합니다. DAG별 상한, active run, Pool, executor·worker 중 더 좁은 관문을 먼저 확인해 낮추는 편이 정확하거든요.</p>
+<p>이 진단이 필요했던 사례는 <a href="/posts/why-homelab-kubernetes/">홈랩 쿠버네티스 구축기 1편: RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</a>에서 볼 수 있습니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://docs.kernel.org/filesystems/proc.html">Linux kernel: The /proc Filesystem</a></li>
+<li><a href="https://docs.kernel.org/accounting/psi.html">Linux kernel: Pressure Stall Information</a></li>
+<li><a href="https://docs.kernel.org/admin-guide/cgroup-v2.html">Linux kernel: Control Group v2</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/">Kubernetes: Resource Management for Pods and Containers</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/">Kubernetes: Resource metrics pipeline</a></li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html">Apache Airflow 3.3.0: Configuration Reference</a></li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/pools.html">Apache Airflow 3.3.0: Pools</a></li>
+</ul>
+<p>이 글의 홈랩 사례는 작성자 경험에 근거하며 당시 상세 로그와 설정값은 미회수 상태입니다. 기술 설명은 2026년 7월 23일 확인한 공식 문서를 기준으로 했으며 버전·배포판에 따라 설정과 cgroup 경로가 달라질 수 있습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/kubectl-drain-pdb-checklist/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DueXrXpz_Z2wP69C.webp" srcset="/_astro/cover.DueXrXpz_Z3nWmx.webp 240w, /_astro/cover.DueXrXpz_19M4dV.webp 360w, /_astro/cover.DueXrXpz_2mX5Op.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/kubectl-drain-pdb-checklist/" data-analytics-event="related_post_click" data-analytics-target="kubectl-drain-pdb-checklist">kubectl drain이 멈췄을 때 PDB를 우회하기 전에 확인할 것</a></h3><p>drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 유예로 나누고 force와 eviction 우회 옵션의 차이를 정리합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/poddisruptionbudget-zero-eviction/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.8oHU_3-O_Z1VKDBE.webp" srcset="/_astro/cover.8oHU_3-O_Z11gjOO.webp 240w, /_astro/cover.8oHU_3-O_bTGKE.webp 360w, /_astro/cover.8oHU_3-O_1p5Im8.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/poddisruptionbudget-zero-eviction/" data-analytics-event="related_post_click" data-analytics-target="poddisruptionbudget-zero-eviction">PodDisruptionBudget는 무엇을 보장하나: maxUnavailable 0의 의미</a></h3><p>PDB가 자발적 eviction의 중단 예산을 어떻게 제한하는지, disruptionsAllowed 0과 비자발적 장애의 경계를 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/application-storage-replication-layers/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B1SZGeCL_od21D.webp" srcset="/_astro/cover.B1SZGeCL_1bq6Q4.webp 240w, /_astro/cover.B1SZGeCL_2oB8rx.webp 360w, /_astro/cover.B1SZGeCL_Z1soXKU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/application-storage-replication-layers/" data-analytics-event="related_post_click" data-analytics-target="application-storage-replication-layers">애플리케이션 복제와 스토리지 복제는 무엇이 다른가</a></h3><p>서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

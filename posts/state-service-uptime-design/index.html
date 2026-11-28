@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계 | 다메카솔</title><meta name="description" content="애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/state-service-uptime-design/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계"><meta property="og:description" content="애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."><meta property="og:url" content="https://blog.damecasol.com/posts/state-service-uptime-design/"><meta property="og:image" content="https://blog.damecasol.com/social/state-service-uptime-design.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/state-service-uptime-design.jpg"><meta property="og:image:alt" content="불이 켜진 애플리케이션 건물에서 꺼진 데이터베이스와 오브젝트 스토리지로 이어진 경로가 끊겨 있고 남성 카솔이 이를 살피는 표지"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계"><meta name="twitter:description" content="애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/state-service-uptime-design.jpg"><meta name="twitter:image:alt" content="불이 켜진 애플리케이션 건물에서 꺼진 데이터베이스와 오브젝트 스토리지로 이어진 경로가 끊겨 있고 남성 카솔이 이를 살피는 표지"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/state-service-uptime-design/","headline":"애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계","name":"애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계","description":"애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다.","datePublished":"2026-07-22T00:00:00.000Z","dateModified":"2026-11-20T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/state-service-uptime-design/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/state-service-uptime-design/"},"image":["https://blog.damecasol.com/social/state-service-uptime-design.jpg","https://blog.damecasol.com/_astro/cover.CfMubh1n.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/state-service-uptime-design.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"인프라·운영","keywords":"고가용성, 스토리지, 데이터베이스, 홈랩","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1199}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"기술 해설","item":"https://blog.damecasol.com/tracks/tech_column/"},{"@type":"ListItem","position":3,"name":"인프라·운영","item":"https://blog.damecasol.com/categories/infrastructure/"},{"@type":"ListItem","position":4,"name":"애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계","item":"https://blog.damecasol.com/posts/state-service-uptime-design/"}]}</script><meta property="article:published_time" content="2026-07-22T00:00:00.000Z"><meta property="article:modified_time" content="2026-11-20T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="인프라·운영"><meta property="article:tag" content="고가용성"><meta property="article:tag" content="스토리지"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="홈랩"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="state-service-uptime-design" data-content-track="tech_column" data-content-category="infrastructure"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/tech_column/">기술 해설</a><span aria-hidden="true">/</span><a href="/categories/infrastructure/">인프라·운영</a></nav><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span><a class="category-label" href="/categories/infrastructure/">인프라·운영</a><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a></div><h1>애플리케이션보다 먼저 살아 있어야 한다: DB·오브젝트 스토리지 가동시간 설계</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>애플리케이션이 24시간 떠 있어도 DB나 오브젝트 스토리지가 밤에 꺼지면 기능은 멈춥니다. 사용자 기능 하나의 의존성 그래프를 그려 가동시간과 복구 역할에 맞는 배치 계층을 나누는 설계법입니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.CfMubh1n_2vLPHy.webp" srcset="/_astro/cover.CfMubh1n_Z10OutJ.webp 640w, /_astro/cover.CfMubh1n_Z1en0GS.webp 960w, /_astro/cover.CfMubh1n_2vLPHy.webp 1024w" alt="불이 켜진 애플리케이션 건물에서 꺼진 데이터베이스와 오브젝트 스토리지로 이어진 경로가 끊겨 있고 남성 카솔이 이를 살피는 표지" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1024" height="1536"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#가동시간은-겹치는-시간창입니다" data-toc-link="가동시간은-겹치는-시간창입니다" data-analytics-event="toc_click" data-analytics-target="가동시간은-겹치는-시간창입니다">가동시간은 겹치는 시간창입니다</a></li><li class="article-toc__depth-2"><a href="#사용자-기능-하나로-의존성-그래프-그리기" data-toc-link="사용자-기능-하나로-의존성-그래프-그리기" data-analytics-event="toc_click" data-analytics-target="사용자-기능-하나로-의존성-그래프-그리기">사용자 기능 하나로 의존성 그래프 그리기</a></li><li class="article-toc__depth-2"><a href="#db만-옮기는-안으로-부족했던-이유" data-toc-link="db만-옮기는-안으로-부족했던-이유" data-analytics-event="toc_click" data-analytics-target="db만-옮기는-안으로-부족했던-이유">DB만 옮기는 안으로 부족했던 이유</a></li><li class="article-toc__depth-2"><a href="#상시-실행예약-지원복구-보관-3계층-분리" data-toc-link="상시-실행예약-지원복구-보관-3계층-분리" data-analytics-event="toc_click" data-analytics-target="상시-실행예약-지원복구-보관-3계층-분리">상시 실행·예약 지원·복구 보관 3계층 분리</a></li><li class="article-toc__depth-2"><a href="#kubernetes-리소스와-rtorpo의-경계" data-toc-link="kubernetes-리소스와-rtorpo의-경계" data-analytics-event="toc_click" data-analytics-target="kubernetes-리소스와-rtorpo의-경계">Kubernetes 리소스와 RTO·RPO의 경계</a></li><li class="article-toc__depth-2"><a href="#설계-초안과-실제-기능-검증은-따로-계획합니다" data-toc-link="설계-초안과-실제-기능-검증은-따로-계획합니다" data-analytics-event="toc_click" data-analytics-target="설계-초안과-실제-기능-검증은-따로-계획합니다">설계 초안과 실제 기능 검증은 따로 계획합니다</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>애플리케이션 프로세스가 24시간 멀쩡히 떠 있는데도 밤만 되면 배치 작업이나 파일 저장이 줄줄이 실패하는 일이 있습니다. Synology NAS에서 학습용 k3s를 돌리던 때 저도 소음 때문에 밤마다 NAS를 껐다가, 그 위의 Airflow 메타데이터 DB와 S3 호환 오브젝트 스토리지가 함께 사라지면서 똑같은 장애를 겪었거든요. <strong>실질 가동시간은 필수 의존성이 모두 살아 있는 시간으로 제한되니</strong>, 사용자 기능 하나의 실행 경로로 배치 계층을 나누는 기준부터 살펴볼까요?</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="가동시간은-겹치는-시간창입니다">가동시간은 겹치는 시간창입니다</h2>
+<p><img alt="소비자는 하루 종일 켜져 있지만 DB와 스토리지는 일부 시간만 켜져 있어 실제 동작 시간이 겹치는 구간으로 좁아지는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-01.C8oZ8AFf_1GoFlO.webp" srcset=""></p>
+<p>프로세스가 하루 종일 살아 있어도 로그인에는 인증과 사용자 DB가, 파일 업로드에는 DNS·메타데이터 DB·오브젝트 스토리지가 함께 열려 있어야 합니다. 하나라도 필요한 순간에 멈추면 기능은 그대로 중단되죠.</p>
+<p>결국 가동시간은 개별 서버의 업타임이 아니라 필수 의존성들의 <strong>공통 시간창</strong> 문제입니다. 소비자가 24시간 켜져 있어도 DB가 주간에만 돌면 기능의 가동시간은 DB에 묶입니다. 낮에만 쓰는 개발 환경이라면 의존성도 주간에 맞추면 충분하며, 핵심은 기대 이용 시간과 실행 경로의 가동시간을 일치시키는 데 있습니다.</p>
+<h2 id="사용자-기능-하나로-의존성-그래프-그리기">사용자 기능 하나로 의존성 그래프 그리기</h2>
+<p><img alt="하나의 워크플로가 메타데이터 DB, 오브젝트 저장소, DNS, 인증에 의존하는 실행 경로를 보여 주는 도식" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-02.B9Nw-XMH_1HRV10.webp" srcset=""></p>
+<p>“Airflow 운영”처럼 제품 단위로 적으면 의존성이 흐려집니다. 대신 “새 원본 파일 하나를 수집해 저장한다”처럼 결과를 판정할 수 있는 기능 하나를 골라 호출 경로를 끝까지 따라가야 합니다.</p>
+<p>Airflow 공식 문서는 메타데이터 DB가 task·DAG·variable 상태를 저장하며 동작에 필수적이라고 설명합니다. 하지만 task 출력이 별도 오브젝트 스토리지에 쓰인다면 DB 접속만으로 성공을 장담하기 어렵고, Kubernetes 워크로드가 Service를 이름으로 찾는다면 DNS 역시 선행 의존성이 됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>의존성</th>
+<th>필요 시간창</th>
+<th>중단 시 현상</th>
+<th>확인 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNS</td>
+<td>요청 처리 전체</td>
+<td>연결 전 이름 해석 실패</td>
+<td>새 Pod에서 Service 조회</td>
+</tr>
+<tr>
+<td>인증·비밀정보</td>
+<td>로그인·접속·갱신</td>
+<td>로그인·토큰 갱신 실패</td>
+<td>새 세션으로 인증 재실행</td>
+</tr>
+<tr>
+<td>메타데이터 DB</td>
+<td>스케줄·실행·조회</td>
+<td>task 상태 기록·조회 실패</td>
+<td>새 작업 생성 후 상태 확인</td>
+</tr>
+<tr>
+<td>오브젝트 스토리지</td>
+<td>task 읽기·쓰기</td>
+<td>업로드·다운로드 실패</td>
+<td>새 객체 쓰기와 다시 읽기</td>
+</tr>
+<tr>
+<td>외부 API</td>
+<td>해당 stage 실행</td>
+<td>일부 단계 재시도·실패</td>
+<td>제한된 입력으로 요청 재현</td>
+</tr>
+</tbody>
+</table>
+<p>표를 채울 때는 연결 문자열 외에 이름 해석 위치, 자격 증명 갱신 시점, 성공 판정 전 끝나야 할 저장까지 함께 짚어야 합니다. DNS 캐시나 열린 DB 커넥션 때문에 기존 Pod는 잠시 정상처럼 보여도 새 연결부터 실패할 수 있거든요.</p>
+<h2 id="db만-옮기는-안으로-부족했던-이유">DB만 옮기는 안으로 부족했던 이유</h2>
+<p><img alt="메타데이터 DB는 상시 클러스터로 옮겼지만 오브젝트 저장소가 야간에 꺼지는 NAS에 남아 실행 경로가 여전히 끊기는 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-03.Co1fJsbZ_Z2jdO4y.webp" srcset=""></p>
+<p>홈랩에서 처음 검토한 방안은 메타데이터 DB만 상시 가동 장비로 옮기는 것이었습니다. 하지만 task 저장 경로를 따라가 보니 야간에 꺼지는 NAS의 S3 호환 오브젝트 스토리지가 그대로 남아 있었죠. 장비별 전원 대신 DAG 한 번이 지나는 전체 경로로 이전 범위를 다시 잡은 이유입니다.</p>
+<p>실무 마이그레이션에서도 DB만 옮기고 객체·파일 저장 경로, DNS·인증·비밀정보, 특정 단계의 queue·cache·registry, 실패 알림·재시도가 호출하는 외부 시스템을 놓치기 쉽습니다. 완료 기준은 <strong>새 입력부터 결과 다시 읽기까지 예전 경로를 전혀 쓰지 않는 상태</strong>로 잡고, 설정 검색·네트워크 관측·end-to-end 요청으로 확인하는 편이 안전합니다.</p>
+<h2 id="상시-실행예약-지원복구-보관-3계층-분리">상시 실행·예약 지원·복구 보관 3계층 분리</h2>
+<p><img alt="라이브 의존성은 상시 실행 계층, 백업 NAS는 예약 지원 계층, 독립 사본은 복구 보관 계층으로 나눈 구조" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-04.DzPWzuaR_161NVG.webp" srcset=""></p>
+<p>의존성 목록이 나왔다면 장비가 아니라 역할 기준으로 세 계층으로 나눕니다.</p>
+<table>
+<thead>
+<tr>
+<th>계층</th>
+<th>대표 대상</th>
+<th>가동 원칙</th>
+<th>검증 질문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>상시 실행</td>
+<td>라이브 DB·오브젝트 스토리지, DNS·인증</td>
+<td>필요 시간창과 일치</td>
+<td>새 요청이 끝까지 성공하는가?</td>
+</tr>
+<tr>
+<td>예약 지원</td>
+<td>백업 NAS, 배치 서버, 점검 도구</td>
+<td>작업 창 기동·미실행 재처리</td>
+<td>놓친 예약을 언제 재실행하는가?</td>
+</tr>
+<tr>
+<td>복구·보관</td>
+<td>분리 백업, 오프사이트·콜드 사본</td>
+<td>라이브 경로와 분리</td>
+<td>운영 데이터 없이 복구되는가?</td>
+</tr>
+</tbody>
+</table>
+<p>이 기준이면 백업 NAS를 밤에 꺼도 되는 조건이 분명해집니다. 꺼진 동안 앱이 읽고 쓰면 이미 라이브 의존성이지만, 예약 백업 전용이고 예약 창·기동 실패 탐지·재시도·정기 복원 시험을 갖췄다면 24시간 켜 둘 이유가 줄어들거든요.</p>
+<p>복제(replica)와 백업도 역할이 다릅니다. replica는 서비스를 이어 가는 사본이라 잘못된 삭제까지 복제될 수 있고, 백업은 삭제·손상·랜섬웨어·실수 뒤 과거 시점으로 돌아가는 사본이라 복원 중 요청이 멈춥니다. Longhorn 복제, DB 장애 조치, 3-2-1 백업 정책은 각각 별도 설계로 다뤄야 합니다.</p>
+<h2 id="kubernetes-리소스와-rtorpo의-경계">Kubernetes 리소스와 RTO·RPO의 경계</h2>
+<p><strong>StatefulSet</strong>은 안정적인 네트워크 식별자와 지속 스토리지, 순서 있는 배포·확장을 돕지만 스토리지 자체와 DB 복제·장애 조치·백업은 따로 설계해야 합니다. **PodDisruptionBudget(PDB)**도 노드 drain 같은 자발적 축출에서 동시 중단 Pod 수를 제한할 뿐이며, 공식 문서 역시 상시 가동을 보장하지 않는다고 명시합니다. 노드 전원 상실, 하드웨어·스토리지 장애, 앱 오류는 별도 대책이 필요한 셈이죠.</p>
+<p>replica를 늘릴 때는 개수보다 <strong>공유 장애 경계</strong>를 먼저 봅니다. Kubernetes 다중 zone 장애 도메인 원칙은 홈랩에서 다른 노드가 같은 멀티탭이나 단일 스위치를 쓰는지, 볼륨이 같은 NAS 디스크 풀에 있는지, DNS·인증이 단일 VM에 묶였는지로 점검할 수 있습니다. 무조건 이중화하기보다 고장 한 번에 함께 사라지는 범위를 파악해 감당 여부를 정하는 기준입니다.</p>
+<p>복구 목표도 장비보다 질문이 먼저입니다. NIST SP 800-34는 <strong>RTO</strong>를 허용 불가 영향 전 최대 중단 시간으로, <strong>RPO</strong>를 장애 전 데이터를 되살릴 시점으로 정의합니다.</p>
+<p>예를 들어 개인 사진 업로드는 밤새 멈춰도 마지막 사본만 지키면 돼 데이터 보존(RPO)이 우선되고, 수집 pipeline은 10분만 멈춰도 입력을 놓치지만 원본을 다시 받을 수 있다면 실행 연속성과 재처리(RTO) 비중이 커지죠. 목표를 정했다면 실제 복원 시간과 시점을 시험하고, 복구 역시 <strong>공통 선행 서비스 → 상태 서비스 → 소비자</strong> 순서로 올려야 합니다.</p>
+<h2 id="설계-초안과-실제-기능-검증은-따로-계획합니다">설계 초안과 실제 기능 검증은 따로 계획합니다</h2>
+<p><img alt="서로 다른 노드의 복제본도 같은 전원과 스토리지를 공유하면 함께 중단될 수 있으며 남성 카솔이 실제 기능과 복구 순서를 시험하는 마무리 장면" loading="lazy" decoding="async" width="1024" height="1536" src="/_astro/page-05.CJWd_9Q2_Z2u0gmB.webp" srcset=""></p>
+<p>문서가 없는 홈랩이라면 초안 작성과 중단 시험을 단계별로 분리합니다.</p>
+<ul>
+<li><strong>설계 초안</strong>: 기능 선정 → 호출 경로·시간창 기록 → 3계층 배치 → 공유 장애 경계 표시 → RTO·RPO 기준 정리</li>
+<li><strong>중단 시험</strong>: 영향 범위·관측 방법·복구 순서·중단 권한을 정한 별도 계획으로 수행</li>
+</ul>
+<p>시험할 때 Pod 상태만 보면 오판하기 쉬운데요. Kubernetes에서 Pod phase <code>Running</code>은 노드에 배치돼 모든 컨테이너가 생성됐고 적어도 하나가 실행·시작·재시작 중이라는 뜻에 그칩니다. <code>Ready</code> 역시 readiness 검사에 DB·오브젝트 저장이 빠졌다면 사용자 경로 성공을 대변하기 어려우므로, 같은 입력을 넣고 결과를 다시 읽는 합성 점검으로 닫아야 합니다.</p>
+<p>전원을 끄기 어렵다면 작은 테스트 namespace와 합성 데이터로 방화벽이나 Service endpoint를 차단해 실패 경로부터 관찰할 수 있습니다. 이때 시험 기능, 중단 대상, 탐지 신호, 중단 지점, 복구 순서, 복구 증거(새 입력·DB 기록·객체 읽기), 실제 소요 시간·데이터 시점(RTO·RPO 비교)을 남겨 두면 장애 대응 기준표가 됩니다.</p>
+<p>참고로 DB를 24시간 켜 두는 것과 고가용성은 층위가 다릅니다. 상시 가동은 계획된 전원 시간의 문제이고, 고가용성은 단일 장비·볼륨 장애에도 서비스를 이어 가는 구조의 문제거든요. 제가 홈랩에서 먼저 고친 것도 장비 수가 아니라 배치 기준이었으며, 이 설계가 출발한 배경은 <a href="/posts/why-homelab-kubernetes/">홈랩 쿠버네티스 구축기 1편: RAM은 32GB인데 Airflow DAG가 계속 실패한 이유</a>에서 이어집니다.</p>
+<blockquote>
+<p><strong>정정 (2026-07-28)</strong>: 초판은 메타데이터 DB를 상시 가동 장비로 실제 옮긴 뒤에도 문제가 남은 것처럼 썼고, Pod의 <code>Running</code> 상태를 단순히 컨테이너가 떠 있는 상태로 설명했습니다. 현재 글은 DB 이전이 검토 단계였다는 사실과 Kubernetes Pod phase의 정확한 범위를 반영해 고쳤으며, 가동시간 설계 초안 작성과 실제 중단 시험을 분리했습니다.</p>
+</blockquote>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html">Apache Airflow 3.3.0: Architecture Overview</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">Kubernetes: Pod Lifecycle</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">Kubernetes: DNS for Services and Pods</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">Kubernetes: StatefulSets</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/run-application/configure-pdb/">Kubernetes: Specifying a Disruption Budget</a></li>
+<li><a href="https://kubernetes.io/docs/setup/best-practices/multiple-zones/">Kubernetes: Running in multiple zones</a></li>
+<li><a href="https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-34r1.pdf">NIST SP 800-34 Rev. 1</a></li>
+</ul>
+<p>홈랩 사례는 당시 상세 로그와 타임스탬프가 남아 있지 않아 설계 맥락 중심으로 정리했으며, 기술 설명은 2026년 7월 24일 확인한 공식 문서를 기준으로 작성했습니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/application-storage-replication-layers/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.B1SZGeCL_od21D.webp" srcset="/_astro/cover.B1SZGeCL_1bq6Q4.webp 240w, /_astro/cover.B1SZGeCL_2oB8rx.webp 360w, /_astro/cover.B1SZGeCL_Z1soXKU.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/application-storage-replication-layers/" data-analytics-event="related_post_click" data-analytics-target="application-storage-replication-layers">애플리케이션 복제와 스토리지 복제는 무엇이 다른가</a></h3><p>서비스 인스턴스 복제와 볼륨 블록 복제의 복구 주체를 나누고, 두 replica 수가 곱해질 때의 비용과 결정 순서를 설명합니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/homelab-mini-pc-nic-m2-selection/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.Ci0neV7Y_1ajU3.webp" srcset="/_astro/cover.Ci0neV7Y_2tISWP.webp 240w, /_astro/cover.Ci0neV7Y_Z1nhdfC.webp 360w, /_astro/cover.Ci0neV7Y_Za6bE9.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/homelab-mini-pc-nic-m2-selection/" data-analytics-event="related_post_click" data-analytics-target="homelab-mini-pc-nic-m2-selection">홈랩 미니PC 고르는 법: CPU·RAM보다 NIC와 M.2 슬롯을 먼저 볼 때</a></h3><p>미니PC 비교표의 CPU와 RAM은 기준선일 뿐입니다. 84GB 복원에 88분이 걸린 경험을 바탕으로 NIC, 스위치, M.2 슬롯, 여유 공간을 하나의 데이터 경로로 놓고 후보를 거르는 방법을 정리했습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/kubectl-drain-pdb-checklist/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.DueXrXpz_Z2wP69C.webp" srcset="/_astro/cover.DueXrXpz_Z3nWmx.webp 240w, /_astro/cover.DueXrXpz_19M4dV.webp 360w, /_astro/cover.DueXrXpz_2mX5Op.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1024" height="1536"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--tech_column">기술 해설</span></div><h3><a href="/posts/kubectl-drain-pdb-checklist/" data-analytics-event="related_post_click" data-analytics-target="kubectl-drain-pdb-checklist">kubectl drain이 멈췄을 때 PDB를 우회하기 전에 확인할 것</a></h3><p>drain 정체를 파드 소유자, PDB, 로컬 데이터, 종료 유예로 나누고 force와 eviction 우회 옵션의 차이를 정리합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/categories/infrastructure/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← 인프라·운영 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>

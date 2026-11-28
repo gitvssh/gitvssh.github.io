@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.0.7"><meta name="google-site-verification" content="UkOytDtaiEDqpk_9kZIlE_dKnhLe0Ohbf4MBE2eYyjk"><meta name="naver-site-verification" content="a1ec3d6f7d666a6c0116a2e5af7f3039298c429a"><title>형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류 | 다메카솔</title><meta name="description" content="소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다."><meta name="author" content="다메카솔"><link rel="canonical" href="https://blog.damecasol.com/posts/semantic-parser-silent-errors/"><link rel="alternate" type="application/rss+xml" title="3분만에 만화로 보는 IT RSS" href="https://blog.damecasol.com/rss.xml"><link rel="sitemap" href="/sitemap.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#173f2a"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"><meta property="og:type" content="article"><meta property="og:site_name" content="3분만에 만화로 보는 IT"><meta property="og:locale" content="ko_KR"><meta property="og:title" content="형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류"><meta property="og:description" content="소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다."><meta property="og:url" content="https://blog.damecasol.com/posts/semantic-parser-silent-errors/"><meta property="og:image" content="https://blog.damecasol.com/social/semantic-parser-silent-errors.jpg"><meta property="og:image:secure_url" content="https://blog.damecasol.com/social/semantic-parser-silent-errors.jpg"><meta property="og:image:alt" content="형식 검사를 통과했지만 요청과 다른 주문"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="720"><meta property="og:image:type" content="image/jpeg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류"><meta name="twitter:description" content="소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다."><meta name="twitter:image" content="https://blog.damecasol.com/social/semantic-parser-silent-errors.jpg"><meta name="twitter:image:alt" content="형식 검사를 통과했지만 요청과 다른 주문"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","@id":"https://blog.damecasol.com/posts/semantic-parser-silent-errors/","headline":"형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류","name":"형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류","description":"소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다.","datePublished":"2026-11-15T06:20:29.000Z","dateModified":"2026-11-20T00:00:00.000Z","inLanguage":"ko-KR","url":"https://blog.damecasol.com/posts/semantic-parser-silent-errors/","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.damecasol.com/posts/semantic-parser-silent-errors/"},"image":["https://blog.damecasol.com/social/semantic-parser-silent-errors.jpg","https://blog.damecasol.com/_astro/cover.C3anqXbl.webp"],"thumbnailUrl":"https://blog.damecasol.com/social/semantic-parser-silent-errors.jpg","author":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"},"publisher":{"@type":"Organization","@id":"https://blog.damecasol.com/#organization","name":"3분만에 만화로 보는 IT","url":"https://blog.damecasol.com/","logo":{"@type":"ImageObject","url":"https://blog.damecasol.com/favicon.svg"},"founder":{"@type":"Person","@id":"https://blog.damecasol.com/about/#person","name":"다메카솔","url":"https://blog.damecasol.com/about/"}},"articleSection":"AI 논문 읽기","keywords":"언어 모델, 의미 분석, 평가","isAccessibleForFree":true,"isPartOf":{"@id":"https://blog.damecasol.com/#website"},"wordCount":1090,"citation":"https://arxiv.org/abs/2611.17169v1"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://blog.damecasol.com/"},{"@type":"ListItem","position":2,"name":"AI 논문 읽기","item":"https://blog.damecasol.com/tracks/paper/"},{"@type":"ListItem","position":3,"name":"형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류","item":"https://blog.damecasol.com/posts/semantic-parser-silent-errors/"}]}</script><meta property="article:published_time" content="2026-11-15T06:20:29.000Z"><meta property="article:modified_time" content="2026-11-20T00:00:00.000Z"><meta property="article:author" content="https://blog.damecasol.com/about/"><meta property="article:section" content="AI 논문 읽기"><meta property="article:tag" content="언어 모델"><meta property="article:tag" content="의미 분석"><meta property="article:tag" content="평가"><link rel="stylesheet" href="/_astro/BaseLayout.yv9oSTxU.css"></head><body><a class="skip-link" href="#main-content">본문으로 이동</a><header class="site-header"><div class="site-header__inner"><a class="wordmark" href="/" aria-label="3분만에 만화로 보는 IT 홈"><span class="wordmark__mark" aria-hidden="true">3</span><span>3분만에 만화로 보는 IT</span></a><nav aria-label="주요 메뉴"><ul class="site-nav"><li><a href="/tracks/news/">AI 뉴스</a></li><li><a href="/tracks/paper/">AI 논문 읽기</a></li><li><a href="/tracks/tech_column/">기술 해설</a></li><li><a href="/topics/ai-use/">AI 활용</a></li><li><a href="/categories/development_episode/">개발 에피소드</a></li><li><a href="/categories/ai_philosophy/">AI와 사람 사이</a></li><li><a href="/archives/">아카이브</a></li><li><a href="/about/">소개</a></li></ul></nav></div></header><main id="main-content"><article class="article" data-analytics-article data-content-id="semantic-parser-silent-errors" data-content-track="paper"><header class="article-header shell shell--article"><nav class="breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/tracks/paper/">AI 논문 읽기</a></nav><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><a class="author-link" href="/about/" rel="author">글·해설: 다메카솔</a><span>발행 <time datetime="2026-11-15T06:20:29.000Z">2026년 11월 15일</time></span><span>수정 <time datetime="2026-11-20T00:00:00.000Z">2026년 11월 20일</time></span></div><h1>형식은 맞는데 주문은 틀렸다: 소형 모델의 조용한 오류</h1><div class="article-deck"><span>이 글에서 얻는 것</span><p>소형 언어 모델의 형식 검사와 의미 오류를 PIZZA 실험으로 살펴보고, 조용한 오류와 거절의 비용을 구분합니다.</p></div></header><figure class="article-cover shell shell--wide"><img src="/_astro/cover.C3anqXbl_Z1VxBxF.webp" srcset="/_astro/cover.C3anqXbl_Z1O1Hc1.webp 640w, /_astro/cover.C3anqXbl_17X8hs.webp 960w, /_astro/cover.C3anqXbl_Z1VxBxF.webp 1254w" alt="형식 검사를 통과했지만 요청과 다른 주문" sizes="(min-width: 920px) 760px, 92vw" loading="eager" fetchpriority="high" decoding="async" width="1254" height="1254"></figure><div class="article-body article-body--with-toc"><aside class="article-toc" data-article-toc><nav aria-labelledby="article-toc-title"><div class="article-toc__heading"><h2 id="article-toc-title">이 글의 목차</h2><span data-reading-progress-value>0%</span></div><div class="article-toc__progress" aria-hidden="true"><span data-reading-progress-bar></span></div><ol><li class="article-toc__depth-2"><a href="#파싱은-통과했는데-주문이-틀리는-순간" data-toc-link="파싱은-통과했는데-주문이-틀리는-순간" data-analytics-event="toc_click" data-analytics-target="파싱은-통과했는데-주문이-틀리는-순간">파싱은 통과했는데 주문이 틀리는 순간</a></li><li class="article-toc__depth-2"><a href="#같은-주문을-여섯-형식으로-비교한-300회-실험" data-toc-link="같은-주문을-여섯-형식으로-비교한-300회-실험" data-analytics-event="toc_click" data-analytics-target="같은-주문을-여섯-형식으로-비교한-300회-실험">같은 주문을 여섯 형식으로 비교한 300회 실험</a></li><li class="article-toc__depth-2"><a href="#짧게-줄이는-것보다-자연어-단어가-통했던-이유" data-toc-link="짧게-줄이는-것보다-자연어-단어가-통했던-이유" data-analytics-event="toc_click" data-analytics-target="짧게-줄이는-것보다-자연어-단어가-통했던-이유">짧게 줄이는 것보다 자연어 단어가 통했던 이유</a></li><li class="article-toc__depth-2"><a href="#조용한-오류와-눈에-보이는-실패를-함께-읽기" data-toc-link="조용한-오류와-눈에-보이는-실패를-함께-읽기" data-analytics-event="toc_click" data-analytics-target="조용한-오류와-눈에-보이는-실패를-함께-읽기">조용한 오류와 눈에 보이는 실패를 함께 읽기</a></li><li class="article-toc__depth-2"><a href="#엄격한-거절의-비용과-실험-범위의-한계" data-toc-link="엄격한-거절의-비용과-실험-범위의-한계" data-analytics-event="toc_click" data-analytics-target="엄격한-거절의-비용과-실험-범위의-한계">엄격한 거절의 비용과 실험 범위의 한계</a></li><li class="article-toc__depth-2"><a href="#실무에-연결할-때-먼저-나눌-점검-기준" data-toc-link="실무에-연결할-때-먼저-나눌-점검-기준" data-analytics-event="toc_click" data-analytics-target="실무에-연결할-때-먼저-나눌-점검-기준">실무에 연결할 때 먼저 나눌 점검 기준</a></li><li class="article-toc__depth-2"><a href="#출처" data-toc-link="출처" data-analytics-event="toc_click" data-analytics-target="출처">출처</a></li></ol></nav></aside><script type="module">var e=document.querySelector(`[data-article-toc]`);if(e){let t=Array.from(e.querySelectorAll(`[data-toc-link]`)),n=t.map(e=>document.getElementById(e.dataset.tocLink??``)).filter(e=>e!==null),r=e.querySelector(`[data-reading-progress-value]`),i=e.querySelector(`[data-reading-progress-bar]`),a=!1,o=()=>{if(a=!1,n.length===0)return;let e=Math.min(180,window.innerHeight*.28),o=n[0];for(let t of n)if(t.getBoundingClientRect().top<=e)o=t;else break;let s=o.id;for(let e of t)e.dataset.tocLink===s?e.setAttribute(`aria-current`,`location`):e.removeAttribute(`aria-current`);let c=document.querySelector(`[data-analytics-article]`);if(!c)return;let l=c.offsetTop,u=Math.max(1,c.offsetHeight-window.innerHeight),d=Math.min(1,Math.max(0,(window.scrollY-l)/u)),f=`${Math.round(d*100)}%`;r&&(r.textContent=f),i&&(i.style.transform=`scaleX(${d})`)},s=()=>{a||(a=!0,window.requestAnimationFrame(o))};if(`IntersectionObserver`in window){let e=new IntersectionObserver(s,{rootMargin:`-18% 0px -68% 0px`});n.forEach(t=>e.observe(t))}window.addEventListener(`scroll`,s,{passive:!0}),window.addEventListener(`resize`,s),o()}</script><div class="prose"><p>소형 언어 모델로 사용자 요청을 JSON이나 명령어 트리로 바꿀 때, 형식 검증만 통과하면 안심하기 쉽습니다. 그런데 문법은 완벽한데 “양파 빼 주세요” 같은 핵심 조건이 빠진 채 다음 시스템으로 넘어간다면, 오류 로그 한 줄 남지 않고 그대로 장애로 이어지죠. 2026년 11월 12일 공개된 <em>Parsed, Plausible, Wrong</em>은 음식 주문을 해석하는 소형 모델에서 이런 ’조용한 오류’가 출력 형식에 따라 어떻게 달라지는지 실험했습니다.</p>
+<p>글·해설: 다메카솔</p>
+<h2 id="파싱은-통과했는데-주문이-틀리는-순간">파싱은 통과했는데 주문이 틀리는 순간</h2>
+<p>예를 들어 손님이 “페퍼로니 피자에 치즈 추가하고 양파는 빼 주세요”라고 주문했다고 가정해 봅시다. 모델이 괄호를 닫지 못해 구문이 깨지면 서버 파서가 즉시 실패를 감지해 재시도할 수 있습니다. 반면 구조는 멀쩡한데 양파 제외 조건만 빠졌다면, 프로그램은 정상 주문으로 믿고 주방에 넘겨 버리거든요.</p>
+<p>저자들은 파싱 가능한 출력도 사용자가 요청한 의미와 다를 수 있다는 점에 주목해 이를 **조용한 오류(Silent Error)**로 구분했습니다. 문법 제약 디코딩으로 구문 오류를 줄이더라도 멀쩡한 틀 안에 잘못된 의미가 들어가는 문제까지는 막기 어렵기 때문에, 모든 테스트 주문을 <strong>정확 일치(A)</strong>, <strong>조용한 오류(S)</strong>, <strong>파싱 실패</strong>, <strong>정상 주문 거절</strong> 네 갈래로 나눠 평가합니다.</p>
+<h2 id="같은-주문을-여섯-형식으로-비교한-300회-실험">같은 주문을 여섯 형식으로 비교한 300회 실험</h2>
+<p>그렇다면 출력 형식을 바꾸는 것만으로 조용한 오류를 줄일 수 있을까요? 연구진은 PIZZA 데이터셋의 동일한 주문 트리를 여섯 가지 무손실 형식으로 옮겨, 두 소형 모델·여섯 출력 형식·다섯 훈련 풀 크기·다섯 시드를 조합한 총 300회 실험 결과를 보고합니다.</p>
+<ul>
+<li><strong>모델과 풀 크기</strong>: <code>Qwen3.5-0.8B</code>와 <code>LFM2.5-350M</code>에 LoRA를 적용해 1k~전체 2,456,446건의 다섯 풀을 비교했습니다. 한 실행이 보는 예시는 최대 64,000개로 제한돼, 풀 크기는 실제 학습량이 아니라 표본 다양성으로 구분해야 합니다.</li>
+<li><strong>평가와 가드레일</strong>: 사람이 작성한 테스트 주문 1,357개로 평가했고, 모든 실행에 메뉴 외 요청 거절과 발화 중 자기 수정 학습을 포함했습니다.</li>
+</ul>
+<p>실제 테스트 주문 하나(“페퍼로니와 치즈 추가 피자 한 판”)를 여섯 형식으로 쓰면 Qwen 토크나이저 기준으로 구조와 길이가 이렇게 달라집니다.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>주문: "i want a pie with pepperoni and extra cheese"</span></span>
+<span class="line"><span>exr       (38토큰): (ORDER (PIZZAORDER (NUMBER 1 ) (COM...</span></span>
+<span class="line"><span>json      (33토큰): {"orders":[{"type":"p","attrs":[{"n...</span></span>
+<span class="line"><span>exr-short (25토큰): (O (P (N 1) (C (Q EXTRA) (T CHEESE)...</span></span>
+<span class="line"><span>tagged    (13토큰): pizza n=1 extra=cheese topp=pepperoni</span></span>
+<span class="line"><span>dsl        (8토큰): p 1 +cheese pepperoni</span></span>
+<span class="line"><span>words      (7토큰): pizza 1 extra cheese pepperoni</span></span></code></pre>
+<h2 id="짧게-줄이는-것보다-자연어-단어가-통했던-이유">짧게 줄이는 것보다 자연어 단어가 통했던 이유</h2>
+<p>흔히 출력 토큰을 줄이면 실수할 여지도 줄어들어 정확도가 오를 거라고 예상하기 쉽습니다. 하지만 단순히 출력을 짧게 줄이는 것만으로 정확도가 좋아진다는 설명은 이번 실험 결과와 맞지 않았습니다.</p>
+<p>실제로 <code>exr</code>의 생성자만 한 글자로 압축한 <code>exr-short</code>는 평균 토큰이 줄었는데도 정확도가 떨어지고 조용한 오류는 오히려 늘어났습니다. 반면 비슷한 길이로 맞춘 기호 중심 <code>dsl</code>과 자연어 단어 중심 <code>words</code> 비교에서는 두 모델 모두 <code>words</code>가 앞섰고, 특히 LFM2 전체 풀에서는 <code>words</code>가 토큰을 조금 더 쓰면서도 더 정확했죠. 가령 <code>+cheese</code>는 Qwen 토크나이저에서 세 조각으로 쪼개지지만 <code>extra cheese</code>는 두 토큰으로 처리되며, 부정 조건도 기호로 번역하지 않고 <code>no onions</code>처럼 일상 표현 그대로 적을 수 있어 실수가 줄었다고 저자들은 분석합니다.</p>
+<h2 id="조용한-오류와-눈에-보이는-실패를-함께-읽기">조용한 오류와 눈에 보이는 실패를 함께 읽기</h2>
+<p>전체 훈련 풀 조건에서 사람이 작성한 테스트 주문 1,357개를 5개 시드로 평균 낸 원문 표 2 결과를 살펴볼까요? 아래 저자 보고 평균값을 보면 형식에 따라 실패가 어떻게 갈리는지 한눈에 드러납니다.</p>
+<table>
+<thead>
+<tr>
+<th>모델</th>
+<th>형식</th>
+<th style="text-align: right">평균 토큰</th>
+<th style="text-align: right">정확 일치</th>
+<th style="text-align: right">조용한 오류</th>
+<th style="text-align: right">파싱 실패</th>
+<th style="text-align: right">정상 거절</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen</td>
+<td><code>exr</code></td>
+<td style="text-align: right">44.3</td>
+<td style="text-align: right">85.8%</td>
+<td style="text-align: right">10.3%</td>
+<td style="text-align: right">0.6%</td>
+<td style="text-align: right">3.3%</td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>json</code></td>
+<td style="text-align: right">44.1</td>
+<td style="text-align: right">81.6%</td>
+<td style="text-align: right">14.9%</td>
+<td style="text-align: right">0.3%</td>
+<td style="text-align: right">3.2%</td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>exr-short</code></td>
+<td style="text-align: right">32.3</td>
+<td style="text-align: right">75.2%</td>
+<td style="text-align: right">17.4%</td>
+<td style="text-align: right">3.3%</td>
+<td style="text-align: right">4.2%</td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>tagged</code></td>
+<td style="text-align: right">22.2</td>
+<td style="text-align: right">85.9%</td>
+<td style="text-align: right">11.6%</td>
+<td style="text-align: right">0.5%</td>
+<td style="text-align: right">2.1%</td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>dsl</code></td>
+<td style="text-align: right">11.3</td>
+<td style="text-align: right">79.7%</td>
+<td style="text-align: right">8.3%</td>
+<td style="text-align: right">6.7%</td>
+<td style="text-align: right">5.4%</td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td><code>words</code></td>
+<td style="text-align: right">10.9</td>
+<td style="text-align: right">87.5%</td>
+<td style="text-align: right">4.5%</td>
+<td style="text-align: right">4.6%</td>
+<td style="text-align: right">3.4%</td>
+</tr>
+<tr>
+<td>LFM2</td>
+<td><code>exr</code></td>
+<td style="text-align: right">52.4</td>
+<td style="text-align: right">74.0%</td>
+<td style="text-align: right">17.9%</td>
+<td style="text-align: right">0.2%</td>
+<td style="text-align: right">7.8%</td>
+</tr>
+<tr>
+<td>LFM2</td>
+<td><code>dsl</code></td>
+<td style="text-align: right">11.4</td>
+<td style="text-align: right">72.0%</td>
+<td style="text-align: right">13.1%</td>
+<td style="text-align: right">5.7%</td>
+<td style="text-align: right">9.2%</td>
+</tr>
+<tr>
+<td>LFM2</td>
+<td><code>words</code></td>
+<td style="text-align: right">12.0</td>
+<td style="text-align: right">77.4%</td>
+<td style="text-align: right">10.0%</td>
+<td style="text-align: right">5.8%</td>
+<td style="text-align: right">6.7%</td>
+</tr>
+</tbody>
+</table>
+<p>전체 풀 조건에서 Qwen의 조용한 오류는 기본 <code>exr</code> 형식이 10.3%, <code>words</code> 형식이 4.5%로 보고되며 LFM2에서도 크게 낮아졌습니다. 원문 오류 분석을 보면 이 차이는 주로 부정 조건 실수가 줄어든 덕분이고, <code>words</code>에 남은 조용한 오류는 피자나 음료 수량 오류가 가장 많았습니다.</p>
+<p>다만 조용한 오류가 절반 이하로 줄었다는 수치만으로 모든 실패가 사라졌다고 해석하기는 이릅니다. 같은 Qwen 비교에서 <code>words</code>의 파싱 실패는 0.6%에서 4.6%로 늘어났거든요. 괄호 구조가 단단한 <code>exr</code>이나 <code>json</code>은 틀릴 때 조용히 틀리는 반면, <code>words</code>는 잘못될 때 아예 파싱 실패로 드러나는 비중이 커진 셈이죠. 잘못된 주문이 그대로 통과하는 피해와 실패한 요청을 다시 처리하는 비용을 함께 따져 봐야 합니다.</p>
+<p><img alt="형식 검사와 의미 검사를 구분하고 오류와 거절을 함께 보자는 카솔" loading="lazy" decoding="async" width="1254" height="1254" src="/_astro/page-01.B9f51EKa_1rhBMy.webp" srcset=""></p>
+<h2 id="엄격한-거절의-비용과-실험-범위의-한계">엄격한 거절의 비용과 실험 범위의 한계</h2>
+<p>메뉴 외 요청을 막기 위해 넣은 가드레일에도 대가가 따랐습니다. 비주문 입력은 대부분 걸러 냈지만, 실제 테스트 주문까지 돌려보내는 부작용이 생겼거든요. 거절된 정상 주문에는 “안녕하세요”나 “감사합니다”처럼 문법 기반 훈련 데이터에 드문 정중한 표현이 많았고, Qwen <code>words</code> 기준으로 인사말이 든 주문은 그렇지 않은 주문보다 두 배 넘게 거절되었습니다.</p>
+<p>실험 범위의 한계도 분명합니다. 이번 결과는 단일 음식 주문 데이터셋(PIZZA)과 10억 매개변수 미만 소형 모델 두 개에 한정되며, 모든 실행에 거절과 자기 수정 학습이 포함돼 그 장치만의 효과를 분리한 비교도 아닙니다. 엄격한 거절 규칙은 정상 주문까지 거절하는 비용을 동반하며, 단일 데이터셋과 소형 모델 결과를 다른 업무로 일반화할 수 없다는 점을 함께 짚어야 합니다.</p>
+<h2 id="실무에-연결할-때-먼저-나눌-점검-기준">실무에 연결할 때 먼저 나눌 점검 기준</h2>
+<p>여기까지가 논문 실험의 범위라면, 다메카솔 관점에서 소형 모델 출력을 서비스에 연결할 때 챙길 기준은 세 가지입니다.</p>
+<ul>
+<li><strong>지표 분리</strong>: 파싱 성공률이나 전체 정확도만 보지 말고 구문 오류, 의미 오류, 정상 주문 거절을 나눠 기록해야 장애 원인이 보입니다.</li>
+<li><strong>형식 실험</strong>: JSON이나 축약 기호만 고집하기보다, 자연어 어휘를 살린 간결한 출력과 후처리 변환 조합도 시험해 볼 만합니다.</li>
+<li><strong>재확인 경로</strong>: 파싱 실패나 거절이 생기면 사용자에게 주문을 한 번 더 확인받는 흐름을 두어 조용한 오주문보다 안전하게 복구할 수 있습니다.</li>
+</ul>
+<p>결국 구문 오류, 의미 오류, 정상 주문 거절을 나눠 측정하고 사용자에게 재확인할 경로를 함께 설계하는 일이 실무 점검에 큰 도움이 됩니다. 다른 업무에서 같은 개선 폭이 이어질지는 각자의 데이터와 입력 문체로 별도 검증해야 합니다.</p>
+<h2 id="출처">출처</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.17169v1">논문 원문과 버전</a></li>
+<li><a href="https://arxiv.org/html/2611.17169v1">논문 전체 HTML</a></li>
+<li><a href="https://github.com/UmarGit/coffee-llm">저자 공식 코드 저장소</a></li>
+</ul>
+<p>자료 확인: 2026-11-15. 이 글은 원문 논문(2026-11-12 공개)을 바탕으로 해설했으며 실험을 독립 재현하지 않았습니다. 공식 저장소 README와 원문은 실험 규모가 달라 수치를 합치지 않았고, 원문 표 2 아래 문장과 표 3·6.3절 사이에 Qwen 통계적 차이 설명이 어긋나는 부분이 있어 여기서는 표 2의 평균값만 소개하며 유의성 결론은 내리지 않습니다. 만화의 주문 장면은 이해를 돕기 위해 새로 구성한 개념 예시입니다.</p>
+<p>이 글의 본문과 이미지는 생성형 AI로 제작했습니다. 기획과 편집 기준은 다메카솔이 정했습니다.</p>
+</div></div><footer class="article-footer shell" data-analytics-complete><section class="related-posts" aria-labelledby="related-posts-title"><div class="section-heading"><h2 id="related-posts-title">이어서 읽기</h2></div><div class="related-posts__grid"><article class="related-card"><a class="related-card__image" href="/posts/delegent-small-model-legwork/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.r_ORXwTE_Z26D4Ed.webp" srcset="/_astro/cover.r_ORXwTE_CSI4S.webp 240w, /_astro/cover.r_ORXwTE_Z1udRj6.webp 360w, /_astro/cover.r_ORXwTE_1rPF6Q.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-25T06:35:49.000Z">2026년 11월 25일</time></div><h3><a href="/posts/delegent-small-model-legwork/" data-analytics-event="related_post_click" data-analytics-target="delegent-small-model-legwork">작은 모델에 조사를 맡기는 Delegent</a></h3><p>Delegent가 작은 모델에 조사와 테스트를 맡기는 구조를 살펴봅니다. 큰 모델 API 비용 절감과 전체 운영비·완료 시간의 차이를 실험 조건과 함께 읽습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/dice-draw-informed-decoding/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.7aRrVBOe_1hQhyH.webp" srcset="/_astro/cover.7aRrVBOe_Z1xus3r.webp 240w, /_astro/cover.7aRrVBOe_1oz5mv.webp 360w, /_astro/cover.7aRrVBOe_ZIxv1t.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-24T06:34:35.000Z">2026년 11월 24일</time></div><h3><a href="/posts/dice-draw-informed-decoding/" data-analytics-event="related_post_click" data-analytics-target="dice-draw-informed-decoding">난수를 미리 공유해 초안을 고르는 DICE</a></h3><p>DICE가 검증 난수를 초안 준비에 활용하는 원리와 출력 분포 보존 조건을 살펴봅니다. 처리량 비교는 모델·엔진·샘플링 조건과 함께 읽습니다.</p></div></article><article class="related-card"><a class="related-card__image" href="/posts/glide-single-pass-decisions/" tabindex="-1" aria-hidden="true"><img src="/_astro/cover.lorla-BU_28WFmd.webp" srcset="/_astro/cover.lorla-BU_1qi7ld.webp 240w, /_astro/cover.lorla-BU_ZGOt2L.webp 360w, /_astro/cover.lorla-BU_2ff4nb.webp 480w" alt sizes="(min-width: 900px) 350px, 92vw" loading="lazy" decoding="async" width="1254" height="1254"></a><div class="related-card__body"><div class="post-meta"><span class="track-label track-label--paper">AI 논문 읽기</span><time datetime="2026-11-23T06:37:28.000Z">2026년 11월 23일</time></div><h3><a href="/posts/glide-single-pass-decisions/" data-analytics-event="related_post_click" data-analytics-target="glide-single-pass-decisions">긴 추론 없이 선택지를 평가하는 GLiDE</a></h3><p>긴 추론 문장 없이 선택 확률을 계산하는 GLiDE를 살펴봅니다. 평가 조건과 공개 코드의 confidence 정의를 구분합니다.</p></div></article></div></section><div class="article-footer__actions"><a class="back-link" href="/tracks/paper/" data-analytics-event="related_post_click" data-analytics-target="track_archive">← AI 논문 읽기 글 더 보기</a><a class="back-link" href="/archives/">전체 아카이브 보기 →</a></div></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><p>복잡한 기술을 만화와 정확한 글로 설명합니다.</p><p><a href="/rss.xml">RSS</a><span aria-hidden="true">/</span><a href="/about/" data-analytics-event="brand_profile_click" data-analytics-target="creator_profile">다메카솔</a><span aria-hidden="true">/</span><a href="/privacy/">개인정보</a></p></div></footer><script type="module">var e={engaged_read:[`content_id`,`content_track`,`content_category`],article_complete:[`content_id`,`content_track`,`content_category`],related_post_click:[`target`],toc_click:[`target`],brand_profile_click:[`target`]},t=120,n=/^[\p{L}\p{N}_-]{1,120}$/u;function r(t){return Object.hasOwn(e,t)}function i(r,i={}){let a=e[r],o={};for(let e of a){let r=i[e];if(r==null)continue;if(typeof r==`number`||typeof r==`boolean`){o[e]=r;continue}let a=String(r).trim().slice(0,t);n.test(a)&&(o[e]=a)}return o}function a(e){e&&typeof e.catch==`function`&&e.catch(()=>void 0)}function o(e,t){if(r(e)&&!(typeof window>`u`||typeof window.zaraz?.track!=`function`))try{a(window.zaraz.track(e,i(e,t)))}catch{}}window.blogAnalytics={event:o},document.addEventListener(`click`,e=>{let t=e.target;if(!(t instanceof Element))return;let n=t.closest(`[data-analytics-event]`);if(n?.dataset.analyticsEvent){o(n.dataset.analyticsEvent,{target:n.dataset.analyticsTarget||`unknown`});return}let r=t.closest(`.prose a[href^="/posts/"]`);r&&o(`related_post_click`,{target:new URL(r.href).pathname.split(`/`).filter(Boolean).at(-1)||`contextual_post`})});var s=document.querySelector(`[data-analytics-article]`);if(s){let e={content_id:s.dataset.contentId,content_track:s.dataset.contentTrack,content_category:s.dataset.contentCategory},t=!1,n=!1,r=!1,i=!1,a=()=>{!t||!n||r||(r=!0,o(`engaged_read`,e))},c=()=>{let e=s.getBoundingClientRect().top+window.scrollY;n=(window.scrollY+window.innerHeight-e)/s.offsetHeight>=.5,a()};window.setTimeout(()=>{t=!0,a()},3e4),window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),c();let l=s.querySelector(`[data-analytics-complete]`);if(l&&`IntersectionObserver`in window){let t=new IntersectionObserver(n=>{i||!n.some(e=>e.isIntersecting)||(i=!0,o(`article_complete`,e),t.disconnect())},{threshold:.35});t.observe(l)}}</script><script type="module" src="/_astro/MermaidDiagrams.astro_astro_type_script_index_0_lang.B5mI1Bq4.js"></script></body></html>
